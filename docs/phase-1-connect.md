@@ -70,7 +70,7 @@ These results are similar regardless of whether the Pi 2s are peered over the 80
 [  5]   0.00-10.46  sec  2.63 MBytes  2.11 Mbits/sec                  receiver
 ```
 
-**Laptop and VPS**
+**Laptop to VPS**
 
 This is cjdns traffic bandwidth between my MacBook Pro with a 2.4 GHz Intel Core i5 and my VPS. Note that my internet connection is on a 50/50 Mbps package.
 
