@@ -8,14 +8,18 @@ This repository will track progress and hold documentation, scripts, benchmarkin
 
 ### Phase 1: Connect
 
-- [ ] Flash two [Raspberry Pi 2's with OpenWrt 15.05](https://wiki.openwrt.org/toh/raspberry_pi_foundation/raspberry_pi)
-- [ ] Install [MeshBox](https://github.com/SeattleMeshnet/meshbox) with `opkg update && opkg install luci-app-cjdns`
-- [ ] Attach a [Pi 2](http://elinux.org/RPi_USB_Wi-Fi_Adapters) + [OpenWrt](https://forum.openwrt.org/viewtopic.php?id=37331) + [802.11s](http://devel.open80211s.narkive.com/8olWVgz9/802-11s-and-raspberry-pi)-compatible USB WiFi adapter (e.g. TL-WN722N) and [install firmware](https://wiki.debian.org/ath9k_htc)
-- [ ] Configure network interface to run 802.11s [manually](https://wiki.openwrt.org/doc/howto/mesh.80211s) or through the MeshBox UI
+- [x] Flash two [Raspberry Pi 2's with OpenWrt 15.05](https://wiki.openwrt.org/toh/raspberry_pi_foundation/raspberry_pi)
+- [x] Install [MeshBox](https://github.com/SeattleMeshnet/meshbox) with `opkg update && opkg install luci-app-cjdns`
+- [x] Attach a [Pi 2](http://elinux.org/RPi_USB_Wi-Fi_Adapters) + [OpenWrt](https://forum.openwrt.org/viewtopic.php?id=37331) + [802.11s](http://devel.open80211s.narkive.com/8olWVgz9/802-11s-and-raspberry-pi)-compatible USB WiFi adapter (e.g. TL-WN722N) and [install firmware](https://wiki.debian.org/ath9k_htc)
+- [x] Configure network interface to run 802.11s [manually](https://wiki.openwrt.org/doc/howto/mesh.80211s) or through the MeshBox UI
+
+**Results:**
+
+It's quite simple to set up cjdns over a 802.11s link on the Pi 1 or 2 flashed with the OpenWrt image. The bandwidth on the Pi 2 is unfortunately a pitiful 2 Mbps, limited by cjdns crypto, which fully utilizes one of four cores. See the [full report](https://github.com/tomeshnet/prototype-cjdns-pi2/blob/master/docs/phase-1-connect.md).
 
 ### Phase 2: Range
 
-- [ ] Swap out the N connector antenna on the radio to a directional antenna for range (e.g. TL-ANT2424B)
+- [ ] Swap out the N connector antenna on the radio to a directional antenna for range (e.g. TL-ANT2424B), via a N Male to RP-SMA Female "Pigtail" (e.g. TL-ANT24PT3)
 - [ ] Attach [long-range point-to-point antenna](https://www.ubnt.com/products/) (e.g. NanoStation M5)
 
 ### Phase 3: Hyperboria
@@ -34,6 +38,7 @@ This repository will track progress and hold documentation, scripts, benchmarkin
 * https://github.com/openwrt-routing/packages
 * http://raspberrypihq.com/how-to-turn-a-raspberry-pi-into-a-wifi-router/
 * https://www.wifipineapple.com/
+* http://battlemesh.org/BattleMeshV4/MeshGuide
 
 ## Credits
 
