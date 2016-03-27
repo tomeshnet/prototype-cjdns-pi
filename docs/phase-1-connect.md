@@ -48,8 +48,6 @@
 
 1. Set up another Raspberry Pi 2 with the same configurations and the two should appear as each other's cjdns peer in the MeshBox UI.
 
-## Benchmark
-
 ### Network Benchmark
 
 Install network benchmarking tools with `opkg install iperf3 netperf`.
@@ -176,9 +174,9 @@ Benchmark salsa20/poly1305 in 278972ms. 4301 kilobits per second
 Benchmark Switching in 103257ms. 9917 packets per second
 ```
 
-### OpenSSL Performance
+### OpenSSL Benchmark
 
-Lastly, I compared OpenSSL performance between the Pi 2 and my laptop with:
+Lastly, I compared OpenSSL performance between the Pi 2 with Raspbian Jessie and my laptop with:
 
 ```
 sudo apt-get install openssl-util
