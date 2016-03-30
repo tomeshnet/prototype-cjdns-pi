@@ -1,6 +1,6 @@
 # Phase 1: Connect
 
-## Set up
+## Set Up on OpenWrt
 
 1. Download the [openwrt-15.05-brcm2708-bcm2709-sdcard-vfat-ext4.img](http://downloads.openwrt.org/chaos_calmer/15.05/brcm2708/bcm2709/) and [flash your SD card](https://www.raspberrypi.org/documentation/installation/installing-images/README.md).
 
@@ -47,8 +47,6 @@
 	```
 
 1. Set up another Raspberry Pi 2 with the same configurations and the two should appear as each other's cjdns peer in the MeshBox UI.
-
-## Benchmark
 
 ### Network Benchmark
 
@@ -139,18 +137,46 @@ Benchmark salsa20/poly1305 in 974ms. 1232032 kilobits per second
 Benchmark Switching in 2774ms. 369142 packets per second
 ```
 
-#### cjdns on Raspbian
+## Set Up on Raspbian
 
-Flash **Raspbian Jessie** and SSH in the Pi 2 with `ssh pi@raspberrypi.local`. The default password is **raspberry**. Clone cjdns with `git clone https://github.com/hyperboria/cjdns.git` and compile with `NO_TEST=1 Seccomp_NO=1 ./do`. More on the flags [here](http://mesh.philly2600.net/?p=54). Note that the version of cjdns compiled here is v17, whereas the OpenWrt package management installs v16. The benchmark results are far superior to the previous OpenWrt results, but 14 Mbps is still less than exciting.
+Flash **Raspbian Jessie** and SSH in the Pi 2 with `ssh pi@raspberrypi.local`. The default password is **raspberry**. Clone cjdns with `git clone https://github.com/hyperboria/cjdns.git` and compile with `NO_TEST=1 Seccomp_NO=1 ./do`. [More on the flags here.](http://mesh.philly2600.net/?p=54) Note that the version of cjdns compiled here is v17, whereas the OpenWrt package management installs v16.
+
+### cjdns Benchmark
+
+The benchmark results are far superior to the previous OpenWrt results, but 14 Mbps is still less than exciting.
 
 ```
 Benchmark salsa20/poly1305 in 87091ms. 13778 kilobits per second
 Benchmark Switching in 102578ms. 9982 packets per second
 ```
 
-The only other cjdns benchmarking result on the Pi that I managed to find is [here](https://github.com/hyperboria/cjdns/blob/cc897b21cbe2606dc792e775cb17b70ef9deddef/doc/benchmark.txt#L1569). It does not seem to be inline with our results. Compiling with `NO_TEST=1 Seccomp_NO=1 CFLAGS="-march=armv7-a -mfpu=neon-vfpv4 -mfloat-abi=hard" ./do` don't seem to make much performance difference.
+According to [these cjdns benchmark results on the Pi and Pi 2](https://github.com/hyperboria/cjdns/blob/cc897b21cbe2606dc792e775cb17b70ef9deddef/doc/benchmark.txt#L1569), we should expect 39 and 141 Mbps, respectively. These are much better than the results we got. Looking into [the commit history](https://github.com/hyperboria/cjdns/commit/f31fc1bb356d55dc7b9f9c71406719ca63969bf6), it seems that we must compile cjdns with:
 
-Lastly, I compared OpenSSL performance between the Pi 2 and my laptop with:
+```
+./clean && NO_TEST=1 Seccomp_NO=1 CFLAGS="-march=armv7-a -mfpu=neon-vfpv4 -mfloat-abi=hard" ./do
+```
+
+Running the cjdns benchmark with the version compiled with these flags shows significant performance increase inline with the earlier report.
+
+```
+Benchmark salsa20/poly1305 in 8153ms. 147185 kilobits per second
+Benchmark Switching in 17107ms. 59858 packets per second
+```
+
+The 147 Mbps crypto throughput is sufficient for our purpose, since the TL-WN722N WiFi adapter is 150 Mbps, connected through the Pi 2's 480 Mbps USB bus.
+
+### Optimized cjdns on OpenWrt
+
+I then copied the **cjdroute** binary to OpenWrt, but it does not yield the same performance, probably because it lacks [support for the hard-float ABI available on Raspbian](http://www.raspbian.org/RaspbianFAQ#What_is_Raspbian.3F).
+
+```
+Benchmark salsa20/poly1305 in 278972ms. 4301 kilobits per second
+Benchmark Switching in 103257ms. 9917 packets per second
+```
+
+### OpenSSL Benchmark
+
+Lastly, I compared OpenSSL performance between the Pi 2 with Raspbian Jessie and my laptop with:
 
 ```
 sudo apt-get install openssl-util

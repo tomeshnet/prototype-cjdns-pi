@@ -12,10 +12,11 @@ This repository will track progress and hold documentation, scripts, benchmarkin
 - [x] Install [MeshBox](https://github.com/SeattleMeshnet/meshbox) with `opkg update && opkg install luci-app-cjdns`
 - [x] Attach a [Pi 2](http://elinux.org/RPi_USB_Wi-Fi_Adapters) + [OpenWrt](https://forum.openwrt.org/viewtopic.php?id=37331) + [802.11s](http://devel.open80211s.narkive.com/8olWVgz9/802-11s-and-raspberry-pi)-compatible USB WiFi adapter (e.g. TL-WN722N) and [install firmware](https://wiki.debian.org/ath9k_htc)
 - [x] Configure network interface to run 802.11s [manually](https://wiki.openwrt.org/doc/howto/mesh.80211s) or through the MeshBox UI
+- [ ] Configure [802.11s on Raspbian Jessie](https://github.com/o11s/open80211s/wiki/HOWTO) and bind interface to the Pi 2 optimized cjdns
 
 **Results:**
 
-It's quite simple to set up cjdns over a 802.11s link on the Pi 1 or 2 flashed with the OpenWrt image. The bandwidth on the Pi 2 is unfortunately a pitiful 2 Mbps, limited by cjdns crypto, which fully utilizes one of four cores. See the [full report](https://github.com/tomeshnet/prototype-cjdns-pi2/blob/master/docs/phase-1-connect.md).
+It's quite simple to set up cjdns over a 802.11s link on the Pi 1 or 2 flashed with the OpenWrt image. The bandwidth on the Pi 2 is unfortunately a pitiful 2 Mbps, limited by cjdns crypto, which fully utilizes one of four cores. However, compiling an optimized version of cjdns on Raspbian Jessie gives far superior crypto performance that should allow for >100 Mbps bandwidth. [See the full report.](https://github.com/tomeshnet/prototype-cjdns-pi2/blob/master/docs/phase-1-connect.md)
 
 ### Phase 2: Range
 
