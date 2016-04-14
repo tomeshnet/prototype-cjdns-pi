@@ -23,7 +23,7 @@ Would like to try this on more powerful boards such as the Pi 3 and [ODROID-C2](
 To set up on the Pi 2, flash Raspbian Jessie, SSH in and expand your filesystem to fill the available space on your SD card using `sudo raspi-config`, then run [install.sh](https://github.com/tomeshnet/prototype-cjdns-pi2/blob/master/scripts/install.sh):
 
 ```
-wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi2/master/scripts/install.sh && ./install.sh
+wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi2/master/scripts/install.sh && chmod +x install.sh && ./install.sh
 ```
 
 [See the full report.](https://github.com/tomeshnet/prototype-cjdns-pi2/blob/master/docs/phase-1-connect.md)
