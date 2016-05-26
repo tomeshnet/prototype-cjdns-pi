@@ -11,36 +11,39 @@ if ! [ "$(which git)" ] || ! [ "$(which nodejs)" ] || ! [ "$(which iperf3)" ]; t
 	sudo apt-get install git nodejs iperf3
 fi
 
-# Download and install scripts to bring up Mesh Point interface
+# Download prototype-cjdns-pi2 repo and checkout TAG_PROTOTYPE_CJDNS_PI2 tag
 if ! [ -d "prototype-cjdns-pi2" ]; then
 	git clone https://github.com/tomeshnet/prototype-cjdns-pi2.git
-	cd prototype-cjdns-pi2
-	git checkout $TAG_PROTOTYPE_CJDNS_PI2
-	sudo cp scripts/mesh /usr/bin/mesh
-	cd ..
+	cd prototype-cjdns-pi2 && git checkout $TAG_PROTOTYPE_CJDNS_PI2 && cd ..
 fi
 
-# Download, build and install cjdns
-if ! [ -d "cjdns" ]; then
-	git clone https://github.com/cjdelisle/cjdns.git
-fi
+# Install bring-up script for the Mesh Point interface to /usr/bin
+sudo cp prototype-cjdns-pi2/scripts/mesh /usr/bin/mesh
 
-cd cjdns
-if ! [ -x "cjdroute" ]; then
-	./clean
-	git checkout $CJDNS_TAG
-	NO_TEST=1 Seccomp_NO=1 CFLAGS="-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm" ./do
-	sudo cp cjdroute /usr/bin/cjdroute
-fi
-cd ..
-
-# Configure systemd to start mesh.service and cjdns.service on system boot
+# Configure systemd to start mesh.service on system boot
 sudo cp prototype-cjdns-pi2/scripts/mesh.service /lib/systemd/system/mesh.service
 sudo chmod 644 /lib/systemd/system/mesh.service
+sudo systemctl daemon-reload
+sudo systemctl enable mesh.service
+
+# Download cjdns repo and checkout TAG_CJDNS tag
+if ! [ -d "cjdns" ]; then
+	git clone https://github.com/cjdelisle/cjdns.git
+	cd cjdns && git checkout $CJDNS_TAG && cd ..
+fi
+
+# Build cjdns
+if ! [ -x "cjdns/cjdroute" ]; then
+	cd cjdns && NO_TEST=1 Seccomp_NO=1 CFLAGS="-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm" ./do && cd ..
+fi
+
+# Intall cjdns to /usr/bin
+sudo cp cjdns/cjdroute /usr/bin/cjdroute
+
+# Configure systemd to start cjdns.service on system boot
 sudo cp cjdns/contrib/systemd/cjdns.service /lib/systemd/system/cjdns.service
 sudo chmod 644 /lib/systemd/system/cjdns.service
 sudo systemctl daemon-reload
-sudo systemctl enable mesh.service
 sudo systemctl enable cjdns.service
 
 # Reboot device

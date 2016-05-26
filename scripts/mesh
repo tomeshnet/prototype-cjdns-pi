@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 # Shut down the wlan0 interface
 sudo ifconfig wlan0 down
 
@@ -17,3 +19,6 @@ sudo iw dev mesh0 mesh join tomesh freq 2412 HT40+
 
 # Disable forwarding since we rely on cjdns to do routing and only uses Mesh Point as a point-to-point link
 sudo iw dev mesh0 set mesh_param mesh_fwding=0
+
+# Restart cjdns
+sudo killall cjdroute
