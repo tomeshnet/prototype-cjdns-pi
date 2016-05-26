@@ -14,6 +14,7 @@ fi
 if ! [ -d "cjdns" ]; then
 	git clone https://github.com/cjdelisle/cjdns.git
 fi
+
 cd cjdns
 
 # Build cjdns with optimizations
@@ -27,6 +28,8 @@ fi
 if ! [ -f "cjdroute.conf" ]; then
 	./cjdroute --genconf > cjdroute.conf
 fi
+
+cd /home/pi
 
 # Download scripts to bring up this mesh node
 if ! [ -d "prototype-cjdns-pi2" ]; then
