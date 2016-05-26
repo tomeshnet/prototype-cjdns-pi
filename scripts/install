@@ -1,0 +1,47 @@
+#!/bin/sh
+
+set -e
+
+TAG_PROTOTYPE_CJDNS_PI2=autorun
+TAG_CJDNS=cjdns-v17.3
+
+# Get tools
+if ! [ "$(which git)" ] || ! [ "$(which nodejs)" ] || ! [ "$(which iperf3)" ]; then
+	sudo apt-get update
+	sudo apt-get install git nodejs iperf3
+fi
+
+# Download and install scripts to bring up Mesh Point interface
+if ! [ -d "prototype-cjdns-pi2" ]; then
+	git clone https://github.com/tomeshnet/prototype-cjdns-pi2.git
+	cd prototype-cjdns-pi2
+	git checkout $TAG_PROTOTYPE_CJDNS_PI2
+	sudo cp scripts/mesh /usr/bin/mesh
+	cd ..
+fi
+
+# Download, build and install cjdns
+if ! [ -d "cjdns" ]; then
+	git clone https://github.com/cjdelisle/cjdns.git
+fi
+
+cd cjdns
+if ! [ -x "cjdroute" ]; then
+	./clean
+	git checkout $CJDNS_TAG
+	NO_TEST=1 Seccomp_NO=1 CFLAGS="-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm" ./do
+	sudo cp cjdroute /usr/bin/cjdroute
+fi
+cd ..
+
+# Configure systemd to start mesh.service and cjdns.service on system boot
+sudo cp prototype-cjdns-pi2/scripts/mesh.service /lib/systemd/system/mesh.service
+sudo chmod 644 /lib/systemd/system/mesh.service
+sudo cp cjdns/contrib/systemd/cjdns.service /lib/systemd/system/cjdns.service
+sudo chmod 644 /lib/systemd/system/cjdns.service
+sudo systemctl daemon-reload
+sudo systemctl enable mesh.service
+sudo systemctl enable cjdns.service
+
+# Reboot device
+sudo reboot

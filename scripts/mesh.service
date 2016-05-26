@@ -4,7 +4,7 @@ After=multi-user.target
 
 [Service]
 Type=idle
-ExecStart=/home/pi/prototype-cjdns-pi2/scripts/start.sh
+ExecStart=/usr/bin/mesh
 
 [Install]
 WantedBy=multi-user.target
