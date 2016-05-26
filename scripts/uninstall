@@ -6,9 +6,9 @@ sudo systemctl disable mesh.service
 sudo rm /usr/bin/mesh
 sudo rm /lib/systemd/system/mesh.service
 
-sudo rm /etc/cjdroute.conf
 sudo systemctl disable cjdns.service
 sudo rm /usr/bin/cjdroute
 sudo rm /lib/systemd/system/cjdns.service
+sudo rm /etc/cjdroute.conf
 
 sudo systemctl daemon-reload
