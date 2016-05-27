@@ -6,7 +6,9 @@ set -e
 sudo ifconfig wlan0 down
 
 # Create mesh0 802.11s Mesh Point interface
-sudo iw dev wlan0 interface add mesh0 type mp
+if [ -z $(iw dev | grep mesh0) ]; then
+	sudo iw dev wlan0 interface add mesh0 type mp
+fi
 
 # Bring up the mesh0 interface
 sudo ifconfig mesh0 up
