@@ -2,7 +2,7 @@
 
 set -e
 
-TAG_PROTOTYPE_CJDNS_PI2=autorun
+TAG_PROTOTYPE_CJDNS_PI2=master
 TAG_CJDNS=cjdns-v17.3
 
 # Get tools
