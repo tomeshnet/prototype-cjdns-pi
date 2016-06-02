@@ -20,10 +20,10 @@ On OpenWrt or Raspbian, it's quite simple to set up cjdns over a 802.11s Mesh Po
 
 Would like to try this on more powerful boards such as the Pi 3 and [ODROID-C2](http://www.hardkernel.com/main/products/prdt_info.php?g_code=G145457216438). A rough estimate would be a 2-3x boost in cjdns throughput based on other benchmarks done on these boards. [Off-loading CPU-intensive NaCl encryption to dedicated hardware blocks](https://www.reddit.com/r/hyperboria/comments/1flpty/how_to_get_your_beaglebone_black_running_cjdns/) is also an option. Unfortunately the hardware implementations aren't available on the Pi 3 or ODROID-C2, though these may become more common in future SoCs.
 
-To set up on the Pi 2, flash Raspbian Jessie, SSH in and expand your filesystem to fill the available space on your SD card using `sudo raspi-config`, then run [install.sh](https://github.com/tomeshnet/prototype-cjdns-pi2/blob/master/scripts/install.sh):
+To set up on the Pi 2, flash Raspbian Jessie, SSH in and expand your filesystem to fill the available space on your SD card using `sudo raspi-config`. Ensure that your Pi 2 has internet connectivity, then run [install](https://github.com/tomeshnet/prototype-cjdns-pi2/blob/master/scripts/install):
 
 ```
-wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi2/master/scripts/install.sh && chmod +x install.sh && ./install.sh
+wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi2/master/scripts/install && chmod +x install && ./install
 ```
 
 [See the full report.](https://github.com/tomeshnet/prototype-cjdns-pi2/blob/master/docs/phase-1-connect.md)

@@ -1,0 +1,50 @@
+#!/bin/sh
+
+set -e
+
+TAG_PROTOTYPE_CJDNS_PI2=master
+TAG_CJDNS=cjdns-v17.3
+
+# Get tools
+if ! [ "$(which git)" ] || ! [ "$(which nodejs)" ] || ! [ "$(which iperf3)" ]; then
+	sudo apt-get update
+	sudo apt-get install git nodejs iperf3
+fi
+
+# Download prototype-cjdns-pi2 repo and checkout TAG_PROTOTYPE_CJDNS_PI2 tag
+if ! [ -d "prototype-cjdns-pi2" ]; then
+	git clone https://github.com/tomeshnet/prototype-cjdns-pi2.git
+	cd prototype-cjdns-pi2 && git checkout $TAG_PROTOTYPE_CJDNS_PI2 && cd ..
+fi
+
+# Install bring-up script for the Mesh Point interface to /usr/bin
+sudo cp prototype-cjdns-pi2/scripts/mesh /usr/bin/mesh
+
+# Configure systemd to start mesh.service on system boot
+sudo cp prototype-cjdns-pi2/scripts/mesh.service /lib/systemd/system/mesh.service
+sudo chmod 644 /lib/systemd/system/mesh.service
+sudo systemctl daemon-reload
+sudo systemctl enable mesh.service
+
+# Download cjdns repo and checkout TAG_CJDNS tag
+if ! [ -d "cjdns" ]; then
+	git clone https://github.com/cjdelisle/cjdns.git
+	cd cjdns && git checkout $CJDNS_TAG && cd ..
+fi
+
+# Build cjdns
+if ! [ -x "cjdns/cjdroute" ]; then
+	cd cjdns && NO_TEST=1 Seccomp_NO=1 CFLAGS="-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm" ./do && cd ..
+fi
+
+# Intall cjdns to /usr/bin
+sudo cp cjdns/cjdroute /usr/bin/cjdroute
+
+# Configure systemd to start cjdns.service on system boot
+sudo cp cjdns/contrib/systemd/cjdns.service /lib/systemd/system/cjdns.service
+sudo chmod 644 /lib/systemd/system/cjdns.service
+sudo systemctl daemon-reload
+sudo systemctl enable cjdns.service
+
+# Reboot device
+sudo reboot
