@@ -165,6 +165,21 @@ Benchmark Switching in 17107ms. 59858 packets per second
 
 The 147 Mbps crypto throughput is sufficient for our purpose, since the TL-WN722N WiFi adapter is 150 Mbps, connected through the Pi 2's 480 Mbps USB bus.
 
+**Pi 3**
+
+June 4, 2016 – The following benchmarks were conducted on a Pi 3 at Ryerson's SLC.
+
+```
+CFLAGS="-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm"
+```
+
+The version compiled with the above flags were the most performant. We attempted to optimize the build with options specific to the Cortex-A53. Generally, there is little documentation available and the `CFLAGS` in the `install` script provided better results.
+
+```
+Benchmark salsa20/poly1305 in 3736ms. 321199 kilobits per second
+Benchmark Switching in 9729ms. 105252 packets per second
+```
+
 ### Optimized cjdns on OpenWrt
 
 I then copied the **cjdroute** binary to OpenWrt, but it does not yield the same performance, probably because it lacks [support for the hard-float ABI available on Raspbian](http://www.raspbian.org/RaspbianFAQ#What_is_Raspbian.3F).
@@ -201,6 +216,18 @@ $ iperf3 -c 192.168.3.51 -u -b 100M
 ```
 
 Over the cjdns interface, with `iperf3 -c CJDNS_IPV6`, we only get about 14 Mbps. This is 7x the 2 Mbps we had on OpenWrt, but we are again limited by CPU and far from saturating the 50 Mbps 802.11s link. We should move on to more powerful boards such as the Pi 3 and [ODROID-C2](http://www.hardkernel.com/main/products/prdt_info.php?g_code=G145457216438), or [off-load CPU-intensive NaCl encryption to dedicated hardware blocks](https://www.reddit.com/r/hyperboria/comments/1flpty/how_to_get_your_beaglebone_black_running_cjdns/) in other SoCs.
+
+**Pi 3**
+
+June 4, 2016 – The following benchmarks were conducted on a Pi 3 at Ryerson's SLC.
+
+```
+[ ID] Interval           Transfer     Bandwidth       Retr
+[  4]   0.00-10.00  sec  46.4 MBytes  38.9 Mbits/sec  323             sender
+[  4]   0.00-10.00  sec  46.0 MBytes  38.6 Mbits/sec                  receiver
+```
+
+The above results are over encrypted link.
 
 ### OpenSSL Benchmark
 
