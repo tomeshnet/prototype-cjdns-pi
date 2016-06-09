@@ -217,17 +217,17 @@ $ iperf3 -c 192.168.3.51 -u -b 100M
 
 Over the cjdns interface, with `iperf3 -c CJDNS_IPV6`, we only get about 14 Mbps. This is 7x the 2 Mbps we had on OpenWrt, but we are again limited by CPU and far from saturating the 50 Mbps 802.11s link. We should move on to more powerful boards such as the Pi 3 and [ODROID-C2](http://www.hardkernel.com/main/products/prdt_info.php?g_code=G145457216438), or [off-load CPU-intensive NaCl encryption to dedicated hardware blocks](https://www.reddit.com/r/hyperboria/comments/1flpty/how_to_get_your_beaglebone_black_running_cjdns/) in other SoCs.
 
-**Pi 3**
+**Laptop to Pi 3**
 
-June 4, 2016 – The following benchmarks were conducted on a Pi 3 at Ryerson's SLC.
+June 4, 2016 – The following benchmarks were conducted on a Pi 3 at Ryerson's SLC. This is over a local LAN, with both a laptop and the Pi 3 connected to a router.
 
 ```
+$ iperf3 -c CJDNS_IPV6
+
 [ ID] Interval           Transfer     Bandwidth       Retr
 [  4]   0.00-10.00  sec  46.4 MBytes  38.9 Mbits/sec  323             sender
 [  4]   0.00-10.00  sec  46.0 MBytes  38.6 Mbits/sec                  receiver
 ```
-
-The above results are over encrypted link.
 
 ### OpenSSL Benchmark
 
