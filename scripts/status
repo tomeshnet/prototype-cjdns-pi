@@ -10,7 +10,6 @@ echo "  | || (_) | | | | | |  __\__ | | | |"
 echo "   \__\___/|_| |_| |_|\___|___|_| |_|"
 
 echo -e '---------------------------------------'
-echo -e 'NODE'
 if [ "$(iw dev mesh0 info | grep 'type mesh point')" ] && [ "$(iw dev mesh0 info | grep 'channel')" ]; then
         echo -e "Mesh Interface ............... $ACTIVE"
 else
@@ -21,10 +20,10 @@ if [ $(systemctl status cjdns.service | grep 'Active: ' | awk '{ print $2 }') = 
 else
         echo -e "cjdns Service .............. $INACTIVE"
 fi
-
 echo -e '---------------------------------------'
-
+echo -e 'NODE'
+sudo grep '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g'
+echo -e '---------------------------------------'
 echo -e 'PEERS'
 nodejs ~/cjdns/tools/pingAll | grep '@' | sed 's/@.*//'
-
 echo -e '---------------------------------------'
