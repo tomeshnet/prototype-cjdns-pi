@@ -27,21 +27,23 @@ sudo systemctl daemon-reload
 sudo systemctl enable mesh.service
 
 # Download cjdns repo and checkout TAG_CJDNS tag
-if ! [ -d "cjdns" ]; then
-	git clone https://github.com/cjdelisle/cjdns.git
-	cd cjdns && git checkout $CJDNS_TAG && cd ..
+if ! [ -d "/opt/cjdns" ]; then
+	HERE=pwd
+	git clone https://github.com/cjdelisle/cjdns.git /opt/cjdns
+	cd /opt/cjdns && git checkout $CJDNS_TAG && cd $HERE
 fi
 
 # Build cjdns
-if ! [ -x "cjdns/cjdroute" ]; then
-	cd cjdns && NO_TEST=1 Seccomp_NO=1 CFLAGS="-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm" ./do && cd ..
+if ! [ -x "/opt/cjdns/cjdroute" ]; then
+	HERE=pwd
+	cd /opt/cjdns && NO_TEST=1 Seccomp_NO=1 CFLAGS="-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm" ./do && cd $HERE
 fi
 
-# Intall cjdns to /usr/bin
-sudo cp cjdns/cjdroute /usr/bin/cjdroute
+# Install cjdns to /usr/bin
+sudo cp /opt/cjdns/cjdroute /usr/bin/cjdroute
 
 # Configure systemd to start cjdns.service on system boot
-sudo cp cjdns/contrib/systemd/cjdns.service /lib/systemd/system/cjdns.service
+sudo cp /opt/cjdns/contrib/systemd/cjdns.service /lib/systemd/system/cjdns.service
 sudo chmod 644 /lib/systemd/system/cjdns.service
 sudo systemctl daemon-reload
 sudo systemctl enable cjdns.service

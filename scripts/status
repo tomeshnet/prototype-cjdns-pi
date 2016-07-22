@@ -25,5 +25,8 @@ echo -e 'NODE'
 sudo grep '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g'
 echo -e '---------------------------------------'
 echo -e 'PEERS'
-nodejs ~/cjdns/tools/pingAll | grep '@' | sed 's/@.*//'
+read -a peers <<< `sudo /root/cjdns/tools/peerStats | awk '{ if ($2 == "ESTABLISHED") print $1 }' | awk -F. '{ print $6".k" }' | xargs`
+for peer in "${peers[@]}"; do
+        sudo /root/cjdns/publictoip6 $peer
+done
 echo -e '---------------------------------------'
