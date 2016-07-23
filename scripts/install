@@ -28,15 +28,15 @@ sudo systemctl enable mesh.service
 
 # Download cjdns repo and checkout TAG_CJDNS tag
 if ! [ -d "/opt/cjdns" ]; then
-	HERE=pwd
+	here=pwd
 	git clone https://github.com/cjdelisle/cjdns.git /opt/cjdns
-	cd /opt/cjdns && git checkout $CJDNS_TAG && cd $HERE
+	cd /opt/cjdns && git checkout $CJDNS_TAG && cd $here
 fi
 
 # Build cjdns
 if ! [ -x "/opt/cjdns/cjdroute" ]; then
-	HERE=pwd
-	cd /opt/cjdns && NO_TEST=1 Seccomp_NO=1 CFLAGS="-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm" ./do && cd $HERE
+	here=pwd
+	cd /opt/cjdns && NO_TEST=1 Seccomp_NO=1 CFLAGS="-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm" ./do && cd $here
 fi
 
 # Install cjdns to /usr/bin

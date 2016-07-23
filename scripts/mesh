@@ -2,12 +2,21 @@
 
 set -e
 
-# Shut down the wlan0 interface
-sudo ifconfig wlan0 down
+# Select physical device that supports 802.11s Mesh Point
+if ! [ -z "$(iw phy phy0 info | grep 'mesh point')" ]; then
+	mesh_dev=wlan0
+elif ! [ -z "$(iw phy phy1 info | grep 'mesh point')" ]; then
+	mesh_dev=wlan1
+else
+	exit 1
+fi
+
+# Shut down the mesh_dev interface
+sudo ifconfig $mesh_dev down
 
 # Create mesh0 802.11s Mesh Point interface
-if [ -z $(iw dev | grep mesh0) ]; then
-	sudo iw dev wlan0 interface add mesh0 type mp
+if [ -z "$(iw dev | grep mesh0)" ]; then
+	sudo iw dev $mesh_dev interface add mesh0 type mp
 fi
 
 # Bring up the mesh0 interface
