@@ -10,5 +10,6 @@ sudo systemctl disable cjdns.service
 sudo rm /usr/bin/cjdroute
 sudo rm /lib/systemd/system/cjdns.service
 sudo rm /etc/cjdroute.conf
+sudo rm /opt/cjdns
 
 sudo systemctl daemon-reload
