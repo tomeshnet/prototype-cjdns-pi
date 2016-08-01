@@ -12,7 +12,7 @@ The following instructions will help you set up an encrypted mesh network based 
 
 1. Flash the SD card with [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/). 
 
-1. Plug to SD card and TL-WN722N into the Pi.
+1. Plug the SD card and TL-WN722N into the Pi.
 
 1. Plug the Pi into your router, so it has connectivity to the Internet. SSH into the Pi with `ssh pi@raspberrypi.local`.
 
