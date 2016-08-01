@@ -1,18 +1,20 @@
 # prototype-cjdns-pi2
 
-The following instructions will help you set up an encrypted mesh network based on Raspberry Pi 2's and 3's. It takes about 5 minutes to set up one node. Obviously, to have a mesh you would need more than one node.
+The following instructions will help you set up an encrypted mesh network based on Raspberry Pi 2's and 3's. It takes about 5 minutes to set up one node. Obviously, to have a mesh you will need more than one node.
 
 ## Set up
 
 1. Make sure you have the following items:
 
     * A Raspberry Pi 2 or 3
-    * A [TP-LINK TL-WN722N](http://www.tp-link.com/en/products/details/TL-WN722N.html)
     * An SD card that works with the Pi
+    * A [TP-LINK TL-WN722N](http://www.tp-link.com/en/products/details/TL-WN722N.html)
 
 1. Flash the SD card with [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/). 
 
-1. Plug your Pi into your router, so it has connectivity to the Internet. SSH into the Pi with `ssh pi@raspberrypi.local`.
+1. Plug to SD card and TL-WN722N into the Pi.
+
+1. Plug the Pi into your router, so it has connectivity to the Internet. SSH into the Pi with `ssh pi@raspberrypi.local`.
 
     **Optional:** There are other ways to connect, such as connecting the Pi to your computer and sharing Internet to it. Or if you have multiple Pi's connected to your router, find its IP with `nmap -sn 192.168.X.0/24` (where 192.168.X is your subnet) and SSH to the local IP assigned to the Pi you want to address `ssh pi@192.168.X.Y`.
 
