@@ -50,6 +50,12 @@ You can benchmark the network throughput with more than one node. Let's name our
 
 1. In another Terminal session, SSH to Hillary and run `iperf3 -c FRIEND_IPV6`. You should start seeing Hillary sending encrypted packets to her Friend. On a Pi 2, we can expect about 14 Mbps throughput, and 40 Mbps on a Pi 3.
 
+## Uninstall
+
+To uninstall the services, run `./prototype-cjdns-pi2/scripts/uninstall`.
+
+**Note for IPFS users:** if you chose to include IPFS in the installation and want to keep your IPFS data, make sure you back up the `/home/pi/.ipfs` directory before running the uninstaller.
+
 ## Notes
 
 * Your computer can be a node too! It will mesh with the Pi's over your router. See the [cjdns repository](https://github.com/cjdelisle/cjdns) on how to set this up.

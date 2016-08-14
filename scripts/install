@@ -49,9 +49,9 @@ sudo systemctl daemon-reload
 sudo systemctl enable cjdns.service
 
 # IPFS
-if [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" = "true" ]; then
+if [ ! -x "$(command -v ipfs)" ] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" = "true" ]; then
     # Install and initialize IPFS
-    GO_IPFS_VERSION=v0.4.3-rc2
+    GO_IPFS_VERSION=v0.4.2
     wget "https://dist.ipfs.io/go-ipfs/${GO_IPFS_VERSION}/go-ipfs_${GO_IPFS_VERSION}_linux-arm.tar.gz" -O go-ipfs.tar.gz
     tar xvfz go-ipfs.tar.gz
     sudo cp go-ipfs/ipfs /usr/local/bin/ipfs
