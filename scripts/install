@@ -4,6 +4,7 @@ set -e
 
 TAG_PROTOTYPE_CJDNS_PI2=master
 TAG_CJDNS=cjdns-v17.3
+GO_IPFS_VERSION=v0.4.2
 
 # Get tools
 if ! [ "$(which git)" ] || ! [ "$(which nodejs)" ] || ! [ "$(which iperf3)" ]; then
@@ -51,7 +52,6 @@ sudo systemctl enable cjdns.service
 # IPFS
 if [ ! -x "$(command -v ipfs)" ] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" = "true" ]; then
     # Install and initialize IPFS
-    GO_IPFS_VERSION=v0.4.2
     wget "https://dist.ipfs.io/go-ipfs/${GO_IPFS_VERSION}/go-ipfs_${GO_IPFS_VERSION}_linux-arm.tar.gz" -O go-ipfs.tar.gz
     tar xvfz go-ipfs.tar.gz
     sudo cp go-ipfs/ipfs /usr/local/bin/ipfs

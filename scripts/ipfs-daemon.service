@@ -1,5 +1,3 @@
-# /etc/systemd/system/ipfs-daemon.service
-
 [Unit]
 Description=IPFS daemon
 Wants=network.target
