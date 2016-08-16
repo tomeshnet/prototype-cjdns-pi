@@ -12,4 +12,9 @@ sudo rm -f /lib/systemd/system/cjdns.service
 sudo rm -f /etc/cjdroute.conf
 sudo rm -rf /opt/cjdns
 
+sudo systemctl disable ipfs-daemon.service
+sudo rm -f /usr/local/bin/ipfs
+sudo rm -f /lib/systemd/system/ipfs-daemon.service
+rm -rf /home/pi/.ipfs
+
 sudo systemctl daemon-reload
