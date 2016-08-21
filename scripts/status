@@ -10,7 +10,7 @@ echo "  | || (_) | | | | | |  __\__ | | | |"
 echo "   \__\___/|_| |_| |_|\___|___|_| |_|"
 
 echo -e '---------------------------------------'
-if [ "$(iw dev mesh0 info | grep 'type mesh point')" ] && [ "$(iw dev mesh0 info | grep 'channel')" ]; then
+if [ "$(iw dev mesh0 info 2>/dev/null | grep 'type mesh point')" ] && [ "$(iw dev mesh0 info 2>/dev/null | grep 'channel')" ]; then
         echo -e "Mesh Interface ............... $ACTIVE"
 else
         echo -e "Mesh Interface ............. $INACTIVE"
