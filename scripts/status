@@ -22,7 +22,7 @@ else
 fi
 echo -e '---------------------------------------'
 echo -e 'NODE'
-sudo grep '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g'
+sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g'
 echo -e '---------------------------------------'
 echo -e 'PEERS'
 read -a peers <<< `sudo nodejs /opt/cjdns/tools/peerStats | awk '{ if ($2 == "ESTABLISHED") print $1 }' | awk -F. '{ print $6".k" }' | xargs`
