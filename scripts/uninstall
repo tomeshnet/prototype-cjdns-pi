@@ -26,6 +26,16 @@ fi
 sudo systemctl disable ipfs-daemon.service
 sudo rm -f /usr/local/bin/ipfs
 sudo rm -f /lib/systemd/system/ipfs-daemon.service
-rm -rf /home/pi/.ipfs
+
+if [ -d "/home/pi/.ipfs" ]; then
+    echo "Found /home/pi/.ipfs"
+    read -p "Remove your IPFS data (Y/n)? " RM_IPFS_HOME;
+    if [ "$RM_IPFS_HOME" == "Y" ]; then
+        echo "Removing /home/pi/.ipfs"
+        rm -rf /home/pi/.ipfs
+    else
+        echo "Keeping /home/pi/.ipfs"
+    fi
+fi
 
 sudo systemctl daemon-reload
