@@ -12,7 +12,7 @@ sudo rm -f /lib/systemd/system/cjdns.service
 sudo rm -f /lib/systemd/system/cjdns-resume.service
 sudo rm -rf /opt/cjdns
 
-if ! [ -x "/etc/cjdroute.conf" ]; then
+if [ -f "/etc/cjdroute.conf" ]; then
     echo "Found /etc/cjdroute.conf"
     read -p "Remove your cjdns identity (Y/n)? " RM_CJDNS_CONF;
     if [ "$RM_CJDNS_CONF" == "Y" ]; then
