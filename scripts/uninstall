@@ -9,6 +9,7 @@ sudo rm -f /lib/systemd/system/mesh.service
 sudo systemctl disable cjdns.service
 sudo rm -f /usr/bin/cjdroute
 sudo rm -f /lib/systemd/system/cjdns.service
+sudo rm -f /lib/systemd/system/cjdns-resume.service
 sudo rm -f /etc/cjdroute.conf
 sudo rm -rf /opt/cjdns
 
