@@ -3,7 +3,7 @@
 set -e
 
 TAG_PROTOTYPE_CJDNS_PI2=master
-TAG_CJDNS=cjdns-v17.3
+TAG_CJDNS=cjdns-v18
 GO_IPFS_VERSION=v0.4.2
 
 # Get RPi version and set flags accordingly
@@ -68,6 +68,8 @@ sudo cp /opt/cjdns/cjdroute /usr/bin/cjdroute
 # Configure systemd to start cjdns.service on system boot
 sudo cp /opt/cjdns/contrib/systemd/cjdns.service /lib/systemd/system/cjdns.service
 sudo chmod 644 /lib/systemd/system/cjdns.service
+sudo cp /opt/cjdns/contrib/systemd/cjdns-resume.service /lib/systemd/system/cjdns-resume.service
+sudo chmod 644 /lib/systemd/system/cjdns-resume.service
 sudo systemctl daemon-reload
 sudo systemctl enable cjdns.service
 
