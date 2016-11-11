@@ -74,7 +74,7 @@ sudo systemctl daemon-reload
 sudo systemctl enable cjdns.service
 
 # WiFi Access Point on RPi3
-if [[ $RPI_REVISION == *"a02082"* || $RPI_REVISION = *"a22082"* ]] && [ ! -z "$WITH_IPFS" -a "$WITH_" = "true" ]; then
+if [[ $RPI_REVISION == *"a02082"* || $RPI_REVISION = *"a22082"* ]] && [ ! -z "$WITH_WIFI_AP" -a "$WITH_WIFI_AP" = "true" ]; then
     # Install hostapd and dnsmasq to run IEEE 802.11 Access Point
     if ! [ "$(which hostapd)" ] || ! [ "$(dnsmasq)" ]; then
         sudo apt-get update
