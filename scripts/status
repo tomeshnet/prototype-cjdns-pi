@@ -11,14 +11,28 @@ echo "   \__\___/|_| |_| |_|\___|___|_| |_|"
 
 echo -e '---------------------------------------'
 if [ "$(iw dev mesh0 info 2>/dev/null | grep 'type mesh point')" ] && [ "$(iw dev mesh0 info 2>/dev/null | grep 'channel')" ]; then
-        echo -e "Mesh Interface ............... $ACTIVE"
+    echo -e "Mesh Interface ............... $ACTIVE"
 else
-        echo -e "Mesh Interface ............. $INACTIVE"
+    echo -e "Mesh Interface ............. $INACTIVE"
 fi
 if [ $(systemctl status cjdns.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
-        echo -e "cjdns Service ................ $ACTIVE"
+    echo -e "cjdns Service ................ $ACTIVE"
 else
-        echo -e "cjdns Service .............. $INACTIVE"
+    echo -e "cjdns Service .............. $INACTIVE"
+fi
+if [ "$(which hostapd)" ]; then
+    if [ $(systemctl status hostapd.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
+        echo -e "WiFi Access Point ............ $ACTIVE"
+    else
+        echo -e "WiFi Access Point .......... $INACTIVE"
+    fi
+fi
+if [ "$(which ipfs)" ]; then
+    if [ $(systemctl status ipfs-daemon.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
+        echo -e "IPFS Service ................. $ACTIVE"
+    else
+        echo -e "IPFS Service ............... $INACTIVE"
+    fi
 fi
 echo -e '---------------------------------------'
 echo -e 'NODE'
@@ -27,6 +41,6 @@ echo -e '---------------------------------------'
 echo -e 'PEERS'
 read -a peers <<< `sudo nodejs /opt/cjdns/tools/peerStats | awk '{ if ($2 == "ESTABLISHED") print $1 }' | awk -F. '{ print $6".k" }' | xargs`
 for peer in "${peers[@]}"; do
-        sudo /opt/cjdns/publictoip6 $peer
+    sudo /opt/cjdns/publictoip6 $peer
 done
 echo -e '---------------------------------------'
