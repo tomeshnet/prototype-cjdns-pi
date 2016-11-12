@@ -63,7 +63,9 @@ if ! [ -x "/opt/cjdns/cjdroute" ]; then
 fi
 
 # Install cjdns to /usr/bin
-sudo cp /opt/cjdns/cjdroute /usr/bin/cjdroute
+if ! [ -x "/usr/bin/cjdroute" ]; then
+    sudo cp /opt/cjdns/cjdroute /usr/bin/cjdroute
+fi
 
 # Generate cjdns configurations
 if ! [ -f "/etc/cjdroute.conf" ]; then

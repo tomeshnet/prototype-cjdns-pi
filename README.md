@@ -39,7 +39,7 @@ The following instructions will help you set up an encrypted mesh network based 
     To install with all optional features:
 
     ```
-    $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi2/master/scripts/install && chmod +x install && WITH_WIFI_AP=true && WITH_IPFS=true ./install
+    $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi2/master/scripts/install && chmod +x install && WITH_WIFI_AP=true WITH_IPFS=true ./install
     ```
 
 ## Check status
