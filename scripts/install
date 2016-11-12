@@ -67,7 +67,7 @@ sudo cp /opt/cjdns/cjdroute /usr/bin/cjdroute
 
 # Generate cjdns configurations
 if ! [ -f "/etc/cjdroute.conf" ]; then
-    sudo /usr/bin/cjdroute --genconf > /etc/cjdroute.conf
+    sudo /usr/bin/cjdroute --genconf | sudo tee --append /etc/cjdroute.conf > /dev/null
 fi
 
 # Configure systemd to start cjdns.service on system boot
