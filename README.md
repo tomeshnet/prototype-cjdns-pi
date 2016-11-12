@@ -32,10 +32,14 @@ The following instructions will help you set up an encrypted mesh network based 
     $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi2/master/scripts/install && chmod +x install && ./install
     ```
 
-    **Optional:** If you want to install [IPFS](https://ipfs.io), set the `WITH_IPFS` flag to `true`:
+    **Optional:** If you want to install [IPFS](https://ipfs.io), set the `WITH_IPFS` flag to `true`.
+
+    **Optional:** If you have a Raspberry Pi 3 and want to configure the on-board WiFi as an Access Point, set the `WITH_WIFI_AP` flag to `true`. The default configuration routes all traffic to the Ethernet port `eth0`. 
+
+    To install with all optional features:
 
     ```
-    $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi2/master/scripts/install && chmod +x install && WITH_IPFS=true ./install
+    $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi2/master/scripts/install && chmod +x install && WITH_WIFI_AP=true && WITH_IPFS=true ./install
     ```
 
 ## Check status
@@ -58,11 +62,11 @@ You can benchmark the network throughput with more than one node. Let's name our
 
 1. In another Terminal session, SSH to Hillary and run `iperf3 -c FRIEND_IPV6`. You should start seeing Hillary sending encrypted packets to her Friend. On a Pi 2, we can expect about 14 Mbps throughput, and 40 Mbps on a Pi 3.
 
-## Uninstall
+## Update & Uninstall
 
 To uninstall the services, run `./prototype-cjdns-pi2/scripts/uninstall`.
 
-**Note for IPFS users:** if you chose to include IPFS in the installation and want to keep your IPFS data, make sure you back up the `/home/pi/.ipfs` directory before running the uninstaller.
+If you are updating, run the same uninstall script, but keep all configuration files and data directories when prompted, remove the **prototype-cjdns-pi2** directory along with the **install** script, then repeat the last installation step.
 
 ## Notes
 

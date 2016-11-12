@@ -15,7 +15,7 @@ if [[ $RPI_REVISION == *"900092"* ]]; then
     echo ">>> This Raspberry Pi model (zero) is not supported"
     exit 0
 elif [[ $RPI_REVISION == *"00"* ]]; then
-    # Skip optimizations and ARM Neon when building CJDNS
+    # Skip optimizations and ARM Neon when building cjdns
     CJDNS_CFLAGS="-s -static -Wall"
     CJDNS_NO_NEON=1
     echo ">>> Starting installation on Raspberry Pi 1..."
@@ -30,40 +30,45 @@ fi
 
 # Get tools
 if ! [ "$(which git)" ] || ! [ "$(which nodejs)" ] || ! [ "$(which iperf3)" ]; then
-	sudo apt-get update
-	sudo apt-get install git nodejs iperf3
+    sudo apt-get update
+    sudo apt-get install git nodejs iperf3 -y
 fi
 
 # Download prototype-cjdns-pi2 repo and checkout TAG_PROTOTYPE_CJDNS_PI2 tag
 if ! [ -d "prototype-cjdns-pi2" ]; then
-	git clone https://github.com/tomeshnet/prototype-cjdns-pi2.git
-	cd prototype-cjdns-pi2 && git checkout $TAG_PROTOTYPE_CJDNS_PI2 && cd ..
+    git clone https://github.com/tomeshnet/prototype-cjdns-pi2.git
+    cd prototype-cjdns-pi2 && git checkout $TAG_PROTOTYPE_CJDNS_PI2 && cd ..
 fi
 
 # Install bring-up script for the Mesh Point interface to /usr/bin
-sudo cp prototype-cjdns-pi2/scripts/mesh /usr/bin/mesh
+sudo cp prototype-cjdns-pi2/scripts/mesh-point/mesh /usr/bin/mesh
 
 # Configure systemd to start mesh.service on system boot
-sudo cp prototype-cjdns-pi2/scripts/mesh.service /lib/systemd/system/mesh.service
+sudo cp prototype-cjdns-pi2/scripts/mesh-point/mesh.service /lib/systemd/system/mesh.service
 sudo chmod 644 /lib/systemd/system/mesh.service
 sudo systemctl daemon-reload
 sudo systemctl enable mesh.service
 
 # Download cjdns repo and checkout TAG_CJDNS tag
 if ! [ -d "/opt/cjdns" ]; then
-	here=`pwd`
-	sudo git clone https://github.com/cjdelisle/cjdns.git /opt/cjdns
-	cd /opt/cjdns && sudo git checkout $TAG_CJDNS && cd $here
+    here=`pwd`
+    sudo git clone https://github.com/cjdelisle/cjdns.git /opt/cjdns
+    cd /opt/cjdns && sudo git checkout $TAG_CJDNS && cd $here
 fi
 
 # Build cjdns
 if ! [ -x "/opt/cjdns/cjdroute" ]; then
-	here=`pwd`
-	cd /opt/cjdns && sudo NO_TEST=1 Seccomp_NO=1 NO_NEON=$CJDNS_NO_NEON CFLAGS="$CJDNS_CFLAGS" ./do && cd $here
+    here=`pwd`
+    cd /opt/cjdns && sudo NO_TEST=1 Seccomp_NO=1 NO_NEON=$CJDNS_NO_NEON CFLAGS="$CJDNS_CFLAGS" ./do && cd $here
 fi
 
 # Install cjdns to /usr/bin
 sudo cp /opt/cjdns/cjdroute /usr/bin/cjdroute
+
+# Generate cjdns configurations
+if ! [ -f "/etc/cjdroute.conf" ]; then
+    sudo /usr/bin/cjdroute --genconf > /etc/cjdroute.conf
+fi
 
 # Configure systemd to start cjdns.service on system boot
 sudo cp /opt/cjdns/contrib/systemd/cjdns.service /lib/systemd/system/cjdns.service
@@ -72,6 +77,53 @@ sudo cp /opt/cjdns/contrib/systemd/cjdns-resume.service /lib/systemd/system/cjdn
 sudo chmod 644 /lib/systemd/system/cjdns-resume.service
 sudo systemctl daemon-reload
 sudo systemctl enable cjdns.service
+
+# WiFi Access Point on RPi3
+if [[ $RPI_REVISION == *"a02082"* || $RPI_REVISION = *"a22082"* ]] && [ ! -z "$WITH_WIFI_AP" -a "$WITH_WIFI_AP" = "true" ]; then
+    # Install hostapd and dnsmasq to run IEEE 802.11 Access Point
+    if ! [ "$(which hostapd)" ] || ! [ "$(dnsmasq)" ]; then
+        sudo apt-get update
+        sudo apt-get install hostapd dnsmasq -y
+    fi
+
+    # Configure wlan0 interface
+    sudo cp /etc/network/interfaces /etc/network/interfaces.backup
+    START=$(grep -n "allow-hotplug wlan0" /etc/network/interfaces | awk '{ print $1 }' FS=':')
+    END=$(expr $START + 3)
+    sudo sed -i "${START},${END}d" /etc/network/interfaces
+    echo "" | sudo tee --append /etc/network/interfaces > /dev/null
+    echo "allow-hotplug wlan0" | sudo tee --append /etc/network/interfaces > /dev/null
+    echo "iface wlan0 inet static" | sudo tee --append /etc/network/interfaces > /dev/null
+    echo "    address 10.0.0.1" | sudo tee --append /etc/network/interfaces > /dev/null
+    echo "    netmask 255.255.255.0" | sudo tee --append /etc/network/interfaces > /dev/null
+    echo "    network 10.0.0.0" | sudo tee --append /etc/network/interfaces > /dev/null
+    echo "    broadcast 10.0.0.255" | sudo tee --append /etc/network/interfaces > /dev/null
+
+    # Enable packet forwarding
+    sudo cp /etc/sysctl.conf /etc/sysctl.conf.backup
+    sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf
+    sudo sed -i 's/#net.ipv6.conf.all.forwarding=1/net.ipv6.conf.all.forwarding=1/' /etc/sysctl.conf
+
+    # Get network name and password
+    APSSID=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed 's/.*:/tomesh-/g')
+    read -p "Set WPA2-PSK password for WiFi Access Point: " APPASS;
+
+    # Configure network with hostapd
+    sudo cp prototype-cjdns-pi2/scripts/hostapd/hostapd.conf /etc/hostapd/hostapd.conf
+    sudo echo "ssid=$APSSID" | sudo tee --append /etc/hostapd/hostapd.conf > /dev/null
+    sudo echo "wpa_passphrase=$APPASS" | sudo tee --append /etc/hostapd/hostapd.conf > /dev/null
+
+    # Configure DHCP with dnsmasq
+    sudo cp /etc/dnsmasq.conf /etc/dnsmasq.conf.backup
+    sudo cp prototype-cjdns-pi2/scripts/hostapd/dnsmasq.conf /etc/dnsmasq.conf
+    sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.backup
+    sudo echo "" | sudo tee --append /etc/dhcpcd.conf > /dev/null
+    sudo echo "denyinterfaces wlan0" | sudo tee --append /etc/dhcpcd.conf > /dev/null
+
+    # Enable hostapd service
+    sudo cp prototype-cjdns-pi2/scripts/hostapd/hostapd.service /etc/systemd/system/hostapd.service
+    sudo systemctl enable hostapd
+fi
 
 # IPFS
 if [ ! -x "$(command -v ipfs)" ] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" = "true" ]; then
@@ -83,7 +135,7 @@ if [ ! -x "$(command -v ipfs)" ] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" = "true"
     ipfs init
 
     # Configure systemd to start ipfs-daemon.service on system boot
-    sudo cp prototype-cjdns-pi2/scripts/ipfs-daemon.service /lib/systemd/system/ipfs-daemon.service
+    sudo cp prototype-cjdns-pi2/scripts/ipfs/ipfs-daemon.service /lib/systemd/system/ipfs-daemon.service
     sudo systemctl daemon-reload
     sudo systemctl enable ipfs-daemon.service
 fi
