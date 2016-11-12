@@ -2,10 +2,12 @@
 
 set -e
 
+# Uninstall Mesh Point interface
 sudo systemctl disable mesh.service
 sudo rm -f /usr/bin/mesh
 sudo rm -f /lib/systemd/system/mesh.service
 
+# Uninstall cjdns
 sudo systemctl disable cjdns.service
 sudo rm -f /usr/bin/cjdroute
 sudo rm -f /lib/systemd/system/cjdns.service
@@ -23,6 +25,24 @@ if [ -f "/etc/cjdroute.conf" ]; then
     fi
 fi
 
+# Uninstall WiFi Access Point
+sudo systemctl disable hostapd.service
+if [ -f "/etc/network/interfaces.backup" ]; then
+    sudo mv /etc/network/interfaces.backup /etc/network/interfaces
+fi
+if [ -f "/etc/sysctl.conf.backup" ]; then
+    sudo mv /etc/sysctl.conf.backup /etc/sysctl.conf
+fi
+if [ -f "/etc/dnsmasq.conf.backup" ]; then
+    sudo mv /etc/dnsmasq.conf.backup /etc/dnsmasq.conf
+fi
+if [ -f "/etc/dhcpcd.conf.backup" ]; then
+    sudo mv /etc/dhcpcd.conf.backup /etc/dhcpcd.conf
+fi
+sudo rm -f /etc/hostapd/hostapd.conf
+sudo rm -f /etc/systemd/system/hostapd.service
+
+# Uninstall IPFS
 sudo systemctl disable ipfs-daemon.service
 sudo rm -f /usr/local/bin/ipfs
 sudo rm -f /lib/systemd/system/ipfs-daemon.service
