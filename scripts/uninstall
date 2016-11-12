@@ -9,7 +9,7 @@ sudo rm -f /lib/systemd/system/mesh.service
 
 # Uninstall cjdns
 sudo systemctl disable cjdns.service
-sudo systemctl stop cjdns.service 2>/dev/null || true
+sudo systemctl stop cjdns.service >/dev/null 2>/dev/null || true
 sudo rm -f /usr/bin/cjdroute
 sudo rm -f /lib/systemd/system/cjdns.service
 sudo rm -f /lib/systemd/system/cjdns-resume.service
@@ -28,7 +28,7 @@ fi
 
 # Uninstall WiFi Access Point
 sudo systemctl disable hostapd.service
-sudo systemctl stop hostapd.service 2>/dev/null || true
+sudo systemctl stop hostapd.service >/dev/null 2>/dev/null || true
 if [ -f "/etc/network/interfaces.backup" ]; then
     sudo mv /etc/network/interfaces.backup /etc/network/interfaces
 fi
