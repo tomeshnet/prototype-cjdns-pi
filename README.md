@@ -72,6 +72,4 @@ If you are updating, run the same uninstall script, but keep all configuration f
 
 * Your computer can be a node too! It will mesh with the Pi's over your router. See the [cjdns repository](https://github.com/cjdelisle/cjdns) on how to set this up.
 
-* If you are using a Pi 3, you can configure the on-board WiFi as a hotspot and clients connected to it that are running cjdns can mesh with all the nodes. See [this script and the comment below](https://gist.github.com/benhylau/b51f8cb44b8ffcc7f584b584204d2bc4).
-
 * Plan for this repository and detailed benchmark results are available in [the doc folder](https://github.com/tomeshnet/prototype-cjdns-pi2/blob/master/docs/).
