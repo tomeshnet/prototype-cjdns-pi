@@ -29,7 +29,7 @@ The following instructions will help you set up an encrypted mesh network based 
 1. SSH back in with your new password and run the following, then let the installation complete. After about 5 minutes the Pi will reboot:
 
     ```
-    $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi2/master/scripts/install && chmod +x install && ./install
+    $ curl -o- https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi2/master/scripts/install | bash
     ```
 
     **Optional:** If you want to install [IPFS](https://ipfs.io), set the `WITH_IPFS` flag to `true`.
@@ -39,7 +39,7 @@ The following instructions will help you set up an encrypted mesh network based 
     To install with all optional features:
 
     ```
-    $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi2/master/scripts/install && chmod +x install && WITH_WIFI_AP=true WITH_IPFS=true ./install
+    $ curl -o- https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi2/master/scripts/install | WITH_WIFI_AP=true WITH_IPFS=true bash
     ```
 
 ## Check status
