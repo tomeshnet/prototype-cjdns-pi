@@ -59,7 +59,7 @@ fi
 # Build cjdns
 if ! [ -x "/opt/cjdns/cjdroute" ]; then
     here=`pwd`
-    cd /opt/cjdns && sudo NO_TEST=1 Seccomp_NO=1 NO_NEON=$CJDNS_NO_NEON CFLAGS="$CJDNS_CFLAGS" ./do && cd $here
+    cd /opt/cjdns && sudo Seccomp_NO=1 NO_NEON=$CJDNS_NO_NEON CFLAGS="$CJDNS_CFLAGS" ./do && cd $here
 fi
 
 # Install cjdns to /usr/bin
