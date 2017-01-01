@@ -2,10 +2,7 @@
 
 set -e
 
-# Uninstall Mesh Point interface
-sudo systemctl disable mesh.service 2>/dev/null
-sudo rm -f /usr/bin/mesh
-sudo rm -f /lib/systemd/system/mesh.service
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Uninstall cjdns
 sudo systemctl disable cjdns.service 2>/dev/null
@@ -26,39 +23,9 @@ if [ -f "/etc/cjdroute.conf" ]; then
     fi
 fi
 
-# Uninstall WiFi Access Point
-sudo systemctl disable hostapd.service 2>/dev/null
-sudo systemctl stop hostapd.service 2>/dev/null || true
-if [ -f "/etc/network/interfaces.backup" ]; then
-    sudo mv /etc/network/interfaces.backup /etc/network/interfaces
-fi
-if [ -f "/etc/sysctl.conf.backup" ]; then
-    sudo mv /etc/sysctl.conf.backup /etc/sysctl.conf
-fi
-if [ -f "/etc/dnsmasq.conf.backup" ]; then
-    sudo mv /etc/dnsmasq.conf.backup /etc/dnsmasq.conf
-fi
-if [ -f "/etc/dhcpcd.conf.backup" ]; then
-    sudo mv /etc/dhcpcd.conf.backup /etc/dhcpcd.conf
-fi
-sudo rm -f /etc/hostapd/hostapd.conf
-sudo rm -f /etc/systemd/system/hostapd.service
-
-# Uninstall IPFS
-sudo systemctl disable ipfs-daemon.service
-sudo systemctl stop ipfs-daemon.service 2>/dev/null || true
-sudo rm -f /usr/local/bin/ipfs
-sudo rm -f /lib/systemd/system/ipfs-daemon.service
-
-if [ -d "/home/pi/.ipfs" ]; then
-    echo "Found /home/pi/.ipfs"
-    read -p "Remove your IPFS data (Y/n)? " RM_IPFS_HOME;
-    if [ "$RM_IPFS_HOME" == "Y" ]; then
-        echo "Removing /home/pi/.ipfs"
-        rm -rf /home/pi/.ipfs
-    else
-        echo "Keeping /home/pi/.ipfs"
-    fi
-fi
+# Uninstall optional modules
+source "$BASE_DIR/mesh-point/uninstall"
+source "$BASE_DIR/hostapd/uninstall"
+source "$BASE_DIR/ipfs/uninstall"
 
 sudo systemctl daemon-reload
