@@ -103,17 +103,17 @@ sudo systemctl daemon-reload
 sudo systemctl enable cjdns.service
 
 # 802.11s Mesh Point interface
-if [ ! -z "$WITH_MESH_POINT" -a "$WITH_MESH_POINT" = "true" ]; then
+if [ ! -z "$WITH_MESH_POINT" -a "$WITH_MESH_POINT" == "true" ]; then
     source prototype-cjdns-pi2/scripts/mesh-point/install
 fi
 
 # WiFi Access Point on RPi3
-if [[ $RPI_REVISION == *"a02082"* || $RPI_REVISION == *"a22082"* ]] && [ ! -z "$WITH_WIFI_AP" -a "$WITH_WIFI_AP" = "true" ]; then
+if [[ $RPI_REVISION == *"a02082"* || $RPI_REVISION == *"a22082"* ]] && [ ! -z "$WITH_WIFI_AP" -a "$WITH_WIFI_AP" == "true" ]; then
     source prototype-cjdns-pi2/scripts/hostapd/install
 fi
 
 # IPFS
-if [ ! -x "$(command -v ipfs)" ] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" = "true" ]; then
+if [ ! -x "$(command -v ipfs)" ] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" == "true" ]; then
     source prototype-cjdns-pi2/scripts/ipfs/install
 fi
 
