@@ -2,7 +2,7 @@
 
 set -e
 
-TAG_PROTOTYPE_CJDNS_PI2=modular
+TAG_PROTOTYPE_CJDNS_PI2=master
 TAG_CJDNS=cjdns-v18
 
 # Get RPi version and set flags accordingly
