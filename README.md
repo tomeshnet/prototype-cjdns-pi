@@ -10,7 +10,9 @@ The following instructions will help you set up an encrypted mesh network based 
     * An SD card that works with the Pi
     * A [TP-LINK TL-WN722N](http://www.tp-link.com/en/products/details/TL-WN722N.html)
 
-1. Flash the SD card with [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/). 
+1. Flash the SD card with [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/).
+
+1. Create an empty file named **ssh** to enable SSH when the Pi boots.
 
 1. Plug the SD card and TL-WN722N into the Pi.
 
@@ -18,15 +20,9 @@ The following instructions will help you set up an encrypted mesh network based 
 
     **Optional:** There are other ways to connect, such as connecting the Pi to your computer and sharing Internet to it. Or if you have multiple Pi's connected to your router, find its IP with `nmap -sn 192.168.X.0/24` (where 192.168.X is your subnet) and SSH to the local IP assigned to the Pi you want to address `ssh pi@192.168.X.Y`.
 
-1. In your SSH session, run `sudo raspi-config`.
+1. In your SSH session, run `passwd` and change your login password. It is very important to choose a strong password so others cannot remotely access your Pi.
 
-   1. Select **Expand Filesystem** to use the full space on your SD card.
-   
-   1. Select **Change User Password** so others cannot remotely access your Pi with the default password.
-   
-   1. Reboot.
-
-1. SSH back in with your new password and run the following, then let the installation complete. After about 5 minutes the Pi will reboot:
+1. Run the following, then let the installation complete. After about 5 minutes the Pi will reboot:
 
     ```
     $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi2/master/scripts/install && chmod +x install && ./install
