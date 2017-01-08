@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Uninstall IPFS
+sudo systemctl disable ipfs-daemon.service
+sudo systemctl stop ipfs-daemon.service 2>/dev/null || true
+sudo rm -f /usr/local/bin/ipfs
+sudo rm -f /lib/systemd/system/ipfs-daemon.service
+
+if [ -d "/home/pi/.ipfs" ]; then
+    echo "Found /home/pi/.ipfs"
+    read -p "Keep your IPFS data (Y/n)? " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo -e "\e[1;31mRemoving /home/pi/.ipfs\e[0m"
+        rm -rf /home/pi/.ipfs
+    else
+        echo -e "\e[1;31mKeeping /home/pi/.ipfs\e[0m"
+    fi
+fi

@@ -10,15 +10,17 @@ echo "  | || (_) | | | | | |  __\__ | | | |"
 echo "   \__\___/|_| |_| |_|\___|___|_| |_|"
 
 echo -e '---------------------------------------'
-if [ "$(iw dev mesh0 info 2>/dev/null | grep 'type mesh point')" ] && [ "$(iw dev mesh0 info 2>/dev/null | grep 'channel')" ]; then
-    echo -e "Mesh Interface ............... $ACTIVE"
-else
-    echo -e "Mesh Interface ............. $INACTIVE"
-fi
 if [ $(systemctl status cjdns.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
     echo -e "cjdns Service ................ $ACTIVE"
 else
     echo -e "cjdns Service .............. $INACTIVE"
+fi
+if [ "$(which mesh)" ]; then
+    if [ "$(iw dev mesh0 info 2>/dev/null | grep 'type mesh point')" ] && [ "$(iw dev mesh0 info 2>/dev/null | grep 'channel')" ]; then
+        echo -e "Mesh Interface ............... $ACTIVE"
+    else
+        echo -e "Mesh Interface ............. $INACTIVE"
+    fi
 fi
 if [ "$(which hostapd)" ]; then
     if [ $(systemctl status hostapd.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then

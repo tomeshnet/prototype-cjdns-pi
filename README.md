@@ -29,17 +29,19 @@ The following instructions will help you set up an encrypted mesh network based 
 1. SSH back in with your new password and run the following, then let the installation complete. After about 5 minutes the Pi will reboot:
 
     ```
-    $ curl -o- https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi2/master/scripts/install | bash
+    $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi2/master/scripts/install && chmod +x install && ./install
     ```
 
-    **Optional:** If you want to install [IPFS](https://ipfs.io), set the `WITH_IPFS` flag to `true`.
+    **Optional:** If you have a TP-LINK TL-WN722N and want to configure it as a [802.11s Mesh Point](https://github.com/o11s/open80211s/wiki/HOWTO) interface, set the `WITH_MESH_POINT` flag to `true`.
 
     **Optional:** If you have a Raspberry Pi 3 and want to configure the on-board WiFi as an Access Point, set the `WITH_WIFI_AP` flag to `true`. The default configuration routes all traffic to the Ethernet port `eth0`. 
+
+    **Optional:** If you want to install [IPFS](https://ipfs.io), set the `WITH_IPFS` flag to `true`.
 
     To install with all optional features:
 
     ```
-    $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi2/master/scripts/install && chmod +x install && WITH_WIFI_AP=true WITH_IPFS=true ./install
+    $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi2/master/scripts/install && chmod +x install && WITH_MESH_POINT=true WITH_WIFI_AP=true WITH_IPFS=true ./install
     ```
 
 ## Check status
