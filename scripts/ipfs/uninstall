@@ -10,11 +10,12 @@ sudo rm -f /lib/systemd/system/ipfs-daemon.service
 
 if [ -d "/home/pi/.ipfs" ]; then
     echo "Found /home/pi/.ipfs"
-    read -p "Remove your IPFS data (Y/n)? " RM_IPFS_HOME;
-    if [ "$RM_IPFS_HOME" == "Y" ]; then
-        echo "Removing /home/pi/.ipfs"
+    read -p "Keep your IPFS data (Y/n)? " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo -e "\e[1;31mRemoving /home/pi/.ipfs\e[0m"
         rm -rf /home/pi/.ipfs
     else
-        echo "Keeping /home/pi/.ipfs"
+        echo -e "\e[1;31mKeeping /home/pi/.ipfs\e[0m"
     fi
 fi
