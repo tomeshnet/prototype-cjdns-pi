@@ -7,7 +7,7 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Install hostapd and dnsmasq to run IEEE 802.11 Access Point
 if ! [ "$(which hostapd)" ] || ! [ "$(dnsmasq)" ]; then
     sudo apt-get update
-    sudo apt-get install hostapd dnsmasq -y
+    sudo apt-get install hostapd dnsmasq radvd -y
 fi
 
 # Configure wlan0 interface
@@ -22,6 +22,9 @@ echo "    address 10.0.0.1" | sudo tee --append /etc/network/interfaces > /dev/n
 echo "    netmask 255.255.255.0" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    network 10.0.0.0" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    broadcast 10.0.0.255" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "iface wlan0 inet6 static" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "    address fdfc::2" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "    netmask 64" | sudo tee --append /etc/network/interfaces > /dev/null
 
 # Enable packet forwarding
 sudo cp /etc/sysctl.conf /etc/sysctl.conf.backup
@@ -35,6 +38,7 @@ while [ "${#APPASS}" -lt 8 ] || [ "${#APPASS}" -gt 63 ]; do
 done
 
 # Configure network with hostapd
+sudo cp "$BASE_DIR/nat.sh" /etc/hostapd/nat.sh
 sudo cp "$BASE_DIR/hostapd.conf" /etc/hostapd/hostapd.conf
 sudo echo "ssid=$APSSID" | sudo tee --append /etc/hostapd/hostapd.conf > /dev/null
 sudo echo "wpa_passphrase=$APPASS" | sudo tee --append /etc/hostapd/hostapd.conf > /dev/null
@@ -45,6 +49,9 @@ sudo cp "$BASE_DIR/dnsmasq.conf" /etc/dnsmasq.conf
 sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.backup
 sudo echo "" | sudo tee --append /etc/dhcpcd.conf > /dev/null
 sudo echo "denyinterfaces wlan0" | sudo tee --append /etc/dhcpcd.conf > /dev/null
+
+# Configure IPv6 router advertisement with radvd
+sudo cp "$BASE_DIR/radvd.conf" /etc/radvd.conf
 
 # Enable hostapd service
 sudo cp "$BASE_DIR/hostapd.service" /etc/systemd/system/hostapd.service

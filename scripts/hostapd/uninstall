@@ -17,5 +17,7 @@ fi
 if [ -f "/etc/dhcpcd.conf.backup" ]; then
     sudo mv /etc/dhcpcd.conf.backup /etc/dhcpcd.conf
 fi
+sudo rm -f /etc/radvd.conf
 sudo rm -f /etc/hostapd/hostapd.conf
+sudo rm -f /etc/hostapd/nat.sh
 sudo rm -f /etc/systemd/system/hostapd.service

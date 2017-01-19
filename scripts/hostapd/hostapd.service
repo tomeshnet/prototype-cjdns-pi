@@ -7,7 +7,7 @@ BindsTo=sys-subsystem-net-devices-wlan0.device
 Type=forking
 PIDFile=/var/run/hostapd.pid
 ExecStart=/usr/sbin/hostapd -B /etc/hostapd/hostapd.conf -P /var/run/hostapd.pid
-ExecStartPost=/bin/sh -c "exec iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE"
+ExecStartPost=/bin/sh /etc/hostapd/nat.sh
 
 [Install]
 WantedBy=multi-user.target
