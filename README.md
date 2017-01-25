@@ -8,7 +8,7 @@ The following instructions will help you set up an encrypted mesh network based 
 
     * A Raspberry Pi 2 or 3
     * An SD card that works with the Pi
-    * A [TP-LINK TL-WN722N](http://www.tp-link.com/en/products/details/TL-WN722N.html)
+    * A [TP-LINK TL-WN722N](http://www.tp-link.com/en/products/details/TL-WN722N.html) or [ASUS USB-N14](https://www.asus.com/Networking/USBN14/)
 
 1. Flash the SD card with [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/).
 
