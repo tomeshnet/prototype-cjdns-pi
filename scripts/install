@@ -15,7 +15,7 @@ if [[ $RPI_REVISION == *"900092"* ]]; then
     echo ">>> This Raspberry Pi model (zero) is not supported"
     exit 0
 elif [[ $RPI_REVISION == *"00"* ]]; then
-    # Skip optimizations and ARM Neon when building cjdns
+    # Skip optimizations, ARM Neon, and tests when building cjdns
     CJDNS_CFLAGS="-s -static -Wall"
     CJDNS_NO_NEON=1
     CJDNS_NO_TEST="NO_TEST=1"
