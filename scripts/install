@@ -9,6 +9,7 @@ TAG_CJDNS=cjdns-v18
 RPI_REVISION=`sed -rn 's/Revision\s+\:\s+([0-9a-z_\-\s\,\(\)]+)/\1/p' /proc/cpuinfo`
 CJDNS_CFLAGS="-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm"
 CJDNS_NO_NEON=0
+CJDNS_NO_TEST=""
 
 if [[ $RPI_REVISION == *"900092"* ]]; then
     echo ">>> This Raspberry Pi model (zero) is not supported"
@@ -17,6 +18,7 @@ elif [[ $RPI_REVISION == *"00"* ]]; then
     # Skip optimizations and ARM Neon when building cjdns
     CJDNS_CFLAGS="-s -static -Wall"
     CJDNS_NO_NEON=1
+    CJDNS_NO_TEST="NO_TEST=1"
     echo ">>> Starting installation on Raspberry Pi 1..."
 elif [[ $RPI_REVISION == *"a01041"* || $RPI_REVISION == *"a21041"* ]]; then
     echo ">>> Starting installation on Raspberry Pi 2..."
@@ -84,11 +86,7 @@ fi
 # Build cjdns
 if ! [ -x "/opt/cjdns/cjdroute" ]; then
     here=`pwd`
-    if [[ $RPI_REVISION == *"00"* ]]; then
-        cd /opt/cjdns && sudo NO_TEST=1 Seccomp_NO=1 NO_NEON=$CJDNS_NO_NEON CFLAGS="$CJDNS_CFLAGS" ./do && cd $here
-    else
-        cd /opt/cjdns && sudo Seccomp_NO=1 NO_NEON=$CJDNS_NO_NEON CFLAGS="$CJDNS_CFLAGS" ./do && cd $here
-    fi
+    cd /opt/cjdns && sudo eval $CJDNS_NO_TEST Seccomp_NO=1 NO_NEON=$CJDNS_NO_NEON CFLAGS="$CJDNS_CFLAGS" ./do && cd $here
 fi
 
 # Install cjdns to /usr/bin
