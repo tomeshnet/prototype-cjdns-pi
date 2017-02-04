@@ -60,6 +60,13 @@ if [ -z "$WITH_IPFS" -o "$WITH_IPFS" != "true" -a "$WITH_IPFS" != "false" ]; the
     fi
 fi
 
+# Prompt for name of the mesh network
+read -p "Enter the name of your mesh network (default: tomesh): " -r
+export MESH_NAME=`echo $REPLY | sed 's/ //g'`
+if [ "${#MESH_NAME}" == 0 ]; then
+    export MESH_NAME="tomesh"
+fi
+
 # Get tools
 if ! [ "$(which git)" ] || ! [ "$(which nodejs)" ] || ! [ "$(which iperf3)" ]; then
     sudo apt-get update
