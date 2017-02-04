@@ -2,11 +2,8 @@
 
 set -e
 
-TAG_PROTOTYPE_CJDNS_PI2=master
-
-sudo apt-get update
-
 # Get git
+sudo apt-get update
 if ! [ "$(which git)" ]; then
     sudo apt-get install git -y
 fi
@@ -15,14 +12,13 @@ fi
 if ! [ -d "prototype-cjdns-pi2" ]; then
     git clone https://github.com/tomeshnet/prototype-cjdns-pi2.git
 fi
-cd prototype-cjdns-pi2
 
-# Checkout provided tag or TAG_PROTOTYPE_CJDNS_PI2
-if [ ! -z "$TAG" ]; then
-    git checkout $TAG
-elif
-    git checkout $TAG_PROTOTYPE_CJDNS_PI2
+# Checkout provided tag or default to master
+if [ -z "$TAG_PROTOTYPE_CJDNS_PI2" ]; then
+    TAG_PROTOTYPE_CJDNS_PI2=master
 fi
+cd prototype-cjdns-pi2
+git checkout $TAG_PROTOTYPE_CJDNS_PI2
 
 # Export environment variables
 export WITH_MESH_POINT
