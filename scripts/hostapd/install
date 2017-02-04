@@ -34,7 +34,7 @@ sudo sed -i 's/#net.ipv6.conf.all.forwarding=1/net.ipv6.conf.all.forwarding=1/' 
 # Get network name and password
 APSSID=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed 's/.*:/tomesh-/g')
 while [ "${#APPASS}" -lt 8 ] || [ "${#APPASS}" -gt 63 ]; do
-    read -p "Set WPA2-PSK password for WiFi Access Point (8-63 characters): " APPASS;
+    read -p "Set WPA2-PSK password for WiFi Access Point $APSSID (8-63 characters): " APPASS;
 done
 
 # Configure network with hostapd
