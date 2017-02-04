@@ -119,4 +119,5 @@ if [ ! -x "$(command -v ipfs)" ] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" == "true
 fi
 
 # Reboot device
+echo -e "Run \e[1;32msource ~/prototype-cjdns-pi2/scripts/status\e[0m to check the status of your node"
 sudo reboot
