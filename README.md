@@ -1,20 +1,20 @@
 # prototype-cjdns-pi2
 
-The following instructions will help you set up an encrypted mesh network based on Raspberry Pi 2's and 3's. It takes about 5 minutes to set up one node. Obviously, to have a mesh you will need more than one node.
+The following instructions will help you set up an encrypted mesh network on Raspberry Pi's. It takes about 5 minutes to set up a node with the Pi 3. Obviously, to have a mesh you will need more than one node.
 
 ## Set up
 
 1. Make sure you have the following items:
 
-    * A Raspberry Pi 2 or 3
+    * A Raspberry Pi Zero, 1, 2, or 3 (Pi 3 recommended)
     * An SD card that works with the Pi
-    * A [TP-LINK TL-WN722N](http://www.tp-link.com/en/products/details/TL-WN722N.html)
+    * A USB WiFi adapter with [802.11s Mesh Point](https://github.com/o11s/open80211s/wiki/HOWTO) support, such as the [TP-LINK TL-WN722N](http://www.tp-link.com/en/products/details/TL-WN722N.html) (optional)
 
 1. Flash the SD card with [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/).
 
 1. Create an empty file named **ssh** to enable SSH when the Pi boots.
 
-1. Plug the SD card and TL-WN722N into the Pi.
+1. Plug the SD card and USB WiFi adapter into the Pi.
 
 1. Plug the Pi into your router, so it has connectivity to the Internet. SSH into the Pi with `ssh pi@raspberrypi.local` and password **raspberry**.
 
@@ -28,7 +28,7 @@ The following instructions will help you set up an encrypted mesh network based 
     $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi2/master/scripts/install && chmod +x install && ./install
     ```
 
-    **Optional:** If you have a TP-LINK TL-WN722N and want to configure it as a [802.11s Mesh Point](https://github.com/o11s/open80211s/wiki/HOWTO) interface, set the `WITH_MESH_POINT` flag to `true`.
+    **Optional:** If you have a suitable USB WiFi adapter and want to configure it as a 802.11s Mesh Point interface, set the `WITH_MESH_POINT` flag to `true`.
 
     **Optional:** If you have a Raspberry Pi 3 and want to configure the on-board WiFi as an Access Point, set the `WITH_WIFI_AP` flag to `true`. The default configuration routes all traffic to the Ethernet port `eth0`. 
 
