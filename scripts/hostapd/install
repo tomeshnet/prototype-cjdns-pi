@@ -6,7 +6,6 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Install hostapd and dnsmasq to run IEEE 802.11 Access Point
 if ! [ "$(which hostapd)" ] || ! [ "$(dnsmasq)" ]; then
-    sudo apt-get update
     sudo apt-get install hostapd dnsmasq radvd -y
 fi
 

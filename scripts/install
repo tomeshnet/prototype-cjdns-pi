@@ -3,137 +3,31 @@
 set -e
 
 TAG_PROTOTYPE_CJDNS_PI2=master
-TAG_CJDNS=cjdns-v18
 
-# Get Raspberry Pi version and set flags accordingly
-RPI_REVISION=`sed -rn 's/Revision\s+\:\s+([0-9a-z_\-\s\,\(\)]+)/\1/p' /proc/cpuinfo`
-CJDNS_BUILD_FLAGS="Seccomp_NO=1 NO_NEON=1"
+sudo apt-get update
 
-if [[ $RPI_REVISION == *"900092"* || $RPI_REVISION == *"900093"* ]]; then
-    echo -e "\e[1;31mStarting installation on Raspberry Pi Zero...\e[0m"
-    CJDNS_BUILD_FLAGS="Seccomp_NO=1 NO_NEON=1 CFLAGS=\"-s -static -Wall\""
-elif [[ $RPI_REVISION == *"00"* ]]; then
-    echo -e "\e[1;31mStarting installation on Raspberry Pi 1...\e[0m"
-    CJDNS_BUILD_FLAGS="Seccomp_NO=1 NO_NEON=1 NO_TEST=1 CFLAGS=\"-s -static -Wall\""
-elif [[ $RPI_REVISION == *"a01041"* || $RPI_REVISION == *"a21041"* ]]; then
-    echo -e "\e[1;31mStarting installation on Raspberry Pi 2...\e[0m"
-    CJDNS_BUILD_FLAGS="Seccomp_NO=1 CFLAGS=\"-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm\""
-elif [[ $RPI_REVISION == *"a02082"* || $RPI_REVISION == *"a22082"* ]]; then
-    echo -e "\e[1;31mStarting installation on Raspberry Pi 3...\e[0m"
-    CJDNS_BUILD_FLAGS="Seccomp_NO=1 CFLAGS=\"-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm\""
-else
-    echo -e "\e[1;31mStarting installation on unknown platform... (good luck!)\e[0m"
+# Get git
+if ! [ "$(which git)" ]; then
+    sudo apt-get install git -y
 fi
 
-# Prompt and set missing flags
-if [ -z "$WITH_MESH_POINT" -o "$WITH_MESH_POINT" != "true" -a "$WITH_MESH_POINT" != "false" ]; then
-    read -p "Configure Mesh Point interface (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mMesh Point interface configuration will be skipped\e[0m"
-        WITH_MESH_POINT=false
-    else
-        echo -e "\e[1;32mMesh Point interface will be configured\e[0m"
-        WITH_MESH_POINT=true
-    fi
-fi
-if [[ $RPI_REVISION == *"a02082"* || $RPI_REVISION == *"a22082"* ]] && [ -z "$WITH_WIFI_AP" -o "$WITH_WIFI_AP" != "true" -a "$WITH_WIFI_AP" != "false" ]; then
-    read -p "Configure WiFi Access Point (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mWiFi Access Point configuration will be skipped\e[0m"
-        WITH_WIFI_AP=false
-    else
-        echo -e "\e[1;32mWiFi Access Point will be configured\e[0m"
-        WITH_WIFI_AP=true
-    fi
-fi
-if [ -z "$WITH_IPFS" -o "$WITH_IPFS" != "true" -a "$WITH_IPFS" != "false" ]; then
-    read -p "Install IPFS (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mIPFS installation will be skipped\e[0m"
-        WITH_IPFS=false
-    else
-        echo -e "\e[1;32mIPFS will be installed\e[0m"
-        WITH_IPFS=true
-    fi
-fi
-
-# Prompt for name of the mesh network
-read -p "Enter the name of your mesh network (default: tomesh): " -r
-export MESH_NAME=`echo $REPLY | sed 's/ //g'`
-if [ "${#MESH_NAME}" == 0 ]; then
-    export MESH_NAME="tomesh"
-fi
-
-# Get tools
-if ! [ "$(which git)" ] || ! [ "$(which nodejs)" ] || ! [ "$(which iperf3)" ]; then
-    sudo apt-get update
-    sudo apt-get install git nodejs iperf3 -y
-fi
-
-# Download prototype-cjdns-pi2 repo and checkout TAG_PROTOTYPE_CJDNS_PI2 tag
+# Download prototype-cjdns-pi2 repo
 if ! [ -d "prototype-cjdns-pi2" ]; then
     git clone https://github.com/tomeshnet/prototype-cjdns-pi2.git
-    cd prototype-cjdns-pi2 && git checkout $TAG_PROTOTYPE_CJDNS_PI2 && cd ..
+fi
+cd prototype-cjdns-pi2
+
+# Checkout provided tag or TAG_PROTOTYPE_CJDNS_PI2
+if [ ! -z "$TAG" ]; then
+    git checkout $TAG
+elif
+    git checkout $TAG_PROTOTYPE_CJDNS_PI2
 fi
 
-# Download cjdns repo and checkout TAG_CJDNS tag
-if ! [ -d "/opt/cjdns" ]; then
-    here=`pwd`
-    sudo git clone https://github.com/cjdelisle/cjdns.git /opt/cjdns
-    cd /opt/cjdns && sudo git checkout $TAG_CJDNS && cd $here
-fi
+# Export environment variables
+export WITH_MESH_POINT
+export WITH_WIFI_AP
+export WITH_IPFS
 
-# Build cjdns
-if ! [ -x "/opt/cjdns/cjdroute" ]; then
-    here=`pwd`
-    cd /opt/cjdns && sudo "$CJDNS_BUILD_FLAGS" ./do && cd $here
-fi
-
-# Install cjdns to /usr/bin
-if ! [ -x "/usr/bin/cjdroute" ]; then
-    sudo cp /opt/cjdns/cjdroute /usr/bin/cjdroute
-fi
-
-# Generate cjdns configurations
-if ! [ -f "/etc/cjdroute.conf" ]; then
-    sudo /usr/bin/cjdroute --genconf | sudo tee --append /etc/cjdroute.conf > /dev/null
-fi
-
-# Configure systemd to start cjdns.service on system boot
-sudo cp /opt/cjdns/contrib/systemd/cjdns.service /lib/systemd/system/cjdns.service
-sudo chmod 644 /lib/systemd/system/cjdns.service
-sudo cp /opt/cjdns/contrib/systemd/cjdns-resume.service /lib/systemd/system/cjdns-resume.service
-sudo chmod 644 /lib/systemd/system/cjdns-resume.service
-sudo systemctl daemon-reload
-sudo systemctl enable cjdns.service
-
-# 802.11s Mesh Point interface
-if [ ! -z "$WITH_MESH_POINT" -a "$WITH_MESH_POINT" == "true" ]; then
-    source prototype-cjdns-pi2/scripts/mesh-point/install
-fi
-
-# WiFi Access Point on RPi3
-if [[ $RPI_REVISION == *"a02082"* || $RPI_REVISION == *"a22082"* ]] && [ ! -z "$WITH_WIFI_AP" -a "$WITH_WIFI_AP" == "true" ]; then
-    source prototype-cjdns-pi2/scripts/hostapd/install
-fi
-
-# IPFS
-if [ ! -x "$(command -v ipfs)" ] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" == "true" ]; then
-    source prototype-cjdns-pi2/scripts/ipfs/install
-fi
-
-# Install node status script
-sudo cp prototype-cjdns-pi2/scripts/status /usr/local/bin/status
-echo -e "Run \e[1;32mstatus\e[0m anytime to print the status of your node"
-
-# Print node status on login
-cp .profile .bash_profile
-echo "" >> .bash_profile
-echo "# print mesh node status" >> .bash_profile
-echo "status" >> .bash_profile
-
-# Reboot device
-sudo reboot
+# Run the actual installation script
+./install2
