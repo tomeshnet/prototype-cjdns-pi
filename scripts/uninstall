@@ -30,3 +30,9 @@ source "$BASE_DIR/hostapd/uninstall"
 source "$BASE_DIR/ipfs/uninstall"
 
 sudo systemctl daemon-reload
+
+# Uninstall status script
+sudo rm -f /usr/local/bin/status
+
+# Remove .bash_profile
+rm -f .bash_profile
