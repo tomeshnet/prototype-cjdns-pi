@@ -42,23 +42,19 @@ The following instructions will help you set up an encrypted mesh network on Ras
 
 ## Check status
 
-1. Give the Pi about 15 seconds to reboot and SSH back into it, then check the status with:
+1. Give the Pi about 15 seconds to reboot and SSH back into it. You should find the status of your mesh node automatically printed. You can also print this anytime by running `status`.
 
-    ```
-    $ ./prototype-cjdns-pi2/scripts/status
-    ```
-
-1. Verify that the **Mesh Interface** and **cjdns Service** are both active. The **NODE** section should display a single IPv6 address, that's the identity of your Pi in the cjdns mesh. The **PEERS** section should indicate a list of IPv6 addresses that are active peers to your node. This list will be empty, until you have another nearby node with the same set up.
+1. Verify that **cjdns Service** is active, and **Mesh Interface** (if applicable). The **NODE** section should display a single IPv6 address, that's the identity of your Pi in the cjdns mesh. The **PEERS** section should indicate a list of IPv6 addresses that are active peers to your node. This list will be empty, until you have another nearby node with the same set up.
 
 ## Network benchmark
 
 You can benchmark the network throughput with more than one node. Let's name our two Pi's **Hillary** and **Friend**.
 
-1. SSH to Friend and run `./prototype-cjdns-pi2/scripts/status`, note its IPv6.
+1. SSH to Friend and run `status`, note its IPv6.
 
 1. Run `iperf3 -s` to start listening. Do not end the SSH session.
 
-1. In another Terminal session, SSH to Hillary and run `iperf3 -c FRIEND_IPV6`. You should start seeing Hillary sending encrypted packets to her Friend. On a Pi 2, we can expect about 14 Mbps throughput, and 40 Mbps on a Pi 3.
+1. In another Terminal session, SSH to Hillary and run `iperf3 -c FRIEND_IPV6`. You should start seeing Hillary sending encrypted packets to her Friend. On a Pi 2, we can expect about 14 Mbps throughput, and 40-60 Mbps on a Pi 3.
 
 ## Update & Uninstall
 
