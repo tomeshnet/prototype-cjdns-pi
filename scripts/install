@@ -17,7 +17,7 @@ fi
 if [ -z "$TAG_PROTOTYPE_CJDNS_PI2" ]; then
     TAG_PROTOTYPE_CJDNS_PI2=master
 fi
-cd prototype-cjdns-pi2
+cd prototype-cjdns-pi2/scripts
 git checkout $TAG_PROTOTYPE_CJDNS_PI2
 
 # Export environment variables
