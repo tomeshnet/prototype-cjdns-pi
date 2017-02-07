@@ -17,7 +17,7 @@ fi
 if [ -z "$TAG_PROTOTYPE_CJDNS_PI2" ]; then
     TAG_PROTOTYPE_CJDNS_PI2=master
 fi
-cd prototype-cjdns-pi2/scripts
+cd prototype-cjdns-pi2
 git checkout $TAG_PROTOTYPE_CJDNS_PI2
 
 # Export environment variables
@@ -26,4 +26,4 @@ export WITH_WIFI_AP
 export WITH_IPFS
 
 # Run the actual installation script
-./install2
+./scripts/install2
