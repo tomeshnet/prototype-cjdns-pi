@@ -104,21 +104,21 @@ sudo systemctl enable cjdns.service
 
 # 802.11s Mesh Point interface
 if [ ! -z "$WITH_MESH_POINT" -a "$WITH_MESH_POINT" == "true" ]; then
-    source scripts/mesh-point/install
+    source mesh-point/install
 fi
 
 # WiFi Access Point on RPi3
 if [[ $RPI_REVISION == *"a02082"* || $RPI_REVISION == *"a22082"* ]] && [ ! -z "$WITH_WIFI_AP" -a "$WITH_WIFI_AP" == "true" ]; then
-    source scripts/hostapd/install
+    source hostapd/install
 fi
 
 # IPFS
 if [ ! -x "$(command -v ipfs)" ] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" == "true" ]; then
-    source scripts/ipfs/install
+    source ipfs/install
 fi
 
 # Install node status script
-sudo cp scripts/status /usr/local/bin/status
+sudo cp status /usr/local/bin/status
 echo -e "Run \e[1;32mstatus\e[0m anytime to print the status of your node"
 
 # Print node status on login
