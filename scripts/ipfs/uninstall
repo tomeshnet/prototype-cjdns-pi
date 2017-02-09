@@ -16,6 +16,6 @@ if [ -d "/home/pi/.ipfs" ]; then
         echo -e "\e[1;31mRemoving /home/pi/.ipfs\e[0m"
         rm -rf /home/pi/.ipfs
     else
-        echo -e "\e[1;31mKeeping /home/pi/.ipfs\e[0m"
+        echo -e "\e[1;32mKeeping /home/pi/.ipfs\e[0m"
     fi
 fi

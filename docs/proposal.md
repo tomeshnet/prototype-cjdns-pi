@@ -30,20 +30,38 @@ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi2/master/scri
 
 ### Phase 2: Range
 
-- [ ] Swap out the N connector antenna on the radio to a directional antenna for range (e.g. TL-ANT2424B), via a N Male to RP-SMA Female "Pigtail" (e.g. TL-ANT24PT3)
-- [ ] Attach [long-range point-to-point antenna](https://www.ubnt.com/products/) (e.g. NanoStation M5)
+- [x] Swap out the N connector antenna on the radio to a directional antenna for range (e.g. TL-ANT2424B), via a N Male to RP-SMA Female "Pigtail" (e.g. TL-ANT24PT3)
+- [x] Attach [long-range point-to-point antenna](https://www.ubnt.com/products/) (e.g. NanoStation M5)
+
+**Results:**
+
+Tested at 100 m with homemade Pigtails and Cantennas. Longer range tests in more controlled environments needed.
+
+More on Cantennas:
+
+* https://propakistani.pk/2010/03/19/how-cantenna-works-technically/
+* http://www.binarywolf.com/249/coffee_can_antenna.htm
+* http://www.csgnetwork.com/antennawncalc.html
 
 ### Phase 3: Hyperboria
 
-- [ ] Connect one Pi 2 to the internet through the Ethernet port
-- [ ] Through the MeshBox UI, peer the Pi 2 into [Hyperboria](https://www.fc00.org) by configuring a VPN tunnel with the cjdns UDP interface
-- [ ] Make the Pi 2 a [gateway node to the internet](https://github.com/hyperboria/cjdns/blob/master/doc/tunnel.md)
+- [x] Connect one Pi 2 to the internet through the Ethernet port
+- [x] Through the MeshBox UI, peer the Pi 2 into [Hyperboria](https://www.fc00.org) by configuring a VPN tunnel with the cjdns UDP interface
+- [x] Make the Pi 2 a [gateway node to the internet](https://github.com/hyperboria/cjdns/blob/master/doc/tunnel.md)
+
+**Results:**
+
+MeshBox isn't used, but we have configured the Pi to connect to an Internet gateway on Hyperboria, and exits all LAN traffic through that.
 
 ### Phase 4: Access
 
-- [ ] Set up the other Pi 2 as a [IPv6-only router and NAT gateway](https://github.com/hyperboria/cjdns/blob/master/doc/nat-gateway.md) for devices to connect and access both Hyperboria and internet resources (the latter over the point-to-point link, through the first Pi 2's internet gateway)
-- [ ] Allow IPv4-only devices to connect by [tunneling IPv4 traffic through the IPv6 cjdns link](https://en.wikipedia.org/wiki/4in6)
-  
+- [x] Set up the other Pi 2 as a [IPv6-only router and NAT gateway](https://github.com/hyperboria/cjdns/blob/master/doc/nat-gateway.md) for devices to connect and access both Hyperboria and internet resources (the latter over the point-to-point link, through the first Pi 2's internet gateway)
+- [x] Allow IPv4-only devices to connect by [tunneling IPv4 traffic through the IPv6 cjdns link](https://en.wikipedia.org/wiki/4in6)
+
+**Results:**
+
+The scripted install on a Pi 3 sets up an Access Point with the onboard WiFi and routes both Internet and Hyperboria traffic for LAN devices that aren't running a cjdns client.
+
 ## Relevant links
 
 * https://github.com/openwrt-routing/packages
