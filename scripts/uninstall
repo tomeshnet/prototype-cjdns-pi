@@ -35,4 +35,4 @@ sudo systemctl daemon-reload
 sudo rm -f /usr/local/bin/status
 
 # Remove .bash_profile
-rm -f .bash_profile
+rm -f ~/.bash_profile
