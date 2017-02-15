@@ -81,7 +81,7 @@ fi
 # Build cjdns
 if ! [ -x "/opt/cjdns/cjdroute" ]; then
     here=`pwd`
-    cd /opt/cjdns && eval $CJDNS_BUILD_FLAGS && cd $here
+    cd /opt/cjdns && eval $CJDNS_BUILD_CMD && cd $here
 fi
 
 # Install cjdns to /usr/bin
