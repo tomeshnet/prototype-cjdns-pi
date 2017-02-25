@@ -39,6 +39,11 @@ done
 # Configure network with hostapd
 sudo cp "$BASE_DIR/nat.sh" /etc/hostapd/nat.sh
 sudo cp "$BASE_DIR/hostapd.conf" /etc/hostapd/hostapd.conf
+
+sudo ./certs/bootstrap
+sudo cp "$BASE_DIR/certs/ca.pem" /etc/hostapd/ca.pem
+sudo cp "$BASE_DIR/certs/server.pem" /etc/hostapd/server.pem
+
 sudo echo "ssid=$APSSID" | sudo tee --append /etc/hostapd/hostapd.conf > /dev/null
 sudo echo "wpa_passphrase=$APPASS" | sudo tee --append /etc/hostapd/hostapd.conf > /dev/null
 
