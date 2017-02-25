@@ -10,7 +10,7 @@ fi
 
 # Download prototype-cjdns-pi2 repo
 if ! [ -d "prototype-cjdns-pi2" ]; then
-    git clone https://github.com/rtreutlein/prototype-cjdns-pi2.git
+    git clone https://github.com/tomeshnet/prototype-cjdns-pi2.git
 fi
 
 # Checkout provided tag or default to master
