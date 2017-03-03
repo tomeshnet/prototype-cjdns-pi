@@ -12,7 +12,11 @@ The following instructions will help you set up an encrypted mesh network on Ras
 
 1. Flash the SD card with [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/).
 
-1. Create an empty file named **ssh** to enable SSH when the Pi boots.
+1. Create an empty file named **ssh** to enable SSH when the Pi boots:
+
+    ```
+    $ touch /path/to/sd/boot/ssh
+    ```
 
 1. Plug the SD card and USB WiFi adapter into the Pi.
 
@@ -30,7 +34,7 @@ The following instructions will help you set up an encrypted mesh network on Ras
 
     **Optional:** If you have a suitable USB WiFi adapter and want to configure it as a 802.11s Mesh Point interface, set the `WITH_MESH_POINT` flag to `true`.
 
-    **Optional:** If you have a Raspberry Pi 3 and want to configure the on-board WiFi as an Access Point, set the `WITH_WIFI_AP` flag to `true`. The default configuration routes all traffic to the Ethernet port `eth0`. 
+    **Optional:** If you have a Raspberry Pi 3 and want to configure the on-board WiFi as an Access Point, set the `WITH_WIFI_AP` flag to `true`. The default configuration routes all traffic to the Ethernet port `eth0`.
 
     **Optional:** If you want to install [IPFS](https://ipfs.io), set the `WITH_IPFS` flag to `true`.
 
