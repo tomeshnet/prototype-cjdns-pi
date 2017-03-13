@@ -1,4 +1,4 @@
-# prototype-cjdns-pi2
+# prototype-cjdns-pi
 
 The following instructions will help you set up an encrypted mesh network on Raspberry Pi's. It takes about 5 minutes to set up a node with the Pi 3. Obviously, to have a mesh you will need more than one node.
 
@@ -29,7 +29,7 @@ The following instructions will help you set up an encrypted mesh network on Ras
 1. Run the following, then let the installation complete. After about 5 minutes the Pi will reboot:
 
     ```
-    $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi2/master/scripts/install && chmod +x install && ./install
+    $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install && chmod +x install && ./install
     ```
 
     **Optional:** If you have a suitable USB WiFi adapter and want to configure it as a 802.11s Mesh Point interface, set the `WITH_MESH_POINT` flag to `true`.
@@ -41,7 +41,7 @@ The following instructions will help you set up an encrypted mesh network on Ras
     To install with all optional features:
 
     ```
-    $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi2/master/scripts/install && chmod +x install && WITH_MESH_POINT=true WITH_WIFI_AP=true WITH_IPFS=true ./install
+    $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install && chmod +x install && WITH_MESH_POINT=true WITH_WIFI_AP=true WITH_IPFS=true ./install
     ```
 
 ## Check status
@@ -62,12 +62,12 @@ You can benchmark the network throughput with more than one node. Let's name our
 
 ## Update & Uninstall
 
-To uninstall the services, run `./prototype-cjdns-pi2/scripts/uninstall`.
+To uninstall the services, run `./prototype-cjdns-pi/scripts/uninstall`.
 
-If you are updating, run the same uninstall script, but keep all configuration files and data directories when prompted, remove the **prototype-cjdns-pi2** directory along with the **install** script, then repeat the last installation step.
+If you are updating, run the same uninstall script, but keep all configuration files and data directories when prompted, remove the **prototype-cjdns-pi** directory along with the **install** script, then repeat the last installation step.
 
 ## Notes
 
 * Your computer can be a node too! It will mesh with the Pi's over your router. See the [cjdns repository](https://github.com/cjdelisle/cjdns) on how to set this up.
 
-* Plan for this repository and detailed benchmark results are available in [the doc folder](https://github.com/tomeshnet/prototype-cjdns-pi2/blob/master/docs/).
+* Plan for this repository and detailed benchmark results are available in [the doc folder](https://github.com/tomeshnet/prototype-cjdns-pi/blob/master/docs/).
