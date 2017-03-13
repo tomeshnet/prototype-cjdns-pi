@@ -15,5 +15,5 @@ env:
 
 script:
   - cp /usr/bin/qemu-arm-static ${DISTRO}/
-  - docker build -t sedden/rpi-raspbian-qemu:${DISTRO} ${DISTRO}/
-  - docker run --rm -i -t sedden/rpi-raspbian-qemu:${DISTRO} /bin/echo 'Hello World'
+  - docker build -t tomeshnet/prototype-cjdns-pi:${DISTRO} ${DISTRO}/
+  - docker run --rm -i -t tomeshnet/prototype-cjdns-pi:${DISTRO} /bin/bash 'wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi2/master/scripts/install && chmod +x install && WITH_MESH_POINT=true WITH_WIFI_AP=true WITH_IPFS=true WITH_EXTRA_TOOLS=true ./install'
