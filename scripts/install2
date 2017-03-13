@@ -2,7 +2,7 @@
 
 set -e
 
-TAG_CJDNS=cjdns-v18
+TAG_CJDNS=cjdns-v19.1
 
 # Get Raspberry Pi version and set flags accordingly
 RPI_REVISION=`sed -rn 's/Revision\s+\:\s+([0-9a-z_\-\s\,\(\)]+)/\1/p' /proc/cpuinfo`
@@ -68,6 +68,7 @@ fi
 
 # Get tools
 if ! [ "$(which nodejs)" ] || ! [ "$(which iperf3)" ]; then
+    curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
     sudo apt-get install nodejs iperf3 -y
 fi
 
