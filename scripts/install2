@@ -58,6 +58,17 @@ if [ -z "$WITH_IPFS" -o "$WITH_IPFS" != "true" -a "$WITH_IPFS" != "false" ]; the
         WITH_IPFS=true
     fi
 fi
+if [ -z "$WITH_EXTRA_TOOLS" -o "$WITH_EXTRA_TOOLS" != "true" -a "$WITH_EXTRA_TOOLS" != "false" ]; then
+    read -p "Install non-essential tools useful for network analysis (Y/n)? " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo -e "\e[1;31mExtra tools will be skipped\e[0m"
+        WITH_EXTRA_TOOLS=false
+    else
+        echo -e "\e[1;32mExtra tools will be installed\e[0m"
+        WITH_EXTRA_TOOLS=true
+    fi
+fi
 
 # Prompt for name of the mesh network
 read -p "Enter the name of your mesh network (default: tomesh): " -r
@@ -67,9 +78,9 @@ if [ "${#MESH_NAME}" == 0 ]; then
 fi
 
 # Get tools
-if ! [ "$(which nodejs)" ] || ! [ "$(which iperf3)" ]; then
+if ! [ "$(which nodejs)" ]; then
     curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
-    sudo apt-get install nodejs iperf3 -y
+    sudo apt-get install nodejs -y
 fi
 
 # Download cjdns repo and checkout TAG_CJDNS tag
@@ -116,6 +127,11 @@ fi
 # IPFS
 if [ ! -x "$(command -v ipfs)" ] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" == "true" ]; then
     source ipfs/install
+fi
+
+# Non-essential extra tools
+if [ ! -z "$WITH_EXTRA_TOOLS" -a "$WITH_EXTRA_TOOLS" == "true" ]; then
+    source extra-tools/install
 fi
 
 # Install node status script
