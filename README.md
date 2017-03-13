@@ -54,11 +54,11 @@ The following instructions will help you set up an encrypted mesh network on Ras
 
 You can benchmark the network throughput with more than one node. Let's name our two Pi's **Hillary** and **Friend**.
 
-1. SSH to Friend and run `status`, note its IPv6.
+1. SSH to Friend and note its IPv6.
 
 1. Run `iperf3 -s` to start listening. Do not end the SSH session.
 
-1. In another Terminal session, SSH to Hillary and run `iperf3 -c FRIEND_IPV6`. You should start seeing Hillary sending encrypted packets to her Friend. On a Pi 2, we can expect about 14 Mbps throughput, and 40-60 Mbps on a Pi 3.
+1. In another Terminal session, SSH to Hillary and run `iperf3 -c FRIEND_IPV6`. You should start seeing Hillary sending encrypted packets to her Friend. See [phillymesh/cjdns-optimizations](https://github.com/phillymesh/cjdns-optimizations) for expected throughput.
 
 ## Update & Uninstall
 
@@ -66,8 +66,22 @@ To uninstall the services, run `./prototype-cjdns-pi/scripts/uninstall`.
 
 If you are updating, run the same uninstall script, but keep all configuration files and data directories when prompted, remove the **prototype-cjdns-pi** directory along with the **install** script, then repeat the last installation step.
 
+## Development
+
+You can install from a specific tag or branch, such as `develop`, with:
+
+```
+$ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/develop/scripts/install && chmod +x install && TAG_PROTOTYPE_CJDNS_PI=develop ./install
+```
+
+If you are developing on a forked repository, such as `me/prototype-cjdns-pi`, then:
+
+```
+$ wget https://raw.githubusercontent.com/me/prototype-cjdns-pi/develop/scripts/install && chmod +x install && GIT_PROTOTYPE_CJDNS_PI="https://github.com/me/prototype-cjdns-pi.git" TAG_PROTOTYPE_CJDNS_PI=develop ./install
+```
+
 ## Notes
 
 * Your computer can be a node too! It will mesh with the Pi's over your router. See the [cjdns repository](https://github.com/cjdelisle/cjdns) on how to set this up.
 
-* Plan for this repository and detailed benchmark results are available in [the doc folder](https://github.com/tomeshnet/prototype-cjdns-pi/blob/master/docs/).
+* Original plan for this repository and early benchmark results are available in [the doc folder](https://github.com/tomeshnet/prototype-cjdns-pi/blob/master/docs/).
