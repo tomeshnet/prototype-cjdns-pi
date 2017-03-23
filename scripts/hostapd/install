@@ -59,7 +59,7 @@ if [ "$USE_EAP" = true ]; then
     sudo cp "$BASE_DIR/certs/ca.pem" /etc/hostapd/ca.pem
     sudo cp "$BASE_DIR/certs/server.pem" /etc/hostapd/server.pem
 
-    sudo echo "\"guest\" MSCHAPV2 $APPASS [2]" | sudo tee --append /etc/hostapd/hostapd.eap_user > /dev/null
+    sudo echo "\"guest\" MSCHAPV2 \"$APPASS\" [2]" | sudo tee --append /etc/hostapd/hostapd.eap_user > /dev/null
 else
     sudo cp "$BASE_DIR/wpa-psk/hostapd.conf" /etc/hostapd/hostapd.conf
 
