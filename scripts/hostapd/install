@@ -50,7 +50,7 @@ done
 
 # Configure network with hostapd
 sudo cp "$BASE_DIR/nat.sh" /etc/hostapd/nat.sh
-if [USE_EAP]; then
+if [ "$USE_EAP" = true ]; then
     sudo cp "$BASE_DIR/wpa-eap/hostapd.conf" /etc/hostapd/hostapd.conf
     sudo cp "$BASE_DIR/wpa-eap/hostapd.eap_user" /etc/hostapd/hostapd.eap_user
 
