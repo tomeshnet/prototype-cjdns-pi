@@ -2,28 +2,34 @@
 
 set -e
 
+# Use provided repository or default to tomeshnet/prototype-cjdns-pi
+if [ -z "$GIT_PROTOTYPE_CJDNS_PI" ]; then
+    GIT_PROTOTYPE_CJDNS_PI="https://github.com/tomeshnet/prototype-cjdns-pi.git"
+fi
+
+# Use provided tag or default to master
+if [ -z "$TAG_PROTOTYPE_CJDNS_PI" ]; then
+    TAG_PROTOTYPE_CJDNS_PI=master
+fi
+
 # Get git
 sudo apt-get update
 if ! [ "$(which git)" ]; then
     sudo apt-get install git -y
 fi
 
-# Download prototype-cjdns-pi2 repo
-if ! [ -d "prototype-cjdns-pi2" ]; then
-    git clone https://github.com/tomeshnet/prototype-cjdns-pi2.git
+# Download prototype-cjdns-pi repo
+if ! [ -d "prototype-cjdns-pi" ]; then
+    git clone $GIT_PROTOTYPE_CJDNS_PI
 fi
-
-# Checkout provided tag or default to master
-if [ -z "$TAG_PROTOTYPE_CJDNS_PI2" ]; then
-    TAG_PROTOTYPE_CJDNS_PI2=master
-fi
-cd prototype-cjdns-pi2/scripts
-git checkout $TAG_PROTOTYPE_CJDNS_PI2
+cd prototype-cjdns-pi/scripts
+git checkout $TAG_PROTOTYPE_CJDNS_PI
 
 # Export environment variables
 export WITH_MESH_POINT
 export WITH_WIFI_AP
 export WITH_IPFS
+export WITH_EXTRA_TOOLS
 
 # Run the actual installation script
 ./install2
