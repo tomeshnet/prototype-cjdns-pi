@@ -1,4 +1,6 @@
-# prototype-cjdns-pi2
+# prototype-cjdns-pi
+
+[![Build Status](https://travis-ci.org/tomeshnet/prototype-cjdns-pi.svg?branch=master)](https://travis-ci.org/tomeshnet/prototype-cjdns-pi)
 
 The following instructions will help you set up an encrypted mesh network on Raspberry Pi's. It takes about 5 minutes to set up a node with the Pi 3. Obviously, to have a mesh you will need more than one node.
 
@@ -12,7 +14,11 @@ The following instructions will help you set up an encrypted mesh network on Ras
 
 1. Flash the SD card with [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/).
 
-1. Create an empty file named **ssh** to enable SSH when the Pi boots.
+1. Create an empty file named **ssh** to enable SSH when the Pi boots:
+
+    ```
+    $ touch /path/to/sd/boot/ssh
+    ```
 
 1. Plug the SD card and USB WiFi adapter into the Pi.
 
@@ -25,19 +31,21 @@ The following instructions will help you set up an encrypted mesh network on Ras
 1. Run the following, then let the installation complete. After about 5 minutes the Pi will reboot:
 
     ```
-    $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi2/master/scripts/install && chmod +x install && ./install
+    $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install && chmod +x install && ./install
     ```
 
     **Optional:** If you have a suitable USB WiFi adapter and want to configure it as a 802.11s Mesh Point interface, set the `WITH_MESH_POINT` flag to `true`.
 
-    **Optional:** If you have a Raspberry Pi 3 and want to configure the on-board WiFi as an Access Point, set the `WITH_WIFI_AP` flag to `true`. The default configuration routes all traffic to the Ethernet port `eth0`. 
+    **Optional:** If you have a Raspberry Pi 3 and want to configure the on-board WiFi as an Access Point, set the `WITH_WIFI_AP` flag to `true`. The default configuration routes all traffic to the Ethernet port `eth0`.
 
     **Optional:** If you want to install [IPFS](https://ipfs.io), set the `WITH_IPFS` flag to `true`.
+
+    **Optional:** If you want to install non-essential tools useful for network analysis, set the `WITH_EXTRA_TOOLS` flag to `true`.
 
     To install with all optional features:
 
     ```
-    $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi2/master/scripts/install && chmod +x install && WITH_MESH_POINT=true WITH_WIFI_AP=true WITH_IPFS=true ./install
+    $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install && chmod +x install && WITH_MESH_POINT=true WITH_WIFI_AP=true WITH_IPFS=true WITH_EXTRA_TOOLS=true ./install
     ```
 
 ## Check status
@@ -50,20 +58,34 @@ The following instructions will help you set up an encrypted mesh network on Ras
 
 You can benchmark the network throughput with more than one node. Let's name our two Pi's **Hillary** and **Friend**.
 
-1. SSH to Friend and run `status`, note its IPv6.
+1. SSH to Friend and note its IPv6.
 
 1. Run `iperf3 -s` to start listening. Do not end the SSH session.
 
-1. In another Terminal session, SSH to Hillary and run `iperf3 -c FRIEND_IPV6`. You should start seeing Hillary sending encrypted packets to her Friend. On a Pi 2, we can expect about 14 Mbps throughput, and 40-60 Mbps on a Pi 3.
+1. In another Terminal session, SSH to Hillary and run `iperf3 -c FRIEND_IPV6`. You should start seeing Hillary sending encrypted packets to her Friend. See [phillymesh/cjdns-optimizations](https://github.com/phillymesh/cjdns-optimizations) for expected throughput.
 
 ## Update & Uninstall
 
-To uninstall the services, run `./prototype-cjdns-pi2/scripts/uninstall`.
+To uninstall the services, run `./prototype-cjdns-pi/scripts/uninstall`.
 
-If you are updating, run the same uninstall script, but keep all configuration files and data directories when prompted, remove the **prototype-cjdns-pi2** directory along with the **install** script, then repeat the last installation step.
+If you are updating, run the same uninstall script, but keep all configuration files and data directories when prompted, remove the **prototype-cjdns-pi** directory along with the **install** script, then repeat the last installation step.
+
+## Development
+
+You can install from a specific tag or branch, such as `develop`, with:
+
+```
+$ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/develop/scripts/install && chmod +x install && TAG_PROTOTYPE_CJDNS_PI=develop ./install
+```
+
+If you are developing on a forked repository, such as `me/prototype-cjdns-pi`, then:
+
+```
+$ wget https://raw.githubusercontent.com/me/prototype-cjdns-pi/develop/scripts/install && chmod +x install && GIT_PROTOTYPE_CJDNS_PI="https://github.com/me/prototype-cjdns-pi.git" TAG_PROTOTYPE_CJDNS_PI=develop ./install
+```
 
 ## Notes
 
 * Your computer can be a node too! It will mesh with the Pi's over your router. See the [cjdns repository](https://github.com/cjdelisle/cjdns) on how to set this up.
 
-* Plan for this repository and detailed benchmark results are available in [the doc folder](https://github.com/tomeshnet/prototype-cjdns-pi2/blob/master/docs/).
+* Original plan for this repository and early benchmark results are available in [the doc folder](https://github.com/tomeshnet/prototype-cjdns-pi/blob/master/docs/).
