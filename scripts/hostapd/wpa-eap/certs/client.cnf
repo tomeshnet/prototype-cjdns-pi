@@ -39,16 +39,15 @@ emailAddress           = optional
 
 [ req ]
 prompt                 = no
-distinguished_name     = server
+distinguished_name     = client
 default_bits           = 2048
 input_password         = whatever
 output_password        = whatever
 
-[server]
-countryName            = FR
+[client]
+countryName            = CA
 stateOrProvinceName    = Radius
 localityName           = Somewhere
 organizationName       = Example Inc.
-emailAddress           = admin@example.com
-commonName             = "Example Server Certificate"
-
+emailAddress           = user@example.com
+commonName             = user@example.com

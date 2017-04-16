@@ -9,17 +9,17 @@
 #
 ######################################################################
 
-DH_KEY_SIZE	= 1024
+DH_KEY_SIZE		= 1024
 
 #
 #  Set the passwords
 #
 PASSWORD_SERVER	= `grep output_password server.cnf | sed 's/.*=//;s/^ *//'`
-PASSWORD_CA	= `grep output_password ca.cnf | sed 's/.*=//;s/^ *//'`
+PASSWORD_CA		= `grep output_password ca.cnf | sed 's/.*=//;s/^ *//'`
 PASSWORD_CLIENT	= `grep output_password client.cnf | sed 's/.*=//;s/^ *//'`
 
-USER_NAME	= `grep emailAddress client.cnf | grep '@' | sed 's/.*=//;s/^ *//'`
-CA_DEFAULT_DAYS = `grep default_days ca.cnf | sed 's/.*=//;s/^ *//'`
+USER_NAME		= `grep emailAddress client.cnf | grep '@' | sed 's/.*=//;s/^ *//'`
+CA_DEFAULT_DAYS	= `grep default_days ca.cnf | sed 's/.*=//;s/^ *//'`
 
 ######################################################################
 #
