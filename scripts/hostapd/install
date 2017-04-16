@@ -53,6 +53,7 @@ sudo cp "$BASE_DIR/nat.sh" /etc/hostapd/nat.sh
 if [ "$USE_EAP" = true ]; then
     # Configure hostapd for wpa-eap
     sudo cp "$BASE_DIR/wpa-eap/hostapd.conf" /etc/hostapd/hostapd.conf
+    sudo echo "ssid=$APSSID" | sudo tee --append /etc/hostapd/hostapd.conf > /dev/null
     sudo cp "$BASE_DIR/wpa-eap/hostapd.eap_user" /etc/hostapd/hostapd.eap_user
     sudo echo "\"guest\" MSCHAPV2 \"$APPASS\" [2]" | sudo tee --append /etc/hostapd/hostapd.eap_user > /dev/null
 
@@ -63,10 +64,9 @@ if [ "$USE_EAP" = true ]; then
 else
     # Configure hostapd for wpa-psk
     sudo cp "$BASE_DIR/wpa-psk/hostapd.conf" /etc/hostapd/hostapd.conf
+    sudo echo "ssid=$APSSID" | sudo tee --append /etc/hostapd/hostapd.conf > /dev/null
     sudo echo "wpa_passphrase=$APPASS" | sudo tee --append /etc/hostapd/hostapd.conf > /dev/null
 fi
-
-sudo echo "ssid=$APSSID" | sudo tee --append /etc/hostapd/hostapd.conf > /dev/null
 
 # Configure DHCP with dnsmasq
 sudo cp /etc/dnsmasq.conf /etc/dnsmasq.conf.backup
