@@ -58,10 +58,10 @@ if [ "$USE_EAP" = true ]; then
     sudo echo "\"guest\" MSCHAPV2 \"$APPASS\" [2]" | sudo tee --append /etc/hostapd/hostapd.eap_user > /dev/null
 
     # Generate wpa-eap certificates
-    mkdir "$BASE_DIR/tmp"
-    /bin/bash $BASE_DIR/wpa-eap/certs/bootstrap $BASE_DIR/tmp
-    sudo cp "$BASE_DIR/wpa-eap/certs/ca.pem" /etc/hostapd/ca.pem
-    sudo cp "$BASE_DIR/wpa-eap/certs/server.pem" /etc/hostapd/server.pem
+    cp -r "$BASE_DIR/wpa-eap/certs" "$BASE_DIR/tmp"
+    /bin/bash "$BASE_DIR/tmp/bootstrap"
+    sudo cp "$BASE_DIR/tmp/ca.pem" /etc/hostapd/ca.pem
+    sudo cp "$BASE_DIR/tmp/server.pem" /etc/hostapd/server.pem
     rm -rf "$BASE_DIR/tmp"
 else
     # Configure hostapd for wpa-psk
