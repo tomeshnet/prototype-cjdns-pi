@@ -84,6 +84,12 @@ If you are developing on a forked repository, such as `me/prototype-cjdns-pi`, t
 $ wget https://raw.githubusercontent.com/me/prototype-cjdns-pi/develop/scripts/install && chmod +x install && GIT_PROTOTYPE_CJDNS_PI="https://github.com/me/prototype-cjdns-pi.git" TAG_PROTOTYPE_CJDNS_PI=develop ./install
 ```
 
+To add a new module, use **scripts/ipfs/** as an example to:
+
+* Create a `WITH_NEW_MODULE` tag
+* Create **scripts/new-module/install** and **scripts/new-module/uninstall**
+* Make corresponding references in the main **install**, **install2**, **status**, **uninstall** files
+
 ## Notes
 
 * Your computer can be a node too! It will mesh with the Pi's over your router. See the [cjdns repository](https://github.com/cjdelisle/cjdns) on how to set this up.
