@@ -82,8 +82,9 @@ if ! [ "$(which nodejs)" ]; then
 
 #check for armv6 and install it manually instead
     if $(uname -m | grep -Eq ^armv6); then
-        wget https://nodejs.org/dist/v6.11.0/node-v6.11.0-linux-armv6l.tar.gz
-        sudo tar xvfz ../node-v6.11.0-linux-armv6l.tar.gz --strip 1 -C /
+pwd
+        wget -O /tmp/node-v6.11.0-linux-armv6l.tar.gz https://nodejs.org/dist/v6.11.0/node-v6.11.0-linux-armv6l.tar.gz
+        sudo tar xvfz /tmp/node-v6.11.0-linux-armv6l.tar.gz --strip 1 -C /
         ln -s /bin/node /bin/nodejs
     else
        curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
