@@ -79,10 +79,18 @@ fi
 
 # Get tools
 if ! [ "$(which nodejs)" ]; then
-    curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
-    sudo apt-get install nodejs -y
-fi
 
+#check for armv6 and install it manually instead
+    if $(uname -m | grep -Eq ^armv6); then
+        wget https://nodejs.org/dist/v6.11.0/node-v6.11.0-linux-armv6l.tar.gz
+        sudo tar xvfz ../node-v6.11.0-linux-armv6l.tar.gz --strip 1 -C /
+        ln -s /bin/node /bin/nodejs
+    else
+       curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
+       sudo apt-get install nodejs -y
+   fi
+
+fie
 # Download cjdns repo and checkout TAG_CJDNS tag
 if ! [ -d "/opt/cjdns" ]; then
     here=`pwd`
