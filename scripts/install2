@@ -90,7 +90,7 @@ if ! [ "$(which nodejs)" ]; then
        sudo apt-get install nodejs -y
    fi
 
-fie
+fi
 # Download cjdns repo and checkout TAG_CJDNS tag
 if ! [ -d "/opt/cjdns" ]; then
     here=`pwd`
