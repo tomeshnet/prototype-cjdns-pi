@@ -1,6 +1,7 @@
 #!/bin/bash
-
+echo 1
 INACTIVE='\e[1;31m[INACTIVE]\e[0m'
+STOPPED='\e[1;31m[STOPPED]\e[0m'
 ACTIVE='\e[1;32m[ACTIVE]\e[0m'
 
 echo "   _                           _     "
@@ -24,7 +25,11 @@ if [ "$(which mesh)" ]; then
 fi
 if [ "$(which hostapd)" ]; then
     if [ $(systemctl status hostapd.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
-        echo -e "WiFi Access Point ............ $ACTIVE"
+        if [ -Z $(ps aux | grep hostapd | grep -v grep)  ]; then
+            echo -e "WiFi Access Point ........... $STOPPED"
+        else
+            echo -e "WiFi Access Point .......... $ACTIVE"
+        fi
     else
         echo -e "WiFi Access Point .......... $INACTIVE"
     fi
