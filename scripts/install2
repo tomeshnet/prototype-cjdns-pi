@@ -11,10 +11,6 @@ CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 ./do"
 if [[ $RPI_REVISION == *"900092"* || $RPI_REVISION == *"900093"* ]]; then
     echo -e "\e[1;32mStarting installation on Raspberry Pi Zero...\e[0m"
     CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 CFLAGS=\"-s -static -Wall\" ./do"
-elif [[ `cat /proc/cpuinfo  | grep Hardware | awk '{print $3}'` == 'Allwinner' ]]; then
-    echo -e "\e[1;32mStarting installation on Orange Pi ???... \e[1;31m(EXPERIMENTAL) \e[0m"
-    CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm\" ./do"
-    RPI_REVISION="OPI"
 elif [[ $RPI_REVISION == *"00"* ]]; then
     echo -e "\e[1;32mStarting installation on Raspberry Pi 1...\e[0m"
     CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 NO_TEST=1 CFLAGS=\"-s -static -Wall\" ./do"
@@ -81,13 +77,9 @@ if [ "${#MESH_NAME}" == 0 ]; then
     export MESH_NAME="tomesh"
 fi
 
-if [[ $RPI_REVISION == "OPI" ]]; then
-    echo -e "\e[1;32mDisabling predictable network interface naming on Orange Pi\e[0m"
-    sudo touch /etc/udev/rules.d/80-net-setup-link.rules
-fi
 # Get tools
 if ! [ "$(which nodejs)" ]; then
-    #Check for armv6 and install nodejs manually instead since it will not install via repo
+    # Check for armv6 and install nodejs manually instead since it will not install via repo
     if $(uname -m | grep -Eq ^armv6); then
         wget -O /tmp/node-v6.11.0-linux-armv6l.tar.gz https://nodejs.org/dist/v6.11.0/node-v6.11.0-linux-armv6l.tar.gz
         sudo tar xfz /tmp/node-v6.11.0-linux-armv6l.tar.gz --strip 1 -C /
