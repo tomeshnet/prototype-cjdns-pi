@@ -1,5 +1,5 @@
 #!/bin/bash
-echo 1
+
 INACTIVE='\e[1;31m[INACTIVE]\e[0m'
 STOPPED='\e[1;31m[STOPPED]\e[0m'
 ACTIVE='\e[1;32m[ACTIVE]\e[0m'
