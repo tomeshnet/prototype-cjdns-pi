@@ -1,7 +1,6 @@
 #!/bin/bash
 
 INACTIVE='\e[1;31m[INACTIVE]\e[0m'
-STOPPED='\e[1;31m[STOPPED]\e[0m'
 ACTIVE='\e[1;32m[ACTIVE]\e[0m'
 
 echo "   _                           _     "
@@ -26,7 +25,7 @@ fi
 if [ "$(which hostapd)" ]; then
     if [ $(systemctl status hostapd.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
         if [ -Z $(ps aux | grep hostapd | grep -v grep)  ]; then
-            echo -e "WiFi Access Point ........... $STOPPED"
+            echo -e "WiFi Access Point .......... $INACTIVE"
         else
             echo -e "WiFi Access Point .......... $ACTIVE"
         fi
@@ -40,7 +39,7 @@ if [ "$(which ipfs)" ]; then
     else
         echo -e "IPFS Service ............... $INACTIVE"
     fi
-fi
+fi	
 echo -e '---------------------------------------'
 echo -e 'NODE'
 sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g'
