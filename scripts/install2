@@ -6,26 +6,30 @@ TAG_CJDNS=cjdns-v19.1
 
 # Get Raspberry Pi version and set flags accordingly
 RPI_REVISION=`sed -rn 's/Revision\s+\:\s+([0-9a-z_\-\s\,\(\)]+)/\1/p' /proc/cpuinfo`
+BOARD_FAMILY='Raspberry PI'
+
 CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 ./do"
 
-if [[ $RPI_REVISION == *"900092"* || $RPI_REVISION == *"900093"* ]]; then
-    echo -e "\e[1;32mStarting installation on Raspberry Pi Zero...\e[0m"
-    CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 CFLAGS=\"-s -static -Wall\" ./do"
-elif [[ `cat /proc/cpuinfo  | grep Hardware | awk '{print $3}'` == 'Allwinner' ]]; then
+if [[ `cat /proc/cpuinfo  | grep Hardware | awk '{print $3}'` == 'Allwinner' ]]; then
+    BOARD_FAMILY='Orange PI'
     echo -e "\e[1;32mStarting installation on Orange Pi ???... \e[1;31m(EXPERIMENTAL) \e[0m"
     CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm\" ./do"
-    RPI_REVISION="OPI"
-elif [[ $RPI_REVISION == *"00"* ]]; then
-    echo -e "\e[1;32mStarting installation on Raspberry Pi 1...\e[0m"
-    CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 NO_TEST=1 CFLAGS=\"-s -static -Wall\" ./do"
-elif [[ $RPI_REVISION == *"a01041"* || $RPI_REVISION == *"a21041"* ]]; then
-    echo -e "\e[1;32mStarting installation on Raspberry Pi 2...\e[0m"
-    CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm\" ./do"
-elif [[ $RPI_REVISION == *"a02082"* || $RPI_REVISION == *"a22082"* ]]; then
-    echo -e "\e[1;32mStarting installation on Raspberry Pi 3...\e[0m"
-    CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm\" ./do"
 else
-    echo -e "\e[1;32mStarting installation on unknown platform... (good luck!)\e[0m"
+    if [[ $RPI_REVISION == *"900092"* || $RPI_REVISION == *"900093"* ]]; then
+        echo -e "\e[1;32mStarting installation on Raspberry Pi Zero...\e[0m"
+        CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 CFLAGS=\"-s -static -Wall\" ./do"
+    elif [[ $RPI_REVISION == *"00"* ]]; then
+        echo -e "\e[1;32mStarting installation on Raspberry Pi 1...\e[0m"
+        CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 NO_TEST=1 CFLAGS=\"-s -static -Wall\" ./do"
+    elif [[ $RPI_REVISION == *"a01041"* || $RPI_REVISION == *"a21041"* ]]; then
+        echo -e "\e[1;32mStarting installation on Raspberry Pi 2...\e[0m"
+        CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm\" ./do"
+    elif [[ $RPI_REVISION == *"a02082"* || $RPI_REVISION == *"a22082"* ]]; then
+        echo -e "\e[1;32mStarting installation on Raspberry Pi 3...\e[0m"
+        CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm\" ./do"
+    else
+        echo -e "\e[1;32mStarting installation on unknown platform... (good luck!)\e[0m"
+    fi
 fi
 
 # Prompt and set missing flags
@@ -81,10 +85,11 @@ if [ "${#MESH_NAME}" == 0 ]; then
     export MESH_NAME="tomesh"
 fi
 
-if [[ $RPI_REVISION == "OPI" ]]; then
+if [[ $BOARD_FAMILY == "Orange PI" ]]; then
     echo -e "\e[1;32mDisabling predictable network interface naming on Orange Pi\e[0m"
     sudo touch /etc/udev/rules.d/80-net-setup-link.rules
 fi
+
 # Get tools
 if ! [ "$(which nodejs)" ]; then
     # Check for armv6 and install nodejs manually instead since it will not install via repo
