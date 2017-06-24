@@ -37,7 +37,7 @@ if [ "$(which ipfs)" ]; then
     fi
 fi
 if [ "$(which node_exporter)" ]; then
-    if [ $(systemctl status node_exporter.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
+    if [ $(systemctl status node_exporter.service | grep 'Active: ' | awk '{ print $2 }') = 'activating' ]; then
         echo -e "Node Exporter................. $ACTIVE"
     else
         echo -e "Node Exporter............... $INACTIVE"
