@@ -36,6 +36,14 @@ if [ "$(which ipfs)" ]; then
         echo -e "IPFS Service ............... $INACTIVE"
     fi
 fi
+if [ "$(which node_exporter)" ]; then
+    if [ $(systemctl status node_exporter.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
+        echo -e "Node Exporter................. $ACTIVE"
+    else
+        echo -e "Node Exporter............... $INACTIVE"
+    fi
+fi
+
 echo -e '---------------------------------------'
 echo -e 'NODE'
 sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g'
