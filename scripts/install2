@@ -58,6 +58,17 @@ if [ -z "$WITH_IPFS" -o "$WITH_IPFS" != "true" -a "$WITH_IPFS" != "false" ]; the
         WITH_IPFS=true
     fi
 fi
+if [ -z "$WITH_NODE_EXPORTER" -o "$WITH_NODE_EXPORTER" != "true" -a "$WITH_NODE_EXPORTER" != "false" ]; then
+    read -p "Install Node Exporter (Monitoring) (Y/n)? " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo -e "\e[1;31mNode Exporter installation will be skipped\e[0m"
+        WITH_NODE_EXPORTER=false
+    else
+        echo -e "\e[1;32mNode Exporter will be installed\e[0m"
+        WITH_NODE_EXPORTER=true
+    fi
+fi
 if [ -z "$WITH_EXTRA_TOOLS" -o "$WITH_EXTRA_TOOLS" != "true" -a "$WITH_EXTRA_TOOLS" != "false" ]; then
     read -p "Install non-essential tools useful for network analysis (Y/n)? " -n 1 -r
     echo ""
@@ -135,6 +146,11 @@ fi
 # IPFS
 if [ ! -x "$(command -v ipfs)" ] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" == "true" ]; then
     source ipfs/install
+fi
+
+# NODE EXPORTER
+if [ ! -x "$(command -v node_exporter)" ] && [ ! -z "$WITH_NODE_EXPORTER" -a "$WITH_NODE_EXPORTER" == "true" ]; then
+    source node_exporter/install
 fi
 
 # Non-essential extra tools
