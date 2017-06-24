@@ -40,6 +40,8 @@ The following instructions will help you set up an encrypted mesh network on Ras
 
     **Optional:** If you want to install [IPFS](https://ipfs.io), set the `WITH_IPFS` flag to `true`.
 
+    **Optional:** If you want to install [Node Exporter], set the `WITH_NODE_EXPORTER` flag to `true`.
+
     **Optional:** If you want to install non-essential tools useful for network analysis, set the `WITH_EXTRA_TOOLS` flag to `true`.
 
     To install with all optional features:
