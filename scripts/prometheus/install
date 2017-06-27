@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+set -e
+
+GO_PROMETHEUS_VERSION="2.0.0-alpha.3"
+ARM_VERSION=7
+if $(uname -m | grep -Eq ^armv6); then
+    ARM_VERSION=6
+fi
+
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Download and install IPFS
+mkdir "$BASE_DIR/tmp"
+
+wget https://github.com/prometheus/prometheus/releases/download/v${GO_PROMETHEUS_VERSION}/prometheus-${GO_PROMETHEUS_VERSION}.linux-armv${ARM_VERSION}.tar.gz -O "$BASE_DIR/tmp/go-prometheus.tar.gz"
+sudo mkdir /opt/prometheus
+sudo tar xvfz "$BASE_DIR/tmp/go-prometheus.tar.gz" -C "$BASE_DIR/tmp" --strip 1 -C /opt/prometheus
+sudo mv /opt/prometheus/prometheus.yml /opt/prometheus/prometheus.yml.orig 
+cat /opt/prometheus/prometheus.yml.orig  | sed s/localhost:9090/localhost:9100/ >  prometheus.yml
+sudo mv prometheus.yml /opt/prometheus/prometheus.yml
+
+rm -rf "$BASE_DIR/tmp"
+
+# Configure systemd to start ipfs-daemon.service on system boot
+sudo cp "$BASE_DIR/prometheus-daemon.service" /lib/systemd/system/prometheus.service
+sudo systemctl daemon-reload
+sudo systemctl enable prometheus.service

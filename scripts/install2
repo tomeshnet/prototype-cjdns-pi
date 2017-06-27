@@ -24,6 +24,9 @@ else
     echo -e "\e[1;32mStarting installation on unknown platform... (good luck!)\e[0m"
 fi
 
+echo -e "\e[1;32mInstallation for ARM version $ARM_VERSION\e[0m"
+export ARM_VERSION
+
 # Prompt and set missing flags
 if [ -z "$WITH_MESH_POINT" -o "$WITH_MESH_POINT" != "true" -a "$WITH_MESH_POINT" != "false" ]; then
     read -p "Configure Mesh Point interface (Y/n)? " -n 1 -r
@@ -59,7 +62,7 @@ if [ -z "$WITH_IPFS" -o "$WITH_IPFS" != "true" -a "$WITH_IPFS" != "false" ]; the
     fi
 fi
 if [ -z "$WITH_NODE_EXPORTER" -o "$WITH_NODE_EXPORTER" != "true" -a "$WITH_NODE_EXPORTER" != "false" ]; then
-    read -p "Install Node Exporter (Monitoring) (Y/n)? " -n 1 -r
+    read -p "Install Node Exporter (Collection) (Y/n)? " -n 1 -r
     echo ""
     if [[ $REPLY =~ ^[Nn]$ ]]; then
         echo -e "\e[1;31mNode Exporter installation will be skipped\e[0m"
@@ -69,6 +72,21 @@ if [ -z "$WITH_NODE_EXPORTER" -o "$WITH_NODE_EXPORTER" != "true" -a "$WITH_NODE_
         WITH_NODE_EXPORTER=true
     fi
 fi
+if [ "$WITH_NODE_EXPORTER" ]; then
+    if [ -z "$WITH_PROMETHEUS" -o "$WITH_PROMETHEUS" != "true" -a "$WITH_PROMETHEUS" != "false" ]; then
+        read -p "Install Premetheus (Monitoring) (Y/n)? " -n 1 -r
+        echo ""
+        if [[ $REPLY =~ ^[Nn]$ ]]; then
+            echo -e "\e[1;31mPremetheus installation will be skipped\e[0m"
+            WITH_PROMETHEUS=false
+        else
+            echo -e "\e[1;32mPremetheus will be installed\e[0m"
+            WITH_PROMETHEUS=true
+        fi
+    fi
+fi
+
+
 if [ -z "$WITH_EXTRA_TOOLS" -o "$WITH_EXTRA_TOOLS" != "true" -a "$WITH_EXTRA_TOOLS" != "false" ]; then
     read -p "Install non-essential tools useful for network analysis (Y/n)? " -n 1 -r
     echo ""
@@ -151,6 +169,11 @@ fi
 # NODE EXPORTER
 if [ ! -x "$(command -v node_exporter)" ] && [ ! -z "$WITH_NODE_EXPORTER" -a "$WITH_NODE_EXPORTER" == "true" ]; then
     source node_exporter/install
+fi
+
+# PROMETHEUS
+if [ ! -x "$(command -v node_exporter)" ] && [ ! -z "$WITH_PROMETHEUS" -a "$WITH_PROMETHEUS" == "true" ]; then
+    source premetheus/install
 fi
 
 # Non-essential extra tools
