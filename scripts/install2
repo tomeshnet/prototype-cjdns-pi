@@ -68,7 +68,7 @@ if [ -z "$WITH_NODE_EXPORTER" -o "$WITH_NODE_EXPORTER" != "true" -a "$WITH_NODE_
         echo -e "\e[1;31mNode Exporter installation will be skipped\e[0m"
         WITH_NODE_EXPORTER=false
     else
-        echo -e "\e[1;32mNode Exporter will be installed\e[0m"
+        echo -e "\e[1;32mNode Exporter will be installed on port 9100\e[0m"
         WITH_NODE_EXPORTER=true
     fi
 fi
@@ -80,7 +80,7 @@ if [ "$WITH_NODE_EXPORTER"==true ]; then
             echo -e "\e[1;31mPremetheus installation will be skipped\e[0m"
             WITH_PROMETHEUS=false
         else
-            echo -e "\e[1;32mPremetheus will be installed\e[0m"
+            echo -e "\e[1;32mPremetheus will be installed on port 9090\e[0m"
             WITH_PROMETHEUS=true
         fi
     fi
