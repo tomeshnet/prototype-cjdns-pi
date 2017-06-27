@@ -37,19 +37,27 @@ if [ "$(which ipfs)" ]; then
     fi
 fi
 if [ "$(which node_exporter)" ]; then
-    if [ $(systemctl status node_exporter.service | grep 'Active: ' | awk '{ print $2 }') = 'activating' ]; then
+    if [ $(systemctl status node_exporter.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
         echo -e "Node Exporter................. $ACTIVE"
     else
         echo -e "Node Exporter............... $INACTIVE"
     fi
 fi
 if [ "$(which /opt/prometheus/prometheus)" ]; then
-    if [ $(systemctl status prometheus.service | grep 'Active: ' | awk '{ print $2 }') = 'activating' ]; then
-        echo -e "Node Exporter................. $ACTIVE"
+    if [ $(systemctl status prometheus.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
+        echo -e "Prometheus ................... $ACTIVE"
     else
-        echo -e "Node Exporter............... $INACTIVE"
+        echo -e "Prometheus ................. $INACTIVE"
     fi
 fi
+if [ "$(which /usr/sbin/grafana-server)" ]; then
+    if [ $(systemctl status grafana-server.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
+        echo -e "Grafana ...................... $ACTIVE"
+    else
+        echo -e "Grafana .................... $INACTIVE"
+    fi
+fi
+
 
 echo -e '---------------------------------------'
 echo -e 'NODE'
