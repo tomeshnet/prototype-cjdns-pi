@@ -86,6 +86,19 @@ if [ "$WITH_NODE_EXPORTER"==true ]; then
     fi
 fi
 
+if [ "$WITH_PROMETHEUS"==true ]; then
+    if [ -z "$WITH_GRAFANA" -o "$WITH_GRAFANA" != "true" -a "$WITH_GRAFANA" != "false" ]; then
+        read -p "Install Grafana (GUI) (Y/n)? " -n 1 -r
+        echo ""
+        if [[ $REPLY =~ ^[Nn]$ ]]; then
+            echo -e "\e[1;31mGrafana installation will be skipped\e[0m"
+            WITH_GRAFANA=false
+        else
+            echo -e "\e[1;32mGraphana  will be installed on port 3000 L/P admin \e[0m"
+            WITH_GRAFANA=true
+        fi
+    fi
+fi
 
 if [ -z "$WITH_EXTRA_TOOLS" -o "$WITH_EXTRA_TOOLS" != "true" -a "$WITH_EXTRA_TOOLS" != "false" ]; then
     read -p "Install non-essential tools useful for network analysis (Y/n)? " -n 1 -r
@@ -174,6 +187,11 @@ fi
 # PROMETHEUS
 if [ ! -x "$(command -v /opt/prometheus/prometheus)" ] && [ ! -z "$WITH_PROMETHEUS" -a "$WITH_PROMETHEUS" == "true" ]; then
     source premetheus/install
+fi
+
+# 
+if [ ! -x "$(command -v /usr/sbin/grafana-server)" ] && [ ! -z "$WITH_GRAFANA" -a "$WITH_GRAFANA" == "true" ]; then
+    source graf/install
 fi
 
 # Non-essential extra tools
