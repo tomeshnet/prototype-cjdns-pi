@@ -72,7 +72,7 @@ if [ -z "$WITH_NODE_EXPORTER" -o "$WITH_NODE_EXPORTER" != "true" -a "$WITH_NODE_
         WITH_NODE_EXPORTER=true
     fi
 fi
-if [ "$WITH_NODE_EXPORTER" ]; then
+if [ "$WITH_NODE_EXPORTER"==true ]; then
     if [ -z "$WITH_PROMETHEUS" -o "$WITH_PROMETHEUS" != "true" -a "$WITH_PROMETHEUS" != "false" ]; then
         read -p "Install Premetheus (Monitoring) (Y/n)? " -n 1 -r
         echo ""
@@ -172,7 +172,7 @@ if [ ! -x "$(command -v node_exporter)" ] && [ ! -z "$WITH_NODE_EXPORTER" -a "$W
 fi
 
 # PROMETHEUS
-if [ ! -x "$(command -v node_exporter)" ] && [ ! -z "$WITH_PROMETHEUS" -a "$WITH_PROMETHEUS" == "true" ]; then
+if [ ! -x "$(command -v /opt/prometheus/prometheus)" ] && [ ! -z "$WITH_PROMETHEUS" -a "$WITH_PROMETHEUS" == "true" ]; then
     source premetheus/install
 fi
 
