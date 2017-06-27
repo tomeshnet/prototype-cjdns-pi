@@ -186,7 +186,7 @@ fi
 
 # PROMETHEUS
 if [ ! -x "$(command -v /opt/prometheus/prometheus)" ] && [ ! -z "$WITH_PROMETHEUS" -a "$WITH_PROMETHEUS" == "true" ]; then
-    source premetheus/install
+    source prometheus/install
 fi
 
 # 

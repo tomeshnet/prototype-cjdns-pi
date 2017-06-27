@@ -8,7 +8,7 @@ if $(uname -m | grep -Eq ^armv6); then
     URL="https://bintray.com/fg2it/deb-rpi-1b/download_file?file_path=main%2Fg%2Fgrafana_4.3.2_armhf.deb"
 fi
 
-sudo apt-get -y install libfontconfig1 fontconfig-config fonts-dejavu-core ttf-bitstream-vera fonts-liberation 
+sudo apt-get -y install libfontconfig1 fontconfig-config fonts-dejavu-core ttf-bitstream-vera fonts-liberation sqlite3
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -20,6 +20,10 @@ wget ${URL} -O "$BASE_DIR/tmp/go-grafana.tar.gz"
 sudo dpkg -i "$BASE_DIR/tmp/go-grafana.tar.gz"
 
 rm -rf "$BASE_DIR/tmp"
+
+cat <<EOF | sqlite3 /var/lib/grafana/grafana.db || echo "Failed to add data source."
+INSERT INTO data_source VALUES (2,1,0,'prometheus','prometheus','direct','http://127.0.0.1:9090',NULL,NULL,NULL,0,NULL,NULL,0,'{}','2017-01-15 20:00:00','2017-01-15 20:00:00',0,'{}');
+EOF
 
 
  sudo /bin/systemctl daemon-reload
