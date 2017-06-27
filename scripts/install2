@@ -94,7 +94,7 @@ if [ "$WITH_PROMETHEUS"==true ]; then
             echo -e "\e[1;31mGrafana installation will be skipped\e[0m"
             WITH_GRAFANA=false
         else
-            echo -e "\e[1;32mGraphana  will be installed on port 3000 L/P admin \e[0m"
+            echo -e "\e[1;32mGrafana will be installed on port 3000 L/P admin \e[0m"
             WITH_GRAFANA=true
         fi
     fi
@@ -191,7 +191,7 @@ fi
 
 # 
 if [ ! -x "$(command -v /usr/sbin/grafana-server)" ] && [ ! -z "$WITH_GRAFANA" -a "$WITH_GRAFANA" == "true" ]; then
-    source graf/install
+    source grafana/install
 fi
 
 # Non-essential extra tools
@@ -214,3 +214,4 @@ echo "status" >> ~/.bash_profile
 
 # Reboot device
 sudo reboot
+	
