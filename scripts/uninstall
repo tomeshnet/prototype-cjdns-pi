@@ -30,6 +30,7 @@ source "$BASE_DIR/hostapd/uninstall"
 source "$BASE_DIR/ipfs/uninstall"
 source "$BASE_DIR/extra-tools/uninstall"
 source "$BASE_DIR/node_exporter/uninstall"
+source "$BASE_DIR/prometheus/uninstall"
 
 sudo systemctl daemon-reload
 
