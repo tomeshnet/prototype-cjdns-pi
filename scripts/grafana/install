@@ -21,11 +21,14 @@ sudo dpkg -i "$BASE_DIR/tmp/go-grafana.tar.gz"
 
 rm -rf "$BASE_DIR/tmp"
 
-cat <<EOF | sudo  sqlite3 /var/lib/grafana/grafana.db || echo "Failed to add data source."
-delete from data_source ;
-INSERT INTO data_source VALUES (2,1,0,'prometheus','prometheus','direct','http://127.0.0.1:9090',NULL,NULL,NULL,0,NULL,NULL,0,'{}','2017-01-15 20:00:00','2017-01-15 20:00:00',0,'{}');
-EOF
 
 sudo /bin/systemctl daemon-reload
 sudo /bin/systemctl enable grafana-server
+sudo /bin/systemctl start grafana-server
 
+sleep 2 #Wait for it to start
+
+cat <<EOF | sudo  sqlite3 /var/lib/grafana/grafana.db || echo "Failed to add data source."
+delete from data_source ;
+INSERT INTO data_source VALUES (2,1,0,'prometheus','prometheus','proxy','http://127.0.0.1:9090',NULL,NULL,NULL,0,NULL,NULL,0,'{}','2017-01-15 20:00:00','2017-01-15 20:00:00',0,'{}');
+EOF
