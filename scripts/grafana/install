@@ -22,9 +22,9 @@ sudo dpkg -i "$BASE_DIR/tmp/go-grafana.tar.gz"
 rm -rf "$BASE_DIR/tmp"
 
 
-sudo /bin/systemctl daemon-reload
-sudo /bin/systemctl enable grafana-server
-sudo /bin/systemctl start grafana-server
+sudo systemctl daemon-reload
+sudo systemctl enable grafana-server
+sudo systemctl start grafana-server
 
 sleep 2 #Wait for it to start
 
