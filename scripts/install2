@@ -189,7 +189,7 @@ if [ ! -x "$(command -v /opt/prometheus/prometheus)" ] && [ ! -z "$WITH_PROMETHE
     source prometheus/install
 fi
 
-# 
+# GRAFANA 
 if [ ! -x "$(command -v /usr/sbin/grafana-server)" ] && [ ! -z "$WITH_GRAFANA" -a "$WITH_GRAFANA" == "true" ]; then
     source grafana/install
 fi
