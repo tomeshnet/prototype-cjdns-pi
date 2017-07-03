@@ -12,7 +12,7 @@ sudo apt-get -y install libfontconfig1 fontconfig-config fonts-dejavu-core ttf-b
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Download and install IPFS
+# Download and install Grafana
 mkdir "$BASE_DIR/tmp"
 
 wget ${URL} -O "$BASE_DIR/tmp/go-grafana.tar.gz"
