@@ -31,6 +31,7 @@ source "$BASE_DIR/ipfs/uninstall"
 source "$BASE_DIR/extra-tools/uninstall"
 source "$BASE_DIR/node_exporter/uninstall"
 source "$BASE_DIR/prometheus/uninstall"
+source "$BASE_DIR/grafana/uninstall"
 
 sudo systemctl daemon-reload
 
