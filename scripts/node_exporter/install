@@ -19,7 +19,7 @@ sudo cp "$BASE_DIR/tmp/node_exporter" /usr/local/bin/node_exporter
 sudo chown root:staff /usr/local/bin/node_exporter
 rm -rf "$BASE_DIR/tmp"
 
-# Configure systemd to start ipfs-daemon.service on system boot
+# Configure systemd to start node_exporter.service on system boot
 sudo cp "$BASE_DIR/node_exporter-daemon.service" /lib/systemd/system/node_exporter.service
 sudo systemctl daemon-reload
 sudo systemctl enable node_exporter.service
