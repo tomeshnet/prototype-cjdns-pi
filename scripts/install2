@@ -4,32 +4,41 @@ set -e
 
 TAG_CJDNS=cjdns-v19.1
 
-# Get Raspberry Pi version and set flags accordingly
-RPI_REVISION=`sed -rn 's/Revision\s+\:\s+([0-9a-z_\-\s\,\(\)]+)/\1/p' /proc/cpuinfo`
-BOARD_FAMILY='Raspberry PI'
-
+# Get board information and set flags accordingly
+BOARD_FAMILY="Unknown"
+BOARD_NAME="Generic"
+BOARD_REVISION="?"
 CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 ./do"
 
-if [[ `cat /proc/cpuinfo  | grep Hardware | awk '{print $3}'` == 'Allwinner' ]]; then
-    BOARD_FAMILY='Orange PI'
-    echo -e "\e[1;32mStarting installation on Orange Pi ???... \e[1;31m(EXPERIMENTAL) \e[0m"
+if [[ `cat /proc/cpuinfo  | grep Hardware | awk '{print $3}'` == 'Allwinner' ]]; then    
+    BOARD_FAMILY="Orange Pi"
+    BOARD_NAME="Generic"
+    BOARD_REVISION="experimental"
     CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm\" ./do"
 else
-    if [[ $RPI_REVISION == *"900092"* || $RPI_REVISION == *"900093"* ]]; then
-        echo -e "\e[1;32mStarting installation on Raspberry Pi Zero...\e[0m"
+    BOARD_FAMILY="Raspberry Pi"
+    BOARD_REVISION=`sed -rn 's/Revision\s+\:\s+([0-9a-z_\-\s\,\(\)]+)/\1/p' /proc/cpuinfo`
+    if [[ $BOARD_REVISION == *"900092"* || $BOARD_REVISION == *"900093"* ]]; then
+        BOARD_NAME="Zero"
         CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 CFLAGS=\"-s -static -Wall\" ./do"
-    elif [[ $RPI_REVISION == *"00"* ]]; then
-        echo -e "\e[1;32mStarting installation on Raspberry Pi 1...\e[0m"
+    elif [[ $BOARD_REVISION == *"00"* ]]; then
+        BOARD_NAME="1"
         CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 NO_TEST=1 CFLAGS=\"-s -static -Wall\" ./do"
-    elif [[ $RPI_REVISION == *"a01041"* || $RPI_REVISION == *"a21041"* ]]; then
-        echo -e "\e[1;32mStarting installation on Raspberry Pi 2...\e[0m"
+    elif [[ $BOARD_REVISION == *"a01041"* || $BOARD_REVISION == *"a21041"* ]]; then
+        BOARD_NAME="2"
         CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm\" ./do"
-    elif [[ $RPI_REVISION == *"a02082"* || $RPI_REVISION == *"a22082"* ]]; then
-        echo -e "\e[1;32mStarting installation on Raspberry Pi 3...\e[0m"
+    elif [[ $BOARD_REVISION == *"a02082"* || $BOARD_REVISION == *"a22082"* ]]; then
+        BOARD_NAME="3"
         CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm\" ./do"
-    else
-        echo -e "\e[1;32mStarting installation on unknown platform... (good luck!)\e[0m"
     fi
+fi
+
+echo -e "\e[1;32mStarting installation on ${BOARD_FAMILY} ${BOARD_NAME} (${BOARD_REVISION})...\e[0m"
+
+# Set configurations specific to the board
+if [[ $BOARD_FAMILY == "Orange Pi" ]]; then
+    # Disable predictable network interface naming on Orange Pi
+    sudo touch /etc/udev/rules.d/80-net-setup-link.rules
 fi
 
 # Prompt and set missing flags
@@ -44,7 +53,7 @@ if [ -z "$WITH_MESH_POINT" -o "$WITH_MESH_POINT" != "true" -a "$WITH_MESH_POINT"
         WITH_MESH_POINT=true
     fi
 fi
-if [[ $RPI_REVISION == *"a02082"* || $RPI_REVISION == *"a22082"* ]] && [ -z "$WITH_WIFI_AP" -o "$WITH_WIFI_AP" != "true" -a "$WITH_WIFI_AP" != "false" ]; then
+if [[ $BOARD_REVISION == *"a02082"* || $BOARD_REVISION == *"a22082"* ]] && [ -z "$WITH_WIFI_AP" -o "$WITH_WIFI_AP" != "true" -a "$WITH_WIFI_AP" != "false" ]; then
     read -p "Configure WiFi Access Point (Y/n)? " -n 1 -r
     echo ""
     if [[ $REPLY =~ ^[Nn]$ ]]; then
@@ -83,11 +92,6 @@ read -p "Enter the name of your mesh network (default: tomesh): " -r
 export MESH_NAME=`echo $REPLY | sed 's/ //g'`
 if [ "${#MESH_NAME}" == 0 ]; then
     export MESH_NAME="tomesh"
-fi
-
-if [[ $BOARD_FAMILY == "Orange PI" ]]; then
-    echo -e "\e[1;32mDisabling predictable network interface naming on Orange Pi\e[0m"
-    sudo touch /etc/udev/rules.d/80-net-setup-link.rules
 fi
 
 # Get tools
@@ -141,7 +145,7 @@ if [ ! -z "$WITH_MESH_POINT" -a "$WITH_MESH_POINT" == "true" ]; then
 fi
 
 # WiFi Access Point on RPi3
-if [[ $RPI_REVISION == *"a02082"* || $RPI_REVISION == *"a22082"* ]] && [ ! -z "$WITH_WIFI_AP" -a "$WITH_WIFI_AP" == "true" ]; then
+if [[ $BOARD_REVISION == *"a02082"* || $BOARD_REVISION == *"a22082"* ]] && [ ! -z "$WITH_WIFI_AP" -a "$WITH_WIFI_AP" == "true" ]; then
     source hostapd/install
 fi
 
