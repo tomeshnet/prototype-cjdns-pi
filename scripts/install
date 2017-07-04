@@ -30,6 +30,9 @@ export WITH_MESH_POINT
 export WITH_WIFI_AP
 export WITH_IPFS
 export WITH_EXTRA_TOOLS
+export WITH_NODE_EXPORTER
+export WITH_GRAFANA
+export WITH_PROMETHEUS
 
 # Run the actual installation script
 ./install2

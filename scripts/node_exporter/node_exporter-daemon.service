@@ -1,0 +1,14 @@
+[Unit]
+Description=Node Exporter daemon
+Wants=network.target
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/node_exporter
+ExecStop=/usr/bin/pkill -f node_exporter
+Restart=on-failure
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target

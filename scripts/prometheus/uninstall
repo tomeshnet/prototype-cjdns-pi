@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Uninstall prometheus
+sudo systemctl disable prometheus.service
+sudo systemctl stop prometheus.service 2>/dev/null || true
+sudo rm -rf /opt/prometheus
+sudo rm -f /lib/systemd/system/prometheus.service
