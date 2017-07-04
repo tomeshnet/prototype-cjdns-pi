@@ -8,14 +8,14 @@ sudo systemctl stop ipfs-daemon.service 2>/dev/null || true
 sudo rm -f /usr/local/bin/ipfs
 sudo rm -f /lib/systemd/system/ipfs-daemon.service
 
-if [ -d "/home/pi/.ipfs" ]; then
-    echo "Found /home/pi/.ipfs"
+if [ -d "~/.ipfs" ]; then
+    echo "Found ~/.ipfs"
     read -p "Keep your IPFS data (Y/n)? " -n 1 -r
     echo ""
     if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mRemoving /home/pi/.ipfs\e[0m"
-        rm -rf /home/pi/.ipfs
+        echo -e "\e[1;31mRemoving ~/.ipfs\e[0m"
+        rm -rf ~/.ipfs
     else
-        echo -e "\e[1;32mKeeping /home/pi/.ipfs\e[0m"
+        echo -e "\e[1;32mKeeping ~/.ipfs\e[0m"
     fi
 fi
