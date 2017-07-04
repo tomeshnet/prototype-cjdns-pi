@@ -5,7 +5,10 @@ set -e
 GO_IPFS_VERSION=v0.4.6
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
+# Check for PI user if missing add it
+if [ -z $(cat /etc/passwd | grep pi:x) ];then
+    useradd pi
+fi
 # Download and install IPFS
 mkdir "$BASE_DIR/tmp"
 wget "https://dist.ipfs.io/go-ipfs/${GO_IPFS_VERSION}/go-ipfs_${GO_IPFS_VERSION}_linux-arm.tar.gz" -O "$BASE_DIR/tmp/go-ipfs.tar.gz"
@@ -15,7 +18,10 @@ sudo chown root:staff /usr/local/bin/ipfs
 rm -rf "$BASE_DIR/tmp"
 
 # Initialize IPFS
+IPFS_PATH='/home/pi/.ipfs'
 ipfs init
+chown pi.pi /home/pi/.ipfs
+chown pi.pi -R /home/pi/.ipfs
 
 # Configure systemd to start ipfs-daemon.service on system boot
 sudo cp "$BASE_DIR/ipfs-daemon.service" /lib/systemd/system/ipfs-daemon.service
