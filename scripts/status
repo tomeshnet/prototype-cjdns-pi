@@ -23,12 +23,8 @@ if [ "$(which mesh)" ]; then
     fi
 fi
 if [ "$(which hostapd)" ]; then
-    if [ $(systemctl status hostapd.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
-        if [ -Z $(ps aux | grep hostapd | grep -v grep)  ]; then
-            echo -e "WiFi Access Point .......... $INACTIVE"
-        else
-            echo -e "WiFi Access Point .......... $ACTIVE"
-        fi
+    if [ $(systemctl status hostapd.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ] && [ -n "$(ps aux | grep hostapd | grep -v grep)" ]; then
+        echo -e "WiFi Access Point .......... $ACTIVE"
     else
         echo -e "WiFi Access Point .......... $INACTIVE"
     fi
