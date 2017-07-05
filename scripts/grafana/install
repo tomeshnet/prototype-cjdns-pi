@@ -5,7 +5,7 @@ set -e
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Install Grafana dependencies
-sudo apt-get -y install libfontconfig1 fontconfig-config fonts-dejavu-core ttf-bitstream-vera fonts-liberation sqlite3
+sudo apt-get install libfontconfig1 fontconfig-config fonts-dejavu-core ttf-bitstream-vera fonts-liberation sqlite3 -y
 
 # Download and install unofficial build of Grafana for ARM
 URL="https://bintray.com/fg2it/deb/download_file?file_path=main%2Fg%2Fgrafana_4.3.2_armhf.deb"

@@ -20,3 +20,8 @@ if [ -d "~/.ipfs" ]; then
         echo -e "\e[1;32mKeeping ~/.ipfs\e[0m"
     fi
 fi
+
+# Remove HTTP to IPFS gateway
+sudo rm /etc/nginx/sites-enabled/ipfs-http-gateway
+sudo rm /etc/nginx/sites-available/ipfs-http-gateway
+sudo systemctl restart nginx.service
