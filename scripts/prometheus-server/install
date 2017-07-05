@@ -16,7 +16,7 @@ wget "https://github.com/prometheus/prometheus/releases/download/v${PROMETHEUS_V
 tar xvfz "$BASE_DIR/tmp/prometheus.tar.gz" -C "$BASE_DIR/tmp" --strip 1
 mv "$BASE_DIR/tmp/prometheus.yml" "$BASE_DIR/tmp/prometheus.yml.orig"
 cat "$BASE_DIR/tmp/prometheus.yml.orig" | sed s/localhost:9090/localhost:9100/ > "$BASE_DIR/tmp/prometheus.yml"
-sudo cp "$BASE_DIR/tmp" /opt/prometheus
+sudo cp -r "$BASE_DIR/tmp" /opt/prometheus
 rm -rf "$BASE_DIR/tmp"
 
 # Configure systemd to start prometheus-server.service on system boot
