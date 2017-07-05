@@ -78,45 +78,49 @@ if [ -z "$WITH_IPFS" -o "$WITH_IPFS" != "true" -a "$WITH_IPFS" != "false" ]; the
         WITH_IPFS=true
     fi
 fi
-if [ -z "$WITH_NODE_EXPORTER" -o "$WITH_NODE_EXPORTER" != "true" -a "$WITH_NODE_EXPORTER" != "false" ]; then
-    read -p "Install Node Exporter (Collection) (Y/n)? " -n 1 -r
+if [ -z "$WITH_PROMETHEUS_NODE_EXPORTER" -o "$WITH_PROMETHEUS_NODE_EXPORTER" != "true" -a "$WITH_PROMETHEUS_NODE_EXPORTER" != "false" ]; then
+    read -p "Install Prometheus Node Exporter (Y/n)? " -n 1 -r
     echo ""
     if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mNode Exporter installation will be skipped\e[0m"
-        WITH_NODE_EXPORTER=false
+        echo -e "\e[1;31mPrometheus Node Exporter installation will be skipped\e[0m"
+        WITH_PROMETHEUS_NODE_EXPORTER=false
     else
-        echo -e "\e[1;32mNode Exporter will be installed on port 9100\e[0m"
-        WITH_NODE_EXPORTER=true
+        echo -e "\e[1;32mPrometheus Node Exporter will be installed\e[0m"
+        WITH_PROMETHEUS_NODE_EXPORTER=true
     fi
 fi
-if [ "$WITH_NODE_EXPORTER"==true ]; then
-    if [ -z "$WITH_PROMETHEUS" -o "$WITH_PROMETHEUS" != "true" -a "$WITH_PROMETHEUS" != "false" ]; then
-        read -p "Install Prometheus (Monitoring) (Y/n)? " -n 1 -r
+if [ "$WITH_PROMETHEUS_NODE_EXPORTER" == true ]; then
+    if [ -z "$WITH_PROMETHEUS_SERVER" -o "$WITH_PROMETHEUS_SERVER" != "true" -a "$WITH_PROMETHEUS_SERVER" != "false" ]; then
+        read -p "Install Prometheus Server (Y/n)? " -n 1 -r
         echo ""
         if [[ $REPLY =~ ^[Nn]$ ]]; then
             echo -e "\e[1;31mPrometheus installation will be skipped\e[0m"
-            WITH_PROMETHEUS=false
+            WITH_PROMETHEUS_SERVER=false
         else
-            echo -e "\e[1;32mPrometheus will be installed on port 9090\e[0m"
-            WITH_PROMETHEUS=true
+            echo -e "\e[1;32mPrometheus Server will be installed\e[0m"
+            WITH_PROMETHEUS_SERVER=true
         fi
     fi
+else
+    # Skip because Prometheus Node Exporter is not installed
+    WITH_PROMETHEUS_SERVER=false
 fi
-
-if [ "$WITH_PROMETHEUS"==true ]; then
+if [ "$WITH_PROMETHEUS_SERVER" == true ]; then
     if [ -z "$WITH_GRAFANA" -o "$WITH_GRAFANA" != "true" -a "$WITH_GRAFANA" != "false" ]; then
-        read -p "Install Grafana (GUI) (Y/n)? " -n 1 -r
+        read -p "Install Grafana (Y/n)? " -n 1 -r
         echo ""
         if [[ $REPLY =~ ^[Nn]$ ]]; then
             echo -e "\e[1;31mGrafana installation will be skipped\e[0m"
             WITH_GRAFANA=false
         else
-            echo -e "\e[1;32mGrafana will be installed on port 3000 L/P admin \e[0m"
+            echo -e "\e[1;32mGrafana will be installed\e[0m"
             WITH_GRAFANA=true
         fi
     fi
+else
+    # Skip because Prometheus Server is not installed
+    WITH_GRAFANA=false
 fi
-
 if [ -z "$WITH_EXTRA_TOOLS" -o "$WITH_EXTRA_TOOLS" != "true" -a "$WITH_EXTRA_TOOLS" != "false" ]; then
     read -p "Install non-essential tools useful for network analysis (Y/n)? " -n 1 -r
     echo ""
@@ -196,17 +200,17 @@ if [ ! -x "$(command -v ipfs)" ] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" == "true
     source ipfs/install
 fi
 
-# NODE EXPORTER
-if [ ! -x "$(command -v node_exporter)" ] && [ ! -z "$WITH_NODE_EXPORTER" -a "$WITH_NODE_EXPORTER" == "true" ]; then
-    source node_exporter/install
+# Prometheus Node Exporter
+if [ ! -x "$(command -v node_exporter)" ] && [ ! -z "$WITH_PROMETHEUS_NODE_EXPORTER" -a "$WITH_PROMETHEUS_NODE_EXPORTER" == "true" ]; then
+    source prometheus-node-exporter/install
 fi
 
-# PROMETHEUS
-if [ ! -x "$(command -v /opt/prometheus/prometheus)" ] && [ ! -z "$WITH_PROMETHEUS" -a "$WITH_PROMETHEUS" == "true" ]; then
-    source prometheus/install
+# Prometheus Server
+if [ ! -x "$(command -v /opt/prometheus/prometheus)" ] && [ ! -z "$WITH_PROMETHEUS_SERVER" -a "$WITH_PROMETHEUS_SERVER" == "true" ]; then
+    source prometheus-server/install
 fi
 
-# GRAFANA 
+# Grafana
 if [ ! -x "$(command -v /usr/sbin/grafana-server)" ] && [ ! -z "$WITH_GRAFANA" -a "$WITH_GRAFANA" == "true" ]; then
     source grafana/install
 fi

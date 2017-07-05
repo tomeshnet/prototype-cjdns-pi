@@ -1,5 +1,5 @@
 [Unit]
-Description=Prometheus daemon
+Description=Prometheus Server daemon
 Wants=network.target
 After=network.target
 

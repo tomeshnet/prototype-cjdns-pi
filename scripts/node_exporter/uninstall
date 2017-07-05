@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-
-set -e
-
-# Uninstall Node Exporter
-sudo systemctl disable node_exporter-daemon.service
-sudo systemctl stop node_exporter-daemon.service 2>/dev/null || true
-sudo rm -f /usr/local/bin/node_exporter
-sudo rm -f /lib/systemd/system/node_exporter-daemon.service

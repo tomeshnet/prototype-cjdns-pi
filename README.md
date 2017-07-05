@@ -33,26 +33,24 @@ The following instructions will help you set up an encrypted mesh network on Ras
     ```
     $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install && chmod +x install && ./install
     ```
-
-    **Optional:** If you have a suitable USB WiFi adapter and want to configure it as a 802.11s Mesh Point interface, set the `WITH_MESH_POINT` flag to `true`.
-
-    **Optional:** If you have a Raspberry Pi 3 and want to configure the on-board WiFi as an Access Point, set the `WITH_WIFI_AP` flag to `true`. The default configuration routes all traffic to the Ethernet port `eth0`.
-
-    **Optional:** If you want to install [IPFS](https://ipfs.io), set the `WITH_IPFS` flag to `true`.
-
-    **Optional:** If you want to install [Node Exporter], set the `WITH_NODE_EXPORTER` flag to `true`.
-
-    **Optional:** If you want to install [Prometheus], set the `WITH_PROMETHEUS` flag to `true`.
-
-    **Optional:** If you want to install [Grafana], set the `WITH_GRAFANA` flag to `true`.
-
-    **Optional:** If you want to install non-essential tools useful for network analysis, set the `WITH_EXTRA_TOOLS` flag to `true`.
-
-    To install with all optional features:
+    
+    The installation script can also install many optional features such as distributed applications and network analysis tools that are useful but non-essential to run a node. You can use flags to selectively enable them, or use the following command to install all optional features:
 
     ```
-    $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install && chmod +x install && WITH_MESH_POINT=true WITH_WIFI_AP=true WITH_IPFS=true WITH_EXTRA_TOOLS=true ./install
+    $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install && chmod +x install && WITH_MESH_POINT=true WITH_WIFI_AP=true WITH_IPFS=true WITH_PROMETHEUS_NODE_EXPORTER=true WITH_PROMETHEUS_SERVER=true WITH_GRAFANA=true WITH_EXTRA_TOOLS=true ./install
     ```
+
+## Optional feature flags
+
+| Feature Flag                  | Description |
+| :---------------------------- | :---------- |
+| WITH_MESH_POINT               | Set to `true` if you have a suitable USB WiFi adapter and want to configure it as a 802.11s Mesh Point interface. |
+| WITH_WIFI_AP                  | Set to `true` if you have a Raspberry Pi 3 and want to configure the on-board WiFi as an Access Point. The default configuration routes all traffic to the Ethernet port `eth0`. |
+| WITH_IPFS                     | Set to `true` if you want to install [IPFS](https://ipfs.io). |
+| WITH_PROMETHEUS_NODE_EXPORTER | Set to `true` if you want to install [Prometheus Node Exporter](https://github.com/prometheus/node_exporter) to report network metrics. |
+| WITH_PROMETHEUS_SERVER        | Set to `true` if you want to install [Prometheus Server](https://github.com/prometheus/prometheus) to collect network metrics. *Requires Prometheus Node Exporter.* |
+| WITH_GRAFANA                  | Set to `true` if you want to install [Grafana](https://grafana.com) to display network metrics. *Requires Prometheus Server.* |
+| WITH_EXTRA_TOOLS              | Set to `true` if you want to install non-essential tools useful for network analysis. |
 
 ## Check status
 

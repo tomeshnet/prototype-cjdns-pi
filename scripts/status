@@ -24,30 +24,30 @@ if [ "$(which mesh)" ]; then
 fi
 if [ "$(which hostapd)" ]; then
     if [ $(systemctl status hostapd.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ] && [ -n "$(ps aux | grep hostapd | grep -v grep)" ]; then
-        echo -e "WiFi Access Point .......... $ACTIVE"
+        echo -e "WiFi Access Point ............ $ACTIVE"
     else
         echo -e "WiFi Access Point .......... $INACTIVE"
     fi
 fi
 if [ "$(which ipfs)" ]; then
-    if [ $(systemctl status ipfs-daemon.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
+    if [ $(systemctl status ipfs.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
         echo -e "IPFS Service ................. $ACTIVE"
     else
         echo -e "IPFS Service ............... $INACTIVE"
     fi
 fi
 if [ "$(which node_exporter)" ]; then
-    if [ $(systemctl status node_exporter.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
-        echo -e "Node Exporter................. $ACTIVE"
+    if [ $(systemctl status prometheus-node-exporter.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
+        echo -e "Prometheus Node Exporter ..... $ACTIVE"
     else
-        echo -e "Node Exporter............... $INACTIVE"
+        echo -e "Prometheus Node Exporter ... $INACTIVE"
     fi
 fi
 if [ "$(which /opt/prometheus/prometheus)" ]; then
-    if [ $(systemctl status prometheus.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
-        echo -e "Prometheus ................... $ACTIVE"
+    if [ $(systemctl status prometheus-server.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
+        echo -e "Prometheus Server ............ $ACTIVE"
     else
-        echo -e "Prometheus ................. $INACTIVE"
+        echo -e "Prometheus Server .......... $INACTIVE"
     fi
 fi
 if [ "$(which /usr/sbin/grafana-server)" ]; then

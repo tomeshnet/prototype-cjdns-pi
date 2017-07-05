@@ -2,33 +2,31 @@
 
 set -e
 
-URL="https://bintray.com/fg2it/deb/download_file?file_path=main%2Fg%2Fgrafana_4.3.2_armhf.deb"
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Install Grafana dependencies
+sudo apt-get -y install libfontconfig1 fontconfig-config fonts-dejavu-core ttf-bitstream-vera fonts-liberation sqlite3
+
+# Download and install unofficial build of Grafana for ARM
+URL="https://bintray.com/fg2it/deb/download_file?file_path=main%2Fg%2Fgrafana_4.3.2_armhf.deb"
 if $(uname -m | grep -Eq ^armv6); then
     URL="https://bintray.com/fg2it/deb-rpi-1b/download_file?file_path=main%2Fg%2Fgrafana_4.3.2_armhf.deb"
 fi
-
-sudo apt-get -y install libfontconfig1 fontconfig-config fonts-dejavu-core ttf-bitstream-vera fonts-liberation sqlite3
-
-BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-# Download and install Grafana
 mkdir "$BASE_DIR/tmp"
-
 wget ${URL} -O "$BASE_DIR/tmp/go-grafana.tar.gz"
-
 sudo dpkg -i "$BASE_DIR/tmp/go-grafana.tar.gz"
-
 rm -rf "$BASE_DIR/tmp"
 
-
+# Configure systemd to start grafana-server.service on system boot
 sudo systemctl daemon-reload
-sudo systemctl enable grafana-server
-sudo systemctl start grafana-server
+sudo systemctl enable grafana-server.service
+sudo systemctl start grafana-server.service
 
-sleep 2 #Wait for it to start
+# Wait for server to start
+sleep 5
 
-cat <<EOF | sudo  sqlite3 /var/lib/grafana/grafana.db || echo "Failed to add data source."
-delete from data_source ;
-INSERT INTO data_source VALUES (2,1,0,'prometheus','prometheus','proxy','http://127.0.0.1:9090',NULL,NULL,NULL,0,NULL,NULL,0,'{}','2017-01-15 20:00:00','2017-01-15 20:00:00',0,'{}');
+# Add data source
+cat <<EOF | sudo sqlite3 /var/lib/grafana/grafana.db || echo "Failed to add data source"
+DELETE FROM data_source;
+INSERT INTO data_source VALUES (2,1,0,'prometheus','prometheus','proxy','http://127.0.0.1:9090',NULL,NULL,NULL,0,NULL,NULL,0,'{}','2017-01-01 00:00:00','2017-01-01 00:00:00',0,'{}');
 EOF

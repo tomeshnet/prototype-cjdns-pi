@@ -82,4 +82,6 @@ sudo cp "$BASE_DIR/radvd.conf" /etc/radvd.conf
 
 # Enable hostapd service
 sudo cp "$BASE_DIR/hostapd.service" /etc/systemd/system/hostapd.service
-sudo systemctl enable hostapd
+sudo systemctl daemon-reload
+sudo systemctl enable hostapd.service
+sudo systemctl start hostapd.service

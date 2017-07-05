@@ -1,5 +1,5 @@
 [Unit]
-Description=Node Exporter daemon
+Description=Prometheus Node Exporter daemon
 Wants=network.target
 After=network.target
 

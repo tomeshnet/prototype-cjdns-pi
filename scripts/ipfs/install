@@ -17,7 +17,8 @@ rm -rf "$BASE_DIR/tmp"
 # Initialize IPFS
 ipfs init
 
-# Configure systemd to start ipfs-daemon.service on system boot
-sudo cp "$BASE_DIR/ipfs-daemon.service" /lib/systemd/system/ipfs-daemon.service
+# Configure systemd to start ipfs.service on system boot
+sudo cp "$BASE_DIR/ipfs.service" /lib/systemd/system/ipfs.service
 sudo systemctl daemon-reload
-sudo systemctl enable ipfs-daemon.service
+sudo systemctl enable ipfs.service
+sudo systemctl start ipfs.service

@@ -3,8 +3,9 @@
 set -e
 
 # Uninstall WiFi Access Point
-sudo systemctl disable hostapd.service 2>/dev/null
+sudo systemctl disable hostapd.service 2>/dev/null || true
 sudo systemctl stop hostapd.service 2>/dev/null || true
+sudo systemctl daemon-reload
 if [ -f "/etc/network/interfaces.backup" ]; then
     sudo mv /etc/network/interfaces.backup /etc/network/interfaces
 fi
