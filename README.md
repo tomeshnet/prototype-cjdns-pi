@@ -4,7 +4,7 @@
 
 The following instructions will help you set up an encrypted mesh network on Raspberry Pi's. It takes about 5 minutes to set up a node with the Pi 3. Obviously, to have a mesh you will need more than one node.
 
-## Set up
+## Set Up
 
 1. Make sure you have the following items:
 
@@ -40,25 +40,25 @@ The following instructions will help you set up an encrypted mesh network on Ras
     $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install && chmod +x install && WITH_MESH_POINT=true WITH_WIFI_AP=true WITH_IPFS=true WITH_PROMETHEUS_NODE_EXPORTER=true WITH_PROMETHEUS_SERVER=true WITH_GRAFANA=true WITH_EXTRA_TOOLS=true ./install
     ```
 
-## Optional feature flags
+## Optional Features
 
-| Feature Flag                  | Description |
-| :---------------------------- | :---------- |
-| WITH_MESH_POINT               | Set to `true` if you have a suitable USB WiFi adapter and want to configure it as a 802.11s Mesh Point interface. |
-| WITH_WIFI_AP                  | Set to `true` if you have a Raspberry Pi 3 and want to configure the on-board WiFi as an Access Point. The default configuration routes all traffic to the Ethernet port `eth0`. |
-| WITH_IPFS                     | Set to `true` if you want to install [IPFS](https://ipfs.io). |
-| WITH_PROMETHEUS_NODE_EXPORTER | Set to `true` if you want to install [Prometheus Node Exporter](https://github.com/prometheus/node_exporter) to report network metrics. |
-| WITH_PROMETHEUS_SERVER        | Set to `true` if you want to install [Prometheus Server](https://github.com/prometheus/prometheus) to collect network metrics. *Requires Prometheus Node Exporter.* |
-| WITH_GRAFANA                  | Set to `true` if you want to install [Grafana](https://grafana.com) to display network metrics. *Requires Prometheus Server.* |
-| WITH_EXTRA_TOOLS              | Set to `true` if you want to install non-essential tools useful for network analysis. |
+| Feature Flag                    | Description |
+| :------------------------------ | :---------- |
+| `WITH_MESH_POINT`               | Set to `true` if you have a suitable USB WiFi adapter and want to configure it as a 802.11s Mesh Point interface. |
+| `WITH_WIFI_AP`                  | Set to `true` if you have a Raspberry Pi 3 and want to configure the on-board WiFi as an Access Point. The default configuration routes all traffic to the Ethernet port `eth0`. |
+| `WITH_IPFS`                     | Set to `true` if you want to install [IPFS](https://ipfs.io). |
+| `WITH_PROMETHEUS_NODE_EXPORTER` | Set to `true` if you want to install [Prometheus Node Exporter](https://github.com/prometheus/node_exporter) to report network metrics. |
+| `WITH_PROMETHEUS_SERVER`        | Set to `true` if you want to install [Prometheus Server](https://github.com/prometheus/prometheus) to collect network metrics. *Requires Prometheus Node Exporter.* |
+| `WITH_GRAFANA`                  | Set to `true` if you want to install [Grafana](https://grafana.com) to display network metrics. *Requires Prometheus Server.* |
+| `WITH_EXTRA_TOOLS`              | Set to `true` if you want to install non-essential tools useful for network analysis. |
 
-## Check status
+## Check Status
 
 1. Give the Pi about 15 seconds to reboot and SSH back into it. You should find the status of your mesh node automatically printed. You can also print this anytime by running `status`.
 
 1. Verify that **cjdns Service** is active, and **Mesh Interface** (if applicable). The **NODE** section should display a single IPv6 address, that's the identity of your Pi in the cjdns mesh. The **PEERS** section should indicate a list of IPv6 addresses that are active peers to your node. This list will be empty, until you have another nearby node with the same set up.
 
-## Network benchmark
+## Network Benchmark
 
 You can benchmark the network throughput with more than one node. Let's name our two Pi's **Hillary** and **Friend**.
 
