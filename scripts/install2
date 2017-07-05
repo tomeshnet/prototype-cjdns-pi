@@ -41,9 +41,6 @@ if [[ $BOARD_FAMILY == "Orange Pi" ]]; then
     sudo touch /etc/udev/rules.d/80-net-setup-link.rules
 fi
 
-echo -e "\e[1;32mInstallation for ARM version $ARM_VERSION\e[0m"
-export ARM_VERSION
-
 # Prompt and set missing flags
 if [ -z "$WITH_MESH_POINT" -o "$WITH_MESH_POINT" != "true" -a "$WITH_MESH_POINT" != "false" ]; then
     read -p "Configure Mesh Point interface (Y/n)? " -n 1 -r
