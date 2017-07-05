@@ -46,7 +46,7 @@ The following instructions will help you set up an encrypted mesh network on Ras
 | :------------------------------ | :--------------------------------------------- | :---------- |
 | `WITH_MESH_POINT`               | None                                           | Set to `true` if you have a suitable USB WiFi adapter and want to configure it as a 802.11s Mesh Point interface. |
 | `WITH_WIFI_AP`                  | None                                           | Set to `true` if you have a Raspberry Pi 3 and want to configure the on-board WiFi as an Access Point. The default configuration routes all traffic to the Ethernet port `eth0`. |
-| `WITH_IPFS`                     | **  80**: HTTP-to-IPFS gateway at `/ipfs/HASH` | Set to `true` if you want to install [IPFS](https://ipfs.io). |
+| `WITH_IPFS`                     | **80**: HTTP-to-IPFS gateway at `/ipfs/HASH` | Set to `true` if you want to install [IPFS](https://ipfs.io). |
 | `WITH_PROMETHEUS_NODE_EXPORTER` | **9100**: Node Exporter UI                     | Set to `true` if you want to install [Prometheus Node Exporter](https://github.com/prometheus/node_exporter) to report network metrics. |
 | `WITH_PROMETHEUS_SERVER`        | **9090**: Prometheus Server UI                 | Set to `true` if you want to install [Prometheus Server](https://github.com/prometheus/prometheus) to collect network metrics. *Requires Prometheus Node Exporter.* |
 | `WITH_GRAFANA`                  | **3000**: Grafana UI (login: admin/admin)      | Set to `true` if you want to install [Grafana](https://grafana.com) to display network metrics. *Requires Prometheus Server.* |
