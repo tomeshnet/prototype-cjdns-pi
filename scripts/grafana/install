@@ -28,3 +28,4 @@ sleep 30
 # Add data source and dashboard
 curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary '{"name":"prometheus","type":"prometheus","url":"http://localhost:9090","access":"proxy","isDefault":true}' http://localhost:3000/api/datasources
 curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary @dashboard.json http://localhost:3000/api/dashboards/db
+curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary @philly.json http://localhost:3000/api/dashboards/db
