@@ -15,7 +15,8 @@ mkdir "$BASE_DIR/tmp"
 wget "https://github.com/prometheus/prometheus/releases/download/v${PROMETHEUS_VERSION}/prometheus-${PROMETHEUS_VERSION}.linux-armv${ARM_VERSION}.tar.gz" -O "$BASE_DIR/tmp/prometheus.tar.gz"
 tar xvfz "$BASE_DIR/tmp/prometheus.tar.gz" -C "$BASE_DIR/tmp" --strip 1
 mv "$BASE_DIR/tmp/prometheus.yml" "$BASE_DIR/tmp/prometheus.yml.orig"
-cat "$BASE_DIR/tmp/prometheus.yml.orig" | sed s/localhost:9090/localhost:9100/ > "$BASE_DIR/tmp/prometheus.yml"
+CJDNS_IPV6=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g')
+cat "$BASE_DIR/tmp/prometheus.yml.orig" | sed "s|localhost:9090|[${CJDNS_IPV6}]:9100|" > "$BASE_DIR/tmp/prometheus.yml"
 sudo cp -r "$BASE_DIR/tmp" /opt/prometheus
 rm -rf "$BASE_DIR/tmp"
 
