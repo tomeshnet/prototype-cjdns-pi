@@ -39,6 +39,19 @@ echo -e "\e[1;32mStarting installation on ${BOARD_FAMILY} ${BOARD_NAME} (${BOARD
 if [[ $BOARD_FAMILY == "Orange Pi" ]]; then
     # Disable predictable network interface naming on Orange Pi
     sudo touch /etc/udev/rules.d/80-net-setup-link.rules
+
+    #Downgrade Kernel for re-enable XRadio in version 4.10 on Orange Pi Zero
+    if ! [ -z "`uname -a | grep 4.11`" ]; then 
+        if ! [ -z "`cat /sys/bus/mmc/devices/mmc1:0001/mmc1:0001:1/uevent |grep SDIO_ID | grep 0020:2281`" ]; then
+            read -p "Downgrade Kernel to Enable XRadio on Pi Zero (Y/n)? " -n 1 -r
+            echo ""
+            if ! [[ $REPLY =~ ^[Nn]$ ]]; then
+                echo -e "\e[1;32mDowngrading Kernel...\e[0m"
+            	wget http://apt.armbian.com/pool/main/l/linux-4.10.0-sun8i/linux-image-dev-sun8i_5.26_armhf.deb && dpkg -i linux-image-dev-sun8i_5.26_armhf.deb
+		rm -rf linux-image-dev-sun8i_5.26_armhf.deb
+            fi
+        fi
+    fi
 fi
 
 # Prompt and set missing flags
