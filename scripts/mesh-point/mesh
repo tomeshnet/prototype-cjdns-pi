@@ -19,7 +19,7 @@ function isMeshable {
 
 set -e
 
-# Define Canada as default location
+# Set wireless regulatory domain
 sudo iw reg set CA
 
 
