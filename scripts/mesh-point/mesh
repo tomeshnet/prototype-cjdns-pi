@@ -20,7 +20,7 @@ function isMeshable {
 set -e
 
 # Define Canada as default location
- iw reg set CA
+sudo iw reg set CA
 
 
 # Select physical device that supports 802.11s Mesh Point
