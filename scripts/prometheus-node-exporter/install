@@ -11,7 +11,7 @@ ARM_VERSION=v7
 if $(uname -m | grep -Eq ^armv6); then
     ARM_VERSION=v6
 elif ! [ -z $(uname -m | grep aarch64)]; then
-ARM_VERSION=64
+    ARM_VERSION=64
 fi
 mkdir "$BASE_DIR/tmp"
 wget "https://github.com/prometheus/node_exporter/releases/download/v${NODE_EXPORTER_VERSION}/node_exporter-${NODE_EXPORTER_VERSION}.linux-arm${ARM_VERSION}.tar.gz" -O "$BASE_DIR/tmp/node_exporter.tar.gz"
