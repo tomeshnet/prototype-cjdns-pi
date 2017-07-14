@@ -50,9 +50,9 @@ The following instructions will help you set up an encrypted mesh network on Ras
 | `WITH_PROMETHEUS_NODE_EXPORTER` | **9100**: Node Exporter UI                     | Set to `true` if you want to install [Prometheus Node Exporter](https://github.com/prometheus/node_exporter) to report network metrics. |
 | `WITH_PROMETHEUS_SERVER`        | **9090**: Prometheus Server UI                 | Set to `true` if you want to install [Prometheus Server](https://github.com/prometheus/prometheus) to collect network metrics. *Requires Prometheus Node Exporter.* |
 | `WITH_GRAFANA`                  | **3000**: Grafana UI (login: admin/admin)      | Set to `true` if you want to install [Grafana](https://grafana.com) to display network metrics. *Requires Prometheus Server.* |
-| `WITH_EXTRA_TOOLS`              | None                                           | Set to `true` if you want to install non-essential tools useful for network analysis. |
+| `WITH_EXTRA_TOOLS`              | None                                           | Set to `true` if you want to install non-essential tools useful for network analysis: vim socat oping bmon iperf3 |
 
-If you are connected to the WiFi AP, all HTTP services are available via **http://10.0.0.1:PORT** as well as the cjdns IPv6. To connect with the cjdns address, first note your node's fc00::/8 address from `status`, then navigate to `http://[fcaa:bbbb:cccc:dddd:eeee:0000:1111:2222]:PORT` from your browser.
+If you are connected to the WiFi Access Point, all HTTP services are available via `http://10.0.0.1:PORT` as well as the cjdns IPv6. To connect with the cjdns address, first note your node's fc00::/8 address from `status`, then navigate to `http://[fcaa:bbbb:cccc:dddd:eeee:0000:1111:2222]:PORT` from your browser.
 
 ## Check Status
 
@@ -78,7 +78,7 @@ If you are updating, run the same uninstall script, but keep all configuration f
 
 ## Experimental Support for Orange Pi
 
-We are adding support for [Orange Pi](http://www.orangepi.org/) boards and have tested with the [Orange Pi One](https://dl.armbian.com/orangepione/nightly/) and [Orange Pi Lite](https://dl.armbian.com/orangepilite/nightly/). Instead of flashing Raspbian, start with the Armbian nightly images linked above, then follow the same installation steps as the Raspberry Pi.
+We are adding support for [Orange Pi](http://www.orangepi.org/) boards and have tested with the [Orange Pi Zero (Armbian nightly)](https://dl.armbian.com/orangepizero/nightly/), [Orange Pi One (Armbian nightly)](https://dl.armbian.com/orangepione/nightly/), and [Orange Pi Lite  (Armbian nightly)](https://dl.armbian.com/orangepilite/nightly/). Instead of flashing Raspbian, start with the Armbian nightly images linked above, then follow the same installation steps as the Raspberry Pi.
 
 ## Development
 
