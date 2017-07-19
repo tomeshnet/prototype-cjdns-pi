@@ -9,7 +9,7 @@ BOARD_FAMILY="Unknown"
 BOARD_NAME="Generic"
 BOARD_REVISION="?"
 CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 ./do"
-BOARD_HARDWARE=$(cat /proc/cpuinfo  | grep Hardware | awk '{print $3}')
+BOARD_HARDWARE=$(cat /proc/cpuinfo  | grep Hardware | awk '{print $3}' | head -n 1)
 
 if [[ "$BOARD_HARDWARE" == 'Allwinner' ]]; then    
     BOARD_FAMILY="Orange Pi"
@@ -17,7 +17,7 @@ if [[ "$BOARD_HARDWARE" == 'Allwinner' ]]; then
     BOARD_REVISION="experimental"
     CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm\" ./do"
 elif [[ "$BOARD_HARDWARE" == 'sun50iw1p1' ]]; then
-    BOARD_FAMILY="Orange Pi H5"
+    BOARD_FAMILY="Orange Pi"
     BOARD_NAME="Generic"
     BOARD_REVISION="experimental"
     CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm\" ./do"
