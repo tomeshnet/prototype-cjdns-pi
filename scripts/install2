@@ -20,8 +20,7 @@ elif [[ "$BOARD_HARDWARE" == 'sun50iw1p1' ]]; then
     BOARD_FAMILY="Orange Pi"
     BOARD_NAME="H5"
     BOARD_REVISION="experimental"
-    CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 ./do"
-
+    CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -march=armv8-a+crc+crypto -mcpu=cortex-a53 -ftree-vectorize -mtune=cortex-a53 -fomit-frame-pointer\" ./do"
 else
     BOARD_FAMILY="Raspberry Pi"
     BOARD_REVISION=`sed -rn 's/Revision\s+\:\s+([0-9a-z_\-\s\,\(\)]+)/\1/p' /proc/cpuinfo`
