@@ -80,6 +80,19 @@ If you are updating, run the same uninstall script, but keep all configuration f
 
 We are adding support for [Orange Pi](http://www.orangepi.org/) boards and have tested with the [Orange Pi One](https://dl.armbian.com/orangepione/nightly/) and [Orange Pi Lite](https://dl.armbian.com/orangepilite/nightly/). Instead of flashing Raspbian, start with the Armbian nightly images linked above, then follow the same installation steps as the Raspberry Pi.
 
+## Hardware
+
+
+| Hardware                  | Base OS         | CJDNS Bench   | USB | Ethernet| Notes            |
+| :-------------------------|:----------------|:--------------|:----|:--------|:-----------------|
+| Raspbery Pi A+            | Rasbian Lite    |               | 1   | None    |                  |
+| Raspbery Pi B             | Rasbian Lite    |               | 2   | 10/100  |                  |
+| RAspbery Pi Zero          | Rasbian Lite    |               | 1   | 10/100  |                  |
+| Orange Pi Lite            | Armbian Nightly |               | 2   | None    |                  |
+| Orange Pi One             | Armbian Nightly | 131075        | 1   | 10/100  |                  |
+| Orange Pi Zero            | Armbian Nightly |               | 1   | 10/100  |                  |
+| Orange Pi Zero Plus 2 H5  | Armbian Nightly | 140960        | 2   | None    | USB headers only |         
+
 ## Development
 
 You can install from a specific tag or branch, such as `develop`, with:
