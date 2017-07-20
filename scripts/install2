@@ -11,7 +11,8 @@ BOARD_REVISION="?"
 CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 ./do"
 BOARD_HARDWARE=$(cat /proc/cpuinfo  | grep Hardware | awk '{print $3}' | head -n 1)
 
-if [[ "$BOARD_HARDWARE" == 'Allwinner' ]]; then    
+## possibly use /sys/firmware/devicetree/base/model
+if [[ "$BOARD_HARDWARE" == 'Allwinner' || "$BOARD_HARDWARE" == 'Generic DT based system' ]]; then    
     BOARD_FAMILY="Orange Pi"
     BOARD_NAME="Generic"
     BOARD_REVISION="experimental"
