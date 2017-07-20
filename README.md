@@ -88,11 +88,11 @@ Following is a list of hardware tested with the install.
 | :-------------------------|:----------------|:--------------|:-----|:--------|:-----------------|
 | Raspbery Pi A+            | Rasbian Lite    |               | 1    | None    |                  |
 | Raspbery Pi B             | Rasbian Lite    |               | 2    | 10/100  |                  |
-| RAspbery Pi Zero          | Rasbian Lite    |               | 1    | 10/100  |                  |
-| Orange Pi Lite            | Armbian Nightly |               | 2    | None    |                  |
-| Orange Pi One             | Armbian Nightly | 131K          | 1    | 10/100  |                  |
-| Orange Pi Zero            | Armbian Nightly |  70K          | 1(2*) | 10/100  | *2 Additional USB avaialbe via headers |
-| Orange Pi Zero Plus 2 H5  | Armbian Nightly | 142K          | 0(2*) | None    | *USB headers only, requires cable |         
+| Raspbery Pi Zero          | Rasbian Lite    |               | 1    | 10/100  |                  |
+| [Orange Pi Lite](https://dl.armbian.com/orangepilite/nightly/)           | Armbian Nightly |               | 2    | None    |                  |
+| [Orange Pi One](https://dl.armbian.com/orangepione/nightly/)            | Armbian Nightly | 131K          | 1    | 10/100  |                  |
+| [Orange Pi Zero](https://dl.armbian.com/orangepizero/nightly/)           | Armbian Nightly |  70K          | 1(2*) | 10/100  | *2 Additional USB avaialbe via headers |
+| [Orange Pi Zero Plus 2 H5](https://dl.armbian.com/orangepizeroplus2-h3/nightly/)  | Armbian Nightly | 142K          | 0(2*) | None    | *USB headers only, requires cable |         
 
 ## Development
 
