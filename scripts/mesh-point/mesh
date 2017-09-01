@@ -4,15 +4,17 @@ function isMeshable {
 
    interface=`iw dev | grep phy#$1 -A 1 | grep Interface | awk '{print $2}'`
 
+    # Check to see if driver reports missing mesh point support Device
     if  [ -z "$(iw phy phy$1 info | grep 'mesh point')" ]; then
-        result=''
-    elif [ "$(basename $(readlink /sys/class/net/$interface/device/driver))" == 'xradio_wlan' ]; then
-        result='' #Bad Match no mesh point here after all!
+        result='' # Indicate interface is not meshable
+	# XRADIO Driver reports Mesh Point support incorrectly. There is no support for it.
+    elif [ "$(basename $(readlink /sys/class/net/$interface/device/driver))" == 'xradio_wlan' ]; then	    
+        result='' # Indicate interface is actually not meshable
     else
-       result='1'
+        result='1' # Indicate interface is  meshable
    fi
 
-    echo $result
+   echo $result
 
 }
 
@@ -21,7 +23,6 @@ set -e
 
 # Set wireless regulatory domain
 sudo iw reg set CA
-
 
 # Select physical device that supports 802.11s Mesh Point
 if ! [ -z $(isMeshable 0 ) ]; then
