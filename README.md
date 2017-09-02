@@ -80,6 +80,23 @@ If you are updating, run the same uninstall script, but keep all configuration f
 
 We are adding support for [Orange Pi](http://www.orangepi.org/) boards and have tested with the [Orange Pi One](https://dl.armbian.com/orangepione/nightly/) and [Orange Pi Lite](https://dl.armbian.com/orangepilite/nightly/). Instead of flashing Raspbian, start with the Armbian nightly images linked above, then follow the same installation steps as the Raspberry Pi.
 
+## Hardware Table
+
+Following is a list of hardware tested with the install.
+
+Following is a list of hardware tested with the install.
+
+| Hardware                  | Base OS         | CJDNS Bench~  | USB  | Ethernet| Notes            |
+| :-------------------------|:----------------|:--------------|:-----|:--------|:-----------------|
+| Raspberry Pi A+           | [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/)  |               | 1     | None    |                  |
+| Raspberry Pi B            | [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/)  |               | 2     | 10/100  |                  |
+| Raspberry Pi 3            | [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/)  |               | 2     | 10/100  |                  |
+| Raspberry Pi Zero         | [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/)  |               | 1     | 10/100  |                  |
+| Orange Pi Lite            | [Armbian Nightly](https://dl.armbian.com/orangepilite/nightly/)           | 126K          | 2     | None    |                  |
+| Orange Pi One             | [Armbian Nightly](https://dl.armbian.com/orangepione/nightly/)            | 131K          | 1     | 10/100  |                  |
+| Orange Pi Zero            | [Armbian Nightly](https://dl.armbian.com/orangepizero/nightly/)           |  70K          | 1(+2*) | 10/100  | *2 Additional USB available via headers |
+| Orange Pi Zero Plus 2 H5  | [Armbian Nightly](https://dl.armbian.com/orangepizeroplus2-h5/nightly/)   | 142K          | 0(+2*) | None    | *USB headers only, requires cable |         
+
 ## Development
 
 You can install from a specific tag or branch, such as `develop`, with:

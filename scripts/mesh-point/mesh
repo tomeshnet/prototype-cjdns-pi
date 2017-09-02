@@ -1,4 +1,23 @@
-#!/bin/sh
+#!/bin/bash
+
+function isMeshable {
+
+   interface=`iw dev | grep phy#$1 -A 1 | grep Interface | awk '{print $2}'`
+
+    # Check to see if driver reports missing mesh point support Device
+    if  [ -z "$(iw phy phy$1 info | grep 'mesh point')" ]; then
+        result='' # Indicate interface is not meshable
+	# XRADIO Driver reports Mesh Point support incorrectly. There is no support for it.
+    elif [ "$(basename $(readlink /sys/class/net/$interface/device/driver))" == 'xradio_wlan' ]; then	    
+        result='' # Indicate interface is actually not meshable
+    else
+        result='1' # Indicate interface is  meshable
+   fi
+
+   echo $result
+
+}
+
 
 set -e
 
@@ -6,14 +25,14 @@ set -e
 sudo iw reg set CA
 
 # Select physical device that supports 802.11s Mesh Point
-if ! [ -z "$(iw phy phy0 info | grep 'mesh point')" ]; then
-	mesh_phy=phy0
-	mesh_dev=$(iw dev | grep phy#0 -A 1 | grep -o -e "wlan.*")
-elif ! [ -z "$(iw phy phy1 info | grep 'mesh point')" ]; then
-        mesh_phy=phy1
-        mesh_dev=$(iw dev | grep phy#1 -A 1 | grep -o -e "wlan.*")
+if ! [ -z $(isMeshable 0 ) ]; then
+    mesh_phy=phy0
+    mesh_dev=$(iw dev | grep phy#0 -A 1 |  grep Interface | awk '{print $2}')
+elif ! [ -z $(isMeshable 1 ) ]; then
+    mesh_phy=phy1
+    mesh_dev=$(iw dev | grep phy#1 -A 1 |  grep Interface | awk '{print $2}')
 else
-	exit 1
+    exit 1
 fi
 
 # Shut down the mesh_dev interface
