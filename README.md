@@ -86,7 +86,7 @@ Following is a list of hardware tested with the install.
 
 | Hardware                  | Base OS         | CJDNS Bench~  | USB  | Ethernet| Notes            |
 | :-------------------------|:----------------|:--------------|:-----|:--------|:-----------------|
-| Raspberry Pi 1 A+         | [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/)  |               | 1      | None    |                  |
+| Raspberry Pi 1 A+         | [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/)  | 35K           | 1      | None    |                  |
 | Raspberry Pi 1 B+         | [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/)  | 35K           | 2      | 10/100  |                  |
 | Raspberry Pi 3            | [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/)  |               | 2      | 10/100  |                  |
 | Raspberry Pi Zero         | [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/)  |               | 1      | 10/100  |                  |
