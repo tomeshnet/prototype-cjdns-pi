@@ -21,7 +21,7 @@ if ! [ -z "`ps xa | grep dpkg | grep -v grep`" ]; then
         exit
     else	
         echo -e "\e[1;32mKilling DPKG and continuing\e[0m"
-		sudo killall dpkg
+        sudo killall dpkg
     fi	 
 fi
 

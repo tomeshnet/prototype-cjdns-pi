@@ -11,7 +11,7 @@ BOARD_REVISION="?"
 CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 ./do"
 BOARD_HARDWARE=$(cat /proc/cpuinfo  | grep Hardware | awk '{print $3}' | head -n 1)
 
-## possibly use /sys/firmware/devicetree/base/model
+# Possibly use /sys/firmware/devicetree/base/model
 if [[ "$BOARD_HARDWARE" == 'Allwinner' || "$BOARD_HARDWARE" == 'Generic' ]]; then    
     BOARD_FAMILY="Orange Pi"
     BOARD_NAME="Generic"
@@ -47,16 +47,16 @@ if [[ $BOARD_FAMILY == "Orange Pi" ]]; then
     # Disable predictable network interface naming on Orange Pi
     sudo touch /etc/udev/rules.d/80-net-setup-link.rules
 
-	# Downgrade Kernel to re-enable XRadio in version 4.10 on Orange Pi Zero
+    # Downgrade Kernel to re-enable XRadio in version 4.10 on Orange Pi Zero
     if ! [ -z "`uname -a | grep 4.11`" ]; then 
         if ! [ -z "`cat /sys/bus/mmc/devices/mmc1:0001/mmc1:0001:1/uevent | grep SDIO_ID | grep 0020:2281`" ]; then
             read -p "Downgrade Kernel to Enable XRadio on Pi Zero (Y/n)? " -n 1 -r
             echo ""
             if ! [[ $REPLY =~ ^[Nn]$ ]]; then
                 echo -e "\e[1;32mDowngrading Kernel...\e[0m"
-            	wget http://apt.armbian.com/pool/main/l/linux-4.10.0-sun8i/linux-image-dev-sun8i_5.26_armhf.deb 
-				sudo dpkg -i linux-image-dev-sun8i_5.26_armhf.deb
-		rm -rf linux-image-dev-sun8i_5.26_armhf.deb
+                wget http://apt.armbian.com/pool/main/l/linux-4.10.0-sun8i/linux-image-dev-sun8i_5.26_armhf.deb 
+                sudo dpkg -i linux-image-dev-sun8i_5.26_armhf.deb
+                rm -rf linux-image-dev-sun8i_5.26_armhf.deb
             fi
         fi
     fi
@@ -253,4 +253,3 @@ echo "status" >> ~/.bash_profile
 
 # Reboot device
 sudo reboot
-	
