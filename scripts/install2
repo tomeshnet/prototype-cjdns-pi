@@ -42,10 +42,12 @@ fi
 
 echo -e "\e[1;32mStarting installation on ${BOARD_FAMILY} ${BOARD_NAME} (${BOARD_REVISION})...\e[0m"
 
+
+# Disable predictable network interface naming on Orange Pi
+sudo touch /etc/udev/rules.d/80-net-setup-link.rules
+
 # Set configurations specific to the board
 if [[ $BOARD_FAMILY == "Orange Pi" ]]; then
-    # Disable predictable network interface naming on Orange Pi
-    sudo touch /etc/udev/rules.d/80-net-setup-link.rules
 
     # Downgrade Kernel to re-enable XRadio in version 4.10 on Orange Pi Zero
     if ! [ -z "`uname -a | grep 4.11`" ]; then 
