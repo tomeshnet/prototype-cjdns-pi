@@ -43,7 +43,7 @@ fi
 echo -e "\e[1;32mStarting installation on ${BOARD_FAMILY} ${BOARD_NAME} (${BOARD_REVISION})...\e[0m"
 
 
-# Disable predictable network interface naming on Orange Pi
+# Disable predictable network interface naming newer kernels
 sudo touch /etc/udev/rules.d/80-net-setup-link.rules
 
 # Set configurations specific to the board
