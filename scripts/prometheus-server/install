@@ -7,12 +7,14 @@ PROMETHEUS_VERSION="2.0.0-alpha.3"
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Download and install Prometheus Server
-ARM_VERSION=7
+ARM_VERSION=v7
 if $(uname -m | grep -Eq ^armv6); then
-    ARM_VERSION=6
+    ARM_VERSION=v6
+elif ! [ -z $(uname -m | grep aarch64)]; then
+    ARM_VERSION=64
 fi
 mkdir "$BASE_DIR/tmp"
-wget "https://github.com/prometheus/prometheus/releases/download/v${PROMETHEUS_VERSION}/prometheus-${PROMETHEUS_VERSION}.linux-armv${ARM_VERSION}.tar.gz" -O "$BASE_DIR/tmp/prometheus.tar.gz"
+wget "https://github.com/prometheus/prometheus/releases/download/v${PROMETHEUS_VERSION}/prometheus-${PROMETHEUS_VERSION}.linux-arm${ARM_VERSION}.tar.gz" -O "$BASE_DIR/tmp/prometheus.tar.gz"
 tar xvfz "$BASE_DIR/tmp/prometheus.tar.gz" -C "$BASE_DIR/tmp" --strip 1
 mv "$BASE_DIR/tmp/prometheus.yml" "$BASE_DIR/tmp/prometheus.yml.orig"
 CJDNS_IPV6=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g')
