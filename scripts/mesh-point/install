@@ -121,7 +121,7 @@ EOF
 sudo chmod a+x /usr/local/sbin/mesh.setup
 
 
-if [ -z "$(cat /etc/NetworkManager/NetworkManager.conf | grep \"unmanaged-devices\")" ]; then
+if [ -z "$(cat /etc/NetworkManager/NetworkManager.conf | grep unmanaged-devices)" ]; then
 	sudo echo "\[keyfile\]" >> /etc/NetworkManager/NetworkManager.conf
 	sudo echo "unmanaged-devices=interface-name:wlan*" >> /etc/NetworkManager/NetworkManager.conf
 fi
