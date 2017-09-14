@@ -15,13 +15,18 @@ if [ $(systemctl status cjdns.service | grep 'Active: ' | awk '{ print $2 }') = 
 else
     echo -e "cjdns Service .............. $INACTIVE"
 fi
-if [ "$(which mesh)" ]; then
-    if [ "$(iw dev mesh0 info 2>/dev/null | grep 'type mesh point')" ] && [ "$(iw dev mesh0 info 2>/dev/null | grep 'channel')" ]; then
-        echo -e "Mesh Interface ............... $ACTIVE"
-    else
-        echo -e "Mesh Interface ............. $INACTIVE"
+
+isMeshed=0
+for var in $(cat /proc/net/dev | grep wlan | awk '{print $1}' |  sed 's/:$//');do
+    if [ "$( iw $var info | grep 'mesh point')" ]; then
+        echo -e "Mesh Interface ............... $ACTIVE ($var)"
+        isMeshed=1
     fi
+done
+if [ "$isMeshed" -eq "0" ];then
+    echo -e "Mesh Interface ............. $INACTIVE"
 fi
+ 
 if [ "$(which hostapd)" ]; then
     if [ $(systemctl status hostapd.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ] && [ -n "$(ps aux | grep hostapd | grep -v grep)" ]; then
         echo -e "WiFi Access Point ............ $ACTIVE"
