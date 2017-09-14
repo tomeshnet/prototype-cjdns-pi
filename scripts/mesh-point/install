@@ -3,7 +3,8 @@
 set -e
 
 #install confget software
-sudi apt-get install confget
+sudo apt-get install confget
+systemctl enable systemd-networkd 
 
 #Deploy systemd files
 sudo cat <<'EOF' > /etc/systemd/network/85-wlan-mesh.network
