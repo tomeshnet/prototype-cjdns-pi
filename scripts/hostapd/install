@@ -140,3 +140,25 @@ if [ -e "$LINK" ]; then
 fi
 EOF
 chmod +x /usr/local/sbin/hostapd.template
+
+cat<<'EOF' > /etc/systemd/system/hostapd\@.service  
+# Copyright (C) 2017 Hamish Coleman <hamish@zot.org>
+
+# FIXME - removing the device does not kill off the hostapd, which means that
+# replugging it doesnt work
+[Unit]
+Description=Software Wireless Access point on %I
+After=sys-subsystem-net-devices-%i.device
+BindsTo=sys-subsystem-net-devices-%i.device
+
+[Service]
+Restart=always
+RestartSec=1
+ExecStart=/usr/sbin/hostapd /etc/hostapd/hostapd.%I.conf
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStop=/bin/kill $MAINPID
+
+[Install]
+WantedBy=multi-user.target sys-subsystem-net-devices-%I.device
+DefaultInstance=wlan0
+EOF
