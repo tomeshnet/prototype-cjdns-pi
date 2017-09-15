@@ -229,8 +229,8 @@ fi
 
 # DNS Server Settings
 if [ ! -z "$WITH_H_DNS" -a "$WITH_H_DNS" == "true" ]; then
-    sed -i '/dns-nameservers /d' /etc/network/interfaces
-    echo "dns-nameservers fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc fc16:b44c:2bf9:467:8098:51c6:5849:7b4f" >> /etc/network/interfaces
+    sudo sed -i '/dns-nameservers /d' /etc/network/interfaces
+    sudo echo "dns-nameservers fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc fc16:b44c:2bf9:467:8098:51c6:5849:7b4f" >> /etc/network/interfaces
 fi
 
 
