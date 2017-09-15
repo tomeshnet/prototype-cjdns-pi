@@ -163,6 +163,19 @@ if [ -z "$WITH_H_NTP" -o "$WITH_H_NTP" != "true" -a "$WITH_H_NTP" != "false" ]; 
     fi
 fi
 
+if [ -z "$WITH_FAKE_HWCLOCK_5MIN" -o "$WITH_FAKE_HWCLOCK_5MIN" != "true" -a "$WITH_FAKE_HWCLOCK_5MIN" != "false" ]; then
+    read -p "Force Fake Hardware Clock to store values every 5 mins? (Y/n)? " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo -e "\e[1;31mHardware Clock Cron will be skipped\e[0m"
+        WITH_FAKE_HWCLOCK_5MIN=false
+    else
+        echo -e "\e[1;32mHardware Clock Cron will be added\e[0m"
+        WITH_FAKE_HWCLOCK_5MIN=true
+    fi
+fi
+
+
 # Prompt for name of the mesh network
 read -p "Enter the name of your mesh network (default: tomesh): " -r
 export MESH_NAME=`echo $REPLY | sed 's/ //g'`
@@ -229,10 +242,18 @@ fi
 if [ ! -x "$(command -v ntpd)" ] && [ ! -z "$WITH_H_NTP" -a "$WITH_H_NTP" == "true" ]; then
     sudo apt-get -y install ntp
 fi
-
 if [ ! -z "$WITH_H_NTP" -a "$WITH_H_NTP" == "true" ]; then
     sudo sed -i '/pool /d' /etc/ntp.conf
     sudo echo "server -6 fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc iburst" >> /etc/ntp.conf 
+fi
+
+# 5MIN Fake HardwareClock
+if [ ! -x "$(command -v fake-hwclock)" ] && [ ! -z "$WITH_FAKE_HWCLOCK_5MIN" -a "$WITH_FAKE_HWCLOCK_5MIN" == "true" ]; then
+    sudo apt-get -y install fake-hwclock
+fi
+if [ ! -z "$WITH_FAKE_HWCLOCK_5MIN" -a "$WITH_FAKE_HWCLOCK_5MIN" == "true" ]; then
+    sudo sed -i '/fake-hwclock/d' /etc/crontab
+    sudo echo "*/5 * * * * root fake-hwclock" >> /etc/crontab
 fi
 
 # IPFS
