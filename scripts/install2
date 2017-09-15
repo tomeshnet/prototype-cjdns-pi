@@ -151,6 +151,18 @@ if [ -z "$WITH_EXTRA_TOOLS" -o "$WITH_EXTRA_TOOLS" != "true" -a "$WITH_EXTRA_TOO
     fi
 fi
 
+if [ -z "$WITH_H_NTP" -o "$WITH_H_NTP" != "true" -a "$WITH_H_NTP" != "false" ]; then
+    read -p "Replace NTP (time servers) with CJDNS/Hyperboria friendly ones (Y/n)? " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo -e "\e[1;31mTime Servers be skipped\e[0m"
+        WITH_H_NTP=false
+    else
+        echo -e "\e[1;32mTime Servers will be installed\e[0m"
+        WITH_H_NTP=true
+    fi
+fi
+
 # Prompt for name of the mesh network
 read -p "Enter the name of your mesh network (default: tomesh): " -r
 export MESH_NAME=`echo $REPLY | sed 's/ //g'`
@@ -211,6 +223,16 @@ fi
 # WiFi Access Point on RPi3
 if [[ $BOARD_REVISION == *"a02082"* || $BOARD_REVISION == *"a22082"* ]] && [ ! -z "$WITH_WIFI_AP" -a "$WITH_WIFI_AP" == "true" ]; then
     source hostapd/install
+fi
+
+# TimeServers
+if [ ! -x "$(command -v ntpd)" ] && [ ! -z "$WITH_H_NTP" -a "$WITH_H_NTP" == "true" ]; then
+    sudo apt-get -y install ntp
+fi
+
+if [ ! -z "$WITH_H_NTP" -a "$WITH_H_NTP" == "true" ]; then
+    sudo sed -i '/pool /d' /etc/ntp.conf
+    sudo echo "pool fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc iburst" >> /etc/ntp.conf 
 fi
 
 # IPFS
