@@ -22,20 +22,10 @@ EmitLLDP=true
 EOF
 
 sudo cat <<'EOF' > /etc/systemd/network/85-wlan-mesh.link
-# By default, any of these type of wifi cards are used for mesh networking
-# TODO - wire up a script to set that up
 [Match]
 Type=wlan
-Driver=ath9k_htc 
+Driver=ath9k_htc rt2800usb
 
-[Network]
-LinkLocalAddressing=yes
-LLMNR=true
-MulticastDNS=true
-LLDP=true
-EmitLLDP=true
-
-root@orangepizero:~# cat /etc/systemd/network/85-wlan-mesh.link
 # glob matches on that field the MAC address 8c882b*, but systemd doesnt do
 
 [Link]
