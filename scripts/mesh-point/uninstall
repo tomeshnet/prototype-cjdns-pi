@@ -2,9 +2,8 @@
 
 set -e
 
-# Uninstall Mesh Point interface
-sudo systemctl disable mesh.service 2>/dev/null || true
-sudo systemctl stop mesh.service 2>/dev/null || true
-sudo systemctl daemon-reload
-sudo rm -f /usr/bin/mesh
-sudo rm -f /lib/systemd/system/mesh.service
+# Uninstall Mesh Point interfaces
+sudo rm -f /etc/systemd/network/85-wlan-mesh.network
+sudo rm -f /etc/systemd/network/85-wlan-mesh.link
+sudo rm -f  /etc/udev/rules.d/50-mesh.rules
+sudo rm -f /usr/local/sbin/mesh.setup

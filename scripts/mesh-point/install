@@ -2,15 +2,121 @@
 
 set -e
 
-BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+#install confget software
+apt-get install confget	
 
-# Install bring-up script for the Mesh Point interface to /usr/bin
-cp "$BASE_DIR/mesh" "$BASE_DIR/mesh2"
-sed -i "s/MESH_NAME/$MESH_NAME/g" "$BASE_DIR/mesh2"
-sudo mv "$BASE_DIR/mesh2" /usr/bin/mesh
+#Deploy systemd files
+cat <<'EOF' > /etc/systemd/network/85-wlan-mesh.network
+# By default, any of these type of wifi cards are used for mesh networking
+# TODO - wire up a script to set that up
+[Match]
+Type=wlan
+Driver=ath9k_htc rt2800usb
 
-# Configure systemd to start mesh.service on system boot
-sudo cp "$BASE_DIR/mesh.service" /lib/systemd/system/mesh.service
-sudo chmod 644 /lib/systemd/system/mesh.service
-sudo systemctl daemon-reload
-sudo systemctl enable mesh.service
+[Network]
+LinkLocalAddressing=yes
+LLMNR=true
+MulticastDNS=true
+LLDP=true
+EmitLLDP=true
+EOF
+
+cat <<'EOF' > /etc/systemd/network/85-wlan-mesh.link
+# By default, any of these type of wifi cards are used for mesh networking
+# TODO - wire up a script to set that up
+[Match]
+Type=wlan
+Driver=ath9k_htc 
+
+[Network]
+LinkLocalAddressing=yes
+LLMNR=true
+MulticastDNS=true
+LLDP=true
+EmitLLDP=true
+
+root@orangepizero:~# cat /etc/systemd/network/85-wlan-mesh.link
+# glob matches on that field the MAC address 8c882b*, but systemd doesnt do
+
+[Link]
+NamePolicy=kernel database
+MACAddressPolicy=persistent
+
+[mesh]
+country_code=CA
+ssid=##SSID##
+freq=2412 HT40+
+EOF
+sed -i "s/##SSID##/$MESH_NAME/g" "/etc/systemd/network/85-wlan-mesh.link"
+
+
+cat <<'EOF' > /etc/udev/rules.d/50-mesh.rules
+# Copyright (C) 2017 Hamish Coleman <hamish@zot.org>
+#
+# any wlan device with a *mesh.link file will try to get a mesh running
+
+SUBSYSTEM!="net", GOTO="mesh_end"
+ACTION!="add", GOTO="mesh_end"
+
+IMPORT{builtin}="net_setup_link"
+
+# TODO - filter on more specific device details ...
+
+ENV{ID_NET_LINK_FILE}=="*mesh.link", \
+    PROGRAM="/usr/local/sbin/mesh.setup %k %E{ID_NET_LINK_FILE}"
+
+LABEL="mesh_end"
+EOF
+
+
+#Script to bring up the mesh file
+cat <<'EOF' > /usr/local/sbin/mesh.setup
+#!/bin/sh
+# Copyright (C) 2017 Hamish Coleman <hamish@zot.org>
+
+#
+# Called from udev with the name of a wireless interface.
+#
+
+INT="$1"
+LINK="$2"
+
+if [ -z "$INT" ]; then
+    echo error - need interface name
+    exit 1
+fi
+
+if [ -e "$LINK" ]; then
+    # if we know the name of the *.link file, load config from it
+    eval $(confget -f $LINK -s mesh -l -S -p conf_)
+fi
+
+# check that we have the required config
+[ -n "$conf_ssid" ] || exit 1
+[ -n "$conf_freq" ] || exit 1
+
+if [ -n "$conf_country_code" ]; then
+    # if one is configured, just set it - dont check if it is already set
+    # or make any other assumptions
+    iw reg set $conf_country_code
+fi
+
+ip link set $INT down
+iw dev $INT set type mp
+ip link set $INT up
+iw dev $INT mesh join $conf_ssidfreq $conf_freq
+
+# I noted that it occasionally did not join
+# - perhaps some earlier command was processing asynchronously?
+sleep 2
+iw dev $INT mesh join $conf_ssid
+
+# TODO
+# - HT20 style options
+# - mcast-rate
+# - maybe mesh_param (eg: mesh_fwding=0)
+
+exit 0
+EOF
+chmod a+x /usr/local/sbin/mesh.setup
+
