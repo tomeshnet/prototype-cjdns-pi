@@ -3,10 +3,10 @@
 set -e
 
 #install confget software
-apt-get install confget	
+sudi apt-get install confget
 
 #Deploy systemd files
-cat <<'EOF' > /etc/systemd/network/85-wlan-mesh.network
+sudo cat <<'EOF' > /etc/systemd/network/85-wlan-mesh.network
 # By default, any of these type of wifi cards are used for mesh networking
 # TODO - wire up a script to set that up
 [Match]
@@ -21,7 +21,7 @@ LLDP=true
 EmitLLDP=true
 EOF
 
-cat <<'EOF' > /etc/systemd/network/85-wlan-mesh.link
+sudo cat <<'EOF' > /etc/systemd/network/85-wlan-mesh.link
 # By default, any of these type of wifi cards are used for mesh networking
 # TODO - wire up a script to set that up
 [Match]
@@ -47,10 +47,10 @@ country_code=CA
 ssid=##SSID##
 freq=2412 HT40+
 EOF
-sed -i "s/##SSID##/$MESH_NAME/g" "/etc/systemd/network/85-wlan-mesh.link"
+sudo sed -i "s/##SSID##/$MESH_NAME/g" "/etc/systemd/network/85-wlan-mesh.link"
 
 
-cat <<'EOF' > /etc/udev/rules.d/50-mesh.rules
+sudo cat <<'EOF' > /etc/udev/rules.d/50-mesh.rules
 # Copyright (C) 2017 Hamish Coleman <hamish@zot.org>
 #
 # any wlan device with a *mesh.link file will try to get a mesh running
@@ -70,7 +70,7 @@ EOF
 
 
 #Script to bring up the mesh file
-cat <<'EOF' > /usr/local/sbin/mesh.setup
+sudo cat <<'EOF' > /usr/local/sbin/mesh.setup
 #!/bin/sh
 # Copyright (C) 2017 Hamish Coleman <hamish@zot.org>
 
@@ -118,5 +118,11 @@ iw dev $INT mesh join $conf_ssid
 
 exit 0
 EOF
-chmod a+x /usr/local/sbin/mesh.setup
+sudo chmod a+x /usr/local/sbin/mesh.setup
+
+
+if [ -z "$(cat /etc/NetworkManager/NetworkManager.conf | grep \"unmanaged-devices\")" ]; then
+	sudo echo "\[keyfile\]" >> /etc/NetworkManager/NetworkManager.conf
+	sudo echo "unmanaged-devices=interface-name:wlan*" >> /etc/NetworkManager/NetworkManager.conf
+fi
 
