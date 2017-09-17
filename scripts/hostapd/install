@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
 set -e
+sudo apt-get install iptables
 
-cat <<'EOF' > /etc/systemd/network/95-wlan-hostap.link
+sudo cat <<'EOF' > /etc/systemd/network/95-wlan-hostap.link
 # make the wlan devices for hostap match "*hostap.link"
 # By default, all wlan interfaces will be access points
 [Match]
@@ -19,7 +20,7 @@ ssid=test2
 wpa_passphrase=bbbbbbbb
 EOF
 
-cat <<'EOF' > /etc/systemd/network/95-wlan-hostap.network
+sudo cat <<'EOF' > /etc/systemd/network/95-wlan-hostap.network
 # By default, all wlan interfaces will be access points
 [Match]
 Type=wlan
@@ -32,10 +33,11 @@ LLDP=true
 EmitLLDP=true
 Address=0.0.0.0/24
 IPForward=true
-IPMasquerade=true
+IPMasquerade=
+
 EOF
 
-cat <<'EOF' > /etc/udev/rules.d/50-hostapd.rules
+sudo cat <<'EOF' > /etc/udev/rules.d/50-hostapd.rules
 # Copyright (C) 2017 Hamish Coleman <hamish@zot.org>
 #
 # any wlan device with a *hostap.link file will get a hostapd running
@@ -53,7 +55,7 @@ LABEL="hostapd_end"
 EOF
 
 
-cat <<'EOF' >/etc/hostapd/hostapd.template.conf
+sudo cat <<'EOF' >/etc/hostapd/hostapd.template.conf
 # This is currently a bunch of settings that appear to me to be sane defaults,
 # without a huge amount of thought gone into them
 #
@@ -91,7 +93,7 @@ ssid=test
 wpa_passphrase=aaaaaaaa
 EOF
 
-cat <<'EOF' >/usr/local/sbin/hostapd.template
+sudo cat <<'EOF' >/usr/local/sbin/hostapd.template
 #!/bin/sh
 # Copyright (C) 2017 Hamish Coleman <hamish@zot.org>
 
@@ -141,7 +143,7 @@ fi
 EOF
 chmod +x /usr/local/sbin/hostapd.template
 
-cat<<'EOF' > /etc/systemd/system/hostapd\@.service  
+sudo cat<<'EOF' > /etc/systemd/system/hostapd\@.service  
 # Copyright (C) 2017 Hamish Coleman <hamish@zot.org>
 
 # FIXME - removing the device does not kill off the hostapd, which means that
