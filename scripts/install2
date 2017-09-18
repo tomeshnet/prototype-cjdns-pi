@@ -17,11 +17,14 @@ if [[ "$BOARD_HARDWARE" == 'Allwinner' || "$BOARD_HARDWARE" == 'Generic' ]]; the
 	BOARD_FAMILY="Orange Pi"
     BOARD_REVISION="experimental"
     CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm\" ./do"
+	BOARD_NAME=`echo $BOARD_NAME | sed -e "s/Orange Pi //g"`;
+	
 elif [[ "$BOARD_HARDWARE" == 'sun50iw1p1' ]]; then
     source /etc/armbian-image-release
     BOARD_FAMILY="Orange Pi"
     BOARD_REVISION="experimental"
     CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -march=armv8-a+crc+crypto -mcpu=cortex-a53 -ftree-vectorize -mtune=cortex-a53 -fomit-frame-pointer\" ./do"
+	BOARD_NAME=`echo $BOARD_NAME | sed -e "s/Orange Pi //g"`;
 else
     BOARD_FAMILY="Raspberry Pi"
     BOARD_REVISION=`sed -rn 's/Revision\s+\:\s+([0-9a-z_\-\s\,\(\)]+)/\1/p' /proc/cpuinfo`
