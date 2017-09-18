@@ -1,87 +1,192 @@
 #!/usr/bin/env bash
 
 set -e
+sudo apt-get install hostapd radvd iptables -y
 
-BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-# Install hostapd and dnsmasq to run IEEE 802.11 Access Point
-if ! [ "$(which hostapd)" ] || ! [ "$(which dnsmasq)" ]; then
-    sudo apt-get install hostapd dnsmasq radvd -y
-fi
-
-# Configure wlan0 interface
-sudo cp /etc/network/interfaces /etc/network/interfaces.backup
-START=$(grep -n "allow-hotplug wlan0" /etc/network/interfaces | awk '{ print $1 }' FS=':')
-END=$(expr $START + 3)
-sudo sed -i "${START},${END}d" /etc/network/interfaces
-echo "" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "allow-hotplug wlan0" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "iface wlan0 inet static" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    address 10.0.0.1" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    netmask 255.255.255.0" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    network 10.0.0.0" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    broadcast 10.0.0.255" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "iface wlan0 inet6 static" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    address fdfc::2" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    netmask 64" | sudo tee --append /etc/network/interfaces > /dev/null
-
-# Enable packet forwarding
-sudo cp /etc/sysctl.conf /etc/sysctl.conf.backup
-sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf
-sudo sed -i 's/#net.ipv6.conf.all.forwarding=1/net.ipv6.conf.all.forwarding=1/' /etc/sysctl.conf
-
-# Get network name and password
+ 
 APSSID=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-/g")
 
-# Select wpa-eap or wpa-psk
-read -p "Use WPA-EAP (Y) or WPA2-PSK (n) for WiFi Access Point $APSSID? " -n 1 -r
-echo ""
-if [[ $REPLY =~ ^[Nn]$ ]]; then
-    USE_EAP=false
-    while [ "${#APPASS}" -lt 8 ] || [ "${#APPASS}" -gt 63 ]; do
-        read -p "Set WPA2-PSK password (8-63 characters): " APPASS;
-    done
-else
-    USE_EAP=true
-    while [ "${#APPASS}" -lt 8 ] || [ "${#APPASS}" -gt 63 ]; do
-        read -p "Set WPA-EAP password (8-63 characters) for user \"guest\": " APPASS;
-    done
+sudo cat <<'EOF' > /etc/systemd/network/95-wlan-hostap.link
+# make the wlan devices for hostap match "*hostap.link"
+# By default, all wlan interfaces will be access points
+[Match]
+Type=wlan
+
+[Link]
+NamePolicy=kernel database
+MACAddressPolicy=persistent
+
+# this section gets appended to the hostap conf, overwriting any default
+# values from the template
+[hostapd]
+ssid=##SSID##
+wpa_passphrase=bbbbbbbb
+EOF
+sudo sed -i "s/##SSID##/$APSSID/g" "/etc/systemd/network/95-wlan-hostap.link"
+
+sudo cat <<'EOF' > /etc/systemd/network/95-wlan-hostap.network
+# By default, all wlan interfaces will be access points
+[Match]
+Type=wlan
+Driver=xradio_wlan
+
+[Network]
+DHCPServer=no
+LLMNR=true
+MulticastDNS=true
+LLDP=true
+EmitLLDP=true
+IPForward=true
+EOF
+
+sudo cat <<'EOF' > /etc/udev/rules.d/50-hostapd.rules
+# Copyright (C) 2017 Hamish Coleman <hamish@zot.org>
+#
+# any wlan device with a *hostap.link file will get a hostapd running
+
+SUBSYSTEM!="net", GOTO="hostapd_end"
+ACTION!="add", GOTO="hostapd_end"
+
+IMPORT{builtin}="net_setup_link"
+
+ENV{ID_NET_LINK_FILE}=="*hostap.link", \
+    TAG+="systemd", ENV{SYSTEMD_WANTS}="hostapd@%k.service", \
+    PROGRAM="/usr/local/sbin/hostapd.template %k %E{ID_NET_LINK_FILE}"
+
+LABEL="hostapd_end"
+EOF
+
+
+sudo cat <<'EOF' >/etc/hostapd/hostapd.template.conf
+# This is currently a bunch of settings that appear to me to be sane defaults,
+# without a huge amount of thought gone into them
+#
+# TODO
+# - reduce this file as much as possible
+#
+
+# FIXME - hardcoded with a poor ssid/psk
+logger_syslog=-1
+logger_syslog_level=2
+logger_stdout=-1
+logger_stdout_level=2
+ctrl_interface=/var/run/hostapd
+ctrl_interface_group=0
+ieee80211d=1
+ieee80211h=1
+hw_mode=g
+max_num_sta=32
+rts_threshold=2347
+fragm_threshold=2346
+macaddr_acl=0
+auth_algs=3
+
+wme_enabled=1
+ieee80211n=1
+wpa=2
+wpa_key_mgmt=WPA-PSK
+wpa_pairwise=TKIP
+rsn_pairwise=CCMP
+
+country_code=GB
+interface=__INTERFACE__
+channel=11
+EOF
+
+sudo cat <<'EOF' >/usr/local/sbin/hostapd.template
+#!/bin/sh
+# Copyright (C) 2017 Hamish Coleman <hamish@zot.org>
+
+#
+# Called from udev with the name of a wireless interface.  Checks if
+# there is a hostap config for it already, and if not, builds one from
+# the template
+#
+# TODO
+# - now that we can append config from the link file, do we want to just
+#   overwrite the conf file every time?
+# - or, perhaps, move the config file location to /run and use a per-interface
+#   template (hostapd.template.%I.conf ?) if it is found
+
+INT="$1"
+LINK="$2"
+
+CONF="hostapd.${INT}.conf"
+TEMPLATE="hostapd.template.conf"
+
+if [ -z "$INT" ]; then
+    echo error - need interface name
+    exit 1
 fi
 
-# Configure network with hostapd
-sudo cp "$BASE_DIR/nat.sh" /etc/hostapd/nat.sh
-if [ "$USE_EAP" = true ]; then
-    # Configure hostapd for wpa-eap
-    sudo cp "$BASE_DIR/wpa-eap/hostapd.conf" /etc/hostapd/hostapd.conf
-    sudo echo "ssid=$APSSID" | sudo tee --append /etc/hostapd/hostapd.conf > /dev/null
-    sudo cp "$BASE_DIR/wpa-eap/hostapd.eap_user" /etc/hostapd/hostapd.eap_user
-    sudo echo "\"guest\" MSCHAPV2 \"$APPASS\" [2]" | sudo tee --append /etc/hostapd/hostapd.eap_user > /dev/null
+DIR=/etc/hostapd
 
-    # Generate wpa-eap certificates
-    cp -r "$BASE_DIR/wpa-eap/certs" "$BASE_DIR/tmp"
-    /bin/bash "$BASE_DIR/tmp/bootstrap"
-    sudo cp "$BASE_DIR/tmp/ca.pem" /etc/hostapd/ca.pem
-    sudo cp "$BASE_DIR/tmp/server.pem" /etc/hostapd/server.pem
-    rm -rf "$BASE_DIR/tmp"
-else
-    # Configure hostapd for wpa-psk
-    sudo cp "$BASE_DIR/wpa-psk/hostapd.conf" /etc/hostapd/hostapd.conf
-    sudo echo "ssid=$APSSID" | sudo tee --append /etc/hostapd/hostapd.conf > /dev/null
-    sudo echo "wpa_passphrase=$APPASS" | sudo tee --append /etc/hostapd/hostapd.conf > /dev/null
+cd "$DIR"
+
+if [ -e "$CONF" ]; then
+    # nothing needs doing
+    exit 0
 fi
 
-# Configure DHCP with dnsmasq
-sudo cp /etc/dnsmasq.conf /etc/dnsmasq.conf.backup
-sudo cp "$BASE_DIR/dnsmasq.conf" /etc/dnsmasq.conf
-sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.backup
-sudo echo "" | sudo tee --append /etc/dhcpcd.conf > /dev/null
-sudo echo "denyinterfaces wlan0" | sudo tee --append /etc/dhcpcd.conf > /dev/null
+if [ ! -e "$TEMPLATE" ]; then
+    echo error - need a $TEMPLATE
+    exit 1
+fi
 
-# Configure IPv6 router advertisement with radvd
-sudo cp "$BASE_DIR/radvd.conf" /etc/radvd.conf
+sed -e "s/__INTERFACE__/$INT/g" <$TEMPLATE >$CONF
 
-# Enable hostapd service
-sudo cp "$BASE_DIR/hostapd.service" /etc/systemd/system/hostapd.service
-sudo systemctl daemon-reload
-sudo systemctl enable hostapd.service
-sudo systemctl start hostapd.service
+if [ -e "$LINK" ]; then
+    # if we know the name of the *.link file, append any extra
+    # config items from there
+    confget -f $LINK -s hostapd -l >>$CONF
+fi
+EOF
+chmod +x /usr/local/sbin/hostapd.template
+
+sudo cat<<'EOF' > /etc/systemd/system/hostapd\@.service  
+# Copyright (C) 2017 Hamish Coleman <hamish@zot.org>
+
+# FIXME - removing the device does not kill off the hostapd, which means that
+# replugging it doesnt work
+[Unit]
+Description=Software Wireless Access point on %I
+After=sys-subsystem-net-devices-%i.device
+BindsTo=sys-subsystem-net-devices-%i.device
+
+[Service]
+Restart=always
+RestartSec=1
+ExecStart=/usr/sbin/hostapd /etc/hostapd/hostapd.%I.conf
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStop=/bin/kill $MAINPID
+ExecStartPost=/usr/local/sbin/hostapd.nat %I
+
+
+[Install]
+WantedBy=multi-user.target sys-subsystem-net-devices-%I.device
+DefaultInstance=wlan0
+EOF
+sudo cat <<'EOF' > /usr/local/sbin/hostapd.nat
+#!/bin/sh
+
+ip6tables -D FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu >> /dev/null
+ip6tables -t nat -D POSTROUTING -o tun0 -j MASQUERADE >> /dev/null
+
+ip6tables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+ip6tables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
+
+EOF
+chmod +x /usr/local/sbin/hostapd.nat
+
+sudo cat<<'EOF' > /etc/radvd.conf
+interface wlan0 {
+    AdvSendAdvert on;
+    MaxRtrAdvInterval 30;
+    prefix fdfc::/64
+    {
+        AdvOnLink on;
+        AdvAutonomous on;
+    };
+};
+EOF
+
