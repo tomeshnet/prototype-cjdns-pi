@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
 set -e
-sudo apt-get install iptables
+sudo apt-get install hostapd radvd iptables -y
+
+ 
+APSSID=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-/g")
 
 sudo cat <<'EOF' > /etc/systemd/network/95-wlan-hostap.link
 # make the wlan devices for hostap match "*hostap.link"
@@ -16,25 +19,24 @@ MACAddressPolicy=persistent
 # this section gets appended to the hostap conf, overwriting any default
 # values from the template
 [hostapd]
-ssid=test2
+ssid=##SSID##
 wpa_passphrase=bbbbbbbb
 EOF
+sudo sed -i "s/##SSID##/$APSSID/g" "/etc/systemd/network/95-wlan-hostap.link"
 
 sudo cat <<'EOF' > /etc/systemd/network/95-wlan-hostap.network
 # By default, all wlan interfaces will be access points
 [Match]
 Type=wlan
+Driver=xradio_wlan
 
 [Network]
-DHCPServer=yes
+DHCPServer=no
 LLMNR=true
 MulticastDNS=true
 LLDP=true
 EmitLLDP=true
-Address=0.0.0.0/24
 IPForward=true
-IPMasquerade=
-
 EOF
 
 sudo cat <<'EOF' > /etc/udev/rules.d/50-hostapd.rules
@@ -88,9 +90,7 @@ rsn_pairwise=CCMP
 
 country_code=GB
 interface=__INTERFACE__
-channel=1
-ssid=test
-wpa_passphrase=aaaaaaaa
+channel=11
 EOF
 
 sudo cat <<'EOF' >/usr/local/sbin/hostapd.template
@@ -159,8 +159,34 @@ RestartSec=1
 ExecStart=/usr/sbin/hostapd /etc/hostapd/hostapd.%I.conf
 ExecReload=/bin/kill -HUP $MAINPID
 ExecStop=/bin/kill $MAINPID
+ExecStartPost=/usr/local/sbin/hostapd.nat %I
+
 
 [Install]
 WantedBy=multi-user.target sys-subsystem-net-devices-%I.device
 DefaultInstance=wlan0
 EOF
+sudo cat <<'EOF' > /usr/local/sbin/hostapd.nat
+#!/bin/sh
+
+ip6tables -D FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu >> /dev/null
+ip6tables -t nat -D POSTROUTING -o tun0 -j MASQUERADE >> /dev/null
+
+ip6tables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+ip6tables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
+
+EOF
+chmod +x /usr/local/sbin/hostapd.nat
+
+sudo cat<<'EOF' > /etc/radvd.conf
+interface wlan0 {
+    AdvSendAdvert on;
+    MaxRtrAdvInterval 30;
+    prefix fdfc::/64
+    {
+        AdvOnLink on;
+        AdvAutonomous on;
+    };
+};
+EOF
+
