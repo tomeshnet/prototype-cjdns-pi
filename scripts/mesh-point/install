@@ -118,4 +118,3 @@ if [ -z "$(cat /etc/NetworkManager/NetworkManager.conf | grep unmanaged-devices)
 	sudo echo "\[keyfile\]" >> /etc/NetworkManager/NetworkManager.conf
 	sudo echo "unmanaged-devices=interface-name:wlan*" >> /etc/NetworkManager/NetworkManager.conf
 fi
-	
