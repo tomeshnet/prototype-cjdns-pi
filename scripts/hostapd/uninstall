@@ -2,26 +2,11 @@
 
 set -e
 
-# Uninstall WiFi Access Point
-sudo systemctl disable hostapd.service 2>/dev/null || true
-sudo systemctl stop hostapd.service 2>/dev/null || true
-sudo systemctl daemon-reload
-if [ -f "/etc/network/interfaces.backup" ]; then
-    sudo mv /etc/network/interfaces.backup /etc/network/interfaces
-fi
-if [ -f "/etc/sysctl.conf.backup" ]; then
-    sudo mv /etc/sysctl.conf.backup /etc/sysctl.conf
-fi
-if [ -f "/etc/dnsmasq.conf.backup" ]; then
-    sudo mv /etc/dnsmasq.conf.backup /etc/dnsmasq.conf
-fi
-if [ -f "/etc/dhcpcd.conf.backup" ]; then
-    sudo mv /etc/dhcpcd.conf.backup /etc/dhcpcd.conf
-fi
-sudo rm -f /etc/radvd.conf
-sudo rm -f /etc/hostapd/hostapd.conf
-sudo rm -f /etc/hostapd/hostapd.eap_user
-sudo rm -f /etc/hostapd/ca.pem
-sudo rm -f /etc/hostapd/server.pem
-sudo rm -f /etc/hostapd/nat.sh
-sudo rm -f /etc/systemd/system/hostapd.service
+sudo rm -rf /etc/systemd/network/95-wlan-hostap.link
+sudo rm -rf /etc/systemd/network/95-wlan-hostap.network
+sudo rm -rf /etc/udev/rules.d/50-hostapd.rules 
+sudo rm -rf /etc/hostapd/hostapd.template.conf
+sudo rm -rf /usr/local/sbin/hostapd.template
+sudo rm -rf /etc/systemd/system/hostapd\@.service  
+sudo rm -rf /etc/hostapd/hostapd.sh
+sudo rm -rf "/etc/radvd.conf"

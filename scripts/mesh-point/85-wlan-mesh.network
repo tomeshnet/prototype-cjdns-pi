@@ -1,0 +1,12 @@
+# By default, any of these type of wifi cards are used for mesh networking
+# TODO - wire up a script to set that up
+[Match]
+Type=wlan
+Driver=ath9k_htc rt2800usb
+
+[Network]
+LinkLocalAddressing=no
+LLMNR=no
+MulticastDNS=true
+LLDP=no
+EmitLLDP=no

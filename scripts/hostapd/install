@@ -9,79 +9,15 @@ if ! [ "$(which hostapd)" ] || ! [ "$(which dnsmasq)" ]; then
     sudo apt-get install hostapd dnsmasq radvd -y
 fi
 
-# Configure wlan0 interface
-sudo cp /etc/network/interfaces /etc/network/interfaces.backup
-START=$(grep -n "allow-hotplug wlan0" /etc/network/interfaces | awk '{ print $1 }' FS=':')
-END=$(expr $START + 3)
-sudo sed -i "${START},${END}d" /etc/network/interfaces
-echo "" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "allow-hotplug wlan0" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "iface wlan0 inet static" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    address 10.0.0.1" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    netmask 255.255.255.0" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    network 10.0.0.0" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    broadcast 10.0.0.255" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "iface wlan0 inet6 static" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    address fdfc::2" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    netmask 64" | sudo tee --append /etc/network/interfaces > /dev/null
-
-# Enable packet forwarding
-sudo cp /etc/sysctl.conf /etc/sysctl.conf.backup
-sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf
-sudo sed -i 's/#net.ipv6.conf.all.forwarding=1/net.ipv6.conf.all.forwarding=1/' /etc/sysctl.conf
-
-# Get network name and password
 APSSID=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-/g")
 
-# Select wpa-eap or wpa-psk
-read -p "Use WPA-EAP (Y) or WPA2-PSK (n) for WiFi Access Point $APSSID? " -n 1 -r
-echo ""
-if [[ $REPLY =~ ^[Nn]$ ]]; then
-    USE_EAP=false
-    while [ "${#APPASS}" -lt 8 ] || [ "${#APPASS}" -gt 63 ]; do
-        read -p "Set WPA2-PSK password (8-63 characters): " APPASS;
-    done
-else
-    USE_EAP=true
-    while [ "${#APPASS}" -lt 8 ] || [ "${#APPASS}" -gt 63 ]; do
-        read -p "Set WPA-EAP password (8-63 characters) for user \"guest\": " APPASS;
-    done
-fi
-
-# Configure network with hostapd
-sudo cp "$BASE_DIR/nat.sh" /etc/hostapd/nat.sh
-if [ "$USE_EAP" = true ]; then
-    # Configure hostapd for wpa-eap
-    sudo cp "$BASE_DIR/wpa-eap/hostapd.conf" /etc/hostapd/hostapd.conf
-    sudo echo "ssid=$APSSID" | sudo tee --append /etc/hostapd/hostapd.conf > /dev/null
-    sudo cp "$BASE_DIR/wpa-eap/hostapd.eap_user" /etc/hostapd/hostapd.eap_user
-    sudo echo "\"guest\" MSCHAPV2 \"$APPASS\" [2]" | sudo tee --append /etc/hostapd/hostapd.eap_user > /dev/null
-
-    # Generate wpa-eap certificates
-    cp -r "$BASE_DIR/wpa-eap/certs" "$BASE_DIR/tmp"
-    /bin/bash "$BASE_DIR/tmp/bootstrap"
-    sudo cp "$BASE_DIR/tmp/ca.pem" /etc/hostapd/ca.pem
-    sudo cp "$BASE_DIR/tmp/server.pem" /etc/hostapd/server.pem
-    rm -rf "$BASE_DIR/tmp"
-else
-    # Configure hostapd for wpa-psk
-    sudo cp "$BASE_DIR/wpa-psk/hostapd.conf" /etc/hostapd/hostapd.conf
-    sudo echo "ssid=$APSSID" | sudo tee --append /etc/hostapd/hostapd.conf > /dev/null
-    sudo echo "wpa_passphrase=$APPASS" | sudo tee --append /etc/hostapd/hostapd.conf > /dev/null
-fi
-
-# Configure DHCP with dnsmasq
-sudo cp /etc/dnsmasq.conf /etc/dnsmasq.conf.backup
-sudo cp "$BASE_DIR/dnsmasq.conf" /etc/dnsmasq.conf
-sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.backup
-sudo echo "" | sudo tee --append /etc/dhcpcd.conf > /dev/null
-sudo echo "denyinterfaces wlan0" | sudo tee --append /etc/dhcpcd.conf > /dev/null
-
-# Configure IPv6 router advertisement with radvd
-sudo cp "$BASE_DIR/radvd.conf" /etc/radvd.conf
-
-# Enable hostapd service
-sudo cp "$BASE_DIR/hostapd.service" /etc/systemd/system/hostapd.service
-sudo systemctl daemon-reload
-sudo systemctl enable hostapd.service
-sudo systemctl start hostapd.service
+sudo cp 95-wlan-hostap.link /etc/systemd/network/95-wlan-hostap.link
+sudo sed -i "s/##SSID##/$APSSID/g" "/etc/systemd/network/95-wlan-hostap.link"
+sudo cp 95-wlan-hostap.network /etc/systemd/network/95-wlan-hostap.network
+sudo cp 50-hostapd.rules /etc/udev/rules.d/50-hostapd.rules 
+sudo cp hostapd.template.conf /etc/hostapd/hostapd.template.conf
+sudo chmod 644 /usr/local/sbin/hostapd.template
+sudo cp hostapd\@.service /etc/systemd/system/hostapd\@.service  
+sudo cp "hostapd.sh" /etc/hostapd/hostapd.sh
+sudo chmod 644 /etc/hostapd/hostapd.sh
+sudo cp radvd.conf "/etc/radvd.conf"
