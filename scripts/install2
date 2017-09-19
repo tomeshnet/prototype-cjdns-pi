@@ -208,8 +208,14 @@ if [ ! -z "$WITH_MESH_POINT" -a "$WITH_MESH_POINT" == "true" ]; then
     source mesh-point/install
 fi
 
+#check if ethernet configured, if not configure it
+if [[ -z "$(grep eth0  /etc/network/interfaces)" ]]; then
+    sudo echo "auto eth0" >> /etc/network/interfaces
+    sudo echo "iface eth0 inet dhcp" >> /etc/network/interfaces
+fi
+
 # WiFi Access Point on RPi3
-if [[ $BOARD_REVISION == *"a02082"* || $BOARD_REVISION == *"a22082"* ]] && [ ! -z "$WITH_WIFI_AP" -a "$WITH_WIFI_AP" == "true" ]; then
+if [ ! -z "$WITH_WIFI_AP" -a "$WITH_WIFI_AP" == "true" ]; then
     source hostapd/install
 fi
 
