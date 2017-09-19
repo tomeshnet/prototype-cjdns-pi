@@ -1,0 +1,15 @@
+ # By default, all wlan interfaces will be access points
+ [Match]
+ Type=wlan
++Driver=xradio_wlan
+ 
+ [Network]
+-DHCPServer=yes
++DHCPServer=no
+ LLMNR=true
+ MulticastDNS=true
+ LLDP=true
+ EmitLLDP=true
+-Address=0.0.0.0/24
+ IPForward=true
+-IPMasquerade=
