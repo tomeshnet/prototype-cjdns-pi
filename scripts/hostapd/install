@@ -11,13 +11,13 @@ fi
 
 APSSID=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-/g")
 
-sudo cp 95-wlan-hostap.link /etc/systemd/network/95-wlan-hostap.link
+sudo cp $BASE_DIR/95-wlan-hostap.link /etc/systemd/network/95-wlan-hostap.link
 sudo sed -i "s/##SSID##/$APSSID/g" "/etc/systemd/network/95-wlan-hostap.link"
-sudo cp 95-wlan-hostap.network /etc/systemd/network/95-wlan-hostap.network
-sudo cp 50-hostapd.rules /etc/udev/rules.d/50-hostapd.rules 
-sudo cp hostapd.template.conf /etc/hostapd/hostapd.template.conf
+sudo cp $BASE_DIR/95-wlan-hostap.network /etc/systemd/network/95-wlan-hostap.network
+sudo cp $BASE_DIR/50-hostapd.rules /etc/udev/rules.d/50-hostapd.rules 
+sudo cp $BASE_DIR/hostapd.template.conf /etc/hostapd/hostapd.template.conf
 sudo chmod 644 /usr/local/sbin/hostapd.template
-sudo cp hostapd\@.service /etc/systemd/system/hostapd\@.service  
-sudo cp "hostapd.sh" /etc/hostapd/hostapd.sh
+sudo cp $BASE_DIR/hostapd\@.service /etc/systemd/system/hostapd\@.service  
+sudo cp "$BASE_DIR/hostapd.sh" /etc/hostapd/hostapd.sh
 sudo chmod 644 /etc/hostapd/hostapd.sh
-sudo cp radvd.conf "/etc/radvd.conf"
+sudo cp $BASE_DIR/radvd.conf "/etc/radvd.conf"
