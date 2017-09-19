@@ -244,7 +244,7 @@ if [ ! -x "$(command -v ntpd)" ] && [ ! -z "$WITH_H_NTP" -a "$WITH_H_NTP" == "tr
 fi
 if [ ! -z "$WITH_H_NTP" -a "$WITH_H_NTP" == "true" ]; then
     sudo sed -i '/pool /d' /etc/ntp.conf
-    sudo echo "server -6 fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc iburst" >> /etc/ntp.conf 
+    sudo echo "pool -6 fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc iburst" >> /etc/ntp.conf 
 fi
 
 # 5MIN Fake HardwareClock
