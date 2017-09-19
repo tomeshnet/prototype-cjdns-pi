@@ -1,0 +1,14 @@
+# make the wlan devices for hostap match "*hostap.link"
+# By default, all wlan interfaces will be access points
+[Match]
+Type=wlan
+
+[Link]
+NamePolicy=kernel database
+MACAddressPolicy=persistent
+
+# this section gets appended to the hostap conf, overwriting any default
+# values from the template
+[hostapd]
+ssid=##SSID##
+wpa_passphrase=bbbbbbbb
