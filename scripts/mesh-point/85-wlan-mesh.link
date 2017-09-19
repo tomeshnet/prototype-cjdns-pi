@@ -1,0 +1,11 @@
+[Match]
+Type=wlan
+Driver=ath9k_htc rt2800usb
+# glob matches on that field the MAC address 8c882b*, but systemd doesnt do
+[Link]
+NamePolicy=kernel database
+MACAddressPolicy=persistent
+[mesh]
+country_code=CA
+ssid=##SSID##
+freq=2412 HT40+

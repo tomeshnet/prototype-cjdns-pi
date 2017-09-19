@@ -10,7 +10,7 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Install bring-up script for the Mesh Point interface to /usr/bin
 
 sudo cp "$BASE_DIR/85-wlan-mesh.network" "/etc/systemd/network/85-wlan-mesh.network"
-sudo cp "8$BASE_DIR/5-wlan-mesh.link" "/etc/systemd/network/85-wlan-mesh.link"
+sudo cp "$BASE_DIR/85-wlan-mesh.link" "/etc/systemd/network/85-wlan-mesh.link"
 sudo sed -i "s/##SSID##/$MESH_NAME/g" "/etc/systemd/network/85-wlan-mesh.link"
 sudo cp "$BASE_DIR/50-mesh.rules" "/etc/udev/rules.d/50-mesh.rules"
 sudo cp "$BASE_DIR/mesh.setup" "/usr/local/sbin/mesh.setup"
