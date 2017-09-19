@@ -156,6 +156,20 @@ if [ -z "$WITH_EXTRA_TOOLS" -o "$WITH_EXTRA_TOOLS" != "true" -a "$WITH_EXTRA_TOO
     fi
 fi
 
+
+if [ -z "$WITH_H_DNS" -o "$WITH_H_DNS" != "true" -a "$WITH_H_DNS" != "false" ]; then
+    read -p "Install CJDNS/Hyperboria DNS Servers for name resolution? (Y/n)? " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo -e "\e[1;31mDNS Settings will be skipped\e[0m"
+        WITH_H_DNS=false
+    else
+        echo -e "\e[1;32mDNS Settings will be changed\e[0m"
+        WITH_H_DNS=true
+    fi
+fi
+
+
 # Prompt for name of the mesh network
 read -p "Enter the name of your mesh network (default: tomesh): " -r
 export MESH_NAME=`echo $REPLY | sed 's/ //g'`
@@ -217,6 +231,13 @@ fi
 if [[ $BOARD_REVISION == *"a02082"* || $BOARD_REVISION == *"a22082"* ]] && [ ! -z "$WITH_WIFI_AP" -a "$WITH_WIFI_AP" == "true" ]; then
     source hostapd/install
 fi
+
+# DNS Server Settings
+if [ ! -z "$WITH_H_DNS" -a "$WITH_H_DNS" == "true" ]; then
+    sudo sed -i '/dns-nameservers /d' /etc/network/interfaces
+    sudo echo "dns-nameservers fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc fc16:b44c:2bf9:467:8098:51c6:5849:7b4f" >> /etc/network/interfaces
+fi
+
 
 # IPFS
 if [ ! -x "$(command -v ipfs)" ] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" == "true" ]; then
