@@ -2,15 +2,24 @@
 
 set -e
 
+sudo apt-get install confget
+systemctl enable systemd-networkd 
+
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Install bring-up script for the Mesh Point interface to /usr/bin
-cp "$BASE_DIR/mesh" "$BASE_DIR/mesh2"
-sed -i "s/MESH_NAME/$MESH_NAME/g" "$BASE_DIR/mesh2"
-sudo mv "$BASE_DIR/mesh2" /usr/bin/mesh
 
-# Configure systemd to start mesh.service on system boot
-sudo cp "$BASE_DIR/mesh.service" /lib/systemd/system/mesh.service
-sudo chmod 644 /lib/systemd/system/mesh.service
-sudo systemctl daemon-reload
-sudo systemctl enable mesh.service
+sudo cp "85-wlan-mesh.network" "/etc/systemd/network/85-wlan-mesh.network"
+sudo cp "85-wlan-mesh.link" "/etc/systemd/network/85-wlan-mesh.link"
+sudo sed -i "s/##SSID##/$MESH_NAME/g" "/etc/systemd/network/85-wlan-mesh.link"
+sudo cp "50-mesh.rules" "/etc/udev/rules.d/50-mesh.rules"
+sudo cp "mesh.setup" "/usr/local/sbin/mesh.setup"
+sudo chmod 644 /usr/local/sbin/mesh.setup
+
+
+#stop network manager from processing wireless devices
+if [ -z "$(cat /etc/NetworkManager/NetworkManager.conf | grep unmanaged-devices)" ]; then
+	sudo echo "[keyfile]" >> /etc/NetworkManager/NetworkManager.conf
+	sudo echo "unmanaged-devices=interface-name:wlan*" >> /etc/NetworkManager/NetworkManager.conf
+fi
+
