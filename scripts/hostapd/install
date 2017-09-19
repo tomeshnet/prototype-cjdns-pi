@@ -13,12 +13,19 @@ APSSID=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed '
 
 sudo cp $BASE_DIR/95-wlan-hostap.link /etc/systemd/network/95-wlan-hostap.link
 sudo sed -i "s/##SSID##/$APSSID/g" "/etc/systemd/network/95-wlan-hostap.link"
+
 sudo cp $BASE_DIR/95-wlan-hostap.network /etc/systemd/network/95-wlan-hostap.network
+
 sudo cp $BASE_DIR/50-hostapd.rules /etc/udev/rules.d/50-hostapd.rules 
+
 sudo cp $BASE_DIR/hostapd.template.conf /etc/hostapd/hostapd.template.conf
+
 sudo cp $BASE_DIR/hostapd.template /usr/local/sbin/hostapd.template
 sudo chmod 644 /usr/local/sbin/hostapd.template
+
 sudo cp $BASE_DIR/hostapd\@.service /etc/systemd/system/hostapd\@.service  
-sudo cp "$BASE_DIR/hostapd.sh" /etc/hostapd/hostapd.sh
-sudo chmod 644 /etc/hostapd/hostapd.sh
+
+sudo cp "$BASE_DIR/hostapd.nat" /usr/local/sbin/hostapd.nat
+sudo chmod 644 /usr/local/sbin/hostapd.nat
+
 sudo cp $BASE_DIR/radvd.conf "/etc/radvd.conf"
