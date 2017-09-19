@@ -13,15 +13,17 @@ BOARD_HARDWARE=$(cat /proc/cpuinfo  | grep Hardware | awk '{print $3}' | head -n
 
 # Possibly use /sys/firmware/devicetree/base/model
 if [[ "$BOARD_HARDWARE" == 'Allwinner' || "$BOARD_HARDWARE" == 'Generic' ]]; then    
+    source /etc/armbian-image-release
     BOARD_FAMILY="Orange Pi"
-    BOARD_NAME="Generic"
     BOARD_REVISION="experimental"
     CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm\" ./do"
+    BOARD_NAME=`echo $BOARD_NAME | sed -e "s/Orange Pi //g"`;
 elif [[ "$BOARD_HARDWARE" == 'sun50iw1p1' ]]; then
+    source /etc/armbian-image-release
     BOARD_FAMILY="Orange Pi"
-    BOARD_NAME="H5"
     BOARD_REVISION="experimental"
     CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -march=armv8-a+crc+crypto -mcpu=cortex-a53 -ftree-vectorize -mtune=cortex-a53 -fomit-frame-pointer\" ./do"
+    BOARD_NAME=`echo $BOARD_NAME | sed -e "s/Orange Pi //g"`;
 else
     BOARD_FAMILY="Raspberry Pi"
     BOARD_REVISION=`sed -rn 's/Revision\s+\:\s+([0-9a-z_\-\s\,\(\)]+)/\1/p' /proc/cpuinfo`
@@ -151,6 +153,43 @@ if [ -z "$WITH_EXTRA_TOOLS" -o "$WITH_EXTRA_TOOLS" != "true" -a "$WITH_EXTRA_TOO
     fi
 fi
 
+
+if [ -z "$WITH_H_NTP" -o "$WITH_H_NTP" != "true" -a "$WITH_H_NTP" != "false" ]; then
+    read -p "Replace NTP (time servers) with CJDNS/Hyperboria friendly ones (Y/n)? " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo -e "\e[1;31mTime Servers be skipped\e[0m"
+        WITH_H_NTP=false
+    else
+        echo -e "\e[1;32mTime Servers will be installed\e[0m"
+        WITH_H_NTP=true
+    fi
+fi
+
+if [ -z "$WITH_FAKE_HWCLOCK_5MIN" -o "$WITH_FAKE_HWCLOCK_5MIN" != "true" -a "$WITH_FAKE_HWCLOCK_5MIN" != "false" ]; then
+    read -p "Force Fake Hardware Clock to store values every 5 mins? (Y/n)? " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo -e "\e[1;31mHardware Clock Cron will be skipped\e[0m"
+        WITH_FAKE_HWCLOCK_5MIN=false
+    else
+        echo -e "\e[1;32mHardware Clock Cron will be added\e[0m"
+        WITH_FAKE_HWCLOCK_5MIN=true
+fi
+
+if [ -z "$WITH_H_DNS" -o "$WITH_H_DNS" != "true" -a "$WITH_H_DNS" != "false" ]; then
+    read -p "Install CJDNS/Hyperboria DNS Servers for name resolution? (Y/n)? " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo -e "\e[1;31mDNS Settings will be skipped\e[0m"
+        WITH_H_DNS=false
+    else
+        echo -e "\e[1;32mDNS Settings will be changed\e[0m"
+        WITH_H_DNS=true
+    fi
+fi
+
+
 # Prompt for name of the mesh network
 read -p "Enter the name of your mesh network (default: tomesh): " -r
 export MESH_NAME=`echo $REPLY | sed 's/ //g'`
@@ -211,6 +250,31 @@ fi
 # WiFi Access Point on RPi3
 if [[ $BOARD_REVISION == *"a02082"* || $BOARD_REVISION == *"a22082"* ]] && [ ! -z "$WITH_WIFI_AP" -a "$WITH_WIFI_AP" == "true" ]; then
     source hostapd/install
+fi
+
+
+# TimeServers
+if [ ! -x "$(command -v ntpd)" ] && [ ! -z "$WITH_H_NTP" -a "$WITH_H_NTP" == "true" ]; then
+    sudo apt-get -y install ntp
+fi
+if [ ! -z "$WITH_H_NTP" -a "$WITH_H_NTP" == "true" ]; then
+    sudo sed -i '/pool /d' /etc/ntp.conf
+    sudo echo "server -6 fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc iburst" >> /etc/ntp.conf 
+fi
+
+# 5MIN Fake HardwareClock
+if [ ! -x "$(command -v fake-hwclock)" ] && [ ! -z "$WITH_FAKE_HWCLOCK_5MIN" -a "$WITH_FAKE_HWCLOCK_5MIN" == "true" ]; then
+    sudo apt-get -y install fake-hwclock
+fi
+if [ ! -z "$WITH_FAKE_HWCLOCK_5MIN" -a "$WITH_FAKE_HWCLOCK_5MIN" == "true" ]; then
+    sudo sed -i '/fake-hwclock/d' /etc/crontab
+    sudo echo "*/5 * * * * root fake-hwclock" >> /etc/crontab
+fi
+
+# DNS Server Settings
+if [ ! -z "$WITH_H_DNS" -a "$WITH_H_DNS" == "true" ]; then
+    sudo sed -i '/dns-nameservers /d' /etc/network/interfaces
+    sudo echo "dns-nameservers fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc fc16:b44c:2bf9:467:8098:51c6:5849:7b4f" >> /etc/network/interfaces
 fi
 
 # IPFS
