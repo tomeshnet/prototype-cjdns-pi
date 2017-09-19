@@ -95,12 +95,8 @@ fi
 ip link set $INT down
 iw dev $INT set type mp
 ip link set $INT up
-iw dev $INT mesh join $conf_ssidfreq $conf_freq
+iw dev $INT mesh join $conf_ssid freq $conf_freq
 
-# I noted that it occasionally did not join
-# - perhaps some earlier command was processing asynchronously?
-sleep 2
-iw dev $INT mesh join $conf_ssid
 
 # TODO
 # - HT20 style options
