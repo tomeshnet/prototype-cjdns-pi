@@ -42,6 +42,7 @@ fi
 
 echo -e "\e[1;32mStarting installation on ${BOARD_FAMILY} ${BOARD_NAME} (${BOARD_REVISION})...\e[0m"
 
+
 # Disable predictable network interface naming
 sudo touch /etc/udev/rules.d/80-net-setup-link.rules
 
@@ -151,6 +152,7 @@ if [ -z "$WITH_EXTRA_TOOLS" -o "$WITH_EXTRA_TOOLS" != "true" -a "$WITH_EXTRA_TOO
     fi
 fi
 
+
 if [ -z "$WITH_H_NTP" -o "$WITH_H_NTP" != "true" -a "$WITH_H_NTP" != "false" ]; then
     read -p "Replace NTP (time servers) with CJDNS/Hyperboria friendly ones (Y/n)? " -n 1 -r
     echo ""
@@ -172,6 +174,17 @@ if [ -z "$WITH_FAKE_HWCLOCK_5MIN" -o "$WITH_FAKE_HWCLOCK_5MIN" != "true" -a "$WI
     else
         echo -e "\e[1;32mHardware Clock Cron will be added\e[0m"
         WITH_FAKE_HWCLOCK_5MIN=true
+fi
+
+if [ -z "$WITH_H_DNS" -o "$WITH_H_DNS" != "true" -a "$WITH_H_DNS" != "false" ]; then
+    read -p "Install CJDNS/Hyperboria DNS Servers for name resolution? (Y/n)? " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo -e "\e[1;31mDNS Settings will be skipped\e[0m"
+        WITH_H_DNS=false
+    else
+        echo -e "\e[1;32mDNS Settings will be changed\e[0m"
+        WITH_H_DNS=true
     fi
 fi
 
@@ -238,6 +251,7 @@ if [[ $BOARD_REVISION == *"a02082"* || $BOARD_REVISION == *"a22082"* ]] && [ ! -
     source hostapd/install
 fi
 
+
 # TimeServers
 if [ ! -x "$(command -v ntpd)" ] && [ ! -z "$WITH_H_NTP" -a "$WITH_H_NTP" == "true" ]; then
     sudo apt-get -y install ntp
@@ -254,6 +268,12 @@ fi
 if [ ! -z "$WITH_FAKE_HWCLOCK_5MIN" -a "$WITH_FAKE_HWCLOCK_5MIN" == "true" ]; then
     sudo sed -i '/fake-hwclock/d' /etc/crontab
     sudo echo "*/5 * * * * root fake-hwclock" >> /etc/crontab
+fi
+
+# DNS Server Settings
+if [ ! -z "$WITH_H_DNS" -a "$WITH_H_DNS" == "true" ]; then
+    sudo sed -i '/dns-nameservers /d' /etc/network/interfaces
+    sudo echo "dns-nameservers fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc fc16:b44c:2bf9:467:8098:51c6:5849:7b4f" >> /etc/network/interfaces
 fi
 
 # IPFS

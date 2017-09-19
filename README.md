@@ -53,6 +53,7 @@ The following instructions will help you set up an encrypted mesh network on Ras
 | `WITH_EXTRA_TOOLS`              | None                                           | Set to `true` if you want to install non-essential tools useful for network analysis. |
 | `WITH_H_NTP`                    | None                                           | Set to `true` if you want to install Hyperbora friendly time servers. |
 | `WITH_FAKE_HWCLOCK_5MIN`        | None                                           | Set to `true` if you want to force hwclock to store its time every 5 mins. |
+| `WITH_H_DNS`                    | None                                           | Set to `true` if you want ot replace your DNS servers with Hyperboria compatible ones. |
 
 If you are connected to the WiFi AP, all HTTP services are available via **http://10.0.0.1:PORT** as well as the cjdns IPv6. To connect with the cjdns address, first note your node's fc00::/8 address from `status`, then navigate to `http://[fcaa:bbbb:cccc:dddd:eeee:0000:1111:2222]:PORT` from your browser.
 
