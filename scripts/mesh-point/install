@@ -2,7 +2,10 @@
 
 set -e
 
-sudo apt-get install confget
+if ! [ "$(which nodejs)" ]; then
+   sudo apt-get install confget
+fi
+
 systemctl enable systemd-networkd 
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -14,7 +17,7 @@ sudo cp "$BASE_DIR/85-wlan-mesh.link" "/etc/systemd/network/85-wlan-mesh.link"
 sudo sed -i "s/##SSID##/$MESH_NAME/g" "/etc/systemd/network/85-wlan-mesh.link"
 sudo cp "$BASE_DIR/50-mesh.rules" "/etc/udev/rules.d/50-mesh.rules"
 sudo cp "$BASE_DIR/mesh.setup" "/usr/local/sbin/mesh.setup"
-sudo chmod 644 /usr/local/sbin/mesh.setup
+sudo chmod 744 /usr/local/sbin/mesh.setup
 
 
 #stop network manager from processing wireless devices

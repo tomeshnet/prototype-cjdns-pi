@@ -4,6 +4,10 @@ set -e
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+if ! [ "$(which nodejs)" ]; then
+   sudo apt-get install confget
+fi
+
 # Install hostapd and dnsmasq to run IEEE 802.11 Access Point
 if ! [ "$(which hostapd)" ] || ! [ "$(which dnsmasq)" ]; then
     sudo apt-get install hostapd dnsmasq radvd -y
@@ -21,11 +25,11 @@ sudo cp $BASE_DIR/50-hostapd.rules /etc/udev/rules.d/50-hostapd.rules
 sudo cp $BASE_DIR/hostapd.template.conf /etc/hostapd/hostapd.template.conf
 
 sudo cp $BASE_DIR/hostapd.template /usr/local/sbin/hostapd.template
-sudo chmod 644 /usr/local/sbin/hostapd.template
+sudo chmod 744 /usr/local/sbin/hostapd.template
 
 sudo cp $BASE_DIR/hostapd\@.service /etc/systemd/system/hostapd\@.service  
 
 sudo cp "$BASE_DIR/hostapd.nat" /usr/local/sbin/hostapd.nat
-sudo chmod 644 /usr/local/sbin/hostapd.nat
+sudo chmod 744 /usr/local/sbin/hostapd.nat
 
 sudo cp $BASE_DIR/radvd.conf "/etc/radvd.conf"
