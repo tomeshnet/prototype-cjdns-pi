@@ -41,4 +41,6 @@ iw dev $INT mesh join $conf_ssid freq $conf_freq
 
 sudo iw dev $INT set mesh_param mesh_fwding=0
 
+killall cjdroute
+
 exit 0
