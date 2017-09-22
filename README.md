@@ -2,17 +2,20 @@
 
 [![Build Status](https://travis-ci.org/tomeshnet/prototype-cjdns-pi.svg?branch=master)](https://travis-ci.org/tomeshnet/prototype-cjdns-pi)
 
-The following instructions will help you set up an encrypted mesh network on Raspberry Pi's. It takes about 5 minutes to set up a node with the Pi 3. Obviously, to have a mesh you will need more than one node.
+The following instructions will help you set up an encrypted mesh network on Raspberry Pi's. It takes about 5 minutes to set up a node with the Pi 3. Obviously, to have a mesh you will need more than one node. 
+Orange Pi's (See Hardware Table) are also supported however initial setup of the orange pi hardware will different then outlined in this document, as it runs Armbian and not Raspbian, however the installation of the tomesh software remains the same.
 
 ## Set Up
 
 1. Make sure you have the following items:
 
-    * A Raspberry Pi Zero, 1, 2, or 3 (Pi 3 recommended)
+    * Raspberry Pi Zero, 1, 2, or 3 (Pi 3 recommended) or for advanced users other compatible hardware
     * An SD card that works with the Pi
     * **Optional:** A USB WiFi adapter with [802.11s Mesh Point](https://github.com/o11s/open80211s/wiki/HOWTO) support, such as the [TP-LINK TL-WN722N](http://www.tp-link.com/en/products/details/TL-WN722N.html) or [Toplinkst TOP-GS07](https://github.com/tomeshnet/documents/blob/master/technical/20170208_mesh-point-with-topgs07-rt5572.md)
 
-1. Flash the SD card with [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/).
+1. Flash the SD card with [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/).
+
+    **Note:** Latest distribution of Raspbian (Stretch) currently does not allow for meshing. Please use [Rasbian Jessy Lite](https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2017-07-05/2017-07-05-raspbian-jessie-lite.zip) untill the issue is resolved.
 
 1. Create an empty file named **ssh** to enable SSH when the Pi boots:
 
