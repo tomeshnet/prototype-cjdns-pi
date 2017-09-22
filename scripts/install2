@@ -25,7 +25,7 @@ elif [[ "$BOARD_HARDWARE" == 'sun50iw1p1' ]]; then
 else
     BOARD_FAMILY="Raspberry Pi"
     BOARD_REVISION=`sed -rn 's/Revision\s+\:\s+([0-9a-z_\-\s\,\(\)]+)/\1/p' /proc/cpuinfo`
-    if [[ $BOARD_REVISION == *"900092"* || $BOARD_REVISION == *"900093"* ]]; then
+    if [[ $BOARD_REVISION == *"900092"* || $BOARD_REVISION == *"900093"* || $BOARD_REVISION == *"9000c1"* ]]; then
         BOARD_NAME="Zero"
         CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 CFLAGS=\"-s -static -Wall\" ./do"
     elif [[ $BOARD_REVISION == *"00"* ]]; then

@@ -86,10 +86,10 @@ Following is a list of hardware tested with the install.
 
 | Hardware                  | Base OS         | CJDNS Bench~  | USB  | Ethernet| Notes            |
 | :-------------------------|:----------------|:--------------|:-----|:--------|:-----------------|
-| Raspberry Pi 1 A+         | [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/)  | 35K           | 1      | None    |                  |
-| Raspberry Pi 1 B+         | [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/)  | 35K           | 2      | 10/100  |                  |
-| Raspberry Pi 3            | [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/)  |               | 2      | 10/100  |                  |
-| Raspberry Pi Zero         | [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/)  |               | 1      | 10/100  |                  |
+| Raspberry Pi 1 A+         | [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/)  |  35K          | 1      | None    |                  |
+| Raspberry Pi 1 B+         | [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/)  |  35K          | 2      | 10/100  |                  |
+| Raspberry Pi 3            | [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/)  | 100K          | 2      | 10/100  |                  |
+| Raspberry Pi Zero         | [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/)  |  68k          | 1      | None    | *Need OTG Cable  |
 | Orange Pi Lite            | [Armbian Nightly](https://dl.armbian.com/orangepilite/nightly/)          | 126K          | 2      | None    |                  |
 | Orange Pi One             | [Armbian Nightly](https://dl.armbian.com/orangepione/nightly/)           | 131K          | 1      | 10/100  |                  |
 | Orange Pi Zero            | [Armbian Nightly](https://dl.armbian.com/orangepizero/nightly/)          |  70K          | 1(+2*) | 10/100  | *Additional USB available via headers |
