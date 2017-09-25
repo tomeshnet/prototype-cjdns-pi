@@ -12,4 +12,4 @@ MACAddressPolicy=persistent
 # values from the template
 [hostapd]
 ssid=##SSID##
-wpa_passphrase=bbbbbbbb
+wpa_passphrase=##PSK##
