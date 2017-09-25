@@ -4,7 +4,7 @@ Type=wlan
 Driver=xradio_wlan 8189fs
 
 [Network]
-DHCPServer=no
+DHCPServer=true
 LLMNR=true
 MulticastDNS=true
 LLDP=true
