@@ -1,7 +1,7 @@
 # By default, all wlan interfaces will be access points
 [Match]
 Type=wlan
-Driver=xradio_wlan 8189fs
+Driver=xradio_wlan brcmfmac
 
 [Network]
 DHCPServer=true
