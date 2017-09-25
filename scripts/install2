@@ -211,7 +211,7 @@ fi
 
 #check if ethernet configured, if not configure it
 if [[ -z "$(grep eth0  /etc/network/interfaces)" ]]; then
-    sudo echo "auto eth0" >> /etc/network/interfaces
+    sudo echo "allow-hotplug eth0" >> /etc/network/interfaces
     sudo echo "iface eth0 inet dhcp" >> /etc/network/interfaces
 fi
 
