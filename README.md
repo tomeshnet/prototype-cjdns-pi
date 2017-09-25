@@ -51,6 +51,10 @@ Orange Pi's (See Hardware Table) are also supported however initial setup of the
 | `WITH_PROMETHEUS_NODE_EXPORTER` | **9100**: Node Exporter UI                     | Set to `true` if you want to install [Prometheus Node Exporter](https://github.com/prometheus/node_exporter) to report network metrics. |
 | `WITH_PROMETHEUS_SERVER`        | **9090**: Prometheus Server UI                 | Set to `true` if you want to install [Prometheus Server](https://github.com/prometheus/prometheus) to collect network metrics. *Requires Prometheus Node Exporter.* |
 | `WITH_GRAFANA`                  | **3000**: Grafana UI (login: admin/admin)      | Set to `true` if you want to install [Grafana](https://grafana.com) to display network metrics. *Requires Prometheus Server.* |
+| `WITH_EXTRA_TOOLS`              | None                                           | Set to `true` if you want to install non-essential tools useful for network analysis. |
+| `WITH_H_DNS`                    | None                                           | Set to `true` if you want to replace your DNS servers with Hyperboria compatible ones. DNS Server  fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc fc16:b44c:2bf9:467:8098:51c6:5849:7b4f |
+| `WITH_H_NTP`                    | None                                           | Set to `true` if you want to install Hyperboria friendly time servers. NTP Server fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc |
+| `WITH_FAKE_HWCLOCK_5MIN`        | None                                           | Set to `true` if you want to force hwclock to store its time every 5 mins. |
 | `WITH_EXTRA_TOOLS`              | None                                           | Set to `true` if you want to install non-essential tools useful for network analysis: vim socat oping bmon iperf3 |
 
 If you are connected to the WiFi Access Point, all HTTP services are available via `http://10.0.0.1:PORT` as well as the cjdns IPv6. To connect with the cjdns address, first note your node's fc00::/8 address from `status`, then navigate to `http://[fcaa:bbbb:cccc:dddd:eeee:0000:1111:2222]:PORT` from your browser.
