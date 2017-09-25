@@ -19,7 +19,7 @@ while [ "${#APPASS}" -lt 8 ] || [ "${#APPASS}" -gt 63 ]; do
    read -p "Set WPA2-PSK password (8-63 characters): " APPASS;
 done
 
-sudo cp $BASE_DIR/75-lan-bridge.neddev /etc/systemd/network/75-lan-bridge.neddev
+sudo cp $BASE_DIR/75-lan-bridge.netdev /etc/systemd/network/75-lan-bridge.netdev
 sudo cp $BASE_DIR/75-lan-bridge.network /etc/systemd/network/75-lan-bridge.network
 
 sudo cp $BASE_DIR/95-wlan-hostap.link /etc/systemd/network/95-wlan-hostap.link
