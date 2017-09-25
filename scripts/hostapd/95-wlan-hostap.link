@@ -11,5 +11,7 @@ MACAddressPolicy=persistent
 # this section gets appended to the hostap conf, overwriting any default
 # values from the template
 [hostapd]
+#PSK or EASP
+wpatype=##WPATYPE##
 ssid=##SSID##
 wpa_passphrase=##PSK##
