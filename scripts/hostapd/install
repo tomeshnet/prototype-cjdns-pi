@@ -40,9 +40,8 @@ sudo cp $BASE_DIR/95-wlan-hostap.network /etc/systemd/network/95-wlan-hostap.net
 if [ "$USE_EAP" = true ]; then
     sudo cp $BASE_DIR/wpa-eap/hostapd.template.conf /etc/hostapd/hostapd.template.conf
     sudo cp "$BASE_DIR/wpa-eap/hostapd.eap_user" /etc/hostapd/hostapd.eap_user
-    sudo sed -i "s/##WPATYPE##/EAP/g" "/etc/systemd/network/95-wlan-hostap.link"
     sudo echo "\"guest\" MSCHAPV2 \"$APPASS\" [2]" | sudo tee --append /etc/hostapd/hostapd.eap_user > /dev/null
-
+    sudo sed -i "s/wpa_passphrase=##PSK##//g" "/etc/systemd/network/95-wlan-hostap.link"
     cp -r "$BASE_DIR/wpa-eap/certs" "$BASE_DIR/tmp"
     /bin/bash "$BASE_DIR/tmp/bootstrap"
     sudo cp "$BASE_DIR/tmp/ca.pem" /etc/hostapd/ca.pem
@@ -51,9 +50,7 @@ if [ "$USE_EAP" = true ]; then
 
 else
     sudo cp $BASE_DIR/wpa-psk/hostapd.template.conf /etc/hostapd/hostapd.template.conf
-    sudo sed -i "s/##WPATYPE##/PSK/g" "/etc/systemd/network/95-wlan-hostap.link"
     sudo sed -i "s/##PSK##/$APPASS/g" "/etc/systemd/network/95-wlan-hostap.link"
-
 fi
 
 sudo cp $BASE_DIR/50-hostapd.rules /etc/udev/rules.d/50-hostapd.rules 
