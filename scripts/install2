@@ -209,11 +209,9 @@ if [ ! -z "$WITH_MESH_POINT" -a "$WITH_MESH_POINT" == "true" ]; then
     source mesh-point/install
 fi
 
-#check if ethernet configured, if not configure it
-if [[ -z "$(grep eth0  /etc/network/interfaces)" ]]; then
-    sudo echo "allow-hotplug eth0" >> /etc/network/interfaces
-    sudo echo "iface eth0 inet dhcp" >> /etc/network/interfaces
-fi
+#Stop using NetworkManager and use System Networkd instead (needed for mesh AND hostapd)
+systemctl disable NetworkManager
+systemctl enable systemd-networkd
 
 if [ ! -z "$WITH_WIFI_AP" -a "$WITH_WIFI_AP" == "true" ]; then
     source hostapd/install

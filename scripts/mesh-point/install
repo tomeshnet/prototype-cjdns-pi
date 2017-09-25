@@ -6,8 +6,6 @@ if ! [ "$(which nodejs)" ]; then
    sudo apt-get install confget
 fi
 
-systemctl enable systemd-networkd 
-
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Install bring-up script for the Mesh Point interface to /usr/bin

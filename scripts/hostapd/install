@@ -19,13 +19,13 @@ while [ "${#APPASS}" -lt 8 ] || [ "${#APPASS}" -gt 63 ]; do
    read -p "Set WPA2-PSK password (8-63 characters): " APPASS;
 done
 
+sudo cp $BASE_DIR/75-lan-bridge.neddev /etc/systemd/network/75-lan-bridge.neddev
+sudo cp $BASE_DIR/75-lan-bridge.network /etc/systemd/network/75-lan-bridge.network
+
 sudo cp $BASE_DIR/95-wlan-hostap.link /etc/systemd/network/95-wlan-hostap.link
 sudo sed -i "s/##SSID##/$APSSID/g" "/etc/systemd/network/95-wlan-hostap.link"
 sudo sed -i "s/##PSK##/$APPASS/g" "/etc/systemd/network/95-wlan-hostap.link"
-
-
 sudo cp $BASE_DIR/95-wlan-hostap.network /etc/systemd/network/95-wlan-hostap.network
-
 sudo cp $BASE_DIR/50-hostapd.rules /etc/udev/rules.d/50-hostapd.rules 
 
 sudo cp $BASE_DIR/hostapd.template.conf /etc/hostapd/hostapd.template.conf

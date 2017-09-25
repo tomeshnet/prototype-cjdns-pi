@@ -4,9 +4,4 @@ Type=wlan
 Driver=xradio_wlan brcmfmac
 
 [Network]
-DHCPServer=true
-LLMNR=true
-MulticastDNS=true
-LLDP=true
-EmitLLDP=true
-IPForward=true
+Bridge=br-ap
