@@ -3,7 +3,6 @@ Name=br-ap
 
 [Network]
 Address=10.0.0.1/24
-Gateway=10.0.0.1
 DHCPServer=true
 LLMNR=true
 MulticastDNS=true
