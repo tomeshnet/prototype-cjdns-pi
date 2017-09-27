@@ -1,0 +1,28 @@
+#!/bin/bash
+
+export WITH_MESH_POINT=false
+export WITH_WIFI_AP=false
+export WITH_IPFS=false
+export WITH_PROMETHEUS_NODE_EXPORTER=false
+export WITH_PROMETHEUS_SERVER=false
+export WITH_GRAFANA=false
+export WITH_EXTRA_TOOLS=false
+
+sudo apt-get install dialog
+dialog --checklist "Install Options:" 20 70 10 \
+        "WITH_MESH_POINT" "Mesh Point" on \
+        "WITH_WIFI_AP" "Access Point" on \
+        "WITH_IPFS" "IPFS Service" on \
+        "WITH_PROMETHEUS_NODE_EXPORTER" "Node Exporter" on \
+        "WITH_PROMETHEUS_SERVER" "Prometheus" on \
+        "WITH_GRAFANA" "Grafana" on \
+        "WITH_EXTRA_TOOLS" "Extra Tools" on \
+2> /tmp/answer
+res=$(cat /tmp/answer)
+rm -rf /tmp/answer
+
+for item in $res;do
+   t="export $item=true"
+   eval $t
+done
+./install2
