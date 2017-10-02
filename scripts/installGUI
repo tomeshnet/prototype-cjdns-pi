@@ -11,20 +11,79 @@ export WITH_H_DNS=false
 export WITH_H_NTP=false
 export WITH_FAKE_HWCLOCK=false
 
+export SET_MESH_POINT=off
+export SET_WIFI_AP=off
+export SET_IPFS=off
+export SET_PROMETHEUS_NODE_EXPORTER=off
+export SET_PROMETHEUS_SERVER=off
+export SET_GRAFANA=off
+export SET_EXTRA_TOOLS=off
+export SET_H_DNS=off
+export SET_H_NTP=off
+export SET_FAKE_HWCLOCK=off
+
 sudo apt-get install dialog
-dialog --checklist "Install Options:" 20 70 10 \
-        "WITH_MESH_POINT" "Mesh Point" on \
-        "WITH_WIFI_AP" "Access Point" on \
-        "WITH_IPFS" "IPFS Service" on \
-        "WITH_PROMETHEUS_NODE_EXPORTER" "Node Exporter" on \
-        "WITH_PROMETHEUS_SERVER" "Prometheus" on \
-        "WITH_GRAFANA" "Grafana" on \
-        "WITH_H_DNS" "Hyperboria DNS Server" on \
-        "WITH_H_NTP" "Hyperboria NTP Server" on \
-        "WITH_FAKE_HWCLOCK" "Set FAKECLOCK to 5 min" on \
-        "WITH_EXTRA_TOOLS" "Extra Tools" on \
+
+dialog --backtitle "TOMesh Prototype Node" --title "Select feature starting point (Customize next)" --menu "Presets" 20 70 10 \
+        BASIC "Basic" \
+        HYPE  "Basic With Hyperboria" \
+        FULL  "Install Everything" \
+        CANCEL "Cancel" \
+2> /tmp/answer
+
+res=$(cat /tmp/answer)
+rm -rf /tmp/answer
+
+if [ "$res" == "CANCEL" ]; then
+    exit 0
+fi
+if [ "$res" == "BASIC" ]; then
+    export SET_MESH_POINT=on
+    export SET_WIFI_AP=on
+fi
+
+if [ "$res" == "HYPE" ]; then
+    export SET_MESH_POINT=on
+    export SET_WIFI_AP=on
+    export SET_PROMETHEUS_NODE_EXPORTER=on
+    export SET_EXTRA_TOOLS=on
+    export SET_H_DNS=on
+    export SET_H_NTP=on
+    export SET_FAKE_HWCLOCK=on
+
+fi
+
+
+if [ "$res" == "FULL" ]; then
+    export SET_MESH_POINT=on
+    export SET_WIFI_AP=on
+    export SET_IPFS=on
+    export SET_PROMETHEUS_NODE_EXPORTER=on
+    export SET_PROMETHEUS_SERVER=on
+    export SET_GRAFANA=on
+    export SET_EXTRA_TOOLS=on
+    export SET_H_DNS=on
+    export SET_H_NTP=on
+    export SET_FAKE_HWCLOCK=on
+fi
+
+dialog --backtitle "TOMesh Prototype Node" --title "Select Features" --checklist "Features:" 20 70 10 \
+        "WITH_MESH_POINT" "Mesh Point" $SET_MESH_POINT \
+        "WITH_WIFI_AP" "Access Point" $SET_WIFI_AP \
+        "WITH_IPFS" "IPFS Service" $SET_IPFS \
+        "WITH_PROMETHEUS_NODE_EXPORTER" "Node Exporter" $SET_PROMETHEUS_NODE_EXPORTER \
+        "WITH_PROMETHEUS_SERVER" "Prometheus" $SET_PROMETHEUS_SERVER \
+        "WITH_GRAFANA" "Grafana" $SET_GRAFANA \
+        "WITH_H_DNS" "Hyperboria DNS Server" $SET_EXTRA_TOOLS \
+        "WITH_H_NTP" "Hyperboria NTP Server" $SET_H_DNS \
+        "WITH_FAKE_HWCLOCK" "Set FAKECLOCK to 5 min" $SET_H_NTP \
+        "WITH_EXTRA_TOOLS" "Extra Tools" $SET_FAKE_HWCLOCK \
 2> /tmp/answer
 res=$(cat /tmp/answer)
+
+if [ "$res" == "" ]; then
+    exit 0
+fi
 rm -rf /tmp/answer
 
 for item in $res;do
