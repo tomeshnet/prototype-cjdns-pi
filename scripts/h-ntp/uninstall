@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+set -e
+
+sudo sed -i '/pool /d' /etc/ntp.conf
