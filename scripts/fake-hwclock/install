@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -e
+
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Install fake-hwclock
+if [ ! -x "$(command -v fake-hwclock)" ]; then
+    sudo apt-get install fake-hwclock -y
+fi
+
+# Configure crontab to run fake-hwclock every 5 minutes
+sudo sed -i '/fake-hwclock/d' /etc/crontab
+sudo echo "*/5 * * * * root fake-hwclock" >> /etc/crontab
