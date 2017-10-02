@@ -9,3 +9,7 @@ MulticastDNS=true
 LLDP=true
 EmitLLDP=true
 IPForward=true
+
+[DHCPServer]
+EmitDNS=yes
+
