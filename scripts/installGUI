@@ -7,6 +7,9 @@ export WITH_PROMETHEUS_NODE_EXPORTER=false
 export WITH_PROMETHEUS_SERVER=false
 export WITH_GRAFANA=false
 export WITH_EXTRA_TOOLS=false
+export WITH_H_DNS=false
+export WITH_H_NTP=false
+export WITH_FAKE_HWCLOCK=false
 
 sudo apt-get install dialog
 dialog --checklist "Install Options:" 20 70 10 \
@@ -16,6 +19,9 @@ dialog --checklist "Install Options:" 20 70 10 \
         "WITH_PROMETHEUS_NODE_EXPORTER" "Node Exporter" on \
         "WITH_PROMETHEUS_SERVER" "Prometheus" on \
         "WITH_GRAFANA" "Grafana" on \
+        "WITH_H_DNS" "Hyperboria DNS Server" on \
+        "WITH_H_NTP" "Hyperboria NTP Server" on \
+        "WITH_FAKE_HWCLOCK" "Set FAKECLOCK to 5 min" on \
         "WITH_EXTRA_TOOLS" "Extra Tools" on \
 2> /tmp/answer
 res=$(cat /tmp/answer)
