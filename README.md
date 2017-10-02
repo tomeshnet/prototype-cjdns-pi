@@ -95,7 +95,7 @@ List of tested hardware:
 | Raspberry Pi 2            | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         | 150k,  50k | 2       | 10/100 |                                       |
 | Raspberry Pi 1 A+         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         |  35k,   -  | 1       | None   |                                       |
 | Raspberry Pi 1 B+         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         |  35k,   -  | 2       | 10/100 |                                       |
-| Raspberry Pi Zero         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         |  68k,   -  | 1*      | None   | *Need OTG Cable                       |
+| Raspberry Pi Zero         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         |  68k,  30k | 1*      | None   | *Need OTG Cable                       |
 | Orange Pi Lite            | [Armbian Nightly](https://dl.armbian.com/orangepilite/nightly/)          | 198k,  76k | 2       | None   |                                       |
 | Orange Pi One             | [Armbian Nightly](https://dl.armbian.com/orangepione/nightly/)           | 198k,  76k | 1       | 10/100 |                                       |
 | Orange Pi Zero            | [Armbian Nightly](https://dl.armbian.com/orangepizero/nightly/)          | 148k,  56k | 1 (+2*) | 10/100 | *Additional USB available via headers |
