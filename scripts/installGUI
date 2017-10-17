@@ -1,5 +1,6 @@
 #!/bin/bash
-
+dialogTitle="TOMesh Prototype Node"
+additionalParam="--ascii-lines "
 export WITH_MESH_POINT=false
 export WITH_WIFI_AP=false
 export WITH_IPFS=false
@@ -22,19 +23,20 @@ export SET_H_DNS=off
 export SET_H_NTP=off
 export SET_FAKE_HWCLOCK=off
 
+export WITH_MESH_ID=""
+
 sudo apt-get install dialog
 
-dialog --backtitle "TOMesh Prototype Node" --title "Select feature starting point (Customize next)" --menu "Presets" 20 70 10 \
+dialog --backtitle "$dialogTitle" $additionalParam --title "Select feature starting point (Customize next)" --menu "Presets" 20 70 10 \
         BASIC "Basic" \
         HYPE  "Basic With Hyperboria" \
         FULL  "Install Everything" \
-        CANCEL "Cancel" \
 2> /tmp/answer
 
 res=$(cat /tmp/answer)
 rm -rf /tmp/answer
 
-if [ "$res" == "CANCEL" ]; then
+if [ "$res" == "" ]; then
     exit 0
 fi
 if [ "$res" == "BASIC" ]; then
@@ -67,7 +69,7 @@ if [ "$res" == "FULL" ]; then
     export SET_FAKE_HWCLOCK=on
 fi
 
-dialog --backtitle "TOMesh Prototype Node" --title "Select Features" --checklist "Features:" 20 70 10 \
+dialog --backtitle "$dialogTitle"  $additionalParam --title "Select Features" --checklist "Features:" 20 70 10 \
         "WITH_MESH_POINT" "Mesh Point" $SET_MESH_POINT \
         "WITH_WIFI_AP" "Access Point" $SET_WIFI_AP \
         "WITH_IPFS" "IPFS Service" $SET_IPFS \
@@ -90,4 +92,11 @@ for item in $res;do
    t="export $item=true"
    eval $t
 done
+
+if [ "$WITH_MESH_POINT" == "true" ]; then
+	dialog --backtitle "$dialogTitle" $additionalParam  --title "Meshing Setup" --inputbox "802.11s Mesh Name"  10 70  "tomseh" 2> /tmp/answer
+	res=$(cat /tmp/answer)
+	export WITH_MESH_ID="$res"
+fi
+
 ./install2
