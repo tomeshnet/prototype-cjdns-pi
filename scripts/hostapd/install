@@ -2,6 +2,7 @@
 
 set -e
 
+RVERSION="$(cat /etc/issue | awk '{print $3}')"
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Install hostapd and dnsmasq to run IEEE 802.11 Access Point
@@ -9,11 +10,18 @@ if ! [ "$(which hostapd)" ] || ! [ "$(which dnsmasq)" ]; then
     sudo apt-get install hostapd dnsmasq radvd -y
 fi
 
-# Configure wlan0 interface
 sudo cp /etc/network/interfaces /etc/network/interfaces.backup
-START=$(grep -n "allow-hotplug wlan0" /etc/network/interfaces | awk '{ print $1 }' FS=':')
-END=$(expr $START + 3)
-sudo sed -i "${START},${END}d" /etc/network/interfaces
+if [ "$RVERSION" == "8" ]; then
+# Configure wlan0 interface
+    START=$(grep -n "allow-hotplug wlan0" /etc/network/interfaces | awk '{ print $1 }' FS=':')
+    END=$(expr $START + 3)
+    sudo sed -i "${START},${END}d" /etc/network/interfaces
+fi
+
+if [ "$RVERSION" == "9" ]; then
+    echo source-directory /etc/network/interfaces.d > /etc/network/interfaces
+fi
+
 echo "" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "allow-hotplug wlan0" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "iface wlan0 inet static" | sudo tee --append /etc/network/interfaces > /dev/null
