@@ -12,8 +12,10 @@ fi
 # Configure wlan0 interface
 sudo cp /etc/network/interfaces /etc/network/interfaces.backup
 START=$(grep -n "allow-hotplug wlan0" /etc/network/interfaces | awk '{ print $1 }' FS=':')
-END=$(expr $START + 3)
-sudo sed -i "${START},${END}d" /etc/network/interfaces
+if [ ! -z $START ]; then
+    END=$(expr $START + 3)
+    sudo sed -i "${START},${END}d" /etc/network/interfaces
+fi
 echo "" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "allow-hotplug wlan0" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "iface wlan0 inet static" | sudo tee --append /etc/network/interfaces > /dev/null
