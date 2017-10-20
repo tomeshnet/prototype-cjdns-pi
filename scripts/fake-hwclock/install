@@ -11,4 +11,4 @@ fi
 
 # Configure crontab to run fake-hwclock every 5 minutes
 sudo sed -i '/fake-hwclock/d' /etc/crontab
-sudo echo "*/5 * * * * root fake-hwclock" >> /etc/crontab
+echo "*/5 * * * * root fake-hwclock" | sudo tee --append /etc/crontab > /dev/null
