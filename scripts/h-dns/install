@@ -9,4 +9,5 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Configure Hyperboria DNS
 sudo sed -i '/dns-nameservers /d' /etc/network/interfaces
-sudo echo "dns-nameservers ${H_DNS_SERVER_0} ${H_DNS_SERVER_1}" >> /etc/network/interfaces
+echo "" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "dns-nameservers ${H_DNS_SERVER_0} ${H_DNS_SERVER_1}" | sudo tee --append /etc/network/interfaces > /dev/null
