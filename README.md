@@ -5,6 +5,7 @@
 The following instructions will help you set up an encrypted mesh network on Raspberry Pi's. It takes about 5 minutes to set up a node with the Pi 3. Obviously, to have a mesh you will need more than one node.
 
 ## Set Up
+(Note: Latest version is based on Stretch and is currently a WIP. Please continue to use Jessie)
 
 1. Make sure you have the following items:
 
@@ -12,7 +13,7 @@ The following instructions will help you set up an encrypted mesh network on Ras
     * An SD card that works with the Pi
     * **Optional:** A USB WiFi adapter with [802.11s Mesh Point](https://github.com/o11s/open80211s/wiki/HOWTO) support, such as the [TP-LINK TL-WN722N](http://www.tp-link.com/en/products/details/TL-WN722N.html) or [Toplinkst TOP-GS07](https://github.com/tomeshnet/documents/blob/master/technical/20170208_mesh-point-with-topgs07-rt5572.md)
 
-1. Flash the SD card with [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/).
+1. Flash the SD card with [Raspbian Jessie Lite](https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2017-07-05/2017-07-05-raspbian-jessie-lite.zip)
 
 1. Create an empty file named **ssh** to enable SSH when the Pi boots:
 
