@@ -1,0 +1,20 @@
+diff --git a/net/SessionManager.c b/net/SessionManager.c
+index ea61de2..eeea849 100644
+--- a/net/SessionManager.c
++++ b/net/SessionManager.c
+@@ -140,12 +140,12 @@ static void sendSession(struct SessionManager_Session_pvt* sess,
+ static inline void check(struct SessionManager_pvt* sm, int mapIndex)
+ {
+     Assert_true(sm->ifaceMap.keys[mapIndex].bytes[0] == 0xfc);
+-    uint8_t* herPubKey = sm->ifaceMap.values[mapIndex]->pub.caSession->herPublicKey;
++/*    uint8_t* herPubKey = sm->ifaceMap.values[mapIndex]->pub.caSession->herPublicKey;
+     if (!Bits_isZero(herPubKey, 32)) {
+         uint8_t ip6[16];
+         AddressCalc_addressForPublicKey(ip6, herPubKey);
+         Assert_true(!Bits_memcmp(&sm->ifaceMap.keys[mapIndex], ip6, 16));
+-    }
++    }*/
+ }
+
+ static inline struct SessionManager_Session_pvt* sessionForHandle(uint32_t handle,
+
