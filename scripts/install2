@@ -216,7 +216,9 @@ if ! [ -d "/opt/cjdns" ]; then
     here=`pwd`
     sudo git clone https://github.com/cjdelisle/cjdns.git /opt/cjdns
     cd /opt/cjdns && sudo git checkout $TAG_CJDNS && cd $here
+    cd /opt/cjdns
     patch -p1 < /tmp/cjdnsCheck.patch
+    cd $here
 fi
 
 # Build cjdns
