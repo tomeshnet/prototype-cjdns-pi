@@ -9,9 +9,6 @@ if ! [ "$(which hostapd)" ] || ! [ "$(which dnsmasq)" ]; then
     sudo apt-get install hostapd dnsmasq radvd -y
 fi
 
-if ! [ "$(which dhcpcd)" ]; then
-    sudo apt-get install dhcpcd5
-fi
 if ! [ "$(which dnsmasq)" ]; then
     sudo apt-get install dnsmasq
 fi
@@ -89,9 +86,11 @@ if [ -f /etc/dnsmasq.conf ]; then
 fi
 
 
-sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.backup
-sudo echo "" | sudo tee --append /etc/dhcpcd.conf > /dev/null
-sudo echo "denyinterfaces wlan0" | sudo tee --append /etc/dhcpcd.conf > /dev/null
+if [ -f /etc/dhcpcd.conf ]; then 
+    sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.backup
+    sudo echo "" | sudo tee --append /etc/dhcpcd.conf > /dev/null
+    sudo echo "denyinterfaces wlan0" | sudo tee --append /etc/dhcpcd.conf > /dev/null
+fi
 
 # Configure IPv6 router advertisement with radvd
 sudo cp "$BASE_DIR/radvd.conf" /etc/radvd.conf
