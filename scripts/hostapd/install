@@ -15,6 +15,9 @@ fi
 if ! [ "$(which iptables)" ]; then
     sudo apt-get install iptables
 fi
+if ! [ "$(which radvd)" ]; then
+    sudo apt-get install radvd
+fi
 
 # Configure wlan0 interface
 sudo cp /etc/network/interfaces /etc/network/interfaces.backup
