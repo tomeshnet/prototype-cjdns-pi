@@ -85,8 +85,8 @@ fi
 # Configure DHCP with dnsmasq
 if [ -f /etc/dnsmasq.conf ]; then
     sudo cp /etc/dnsmasq.conf /etc/dnsmasq.conf.backup
-    sudo cp "$BASE_DIR/dnsmasq.conf" /etc/dnsmasq.conf
 fi
+sudo cp "$BASE_DIR/dnsmasq.conf" /etc/dnsmasq.conf
 
 
 if [ -f /etc/dhcpcd.conf ]; then 
