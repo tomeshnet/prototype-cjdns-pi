@@ -226,13 +226,15 @@ fi
 if ! [ -x "/opt/cjdns/cjdroute" ]; then
     here=`pwd`
     cd /opt/cjdns && eval $CJDNS_BUILD_CMD && cd $here
+    if ! [ -x "/usr/bin/cjdroute" ]; then
+        sudo rm -f /usr/bin/cjdroute
+    fi
 fi
 
 # Install cjdns to /usr/bin
 if ! [ -x "/usr/bin/cjdroute" ]; then
-    rm -rf /usr/bin/cjdroute
+    sudo cp /opt/cjdns/cjdroute /usr/bin/cjdroute
 fi
-sudo cp /opt/cjdns/cjdroute /usr/bin/cjdroute
 
 # Generate cjdns configurations
 if ! [ -f "/etc/cjdroute.conf" ]; then
