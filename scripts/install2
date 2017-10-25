@@ -60,7 +60,7 @@ if [[ $BOARD_FAMILY == "Orange Pi" ]]; then
                 echo -e "\e[1;32mDowngrading Kernel...\e[0m"
                 wget https://github.com/darkdrgn2k/OrangePiXRadio/raw/master/linux-image-dev-sun8i_5.26_armhf.deb 
                 sudo dpkg -i linux-image-dev-sun8i_5.26_armhf.deb
-                sudo rm -rf linux-image-dev-sun8i_5.26_armhf.deb
+                rm -rf linux-image-dev-sun8i_5.26_armhf.deb
             fi
         fi
     fi
