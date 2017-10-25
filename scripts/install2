@@ -68,6 +68,8 @@ if [[ $BOARD_FAMILY == "Orange Pi" ]]; then
                 sudo dpkg -i linux-image-dev-sun8i_5.26_armhf.deb
                 rm -rf linux-image-dev-sun8i_5.26_armhf.deb
 		ALLOW_HOSTAP=true #downgrading kernel, allow hostapd
+            else
+                ALLOW_HOSTAP=false #Zero is not downgraded from broken kernel, dont allow hostap
             fi
         fi
     fi
