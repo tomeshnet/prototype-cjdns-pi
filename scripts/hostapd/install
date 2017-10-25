@@ -9,14 +9,14 @@ if ! [ "$(which hostapd)" ] || ! [ "$(which dnsmasq)" ]; then
     sudo apt-get install hostapd dnsmasq radvd -y
 fi
 
-if ! [ "$(which dnsmasq)" ]; then
-    sudo apt-get install dnsmasq
-fi
+#if ! [ "$(which dnsmasq)" ]; then
+    sudo apt-get install dnsmasq -y
+#fi
 if ! [ "$(which iptables)" ]; then
-    sudo apt-get install iptables
+    sudo apt-get install iptables -y
 fi
 if ! [ "$(which radvd)" ]; then
-    sudo apt-get install radvd
+    sudo apt-get install radvd -y
 fi
 
 # Configure wlan0 interface
