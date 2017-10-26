@@ -5,19 +5,7 @@ set -e
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Install hostapd and dnsmasq to run IEEE 802.11 Access Point
-if ! [ "$(which hostapd)" ] || ! [ "$(which dnsmasq)" ]; then
-    sudo apt-get install hostapd dnsmasq radvd -y
-fi
-
-#if ! [ "$(which dnsmasq)" ]; then
-    sudo apt-get install dnsmasq -y
-#fi
-if ! [ "$(which iptables)" ]; then
-    sudo apt-get install iptables -y
-fi
-if ! [ "$(which radvd)" ]; then
-    sudo apt-get install radvd -y
-fi
+sudo apt-get install hostapd dnsmasq radvd dnsmasq install iptables -y
 
 # Configure wlan0 interface
 sudo cp /etc/network/interfaces /etc/network/interfaces.backup
@@ -26,6 +14,7 @@ if [ ! -z $START ]; then
     END=$(expr $START + 3)
     sudo sed -i "${START},${END}d" /etc/network/interfaces
 fi
+
 echo "" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "allow-hotplug wlan0" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "iface wlan0 inet static" | sudo tee --append /etc/network/interfaces > /dev/null
@@ -109,5 +98,3 @@ sudo cp "$BASE_DIR/hostapd.service" /etc/systemd/system/hostapd.service
 sudo systemctl daemon-reload
 sudo systemctl enable hostapd.service
 sudo systemctl start hostapd.service
-
-
