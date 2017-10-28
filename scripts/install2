@@ -2,7 +2,7 @@
 
 set -e
 
-TAG_CJDNS=cjdns-v19.1
+TAG_CJDNS=186169f9a8631633795e4e9d70c501519a7800f4
 
 # Get board information and set flags accordingly
 BOARD_FAMILY="Unknown"
@@ -40,7 +40,7 @@ else
         CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm\" ./do"
     elif [[ $BOARD_REVISION == *"a02082"* || $BOARD_REVISION == *"a22082"* ]]; then
         BOARD_NAME="3"
-        CJDNS_BUILD_CMD="sudo NO_TEST=1 CFLAGS=\"-march=armv8-a+crc -mtune=cortex-a53 -mfpu=crypto-neon-fp-armv8 -mfloat-abi=hard\" ./do"
+        CJDNS_BUILD_CMD="sudo CFLAGS=\"-march=armv8-a+crc -mtune=cortex-a53 -mfpu=crypto-neon-fp-armv8 -mfloat-abi=hard -O2\" ./do"
     fi
 fi
 
@@ -215,10 +215,6 @@ if ! [ -d "/opt/cjdns" ]; then
     sudo git clone https://github.com/cjdelisle/cjdns.git /opt/cjdns
     cd /opt/cjdns 
     sudo git checkout $TAG_CJDNS 
-    sudo git config user.email "node@tomesh.com"
-    sudo git config user.name "Toronto Mesh"
-    git cherry-pick 1c7bfae5fca728372dd091b46faaa8720abbb86e
-    git cherry-pick 5f20ccf638bd804d2c435f7f818326f33cff63a2
     cd $here
 fi
 
@@ -229,9 +225,8 @@ if ! [ -x "/opt/cjdns/cjdroute" ]; then
 fi
 
 # Install cjdns to /usr/bin
-if ! [ -x "/usr/bin/cjdroute" ]; then
-    sudo cp /opt/cjdns/cjdroute /usr/bin/cjdroute
-fi
+sudo rm -f /usr/bin/cjdroute
+sudo cp /opt/cjdns/cjdroute /usr/bin/cjdroute
 
 # Generate cjdns configurations
 if ! [ -f "/etc/cjdroute.conf" ]; then
