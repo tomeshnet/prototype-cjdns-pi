@@ -4,8 +4,8 @@ set -e
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Install hostapd and dnsmasq to run IEEE 802.11 Access Point
-sudo apt-get install hostapd dnsmasq radvd dnsmasq iptables -y
+# Install packages to run IEEE 802.11 Access Point
+sudo apt-get install hostapd radvd dnsmasq iptables -y
 
 # Configure wlan0 interface
 sudo cp /etc/network/interfaces /etc/network/interfaces.backup
@@ -79,7 +79,6 @@ if [ -f /etc/dnsmasq.conf ]; then
 fi
 sudo cp "$BASE_DIR/dnsmasq.conf" /etc/dnsmasq.conf
 
-
 if [ -f /etc/dhcpcd.conf ]; then 
     sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.backup
     sudo echo "" | sudo tee --append /etc/dhcpcd.conf > /dev/null
@@ -91,7 +90,6 @@ sudo cp "$BASE_DIR/radvd.conf" /etc/radvd.conf
 
 # Enable hostapd service
 if [ -f /etc/default/hostapd ]; then
-
     sed '\?^DAEMON_CONF?d' /etc/default/hostapd | sudo tee /etc/default/hostapd  > /dev/null
     sudo echo DAEMON_CONF="/etc/hostapd.conf" | sudo tee --append /etc/default/hostapd  > /dev/null
 fi
