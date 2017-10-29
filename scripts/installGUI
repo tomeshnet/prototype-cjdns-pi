@@ -97,4 +97,26 @@ if [ "$WITH_MESH_POINT" == "true" ]; then
     export WITH_MESH_ID="$res"
 fi
 
+
+
+    
+        read -p "Set WPA2-PSK password (8-63 characters): " APPASS;
+    done
+
+if [ "$WITH_WIFI_AP" == "true" ]; then
+    while [ "${#res}" -lt 8 ] || [ "${#res}" -gt 63 ]; do
+        dialog --backtitle "$dialogTitle" $additionalParam  --title "AP Password" --inputbox "Password"  10 70  "" 2> /tmp/answer
+        res=$(cat /tmp/answer)
+    done
+    export WITH_AP_PASSWORD="$res"
+fi
+
+if [ "$WITH_WIFI_AP" == "true" ]; then
+    dialog --backtitle "$dialogTitle"  $additionalParam --title "Select Features" --checklist "Features:" 20 70 10 \
+        "EAP"    "EAP Username/Password" on\
+        "WPA"    "Standard WPA Password"
+    2> /tmp/answer
+    export WITH_AP_WPA="$res"
+fi
+
 ./install2
