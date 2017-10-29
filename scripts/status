@@ -23,7 +23,7 @@ if [ "$(which mesh)" ]; then
             mpint=$line
         fi
     done <<< "$ints"
-    if [ "$(ifconfig | grep $mpint)" ]; then
+    if [ -n "$mpint" ] && [ "$(ifconfig | grep $mpint)" ]; then
         echo -e "Mesh Interface ............... $ACTIVE"
     else
         echo -e "Mesh Interface ............. $INACTIVE"
