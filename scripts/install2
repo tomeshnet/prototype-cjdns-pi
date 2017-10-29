@@ -2,7 +2,7 @@
 
 set -e
 
-TAG_CJDNS=cjdns-v19.1
+TAG_CJDNS=186169f9a8631633795e4e9d70c501519a7800f4
 
 # Get board information and set flags accordingly
 BOARD_FAMILY="Unknown"
@@ -16,10 +16,10 @@ if [[ "$BOARD_HARDWARE" == 'Allwinner' || "$BOARD_HARDWARE" == 'Generic' ]]; the
     BOARD_FAMILY="Orange Pi"
     BOARD_NAME=$(grep BOARD_NAME /etc/armbian-image-release | awk -F \= '{print $2}' | tr -d \" | sed 's/Orange Pi //g')
     BOARD_REVISION="experimental"
-    if [[ '$BOARD_NAME' == 'One' ]]; then
-        CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -march=armv7-a -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard\" ./do"
+    if [[ '$BOARD_NAME' == 'Zero' ]]; then
+        CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -march=armv7-a -mtune=cortex-a7 -mfpu=neon-vfpv4 -fomit-frame-pointer -marm\" ./do"
     else
-        CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm\" ./do"	
+        CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -march=armv7-a -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -fomit-frame-pointer -marm\" ./do"
     fi
 elif [[ "$BOARD_HARDWARE" == 'sun50iw1p1' ]]; then
     BOARD_FAMILY="Orange Pi"
@@ -31,7 +31,7 @@ else
     BOARD_REVISION=`sed -rn 's/Revision\s+\:\s+([0-9a-z_\-\s\,\(\)]+)/\1/p' /proc/cpuinfo`
     if [[ $BOARD_REVISION == *"900092"* || $BOARD_REVISION == *"900093"* || $BOARD_REVISION == *"9000c1"* ]]; then
         BOARD_NAME="Zero"
-        CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 CFLAGS=\"-s -static -Wall\" ./do"
+        CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 CFLAGS=\"-s -static -Wall -mcpu=arm1176jzf-s -mfpu=vfp -mfloat-abi=hard\" ./do"
     elif [[ $BOARD_REVISION == *"00"* ]]; then
         BOARD_NAME="1"
         CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 NO_TEST=1 CFLAGS=\"-s -static -Wall\" ./do"
@@ -40,7 +40,7 @@ else
         CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm\" ./do"
     elif [[ $BOARD_REVISION == *"a02082"* || $BOARD_REVISION == *"a22082"* ]]; then
         BOARD_NAME="3"
-        CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -mfpu=neon -mcpu=cortex-a7 -mtune=cortex-a7 -fomit-frame-pointer -marm\" ./do"
+        CJDNS_BUILD_CMD="sudo CFLAGS=\"-march=armv8-a+crc -mtune=cortex-a53 -mfpu=crypto-neon-fp-armv8 -mfloat-abi=hard -O2\" ./do"
     fi
 fi
 
@@ -58,7 +58,7 @@ if [[ $BOARD_FAMILY == "Orange Pi" ]]; then
             echo ""
             if ! [[ $REPLY =~ ^[Nn]$ ]]; then
                 echo -e "\e[1;32mDowngrading Kernel...\e[0m"
-                wget http://apt.armbian.com/pool/main/l/linux-4.10.0-sun8i/linux-image-dev-sun8i_5.26_armhf.deb 
+                wget https://github.com/darkdrgn2k/OrangePiXRadio/raw/master/linux-image-dev-sun8i_5.26_armhf.deb 
                 sudo dpkg -i linux-image-dev-sun8i_5.26_armhf.deb
                 rm -rf linux-image-dev-sun8i_5.26_armhf.deb
             fi
@@ -221,7 +221,9 @@ fi
 if ! [ -d "/opt/cjdns" ]; then
     here=`pwd`
     sudo git clone https://github.com/cjdelisle/cjdns.git /opt/cjdns
-    cd /opt/cjdns && sudo git checkout $TAG_CJDNS && cd $here
+    cd /opt/cjdns 
+    sudo git checkout $TAG_CJDNS 
+    cd $here
 fi
 
 # Build cjdns
@@ -231,9 +233,8 @@ if ! [ -x "/opt/cjdns/cjdroute" ]; then
 fi
 
 # Install cjdns to /usr/bin
-if ! [ -x "/usr/bin/cjdroute" ]; then
-    sudo cp /opt/cjdns/cjdroute /usr/bin/cjdroute
-fi
+sudo rm -f /usr/bin/cjdroute
+sudo cp /opt/cjdns/cjdroute /usr/bin/cjdroute
 
 # Generate cjdns configurations
 if ! [ -f "/etc/cjdroute.conf" ]; then
