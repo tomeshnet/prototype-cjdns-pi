@@ -52,9 +52,7 @@ if [ "$res" == "HYPE" ]; then
     export SET_H_DNS=on
     export SET_H_NTP=on
     export SET_FAKE_HWCLOCK=on
-
 fi
-
 
 if [ "$res" == "FULL" ]; then
     export SET_MESH_POINT=on
@@ -94,9 +92,9 @@ for item in $res;do
 done
 
 if [ "$WITH_MESH_POINT" == "true" ]; then
-	dialog --backtitle "$dialogTitle" $additionalParam  --title "Meshing Setup" --inputbox "802.11s Mesh Name"  10 70  "tomseh" 2> /tmp/answer
-	res=$(cat /tmp/answer)
-	export WITH_MESH_ID="$res"
+    dialog --backtitle "$dialogTitle" $additionalParam  --title "Meshing Setup" --inputbox "802.11s Mesh Name"  10 70  "tomseh" 2> /tmp/answer
+    res=$(cat /tmp/answer)
+    export WITH_MESH_ID="$res"
 fi
 
 ./install2
