@@ -11,13 +11,20 @@ BOARD_REVISION="?"
 CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 ./do"
 BOARD_HARDWARE=$(cat /proc/cpuinfo  | grep Hardware | awk '{print $3}' | head -n 1)
 
+# Flag to identify if board can support onboard AP
+SUPPORT_HOSTAP=false 
+
 # Possibly use /sys/firmware/devicetree/base/model
-if [[ "$BOARD_HARDWARE" == 'Allwinner' || "$BOARD_HARDWARE" == 'Generic' ]]; then    
+if [[ "$BOARD_HARDWARE" == 'Allwinner' || "$BOARD_HARDWARE" == 'Generic' ]]; then   
     BOARD_FAMILY="Orange Pi"
     BOARD_NAME=$(grep BOARD_NAME /etc/armbian-image-release | awk -F \= '{print $2}' | tr -d \" | sed 's/Orange Pi //g')
     BOARD_REVISION="experimental"
-    if [[ '$BOARD_NAME' == 'Zero' ]]; then
+    if [[ "$BOARD_NAME" == "Zero" ]]; then
         CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -march=armv7-a -mtune=cortex-a7 -mfpu=neon-vfpv4 -fomit-frame-pointer -marm\" ./do"
+        # If board already support xradio, let it install hostapd
+        if [ "$(lsmod | grep xradio_wlan)" ]; then 
+            SUPPORT_HOSTAP=true
+        fi
     else
         CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -march=armv7-a -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -fomit-frame-pointer -marm\" ./do"
     fi
@@ -41,6 +48,9 @@ else
     elif [[ $BOARD_REVISION == *"a02082"* || $BOARD_REVISION == *"a22082"* ]]; then
         BOARD_NAME="3"
         CJDNS_BUILD_CMD="sudo CFLAGS=\"-march=armv8-a+crc -mtune=cortex-a53 -mfpu=crypto-neon-fp-armv8 -mfloat-abi=hard -O2\" ./do"
+
+        # PI3 Has onboard wifi that can be used as an AP
+        SUPPORT_HOSTAP=true
     fi
 fi
 
@@ -61,6 +71,11 @@ if [[ $BOARD_FAMILY == "Orange Pi" ]]; then
                 wget https://github.com/darkdrgn2k/OrangePiXRadio/raw/master/linux-image-dev-sun8i_5.26_armhf.deb 
                 sudo dpkg -i linux-image-dev-sun8i_5.26_armhf.deb
                 rm -rf linux-image-dev-sun8i_5.26_armhf.deb
+                # Downgrading kernel, allow hostapd
+                SUPPORT_HOSTAP=true 
+            else
+                # Zero is not downgraded from broken kernel, don't allow hostap
+                SUPPORT_HOSTAP=false 
             fi
         fi
     fi
@@ -78,7 +93,7 @@ if [ -z "$WITH_MESH_POINT" -o "$WITH_MESH_POINT" != "true" -a "$WITH_MESH_POINT"
         WITH_MESH_POINT=true
     fi
 fi
-if [[ $BOARD_REVISION == *"a02082"* || $BOARD_REVISION == *"a22082"* ]] && [ -z "$WITH_WIFI_AP" -o "$WITH_WIFI_AP" != "true" -a "$WITH_WIFI_AP" != "false" ]; then
+if [[ "$SUPPORT_HOSTAP" == "true" ]] && [ -z "$WITH_WIFI_AP" -o "$WITH_WIFI_AP" != "true" -a "$WITH_WIFI_AP" != "false" ]; then
     read -p "Configure WiFi Access Point (Y/n)? " -n 1 -r
     echo ""
     if [[ $REPLY =~ ^[Nn]$ ]]; then
@@ -247,7 +262,7 @@ if [ ! -z "$WITH_MESH_POINT" -a "$WITH_MESH_POINT" == "true" ]; then
 fi
 
 # WiFi Access Point on RPi3
-if [[ $BOARD_REVISION == *"a02082"* || $BOARD_REVISION == *"a22082"* ]] && [ ! -z "$WITH_WIFI_AP" -a "$WITH_WIFI_AP" == "true" ]; then
+if [[ "$SUPPORT_HOSTAP" == "true" ]] && [ ! -z "$WITH_WIFI_AP" -a "$WITH_WIFI_AP" == "true" ]; then
     source hostapd/install
 fi
 

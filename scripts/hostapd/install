@@ -4,10 +4,8 @@ set -e
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Install hostapd and dnsmasq to run IEEE 802.11 Access Point
-if ! [ "$(which hostapd)" ] || ! [ "$(which dnsmasq)" ]; then
-    sudo apt-get install hostapd dnsmasq radvd -y
-fi
+# Install packages to run IEEE 802.11 Access Point
+sudo apt-get install hostapd radvd dnsmasq iptables -y
 
 # Configure wlan0 interface
 sudo cp /etc/network/interfaces /etc/network/interfaces.backup
@@ -16,6 +14,7 @@ if [ ! -z $START ]; then
     END=$(expr $START + 3)
     sudo sed -i "${START},${END}d" /etc/network/interfaces
 fi
+
 echo "" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "allow-hotplug wlan0" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "iface wlan0 inet static" | sudo tee --append /etc/network/interfaces > /dev/null
@@ -26,6 +25,8 @@ echo "    broadcast 10.0.0.255" | sudo tee --append /etc/network/interfaces > /d
 echo "iface wlan0 inet6 static" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    address fdfc::2" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    netmask 64" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "allow-hotplug eth0" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "iface eth0 inet dhcp" | sudo tee --append /etc/network/interfaces > /dev/null
 
 # Enable packet forwarding
 sudo cp /etc/sysctl.conf /etc/sysctl.conf.backup
@@ -73,16 +74,26 @@ else
 fi
 
 # Configure DHCP with dnsmasq
-sudo cp /etc/dnsmasq.conf /etc/dnsmasq.conf.backup
+if [ -f /etc/dnsmasq.conf ]; then
+    sudo cp /etc/dnsmasq.conf /etc/dnsmasq.conf.backup
+fi
 sudo cp "$BASE_DIR/dnsmasq.conf" /etc/dnsmasq.conf
-sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.backup
-sudo echo "" | sudo tee --append /etc/dhcpcd.conf > /dev/null
-sudo echo "denyinterfaces wlan0" | sudo tee --append /etc/dhcpcd.conf > /dev/null
+
+if [ -f /etc/dhcpcd.conf ]; then 
+    sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.backup
+    sudo echo "" | sudo tee --append /etc/dhcpcd.conf > /dev/null
+    sudo echo "denyinterfaces wlan0" | sudo tee --append /etc/dhcpcd.conf > /dev/null
+fi
 
 # Configure IPv6 router advertisement with radvd
 sudo cp "$BASE_DIR/radvd.conf" /etc/radvd.conf
 
 # Enable hostapd service
+if [ -f /etc/default/hostapd ]; then
+    sed '\?^DAEMON_CONF?d' /etc/default/hostapd | sudo tee /etc/default/hostapd  > /dev/null
+    sudo echo DAEMON_CONF="/etc/hostapd.conf" | sudo tee --append /etc/default/hostapd  > /dev/null
+fi
+
 sudo cp "$BASE_DIR/hostapd.service" /etc/systemd/system/hostapd.service
 sudo systemctl daemon-reload
 sudo systemctl enable hostapd.service
