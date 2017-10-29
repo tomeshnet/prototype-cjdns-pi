@@ -12,6 +12,19 @@ if [ -z "$TAG_PROTOTYPE_CJDNS_PI" ]; then
     TAG_PROTOTYPE_CJDNS_PI=master
 fi
 
+if ! [ -z "`ps xa | awk '{print $5}' | grep dpkg | grep -v grep`" ]; then 
+	echo -e "\e[1;31mDPKG is running in the background.\e[0m"
+	read -p "Would you like to KILL it to continue (Y/n)? " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo -e "\e[1;31mPlease stop DPKG Before Proceeding!\e[0m"
+        exit
+    else	
+        echo -e "\e[1;32mKilling DPKG and continuing\e[0m"
+        sudo killall dpkg
+    fi	 
+fi
+
 # Get git
 sudo apt-get update
 if ! [ "$(which git)" ]; then
