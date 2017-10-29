@@ -24,6 +24,7 @@ if ! [ -z "`ps xa | awk '{print $5}' | grep dpkg | grep -v grep`" ]; then
         sudo killall dpkg
     fi	 
 fi
+
 # Get git
 sudo apt-get update
 if ! [ "$(which git)" ]; then
