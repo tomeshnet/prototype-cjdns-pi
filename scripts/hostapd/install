@@ -5,7 +5,7 @@ set -e
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Install hostapd and dnsmasq to run IEEE 802.11 Access Point
-sudo apt-get install hostapd dnsmasq radvd dnsmasq install iptables -y
+sudo apt-get install hostapd dnsmasq radvd dnsmasq iptables -y
 
 # Configure wlan0 interface
 sudo cp /etc/network/interfaces /etc/network/interfaces.backup
@@ -25,6 +25,8 @@ echo "    broadcast 10.0.0.255" | sudo tee --append /etc/network/interfaces > /d
 echo "iface wlan0 inet6 static" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    address fdfc::2" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    netmask 64" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "allow-hotplug eth0" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "iface eth0 inet dhcp" | sudo tee --append /etc/network/interfaces > /dev/null
 
 # Enable packet forwarding
 sudo cp /etc/sysctl.conf /etc/sysctl.conf.backup
