@@ -33,6 +33,11 @@ Many models of Orange Pi hardware running [Armbian](https://www.armbian.com/) ar
 1. Run the following, then let the installation complete. After about 5 minutes the Pi will reboot:
 
     ```
+    $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install && chmod +x install && ./install gui
+    ```
+    
+     The script can be run without a curses interface by dropping the gui from the command line
+    ```
     $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install && chmod +x install && ./install
     ```
     
