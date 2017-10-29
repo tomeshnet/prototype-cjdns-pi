@@ -3,7 +3,6 @@
 set -e
 
 H_DNS_SERVER_0="fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc"
-#H_DNS_SERVER_1="fc16:b44c:2bf9:467:8098:51c6:5849:7b4f"
 H_DNS_SERVER_1="fc6e:691e:dfaa:b992:a10a:7b49:5a1a:5e09"
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
