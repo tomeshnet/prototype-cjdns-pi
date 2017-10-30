@@ -20,15 +20,12 @@ if [[ "$BOARD_HARDWARE" == 'Allwinner' || "$BOARD_HARDWARE" == 'Generic' ]]; the
     BOARD_NAME=$(grep BOARD_NAME /etc/armbian-image-release | awk -F \= '{print $2}' | tr -d \" | sed 's/Orange Pi //g')
     BOARD_REVISION="experimental"
     if [[ "$BOARD_NAME" == "Zero" ]]; then
-        CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -march=armv7-a -mtune=cortex-a7 -mfpu=neon-vfpv4 -fomit-frame-pointer -marm\" ./do"
-
         # AP is supported if board already supports XRadio
         if [ "$(lsmod | grep xradio_wlan)" ]; then 
             SUPPORT_HOSTAP=true
         fi
-    else
-        CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -march=armv7-a -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -fomit-frame-pointer -marm\" ./do"
     fi
+    CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -march=armv7-a -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -fomit-frame-pointer -marm\" ./do"
 elif [[ "$BOARD_HARDWARE" == 'sun50iw1p1' ]]; then
     BOARD_FAMILY="Orange Pi"
     BOARD_NAME=$(grep BOARD_NAME /etc/armbian-image-release | awk -F \= '{print $2}' | tr -d \" | sed 's/Orange Pi //g')
