@@ -12,12 +12,10 @@ fi
 sudo apt-get install hostapd radvd dnsmasq iptables -y
 
 # Configure wlan0 interface
-sudo cp /etc/network/interfaces /etc/network/interfaces.backup
-START=$(grep -n "allow-hotplug wlan0" /etc/network/interfaces | awk '{ print $1 }' FS=':')
-if [ ! -z $START ]; then
-    END=$(expr $START + 3)
-    sudo sed -i "${START},${END}d" /etc/network/interfaces
-fi
+sudo mv /etc/network/interfaces /etc/network/interfaces.backup
+sudo touch /etc/network/interfaces
+echo "source-directory /etc/network/interfaces.d" | sudo tee --append /etc/network/interfaces > /dev/null
+
 
 echo "" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "allow-hotplug wlan0" | sudo tee --append /etc/network/interfaces > /dev/null
