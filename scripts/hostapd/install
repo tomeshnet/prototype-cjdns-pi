@@ -4,6 +4,10 @@ set -e
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# radvd install fails if config is missing
+if [ -f /etc/radvd.conf ]; then 
+    sudo cp "$BASE_DIR/radvd.conf" /etc/radvd.conf
+fi
 # Install packages to run IEEE 802.11 Access Point
 sudo apt-get install hostapd radvd dnsmasq iptables -y
 
@@ -86,7 +90,12 @@ if [ -f /etc/dhcpcd.conf ]; then
 fi
 
 # Configure IPv6 router advertisement with radvd
-sudo cp "$BASE_DIR/radvd.conf" /etc/radvd.conf
+if [ -f /etc/radvd.conf ]; then 
+   sudo cp "$BASE_DIR/radvd.conf" /etc/radvd.conf
+fi
+
+# Make sure its actually enabled
+sudo systemctl radvd enable
 
 # Enable hostapd service
 if [ -f /etc/default/hostapd ]; then
