@@ -14,9 +14,11 @@ sudo apt-get install hostapd radvd dnsmasq iptables -y
 # Configure wlan0 interface
 sudo mv /etc/network/interfaces /etc/network/interfaces.backup
 sudo touch /etc/network/interfaces
+
 echo "source-directory /etc/network/interfaces.d" | sudo tee --append /etc/network/interfaces > /dev/null
-
-
+echo "" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "auto lo"  | sudo tee --append /etc/network/interfaces > /dev/null
+echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces > /dev/nul
 echo "" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "allow-hotplug wlan0" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "iface wlan0 inet static" | sudo tee --append /etc/network/interfaces > /dev/null
@@ -27,6 +29,7 @@ echo "    broadcast 10.0.0.255" | sudo tee --append /etc/network/interfaces > /d
 echo "iface wlan0 inet6 static" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    address fdfc::2" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    netmask 64" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "allow-hotplug eth0" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "iface eth0 inet dhcp" | sudo tee --append /etc/network/interfaces > /dev/null
 
