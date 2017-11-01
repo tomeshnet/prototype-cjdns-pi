@@ -19,7 +19,7 @@ sudo touch /etc/network/interfaces
 echo "source-directory /etc/network/interfaces.d" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "auto lo"  | sudo tee --append /etc/network/interfaces > /dev/null
-echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces > /dev/nul
+echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "allow-hotplug wlan0" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "iface wlan0 inet static" | sudo tee --append /etc/network/interfaces > /dev/null
