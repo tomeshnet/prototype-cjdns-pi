@@ -4,17 +4,22 @@ set -e
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Create radvd.conf before installing radvd, installation fails without it
+if ! [ -f /etc/radvd.conf ]; then 
+    sudo cp "$BASE_DIR/radvd.conf" /etc/radvd.conf
+fi
+
 # Install packages to run IEEE 802.11 Access Point
 sudo apt-get install hostapd radvd dnsmasq iptables -y
 
 # Configure wlan0 interface
-sudo cp /etc/network/interfaces /etc/network/interfaces.backup
-START=$(grep -n "allow-hotplug wlan0" /etc/network/interfaces | awk '{ print $1 }' FS=':')
-if [ ! -z $START ]; then
-    END=$(expr $START + 3)
-    sudo sed -i "${START},${END}d" /etc/network/interfaces
-fi
+sudo mv /etc/network/interfaces /etc/network/interfaces.bak
+sudo touch /etc/network/interfaces
 
+echo "source-directory /etc/network/interfaces.d" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "auto lo"  | sudo tee --append /etc/network/interfaces > /dev/null
+echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces > /dev/nul
 echo "" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "allow-hotplug wlan0" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "iface wlan0 inet static" | sudo tee --append /etc/network/interfaces > /dev/null
@@ -25,11 +30,12 @@ echo "    broadcast 10.0.0.255" | sudo tee --append /etc/network/interfaces > /d
 echo "iface wlan0 inet6 static" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    address fdfc::2" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    netmask 64" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "allow-hotplug eth0" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "iface eth0 inet dhcp" | sudo tee --append /etc/network/interfaces > /dev/null
 
 # Enable packet forwarding
-sudo cp /etc/sysctl.conf /etc/sysctl.conf.backup
+sudo cp /etc/sysctl.conf /etc/sysctl.conf.bak
 sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf
 sudo sed -i 's/#net.ipv6.conf.all.forwarding=1/net.ipv6.conf.all.forwarding=1/' /etc/sysctl.conf
 
@@ -75,18 +81,21 @@ fi
 
 # Configure DHCP with dnsmasq
 if [ -f /etc/dnsmasq.conf ]; then
-    sudo cp /etc/dnsmasq.conf /etc/dnsmasq.conf.backup
+    sudo cp /etc/dnsmasq.conf /etc/dnsmasq.conf.bak
 fi
 sudo cp "$BASE_DIR/dnsmasq.conf" /etc/dnsmasq.conf
 
 if [ -f /etc/dhcpcd.conf ]; then 
-    sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.backup
+    sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.bak
     sudo echo "" | sudo tee --append /etc/dhcpcd.conf > /dev/null
     sudo echo "denyinterfaces wlan0" | sudo tee --append /etc/dhcpcd.conf > /dev/null
 fi
 
 # Configure IPv6 router advertisement with radvd
 sudo cp "$BASE_DIR/radvd.conf" /etc/radvd.conf
+sudo systemctl daemon-reload
+sudo systemctl enable radvd.service
+sudo systemctl start radvd.service
 
 # Enable hostapd service
 if [ -f /etc/default/hostapd ]; then
