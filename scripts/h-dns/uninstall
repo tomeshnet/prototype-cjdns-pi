@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+set -e
+
+sudo sed -i '/dns-nameservers /d' /etc/network/interfaces
