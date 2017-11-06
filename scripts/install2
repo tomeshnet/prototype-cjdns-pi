@@ -65,7 +65,6 @@ if [[ -z "$(grep "\[keyfile\]"   /etc/NetworkManager/NetworkManager.conf)" ]]; t
     sudo echo "nunmanaged-devices=interface-name:wlan1" >> /etc/NetworkManager/NetworkManager.conf
 fi
 
-
 # Set configurations specific to the board
 if [[ $BOARD_FAMILY == "Orange Pi" ]]; then
     # Downgrade kernel to enable XRadio in version 4.10 on Orange Pi Zero
