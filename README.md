@@ -89,17 +89,17 @@ We are adding support for [Orange Pi](http://www.orangepi.org/) boards and have 
 
 List of tested hardware:
 
-| Hardware                  | Base OS         | [CJDNS Benchmark](https://github.com/phillymesh/cjdns-optimizations) (salsa20/poly1305, switching) | USB | Ethernet | Notes    |
+| Hardware                  | Base OS         | [CJDNS Benchmark](https://github.com/phillymesh/cjdns-optimizations) (salsa20/poly1305, switching) | IPerf | USB | Ethernet | Notes    |
 | :-------------------------|:----------------|:---------------------------------------------------------------------------------------------------|:----|:---------|:---------|
-| Raspberry Pi 3            | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         | 350k, 100k | 2       | 10/100 |                                       |
-| Raspberry Pi 2            | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         | 150k,  50k | 2       | 10/100 |                                       |
-| Raspberry Pi 1 A+         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         |  35k,   -  | 1       | None   |                                       |
-| Raspberry Pi 1 B+         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         |  35k,   -  | 2       | 10/100 |                                       |
-| Raspberry Pi Zero         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         |  68k,  30k | 1*      | None   | *Need OTG Cable                       |
-| Orange Pi Lite            | [Armbian Nightly](https://dl.armbian.com/orangepilite/nightly/)          | 198k,  76k | 2       | None   |                                       |
-| Orange Pi One             | [Armbian Nightly](https://dl.armbian.com/orangepione/nightly/)           | 198k,  76k | 1       | 10/100 |                                       |
-| Orange Pi Zero            | [Armbian Nightly](https://dl.armbian.com/orangepizero/nightly/)          | 148k,  56k | 1 (+2*) | 10/100 | *Additional USB available via headers |
-| Orange Pi Zero Plus 2 H5  | [Armbian Nightly](https://dl.armbian.com/orangepizeroplus2-h5/nightly/)  | 142k,  92K | 0 (+2*) | None   | *USB available via headers            |
+| Raspberry Pi 3            | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         | 350k, 100k | 89 Mbps | 2       | 10/100 |                                       |
+| Raspberry Pi 2            | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         | 150k,  50k |         | 2       | 10/100 |                                       |
+| Raspberry Pi 1 A+         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         |  35k,   -  | ~3 Mpbs | 1       | None   |                                       |
+| Raspberry Pi 1 B+         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         |  35k,   -  | ~3 Mbps | 2       | 10/100 |                                       |
+| Raspberry Pi Zero         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         |  68k,  30k | ~3 Mpbs | 1*      | None   | *Need OTG Cable No FPV                      |
+| Orange Pi Lite            | [Armbian Nightly](https://dl.armbian.com/orangepilite/nightly/)          | 140k,  74k | 67 Mbps | 2       | None   |                                       |
+| Orange Pi One             | [Armbian Nightly](https://dl.armbian.com/orangepione/nightly/)           | 140k,  74k | 67 Mbps | 1       | 10/100 |                                       |
+| Orange Pi Zero            | [Armbian Nightly](https://dl.armbian.com/orangepizero/nightly/)          | 140k,  74k | 67 Mpbs | 1 (+2*) | 10/100 | *Additional USB available via headers |
+| Orange Pi Zero Plus 2 H5  | [Armbian Nightly](https://dl.armbian.com/orangepizeroplus2-h5/nightly/)  | 190k, 130K | 80 Mbps | 0 (+2*) | None   | *USB available via headers            |
 
 ## Development
 
