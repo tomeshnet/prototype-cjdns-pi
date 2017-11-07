@@ -89,7 +89,7 @@ We are adding support for [Orange Pi](http://www.orangepi.org/) boards and have 
 
 List of tested hardware:
 
-| Hardware                  | Base OS         | [CJDNS Benchmark](https://github.com/phillymesh/cjdns-optimizations) (salsa20/poly1305, switching) | IPerf | USB | Ethernet | Notes    |
+| Hardware                  | Base OS         | [CJDNS Benchmark](https://github.com/phillymesh/cjdns-optimizations) <sub>(salsa20/poly1305, switching)</sub> | IPerf | USB | Ethernet | Notes    |
 | :-------------------------|:----------------|:---------------------------------------------------------------------------------------------------|:------|:----|:---------|:---------|
 | Raspberry Pi 3            | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         | 350k, 100k | 89 Mbps | 2       | 10/100 |                                       |
 | Raspberry Pi 2            | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         | 150k,  50k |         | 2       | 10/100 |                                       |
