@@ -96,9 +96,9 @@ List of tested hardware:
 | Raspberry Pi 1 A+         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         |  35k,   -  | ~3 Mpbs | 1       | None   |                                       |
 | Raspberry Pi 1 B+         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         |  35k,   -  | ~3 Mbps | 2       | 10/100 |                                       |
 | Raspberry Pi Zero         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         |  68k,  30k | ~3 Mpbs | 1*      | None   | *Need OTG Cable No FPV                      |
-| Orange Pi Lite            | [Armbian Nightly](https://dl.armbian.com/orangepilite/nightly/)          | 140k,  74k | 67 Mbps | 2       | None   |                                       |
-| Orange Pi One             | [Armbian Nightly](https://dl.armbian.com/orangepione/nightly/)           | 140k,  74k | 67 Mbps | 1       | 10/100 |                                       |
-| Orange Pi Zero            | [Armbian Nightly](https://dl.armbian.com/orangepizero/nightly/)          | 140k,  74k | 67 Mpbs | 1 (+2*) | 10/100 | *Additional USB available via headers |
+| Orange Pi Lite            | [Armbian Nightly](https://dl.armbian.com/orangepilite/nightly/)          | 160k,  74k | 67 Mbps | 2       | None   |                                       |
+| Orange Pi One             | [Armbian Nightly](https://dl.armbian.com/orangepione/nightly/)           | 160k,  74k | 67 Mbps | 1       | 10/100 |                                       |
+| Orange Pi Zero            | [Armbian Nightly](https://dl.armbian.com/orangepizero/nightly/)          | 160k,  74k | 67 Mpbs | 1 (+2*) | 10/100 | *Additional USB available via headers |
 | Orange Pi Zero Plus 2 H5  | [Armbian Nightly](https://dl.armbian.com/orangepizeroplus2-h5/nightly/)  | 190k, 130K | 80 Mbps | 0 (+2*) | None   | *USB available via headers            |
 
 ## Development
