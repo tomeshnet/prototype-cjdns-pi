@@ -5,13 +5,9 @@ set -e
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-if ! [ "$(which confget)" ]; then
-   sudo apt-get install confget
-fi
-
-# Install hostapd and dnsmasq to run IEEE 802.11 Access Point
-if ! [ "$(which hostapd)" ] || ! [ "$(which dnsmasq)" ] || ! [ "$(which iptables)" ]; then
-    sudo apt-get install hostapd radvd iptables -y
+# Create radvd.conf before installing radvd, installation fails without it
+if ! [ -f /etc/radvd.conf ]; then 
+    sudo cp "$BASE_DIR/radvd.conf" /etc/radvd.conf
 fi
 
 APSSID=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-/g")
@@ -55,6 +51,9 @@ fi
 
 sudo cp $BASE_DIR/50-hostapd.rules /etc/udev/rules.d/50-hostapd.rules 
 
+sudo systemctl daemon-reload
+sudo systemctl enable radvd.service
+sudo systemctl start radvd.service
 
 sudo cp $BASE_DIR/hostapd.template /usr/local/sbin/hostapd.template
 sudo chmod 744 /usr/local/sbin/hostapd.template

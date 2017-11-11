@@ -2,17 +2,19 @@
 
 [![Build Status](https://travis-ci.org/tomeshnet/prototype-cjdns-pi.svg?branch=master)](https://travis-ci.org/tomeshnet/prototype-cjdns-pi)
 
-The following instructions will help you set up an encrypted mesh network on Raspberry Pi's. It takes about 5 minutes to set up a node with the Pi 3. Obviously, to have a mesh you will need more than one node.
+The following instructions will help you set up an encrypted mesh network on Raspberry Pi's. It takes about 15 minutes to set up a node with the Pi 3. Obviously, to have a mesh you will need more than one node. 
+
+Many models of Orange Pi hardware running [Armbian](https://www.armbian.com/) are also supported. The same installation steps can be followed, except you would flash the SD card with Armbian instead of Raspbian. See [Hardware Table](#hardware-table) for the full list of supported hardware.
 
 ## Set Up
 
 1. Make sure you have the following items:
 
-    * A Raspberry Pi Zero, 1, 2, or 3 (Pi 3 recommended)
+    * Raspberry Pi Zero, 1, 2, 3 (Pi 3 recommended), or for advanced users other [compatible hardware](#hardware-table)
     * An SD card that works with the Pi
     * **Optional:** A USB WiFi adapter with [802.11s Mesh Point](https://github.com/o11s/open80211s/wiki/HOWTO) support, such as the [TP-LINK TL-WN722N](http://www.tp-link.com/en/products/details/TL-WN722N.html) or [Toplinkst TOP-GS07](https://github.com/tomeshnet/documents/blob/master/technical/20170208_mesh-point-with-topgs07-rt5572.md)
 
-1. Flash the SD card with [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/).
+1. Flash the SD card with [Raspbian Stretch Lite](https://www.raspberrypi.org/downloads/raspbian/).
 
 1. Create an empty file named **ssh** to enable SSH when the Pi boots:
 
@@ -37,7 +39,7 @@ The following instructions will help you set up an encrypted mesh network on Ras
     The installation script can also install many optional features such as distributed applications and network analysis tools that are useful but non-essential to run a node. You can use flags to selectively enable them, or use the following command to install all optional features:
 
     ```
-    $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install && chmod +x install && WITH_MESH_POINT=true WITH_WIFI_AP=true WITH_IPFS=true WITH_PROMETHEUS_NODE_EXPORTER=true WITH_PROMETHEUS_SERVER=true WITH_GRAFANA=true WITH_EXTRA_TOOLS=true ./install
+    $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install && chmod +x install && WITH_MESH_POINT=true WITH_WIFI_AP=true WITH_IPFS=true WITH_PROMETHEUS_NODE_EXPORTER=true WITH_PROMETHEUS_SERVER=true WITH_GRAFANA=true WITH_H_DNS=true WITH_H_NTP=true WITH_FAKE_HWCLOCK=true WITH_EXTRA_TOOLS=true ./install
     ```
 
 ## Optional Features
@@ -50,9 +52,12 @@ The following instructions will help you set up an encrypted mesh network on Ras
 | `WITH_PROMETHEUS_NODE_EXPORTER` | **9100**: Node Exporter UI                     | Set to `true` if you want to install [Prometheus Node Exporter](https://github.com/prometheus/node_exporter) to report network metrics. |
 | `WITH_PROMETHEUS_SERVER`        | **9090**: Prometheus Server UI                 | Set to `true` if you want to install [Prometheus Server](https://github.com/prometheus/prometheus) to collect network metrics. *Requires Prometheus Node Exporter.* |
 | `WITH_GRAFANA`                  | **3000**: Grafana UI (login: admin/admin)      | Set to `true` if you want to install [Grafana](https://grafana.com) to display network metrics. *Requires Prometheus Server.* |
-| `WITH_EXTRA_TOOLS`              | None                                           | Set to `true` if you want to install non-essential tools useful for network analysis. |
+| `WITH_H_DNS`                    | None                                           | Set to `true` if you want to use Hyperboria-compatible DNS servers: `fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc` and `fc6e:691e:dfaa:b992:a10a:7b49:5a1a:5e09` |
+| `WITH_H_NTP`                    | None                                           | Set to `true` if you want to use a Hyperboria-compatible NTP server: `fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc` |
+| `WITH_FAKE_HWCLOCK`             | None                                           | Set to `true` if you want to force hwclock to store its time every 5 minutes. |
+| `WITH_EXTRA_TOOLS`              | None                                           | Set to `true` if you want to install non-essential tools useful for network analysis: vim socat oping bmon iperf3 |
 
-If you are connected to the WiFi AP, all HTTP services are available via **http://10.0.0.1:PORT** as well as the cjdns IPv6. To connect with the cjdns address, first note your node's fc00::/8 address from `status`, then navigate to `http://[fcaa:bbbb:cccc:dddd:eeee:0000:1111:2222]:PORT` from your browser.
+If you are connected to the WiFi Access Point, all HTTP services are available via `http://10.0.0.1:PORT` as well as the cjdns IPv6. To connect with the cjdns address, first note your node's fc00::/8 address from `status`, then navigate to `http://[fcaa:bbbb:cccc:dddd:eeee:0000:1111:2222]:PORT` from your browser.
 
 ## Check Status
 
@@ -78,22 +83,23 @@ If you are updating, run the same uninstall script, but keep all configuration f
 
 ## Experimental Support for Orange Pi
 
-We are adding support for [Orange Pi](http://www.orangepi.org/) boards and have tested with the [Orange Pi One](https://dl.armbian.com/orangepione/nightly/) and [Orange Pi Lite](https://dl.armbian.com/orangepilite/nightly/). Instead of flashing Raspbian, start with the Armbian nightly images linked above, then follow the same installation steps as the Raspberry Pi.
+We are adding support for [Orange Pi](http://www.orangepi.org/) boards and have tested with the [Orange Pi Zero (Armbian nightly)](https://dl.armbian.com/orangepizero/nightly/), [Orange Pi One (Armbian nightly)](https://dl.armbian.com/orangepione/nightly/), and [Orange Pi Lite  (Armbian nightly)](https://dl.armbian.com/orangepilite/nightly/). Instead of flashing Raspbian, start with the Armbian nightly images linked above, then follow the same installation steps as the Raspberry Pi.
 
 ## Hardware Table
 
-Following is a list of hardware tested with the install.
+List of tested hardware:
 
-| Hardware                  | Base OS         | CJDNS Bench~  | USB  | Ethernet| Notes            |
-| :-------------------------|:----------------|:--------------|:-----|:--------|:-----------------|
-| Raspberry Pi 1 A+         | [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/)  | 35K           | 1      | None    |                  |
-| Raspberry Pi 1 B+         | [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/)  | 35K           | 2      | 10/100  |                  |
-| Raspberry Pi 3            | [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/)  |               | 2      | 10/100  |                  |
-| Raspberry Pi Zero         | [Raspbian Jessie Lite](https://www.raspberrypi.org/downloads/raspbian/)  |               | 1      | 10/100  |                  |
-| Orange Pi Lite            | [Armbian Nightly](https://dl.armbian.com/orangepilite/nightly/)          | 126K          | 2      | None    |                  |
-| Orange Pi One             | [Armbian Nightly](https://dl.armbian.com/orangepione/nightly/)           | 131K          | 1      | 10/100  |                  |
-| Orange Pi Zero            | [Armbian Nightly](https://dl.armbian.com/orangepizero/nightly/)          |  70K          | 1(+2*) | 10/100  | *Additional USB available via headers |
-| Orange Pi Zero Plus 2 H5  | [Armbian Nightly](https://dl.armbian.com/orangepizeroplus2-h5/nightly/)  | 142K          | 0(+2*) | None    | *USB available via headers |         
+| Hardware                  | Base OS         | [CJDNS Benchmark](https://github.com/phillymesh/cjdns-optimizations) (salsa20/poly1305, switching) | USB | Ethernet | Notes    |
+| :-------------------------|:----------------|:---------------------------------------------------------------------------------------------------|:----|:---------|:---------|
+| Raspberry Pi 3            | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         | 350k, 100k | 2       | 10/100 |                                       |
+| Raspberry Pi 2            | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         | 150k,  50k | 2       | 10/100 |                                       |
+| Raspberry Pi 1 A+         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         |  35k,   -  | 1       | None   |                                       |
+| Raspberry Pi 1 B+         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         |  35k,   -  | 2       | 10/100 |                                       |
+| Raspberry Pi Zero         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         |  68k,  30k | 1*      | None   | *Need OTG Cable                       |
+| Orange Pi Lite            | [Armbian Nightly](https://dl.armbian.com/orangepilite/nightly/)          | 198k,  76k | 2       | None   |                                       |
+| Orange Pi One             | [Armbian Nightly](https://dl.armbian.com/orangepione/nightly/)           | 198k,  76k | 1       | 10/100 |                                       |
+| Orange Pi Zero            | [Armbian Nightly](https://dl.armbian.com/orangepizero/nightly/)          | 148k,  56k | 1 (+2*) | 10/100 | *Additional USB available via headers |
+| Orange Pi Zero Plus 2 H5  | [Armbian Nightly](https://dl.armbian.com/orangepizeroplus2-h5/nightly/)  | 142k,  92K | 0 (+2*) | None   | *USB available via headers            |
 
 ## Development
 
