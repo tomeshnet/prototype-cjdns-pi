@@ -19,7 +19,7 @@ sudo chmod 744 /usr/local/sbin/mesh.setup
 
 
 #stop network manager from processing wireless devices
-if [ -e "/etc/NetworkManager/NetworkManager.conf"]; then
+if [ -e "/etc/NetworkManager/NetworkManager.conf" ]; then
    if [ -z "$(cat /etc/NetworkManager/NetworkManager.conf | grep unmanaged-devices)" ]; then
         sudo echo "[keyfile]" >> /etc/NetworkManager/NetworkManager.conf
         sudo echo "unmanaged-devices=interface-name:wlan*" >> /etc/NetworkManager/NetworkManager.conf
