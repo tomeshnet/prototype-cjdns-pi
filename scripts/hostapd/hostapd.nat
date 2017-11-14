@@ -11,6 +11,4 @@ iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 ip6tables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
 
 #Add interface to bridge, because it systemd wont add a wireless interface to a bridge untill hostapd is running
-if [[ -z "`brctl show | grep $INT`" ]]; then
-    brctl addif br-ap $INT
-fi
+/sbin/brctl addif br-ap $1
