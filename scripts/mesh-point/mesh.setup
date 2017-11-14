@@ -1,0 +1,46 @@
+#!/bin/sh
+# Copyright (C) 2017 Hamish Coleman <hamish@zot.org>
+
+#
+# Called from udev with the name of a wireless interface.
+#
+
+INT="$1"
+LINK="$2"
+
+if [ -z "$INT" ]; then
+    echo error - need interface name
+    exit 1
+fi
+
+if [ -e "$LINK" ]; then
+    # if we know the name of the *.link file, load config from it
+    eval $(confget -f $LINK -s mesh -l -S -p conf_)
+fi
+
+# check that we have the required config
+[ -n "$conf_ssid" ] || exit 1
+[ -n "$conf_freq" ] || exit 1
+
+if [ -n "$conf_country_code" ]; then
+    # if one is configured, just set it - dont check if it is already set
+    # or make any other assumptions
+    iw reg set $conf_country_code
+fi
+
+ip link set $INT down
+iw dev $INT set type mp
+ip link set $INT up
+iw dev $INT mesh join $conf_ssid freq $conf_freq
+
+
+# TODO
+# - HT20 style options
+# - mcast-rate
+# - maybe mesh_param (eg: mesh_fwding=0)
+
+sudo iw dev $INT set mesh_param mesh_fwding=0
+
+killall cjdroute
+
+exit 0

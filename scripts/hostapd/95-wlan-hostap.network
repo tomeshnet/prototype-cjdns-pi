@@ -1,0 +1,7 @@
+# By default, all wlan interfaces will be access points
+[Match]
+Type=wlan
+Driver=xradio_wlan brcmfmac
+
+[Network]
+Bridge=br-ap

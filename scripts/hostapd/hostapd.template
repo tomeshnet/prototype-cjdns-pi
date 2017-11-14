@@ -1,0 +1,40 @@
+#!/bin/sh
+# Copyright (C) 2017 Hamish Coleman <hamish@zot.org>
+#
+# Called from udev with the name of a wireless interface.  Checks if
+# there is a hostap config for it already, and if not, builds one from
+# the template
+#
+# TODO
+# - now that we can append config from the link file, do we want to just
+#   overwrite the conf file every time?
+# - or, perhaps, move the config file location to /run and use a per-interface
+#   template (hostapd.template.%I.conf ?) if it is found
+INT="$1"
+LINK="$2"
+CONF="/etc/hostapd/hostapd.${INT}.conf"
+TEMPLATE="/etc/hostapd/hostapd.template.conf"
+
+# for some reason udev is mounted as ro, mount it as rw
+mount -o  remount,rw /
+
+if [ -z "$INT" ]; then
+    echo error - need interface name
+    exit 1
+fi
+DIR=/etc/hostapd
+cd "$DIR"
+if [ -e "$CONF" ]; then
+    # nothing needs doing
+    exit 0
+fi
+if [ ! -e "$TEMPLATE" ]; then
+    echo error - need a $TEMPLATE
+    exit 1
+fi
+sed -e "s/__INTERFACE__/$INT/g" <$TEMPLATE >$CONF
+if [ -e "$LINK" ]; then
+    # if we know the name of the *.link file, append any extra
+    # config items from there
+    confget -f $LINK -s hostapd -l >>$CONF
+fi
