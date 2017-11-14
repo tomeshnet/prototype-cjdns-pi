@@ -12,8 +12,12 @@
 #   template (hostapd.template.%I.conf ?) if it is found
 INT="$1"
 LINK="$2"
-CONF="hostapd.${INT}.conf"
-TEMPLATE="hostapd.template.conf"
+CONF="/etc/hostapd/hostapd.${INT}.conf"
+TEMPLATE="/etc/hostapd/hostapd.template.conf"
+
+# for some reason udev is mounted as ro, mount it as rw
+mount -o  remount,rw /
+
 if [ -z "$INT" ]; then
     echo error - need interface name
     exit 1
