@@ -223,6 +223,9 @@ if ! [ "$(which nodejs)" ]; then
    fi
 fi
 
+# Install possibly missing tools
+sudo apt-get install haveged -y
+
 # Download cjdns repo and checkout TAG_CJDNS tag
 if ! [ -d "/opt/cjdns" ]; then
     here=`pwd`
