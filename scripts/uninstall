@@ -35,6 +35,8 @@ source "$BASE_DIR/extra-tools/uninstall"
 
 sudo systemctl daemon-reload
 
+sudo sed -i 's/service dnsmasq restart//' /etc/rc.local 
+
 # Uninstall status script
 sudo rm -f /usr/local/bin/status
 
