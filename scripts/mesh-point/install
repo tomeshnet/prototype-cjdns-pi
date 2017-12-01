@@ -3,6 +3,7 @@
 set -e
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+apt-get install -y confget hostapd dialog
 
 # Install bring-up script for the Mesh Point interface to /usr/bin
 sudo cp "$BASE_DIR/50-mesh.wlan.rules" "/etc/udev/rules.d"
