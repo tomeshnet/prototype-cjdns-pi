@@ -19,7 +19,7 @@ if ! [ -z "`ps xa | awk '{print $5}' | grep dpkg | grep -v grep`" ]; then
     if [[ $REPLY =~ ^[Nn]$ ]]; then
         echo -e "\e[1;31mPlease stop DPKG Before Proceeding!\e[0m"
         exit
-    else	
+    else
         echo -e "\e[1;32mKilling DPKG and continuing\e[0m"
         sudo killall dpkg
     fi	 

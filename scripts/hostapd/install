@@ -107,3 +107,9 @@ sudo cp "$BASE_DIR/hostapd.service" /etc/systemd/system/hostapd.service
 sudo systemctl daemon-reload
 sudo systemctl enable hostapd.service
 sudo systemctl start hostapd.service
+
+# dnsmasq for some reason won't bind to the hostapd on Orange Pi, restarting it works
+if [[ -z "$(cat /etc/rc.local | grep dnsmasq)" ]]; then
+    sudo sed -i 's/exit 0/service dnsmasq restart\nexit 0/' /etc/rc.local 
+fi
+
