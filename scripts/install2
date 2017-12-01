@@ -61,10 +61,12 @@ sudo sed -i 's/ALL=(ALL:ALL) ALL/ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
 sudo touch /etc/udev/rules.d/80-net-setup-link.rules
 
 # Disable NetworkManager management of wlan1 so it doesn't pause it to scan every 60 seconds
-if [[ -z "$(grep "\[keyfile\]" /etc/NetworkManager/NetworkManager.conf)" ]]; then
-    echo "[keyfile]" | sudo tee --append /etc/NetworkManager/NetworkManager.conf > /dev/null
-    echo "unmanaged-devices=interface-name:wlan1" | sudo tee --append /etc/NetworkManager/NetworkManager.conf > /dev/null
-fi
+if [[ -e '/etc/NetworkManager/NetworkManager.conf' ]]; then
+    if [[ -z "$(grep "\[keyfile\]" /etc/NetworkManager/NetworkManager.conf)" ]]; then
+        echo "[keyfile]" | sudo tee --append /etc/NetworkManager/NetworkManager.conf > /dev/null
+        echo "unmanaged-devices=interface-name:wlan1" | sudo tee --append /etc/NetworkManager/NetworkManager.conf > /dev/null
+    fi
+ fi
 
 # Set configurations specific to the board
 if [[ $BOARD_FAMILY == "Orange Pi" ]]; then
