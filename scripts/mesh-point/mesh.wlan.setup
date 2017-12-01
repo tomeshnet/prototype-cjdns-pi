@@ -1,0 +1,80 @@
+#!/bin/bash
+
+int="$1"
+mac="$(cat /sys/class/net/$int/phy80211/macaddress)"
+phy="$(cat /sys/class/net/$int/phy80211/name)"
+type="$(confget -f /etc/mesh.conf -s $mac type)"
+
+
+if [ "$type" == "mesh" ]; then
+
+   protocol="$(confget -f /etc/mesh.conf -s $mac protocol)"
+
+   # Set wireless regulatory domain
+    sudo iw reg set CA
+
+
+    # Shut down the mesh_dev interface
+    sudo ifconfig $int down
+
+    if [ "$protocol" == "adhoc" ]; then 
+
+        ssid="$(confget -f /etc/mesh.conf -s $mac ssid)"
+        freq="$(confget -f /etc/mesh.conf -s $mac freq)"
+
+        sudo iw $int set type ibss
+        sudo ifconfig $int up
+
+        sudo iw dev $int ibss join $ssid $freq HT40+
+
+    fi
+    if [ "$protocol" == "80211s" ]; then 
+
+        ssid="$(confget -f /etc/mesh.conf -s $mac ssid)"
+        freq="$(confget -f /etc/mesh.conf -s $mac freq)"
+
+        # Convert mesh_dev to 802.11s Mesh Point interface
+        sudo iw $int set type mp
+
+        # Bring up the mesh_dev interface
+        sudo ifconfig $int up
+
+        sudo iw dev $int mesh join $ssid freq $freq HT40+
+
+        # Disable forwarding since we rely on cjdns to do routing and only uses Mesh Point as a point-to-point link
+        sudo iw dev $int set mesh_param mesh_fwding=0
+    fi
+
+fi
+
+
+
+if [ "$type" == "ap" ]; then
+
+   channel="$(confget -f /etc/mesh.conf -s $mac channel)"
+   ssid="$(confget -f /etc/mesh.conf -s $mac ssid)"
+
+   echo channel=$channel >> /tmp/hostapd.$int.conf
+   echo ssid=$ssid >> /tmp/hostapd.$int.conf
+   echo interface=$int >> /tmp/hostapd.$int.conf
+   echo hw_mode=g >> /tmp/hostapd.$int.conf
+
+   hostapd -B  /tmp/hostapd.$int.conf -P /var/run/hostapd.$int.conf
+
+   if [ ! -f "/sys/class/net/br-ap/type" ]; then
+      brctl addbr br-ap
+      ifconfig br-ap 10.0.0.1/24 up
+
+    iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+    ip6tables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+
+    # Forward all IPv4 traffic from the internal network to the eth0 device and mask with the eth0 external IP address
+    iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
+
+    # Forward all IPv6 traffic from the internal network to the tun0 device and mask with the tun0 external IP address
+    ip6tables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
+
+   fi
+   brctl addif  br-ap $int
+
+fi
