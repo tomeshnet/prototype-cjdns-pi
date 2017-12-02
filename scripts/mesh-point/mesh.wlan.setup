@@ -1,5 +1,9 @@
 #!/bin/bash
 
+
+# for some reason udev is mounted as ro, mount it as rw
+mount -o remount,rw /
+
 int="$1"
 mac="$(cat /sys/class/net/$int/phy80211/macaddress)"
 phy="$(cat /sys/class/net/$int/phy80211/name)"
@@ -68,7 +72,36 @@ if [ "$type" == "ap" ]; then
         echo rsn_pairwise=CCMP >> /tmp/hostapd.$int.conf
 	echo wpa_passphrase="$(confget -f /etc/mesh.conf -s $mac wpapass)" >> /tmp/hostapd.$int.conf
   fi
+  if [[ "$(confget -f /etc/mesh.conf -s $mac wpa)" == "wpa-eap" ]]; then
+	echo auth_algs=1 >> /tmp/hostapd.$int.conf
+	echo wpa=3 >> /tmp/hostapd.$int.conf
+	echo wpa_key_mgmt=WPA-EAP >> /tmp/hostapd.$int.conf
+	echo ieee8021x=1 >> /tmp/hostapd.$int.conf
+	echo eap_server=1 >> /tmp/hostapd.$int.conf
+	echo eap_user_file=/etc/hostapd/hostapd.eap_user >> /tmp/hostapd.$int.conf
+	echo ca_cert=/etc/hostapd/ca.pem >> /tmp/hostapd.$int.conf
+	echo server_cert=/etc/hostapd/server.pem >> /tmp/hostapd.$int.conf
+	echo private_key=/etc/hostapd/server.pem >> /tmp/hostapd.$int.conf
+	echo private_key_passwd=whatever >> /tmp/hostapd.$int.conf
+	echo wpa_pairwise=CCMP >> /tmp/hostapd.$int.conf
+	echo rsn_pairwise=CCMP >> /tmp/hostapd.$int.conf
+	
+	if [[ ! -f "/etc/hostapd/server.pem" ]]; then
+		/bin/bash /opt/wpa-eap/bootstrap
+	    	sudo cp "/opt/wpa-eap/ca.pem" /etc/hostapd/ca.pem
+		sudo cp "/opt/wpa-eap/server.pem" /etc/hostapd/server.pem
+	fi
 
+        if [[ ! -f "/etc/hostapd/hostapd.eap_user" ]]; then
+		echo "* PEAP,TTLS" > /etc/hostapd/hostapd.eap_user
+	fi
+
+	# Replace guest line new password
+	sed -i '/"guest"/d'  /etc/hostapd/hostapd.eap_user
+	wpa_passphrase="$(confget -f /etc/mesh.conf -s $mac wpapass)" 
+	echo "\"guest\" MSCHAPV2 \"$wpa_passwhrase\" [2]"  >> /etc/hostapd/hostapd.eap_user
+
+  fi
 
 
    hostapd -B  /tmp/hostapd.$int.conf -P /var/run/hostapd.$int.conf

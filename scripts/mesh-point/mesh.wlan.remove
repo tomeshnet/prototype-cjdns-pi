@@ -1,0 +1,8 @@
+#!/bin/bash
+
+int="$1"
+
+#Remove from bridge if present
+if [ ! "$(brctl show | grep $1)" == "" ]; then
+	brctl delif br-ap $1
+fi

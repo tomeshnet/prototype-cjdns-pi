@@ -7,8 +7,13 @@ apt-get install -y confget hostapd dialog
 
 # Install bring-up script for the Mesh Point interface to /usr/bin
 sudo cp "$BASE_DIR/50-mesh.wlan.rules" "/etc/udev/rules.d"
+sudo cp "$BASE_DIR/50-mesh.wlan.remove.rules" "/etc/udev/rules.d"
 sudo cp "$BASE_DIR/mesh.wlan.setup" "/usr/local/sbin"
+sudo cp "$BASE_DIR/mesh.wlan.remove" "/usr/local/sbin"
 sudo cp "$BASE_DIR/mesh.config" "/usr/local/sbin"
 sudo cp "$BASE_DIR/50-cjdns.rules" "/etc/udev/rules.d"
 sudo cp "$BASE_DIR/mesh.cjdns.setup" "/usr/local/sbin"
 
+# Install Cert Generation Scripts incase we want to use EAP
+mkdir /opt/wpa-eap
+sudo cp -r "$BASE_DIR/wpa-eap" "/opt/wpa-eap"
