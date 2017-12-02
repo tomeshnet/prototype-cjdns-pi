@@ -106,9 +106,9 @@ if [ "$type" == "ap" ]; then
 
    hostapd -B  /tmp/hostapd.$int.conf -P /var/run/hostapd.$int.conf
 
-   if [ ! -f "/sys/class/net/br-ap/type" ]; then
-      brctl addbr br-ap
-      ifconfig br-ap 10.0.0.1/24 up
+   if [ ! -f "/sys/class/net/br-enter/type" ]; then
+      brctl addbr br-enter
+      ifconfig br-enter 10.0.0.1/24 up
 
     iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
     ip6tables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
@@ -120,6 +120,6 @@ if [ "$type" == "ap" ]; then
     ip6tables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
 
    fi
-   brctl addif  br-ap $int
+   brctl addif  br-enter $int
 
 fi
