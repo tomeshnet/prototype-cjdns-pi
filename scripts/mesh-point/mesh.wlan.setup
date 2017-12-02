@@ -51,13 +51,25 @@ fi
 
 if [ "$type" == "ap" ]; then
 
-   channel="$(confget -f /etc/mesh.conf -s $mac channel)"
+   channel="$(confget -f /etc/mesh.conf -s $mac chan)"
    ssid="$(confget -f /etc/mesh.conf -s $mac ssid)"
 
-   echo channel=$channel >> /tmp/hostapd.$int.conf
+   echo channel=$channel > /tmp/hostapd.$int.conf
    echo ssid=$ssid >> /tmp/hostapd.$int.conf
    echo interface=$int >> /tmp/hostapd.$int.conf
    echo hw_mode=g >> /tmp/hostapd.$int.conf
+
+  if [[ "$(confget -f /etc/mesh.conf -s $mac wpa)" == "wpa-psk" ]]; then
+
+        echo auth_algs=1 >> /tmp/hostapd.$int.conf
+        echo wpa=2 >> /tmp/hostapd.$int.conf
+        echo wpa_key_mgmt=WPA-PSK >> /tmp/hostapd.$int.conf
+        echo wpa_pairwise=CCMP >> /tmp/hostapd.$int.conf
+        echo rsn_pairwise=CCMP >> /tmp/hostapd.$int.conf
+	echo wpa_passphrase="$(confget -f /etc/mesh.conf -s $mac wpapass)" >> /tmp/hostapd.$int.conf
+  fi
+
+
 
    hostapd -B  /tmp/hostapd.$int.conf -P /var/run/hostapd.$int.conf
 
