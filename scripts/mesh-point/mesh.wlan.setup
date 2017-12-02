@@ -109,15 +109,20 @@ if [ "$type" == "ap" ]; then
    if [ ! -f "/sys/class/net/br-enter/type" ]; then
       brctl addbr br-enter
       ifconfig br-enter 10.0.0.1/24 up
+      systemctl radvd restart
+
+	# Enable forwarding if not already
+sysctl -w net.ipv4.ip_forward=1
+sysctl -w net.ipv6.conf.all.forwarding=1
 
     iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
     ip6tables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
 
     # Forward all IPv4 traffic from the internal network to the eth0 device and mask with the eth0 external IP address
-    iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
+    iptables -t nat -A POSTROUTING -o tun+ -j MASQUERADE
 
     # Forward all IPv6 traffic from the internal network to the tun0 device and mask with the tun0 external IP address
-    ip6tables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
+    ip6tables -t nat -A POSTROUTING -o tun+ -j MASQUERADE
 
    fi
    brctl addif  br-enter $int
