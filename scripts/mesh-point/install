@@ -14,6 +14,9 @@ sudo cp "$BASE_DIR/50-mesh.wlan.remove.rules" "/etc/udev/rules.d"
 sudo cp "$BASE_DIR/mesh.wlan.setup" "/usr/local/sbin"
 sudo cp "$BASE_DIR/mesh.wlan.remove" "/usr/local/sbin"
 
+sudo cp $BASE_DIR/hostapd\@.service /etc/systemd/system/hostapd\@.service 
+sudo cp "$BASE_DIR/enterNode.sh" /usr/local/sbin/enterNode.sh
+
 # Rule to trigger and script to config cjdns when starter/restarted
 sudo cp "$BASE_DIR/50-cjdns.rules" "/etc/udev/rules.d"
 sudo cp "$BASE_DIR/mesh.cjdns.setup" "/usr/local/sbin"
