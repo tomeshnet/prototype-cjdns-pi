@@ -20,8 +20,16 @@ sudo cp "$BASE_DIR/tmp/node_exporter" /usr/local/bin/node_exporter
 sudo chown root:staff /usr/local/bin/node_exporter
 rm -rf "$BASE_DIR/tmp"
 
+sudo mkdir /var/lib/node_exporter/
+sudo mkdir /opt/tomesh/
+sudo cp "$BASE_DIR/nodestats-tomesh.py" "/opt/tomesh/nodestats-tomesh.py"
+
 # Configure systemd to start prometheus-node-exporter.service on system boot
 sudo cp "$BASE_DIR/prometheus-node-exporter.service" /lib/systemd/system/prometheus-node-exporter.service
+sudo cp "$BASE_DIR/node-exporter-tomesh.service" /lib/systemd/system/node-exporter-tomesh.service
 sudo systemctl daemon-reload
 sudo systemctl enable prometheus-node-exporter.service
 sudo systemctl start prometheus-node-exporter.service
+sudo systemctl enable node-exporter-tomesh.service
+sudo systemctl start node-exporter-tomesh.service
+
