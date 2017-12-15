@@ -5,7 +5,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=python /opt/tomesh/nodestats-tomesh.py
+ExecStart=/usr/bin/python /opt/tomesh/nodestats-tomesh.py
 ExecStop=/usr/bin/pkill -f node_exporter
 Restart=on-failure
 RestartSec=10s
