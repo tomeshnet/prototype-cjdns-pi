@@ -1,7 +1,7 @@
-import os
-import os.path
-import time
-import shlex
+import os 
+import os.path 
+import time 
+import shlex 
 import subprocess
 
 path = "/var/lib/node_exporter/ne-stats.prom"
@@ -15,13 +15,14 @@ os.mkfifo(path)
 while 1:
         fifo = open(path, "w")
 
-        fifo.write("nodeV{} 1\n")
+        fifo.write("tomeshV 1\n")
 
         s=""
         if os.path.isfile("/sys/devices/virtual/thermal/thermal_zone0/temp"):
                 with file("/sys/devices/virtual/thermal/thermal_zone0/temp") as f:
                         s = f.read()
-                fifo.write("hw_temp{} " + s + "\n")
+                fifo.write("hw_temp ")
+                fifo.write(s)
 
         command_line = "iw dev"
         args = shlex.split(command_line)
@@ -43,7 +44,7 @@ while 1:
                                 if type.find("type") > -1:
                                         words2= type.split(" ")
                                         if words2[1]  == "mesh":
-                                                fifo.write("wlan{" + currentitn + "} mesh\n")
+                                                fifo.write("wlan_mesh{iface=\"" + currentitn + "\"} 1\n")
                                                 command_line = "iw dev " + currentitn + " station dump"
                                                 args = shlex.split(command_line)
                                                 links = subprocess.Popen(args,stdout=subprocess.PIPE)
@@ -52,6 +53,7 @@ while 1:
                                                 linksline = output.split("\n")
                                                 station=""
                                                 signal=""
+
                                                 for link in linksline:
                                                         if link <> "" :
                                                                 words3 = link.replace("\t"," ").split(" ")
@@ -66,10 +68,10 @@ while 1:
                                                                 if words3[1].find("tx") > -1 and words3[2].find("bytes") > -1:
                                                                         tx=words3[3]
                                                                 if words3[1].find("TDLS") > -1:
-                                                                        fifo.write('mesh_node_signal {mac="' + station + '"} ' + signal + "\n")
-                                                                        fifo.write('mesh_node_status {mac="' + station + '"} ' + linkstatus + "\n")
-                                                                        fifo.write('mesh_node_rx {mac="' + station + '"} ' + rx + "\n")
-                                                                        fifo.write('mesh_node_tx {mac="' + station + '"} ' + tx + "\n")
+                                                                        fifo.write('mesh_node_signal{mac="' + station + '"} ' + signal + "\n")
+#                                                                        fifo.write('mesh_node_status{mac="' + station + '"} ' + linkstatus + "\n")
+                                                                        fifo.write('mesh_node_rx{mac="' + station + '"} ' + rx + "\n")
+                                                                        fifo.write('mesh_node_tx{mac="' + station + '"} ' + tx + "\n")
 
         fifo.close()
         time.sleep(1)
