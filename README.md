@@ -126,3 +126,14 @@ To add a new module, use **scripts/ipfs/** as an example to:
 * Your computer can be a node too! It will mesh with the Pi's over your router. See the [cjdns repository](https://github.com/cjdelisle/cjdns) on how to set this up.
 
 * Original plan for this repository and early benchmark results are available in [the doc folder](https://github.com/tomeshnet/prototype-cjdns-pi/blob/master/docs/).
+
+## FAQ
+
+**Q:** Orange Pi Zero USB headers do not work
+
+**A:** Add this to your /boot/armbianEnv.txt and restart the pi
+```overlays=usbhost2 usbhost3```
+
+**Q:** I get an error about a locked file
+
+**A**: The daily apt upgrade is running. Wait for it to finish.
