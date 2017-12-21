@@ -7,4 +7,4 @@ sudo systemctl disable mesh.service 2>/dev/null || true
 sudo systemctl stop mesh.service 2>/dev/null || true
 sudo systemctl daemon-reload
 sudo rm -f /usr/bin/mesh
-sudo rm -f /lib/systemd/system/mesh.service
+sudo rm -f /etc/systemd/system/mesh.service

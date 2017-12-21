@@ -21,7 +21,7 @@ sudo chown root:staff /usr/local/bin/node_exporter
 rm -rf "$BASE_DIR/tmp"
 
 # Configure systemd to start prometheus-node-exporter.service on system boot
-sudo cp "$BASE_DIR/prometheus-node-exporter.service" /lib/systemd/system/prometheus-node-exporter.service
+sudo cp "$BASE_DIR/prometheus-node-exporter.service" /etc/systemd/system/prometheus-node-exporter.service
 sudo systemctl daemon-reload
 sudo systemctl enable prometheus-node-exporter.service
 sudo systemctl start prometheus-node-exporter.service

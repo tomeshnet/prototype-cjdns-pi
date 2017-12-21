@@ -262,10 +262,10 @@ if ! [ -f "/etc/cjdroute.conf" ]; then
 fi
 
 # Configure systemd to start cjdns.service on system boot
-sudo cp /opt/cjdns/contrib/systemd/cjdns.service /lib/systemd/system/cjdns.service
-sudo chmod 644 /lib/systemd/system/cjdns.service
-sudo cp /opt/cjdns/contrib/systemd/cjdns-resume.service /lib/systemd/system/cjdns-resume.service
-sudo chmod 644 /lib/systemd/system/cjdns-resume.service
+sudo cp /opt/cjdns/contrib/systemd/cjdns.service /etc/systemd/system/cjdns.service
+sudo chmod 644 /etc/systemd/system/cjdns.service
+sudo cp /opt/cjdns/contrib/systemd/cjdns-resume.service /etc/systemd/system/cjdns-resume.service
+sudo chmod 644 /etc/systemd/system/cjdns-resume.service
 sudo systemctl daemon-reload
 sudo systemctl enable cjdns.service
 
