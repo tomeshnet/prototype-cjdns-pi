@@ -4,6 +4,10 @@ set -e
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+H_DNS_SERVER_0="fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc"
+H_DNS_SERVER_1="fc6e:691e:dfaa:b992:a10a:7b49:5a1a:5e09"
+H_DNS_SERVER_2="fc16:b44c:2bf9:467:8098:51c6:5849:7b4f"
+
 # Create radvd.conf before installing radvd, installation fails without it
 if ! [ -f /etc/radvd.conf ]; then 
     sudo cp "$BASE_DIR/radvd.conf" /etc/radvd.conf
@@ -83,9 +87,16 @@ fi
 if [ -f /etc/dnsmasq.conf ]; then
     sudo cp /etc/dnsmasq.conf /etc/dnsmasq.conf.bak
 fi
-sudo cp "$BASE_DIR/dnsmasq.conf" /etc/dnsmasq.conf
 
-if [ -f /etc/dhcpcd.conf ]; then 
+# Use hyperborea dns addressses if h-dns is enabled
+sudo cp "$BASE_DIR/dnsmasq.conf" /etc/dnsmasq.conf
+if [ ! -z "$WITH_H_DNS" -a "$WITH_H_DNS" == "true" ]; then
+   echo "server=$H_DNS_SERVER_0" | sudo tee --append /etc/dnsmasq.conf
+   echo "server=$H_DNS_SERVER_1" | sudo tee --append /etc/dnsmasq.conf
+   echo "server=$H_DNS_SERVER_2" | sudo tee --append /etc/dnsmasq.conf
+fi
+
+if [ -f /etc/dhcpcd.conf ]; then
     sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.bak
     sudo echo "" | sudo tee --append /etc/dhcpcd.conf > /dev/null
     sudo echo "denyinterfaces wlan0" | sudo tee --append /etc/dhcpcd.conf > /dev/null
