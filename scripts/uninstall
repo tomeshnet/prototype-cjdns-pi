@@ -8,8 +8,8 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 sudo systemctl disable cjdns.service 2>/dev/null || true
 sudo systemctl stop cjdns.service 2>/dev/null || true
 sudo rm -f /usr/bin/cjdroute
-sudo rm -f /lib/systemd/system/cjdns.service
-sudo rm -f /lib/systemd/system/cjdns-resume.service
+sudo rm -f /etc/systemd/system/cjdns.service
+sudo rm -f /etc/systemd/system/cjdns-resume.service
 sudo rm -rf /opt/cjdns
 
 if [ -f "/etc/cjdroute.conf" ]; then
