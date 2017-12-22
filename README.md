@@ -57,7 +57,7 @@ Many models of Orange Pi hardware running [Armbian](https://www.armbian.com/) ar
 | `WITH_FAKE_HWCLOCK`             | None                                           | Set to `true` if you want to force hwclock to store its time every 5 minutes. |
 | `WITH_EXTRA_TOOLS`              | None                                           | Set to `true` if you want to install non-essential tools useful for network analysis: vim socat oping bmon iperf3 |
 
-If you are connected to the WiFi Access Point, all HTTP services are available via `http://10.10.0.1:PORT` as well as the cjdns IPv6. To connect with the cjdns address, first note your node's fc00::/8 address from `status`, then navigate to `http://[fcaa:bbbb:cccc:dddd:eeee:0000:1111:2222]:PORT` from your browser.
+If you are connected to the WiFi Access Point, all HTTP services are available via `http://10.0.0.1:PORT` as well as the cjdns IPv6. To connect with the cjdns address, first note your node's fc00::/8 address from `status`, then navigate to `http://[fcaa:bbbb:cccc:dddd:eeee:0000:1111:2222]:PORT` from your browser.
 
 ## Check Status
 

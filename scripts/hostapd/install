@@ -27,10 +27,10 @@ echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces > /dev
 echo "" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "allow-hotplug wlan0" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "iface wlan0 inet static" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    address 10.10.0.1" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    netmask 255.255.255.128" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    network 10.10.0.0" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    broadcast 10.10.0.127" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "    address 10.0.0.1" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "    netmask 255.255.255.0" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "    network 10.0.0.0" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "    broadcast 10.10.0.255" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "iface wlan0 inet6 static" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    address fdfc::2" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    netmask 64" | sudo tee --append /etc/network/interfaces > /dev/null
