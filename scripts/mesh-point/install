@@ -21,9 +21,9 @@ sudo cp "$BASE_DIR/enterNode.sh" /usr/local/sbin/enterNode.sh
 sudo cp "$BASE_DIR/50-cjdns.rules" "/etc/udev/rules.d"
 sudo cp "$BASE_DIR/mesh.cjdns.setup" "/usr/local/sbin"
 
-
 # Gui program to configure interfaces
 sudo cp "$BASE_DIR/mesh.config" "/usr/local/sbin"
+sudo touch /etc/mesh.conf   
 
 # Supported service for enter node (ap/eth)
 sudo cp "$BASE_DIR/radvd.conf" "/etc/radvd.conf"
@@ -33,5 +33,7 @@ sudo cp "$BASE_DIR/75-lan-bridge.network" "/etc/systemd/network/75-lan-bridge.ne
 sudo cp -r "$BASE_DIR/wpa-eap" "/opt"
 
 # Switch from network manager to systemd for network control
-systemctl enable systemd-networkd
 systemctl disable network-manager
+systemctl stop network-manager || true
+systemctl enable systemd-networkd
+
