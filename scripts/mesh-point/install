@@ -15,7 +15,7 @@ sudo cp "$BASE_DIR/mesh.wlan.setup" "/usr/local/sbin"
 sudo cp "$BASE_DIR/mesh.wlan.remove" "/usr/local/sbin"
 sudo cp "$BASE_DIR/mesh.hostapd.setup" "/usr/local/sbin"
 
-sudo cp "$BASE_DIR/hostapd@.service" "/etc/systemd/system/hostapd\.service" 
+sudo cp "$BASE_DIR/hostapd@.service" "/etc/systemd/system/hostapd@.service" 
 sudo cp "$BASE_DIR/50-hostapd.rules" /etc/udev/rules.d 
 sudo cp "$BASE_DIR/enterNode.sh" /usr/local/sbin/enterNode.
 
