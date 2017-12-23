@@ -32,7 +32,7 @@ elif [ -e /etc/cjdns.iptunnel.client ]; then
             /opt/cjdns/tools/cexec  "IpTunnel_connectTo('${PUBLIC_KEY}')"
 
             # Route NAT traffic through to cjdns tun0 interface to use iptunnel exit server
-            sudo iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+            sudo iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE || true
             sudo iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
         fi
     done < /etc/cjdns.iptunnel.client
