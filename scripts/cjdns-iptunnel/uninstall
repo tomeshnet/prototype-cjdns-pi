@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Uninstall scripts that configure cjdns iptunnel
+sudo rm /etc/udev/rules.d/50-cjdns.rules
+sudo rm /usr/local/sbin/mesh.cjdns.setup
