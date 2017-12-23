@@ -23,7 +23,7 @@ sudo cp "$BASE_DIR/mesh.cjdns.setup" "/usr/local/sbin"
 
 # Gui program to configure interfaces
 sudo cp "$BASE_DIR/mesh.config" "/usr/local/sbin"
-sudo touch /etc/mesh.conf   
+sudo touch /etc/mesh.conf
 
 # Supported service for enter node (ap/eth)
 sudo cp "$BASE_DIR/radvd.conf" "/etc/radvd.conf"

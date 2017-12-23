@@ -10,11 +10,9 @@ BindsTo=sys-subsystem-net-devices-%i.device
 [Service]
 Restart=always
 RestartSec=1
-ExecStart=/usr/sbin/hostapd /tmp/hostapd.%I.conf
+ExecStart=/usr/local/sbin/mesh.hostapd.setup %I
 ExecReload=/bin/kill -HUP $MAINPID
 ExecStop=/bin/kill $MAINPID
-ExecStartPost=/usr/local/sbin/enterNode.sh %I
-
 
 [Install]
 WantedBy=multi-user.target sys-subsystem-net-devices-%I.device

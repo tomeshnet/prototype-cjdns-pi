@@ -1,0 +1,6 @@
+#!/bin/bash
+
+if [[ -f /tmp/hostapd.$1.conf ]]; then
+    /usr/sbin/hostapd /tmp/hostapd.$1.conf
+fi
+ExecStartPost=/usr/local/sbin/enterNode.sh $1
