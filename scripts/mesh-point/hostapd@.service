@@ -2,9 +2,9 @@
 Description=Software Wireless Access point on %I
 After=sys-subsystem-net-devices-%i.device
 BindsTo=sys-subsystem-net-devices-%i.device
+ConditionPathExists=/tmp/hostapd.%I.conf
 
 [Service]
-ConditionPathExists=/tmp/hostapd.%I.conf
 Restart=always
 RestartSec=1
 ExecStart=/usr/sbin/hostapd /tmp/hostapd.%I.conf
