@@ -35,6 +35,8 @@ sudo cp "$BASE_DIR/75-lan-bridge.network" "/etc/systemd/network/75-lan-bridge.ne
 # Install Cert Generation Scripts incase we want to use WPA EAP
 sudo cp -r "$BASE_DIR/wpa-eap" "/opt"
 
+sudo systemctl daemon-reload
+
 # Switch from network manager to systemd for network control
 systemctl disable network-manager
 systemctl stop network-manager || true
