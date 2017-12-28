@@ -1,8 +1,4 @@
-SUBSYSTEM!="net", GOTO="mesh_end"
-ACTION!="add", GOTO="mesh_end"
-
 IMPORT{builtin}="net_setup_link"
 
-PROGRAM="/usr/local/sbin/mesh.wlan.setup %k"
-
-LABEL="mesh_end"
+SUBSYSTEM=="net", ACTION=="add", RUN+="/usr/local/sbin/mesh.wlan.setup %k"
+SUBSYSTEM=="net", ACTION=="add", ENV{SYSTEMD_WANTS}+="hostapd@%k.service $name"
