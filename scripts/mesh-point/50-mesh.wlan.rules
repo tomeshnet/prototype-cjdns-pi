@@ -1,9 +1,8 @@
-# Copyright (C) 2017 Hamish Coleman <hamish@zot.org>
-#
-# any wlan device with a *mesh.link file will try to get a mesh running
 SUBSYSTEM!="net", GOTO="mesh_end"
 ACTION!="add", GOTO="mesh_end"
+
 IMPORT{builtin}="net_setup_link"
-# TODO - filter on more specific device details ...
-PROGRAM="/usr/local/sbin/mesh.wlan.setup %k "
+
+PROGRAM="/usr/local/sbin/mesh.wlan.setup %k"
+
 LABEL="mesh_end"

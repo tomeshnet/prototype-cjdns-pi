@@ -1,0 +1,8 @@
+SUBSYSTEM!="net", GOTO="hostapd_end"
+ACTION!="add", GOTO="hostapd_end"
+TEST!="/tmp/hostapd.%k.conf", GOTO="hostapd_end"
+
+IMPORT{builtin}="net_setup_link"
+TAG+="systemd", ENV{SYSTEMD_WANTS}="hostapd@%k.service"
+
+LABEL="hostapd_end"
