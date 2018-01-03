@@ -3,7 +3,7 @@
 set -e
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-apt-get install -y confget hostapd dialog radvd iptables bridge-utils
+sudo apt-get install -y confget hostapd dialog radvd iptables bridge-utils
 
 
 # Install bring-up script for the Mesh Point interface to /usr/bin
@@ -37,7 +37,7 @@ sudo cp -r "$BASE_DIR/wpa-eap" "/opt"
 sudo systemctl daemon-reload
 
 # Switch from network manager to systemd for network control
-systemctl disable network-manager
+systemctl disable network-manager  || true 
 systemctl stop network-manager || true
-systemctl enable systemd-networkd
+systemctl enable systemd-networkd  || true
 
