@@ -1,6 +1,6 @@
-# Installing Prototype on Armbian (Orange Pi, NanoPi, etc)
+# Installing Base OS on Armbian (Orange Pi, NanoPi, etc)
 
-Notes that all variantes of boards have NOT been tested, this does not mean it will not work.  If you have a board that is not listed that works please let us know.
+Notes that all variants of boards have NOT been tested, this does not mean it will not work.  If you have a board that is not listed that works please let us know.
 
 1. Make sure you have the following items
     * Armbian compatible board
@@ -25,4 +25,4 @@ Notes that all variantes of boards have NOT been tested, this does not mean it w
 
 1. Fill in the remainder of the information or simply skip by pressing enter
 
-1. Continue with Prototype Installation wget step
+1. Continue with [Prototype Installation](README.md) 
