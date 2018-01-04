@@ -40,4 +40,5 @@ sudo systemctl daemon-reload
 systemctl disable network-manager  || true 
 systemctl stop network-manager || true
 systemctl enable systemd-networkd  || true
+apt-get remove -y network-manager || true
 
