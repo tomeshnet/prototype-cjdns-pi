@@ -51,5 +51,9 @@ sudo iw dev $mesh_dev mesh join MESH_NAME freq 2412 HT40+
 # Disable forwarding since we rely on cjdns to do routing and only uses Mesh Point as a point-to-point link
 sudo iw dev $mesh_dev set mesh_param mesh_fwding=0
 
+# Prevent trying to establish connections with nodes under -70 dBm
+sudo iw dev $mesh_dev set mesh_param mesh_rssi_threshold -70
+
+
 # Restart cjdns
 sudo killall cjdroute
