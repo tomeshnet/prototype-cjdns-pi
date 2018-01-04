@@ -100,6 +100,7 @@ List of tested hardware:
 | Orange Pi One             | [Armbian Nightly](https://dl.armbian.com/orangepione/nightly/)           | 160k,  74k | 67 Mbps | 1       | 10/100 |                                       |
 | Orange Pi Zero            | [Armbian Nightly](https://dl.armbian.com/orangepizero/nightly/)          | 160k,  74k | 67 Mbps | 1 (+2*) | 10/100 | *Additional USB available via headers |
 | Orange Pi Zero Plus 2 H5  | [Armbian Nightly](https://dl.armbian.com/orangepizeroplus2-h5/nightly/)  | 190k, 130K | 80 Mbps | 0 (+2*) | None   | *USB available via headers            |
+| NanoPi Neo 2 | [Armbian Nightly](https://dl.armbian.com/nanopineo2/nightly/)  | 160k, 95K | 67 Mbps | 1 (+2*) | None   | *USB available via headers. Gigabit Ethernet        |
 
 ## Development
 
