@@ -138,3 +138,14 @@ To add a new module, use **scripts/ipfs/** as an example to:
 **Q:** I get an error about a locked file
 
 **A**: The daily apt upgrade is running. Wait for it to finish.
+
+
+**Q:** Can I connect a serial cable (ttl) to a Raspbery Pi?
+
+**A:** Yes using these gpio pins.  
+```
+    VCC → RPi Pin 02 (DC Power 5V)
+    GND → RPi Pin 06 (Ground)
+    RXD → RPi Pin 08 (TX)
+    TXD → RPi Pin 10 (RX)
+```
