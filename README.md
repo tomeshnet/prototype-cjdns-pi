@@ -14,7 +14,7 @@ Many models of Orange Pi hardware running [Armbian](https://www.armbian.com/) ar
     * An SD card that works with the Pi
     * **Optional:** A USB WiFi adapter with [802.11s Mesh Point](https://github.com/o11s/open80211s/wiki/HOWTO) support, such as the [TP-LINK TL-WN722N](http://www.tp-link.com/en/products/details/TL-WN722N.html) or [Toplinkst TOP-GS07](https://github.com/tomeshnet/documents/blob/master/technical/20170208_mesh-point-with-topgs07-rt5572.md)
     
-   **NOIE**: If you are running a Armbian board follow steps in the [Armbian Readme](README-Armbian.md) to install the base OS then continue with step 7.
+   **NOTE**: If you are running an Armbian board follow steps in the [Armbian Readme](README-Armbian.md) to install the base OS then continue with Step 7.
 
 1. Flash the SD card with [Raspbian Stretch Lite](https://www.raspberrypi.org/downloads/raspbian/).
 
