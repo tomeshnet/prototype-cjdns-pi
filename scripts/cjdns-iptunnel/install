@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Install scripts that run after cjdns tun0 is configured
+sudo cp "$BASE_DIR/50-cjdns.rules" /etc/udev/rules.d/50-cjdns.rules
+sudo cp "$BASE_DIR/cjdns-setup" /usr/local/sbin/cjdns-setup
