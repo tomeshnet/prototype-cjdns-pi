@@ -114,6 +114,17 @@ if [[ "$SUPPORT_HOSTAP" == "true" ]] && [ -z "$WITH_WIFI_AP" -o "$WITH_WIFI_AP" 
         WITH_WIFI_AP=true
     fi
 fi
+if [ -z "$WITH_CJDNS_IPTUNNEL" -o "$WITH_CJDNS_IPTUNNEL" != "true" -a "$WITH_CJDNS_IPTUNNEL" != "false" ]; then
+    read -p "Configure Internet gateway (Y/n)? " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo -e "\e[1;31mInternet gateway configuration will be skipped\e[0m"
+        WITH_CJDNS_IPTUNNEL=false
+    else
+        echo -e "\e[1;32mInternet gateway will be configured\e[0m"
+        WITH_CJDNS_IPTUNNEL=true
+    fi
+fi
 if [ -z "$WITH_IPFS" -o "$WITH_IPFS" != "true" -a "$WITH_IPFS" != "false" ]; then
     read -p "Install IPFS (Y/n)? " -n 1 -r
     echo ""
@@ -277,6 +288,11 @@ fi
 # WiFi Access Point on RPi3
 if [[ "$SUPPORT_HOSTAP" == "true" ]] && [ ! -z "$WITH_WIFI_AP" -a "$WITH_WIFI_AP" == "true" ]; then
     source hostapd/install
+fi
+
+# Configure Internet gateway using cjdns iptunnel
+if [ ! -z "$WITH_CJDNS_IPTUNNEL" -a "$WITH_CJDNS_IPTUNNEL" == "true" ]; then
+    source cjdns-iptunnel/install
 fi
 
 # IPFS
