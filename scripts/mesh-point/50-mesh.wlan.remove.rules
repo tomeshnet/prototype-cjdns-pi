@@ -1,0 +1,5 @@
+SUBSYSTEM!="net", GOTO="mesh_end"
+ACTION!="remove", GOTO="mesh_end"
+IMPORT{builtin}="net_setup_link"
+PROGRAM="/usr/local/sbin/mesh.wlan.remove %k "
+LABEL="mesh_end"

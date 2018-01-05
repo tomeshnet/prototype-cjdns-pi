@@ -1,0 +1,15 @@
+[Unit]
+Description=Software Wireless Access point on %I
+After=sys-subsystem-net-devices-%i.device
+BindsTo=sys-subsystem-net-devices-%i.device
+ConditionPathExists=/tmp/hostapd.%I.conf
+
+[Service]
+Restart=always
+RestartSec=1
+ExecStart=/usr/sbin/hostapd /tmp/hostapd.%I.conf
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStop=/bin/kill $MAINPID
+
+[Install]
+WantedBy=multi-user.target sys-subsystem-net-devices-%I.device

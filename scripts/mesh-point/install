@@ -3,14 +3,40 @@
 set -e
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+sudo apt-get install -y confget hostapd dialog radvd iptables bridge-utils
+
 
 # Install bring-up script for the Mesh Point interface to /usr/bin
-cp "$BASE_DIR/mesh" "$BASE_DIR/mesh2"
-sed -i "s/MESH_NAME/$MESH_NAME/g" "$BASE_DIR/mesh2"
-sudo mv "$BASE_DIR/mesh2" /usr/bin/mesh
 
-# Configure systemd to start mesh.service on system boot
-sudo cp "$BASE_DIR/mesh.service" /etc/systemd/system/mesh.service
-sudo chmod 644 /etc/systemd/system/mesh.service
+# Rules to trigger and script to configure and teardown wlan interfaces
+sudo cp "$BASE_DIR/50-mesh.wlan.rules" "/etc/udev/rules.d"
+sudo cp "$BASE_DIR/50-mesh.wlan.remove.rules" "/etc/udev/rules.d"
+sudo cp "$BASE_DIR/mesh.wlan.setup" "/usr/local/sbin"
+sudo cp "$BASE_DIR/mesh.wlan.remove" "/usr/local/sbin"
+
+sudo cp "$BASE_DIR/hostapd@.service" "/etc/systemd/system/hostapd@.service" 
+sudo cp "$BASE_DIR/enterNode.sh" /usr/local/sbin/enterNode.
+
+# Rule to trigger and script to config cjdns when starter/restarted
+sudo cp "$BASE_DIR/50-cjdns.rules" "/etc/udev/rules.d"
+sudo cp "$BASE_DIR/mesh.cjdns.setup" "/usr/local/sbin"
+
+# Gui program to configure interfaces
+sudo cp "$BASE_DIR/mesh.config" "/usr/local/sbin"
+sudo touch /etc/mesh.conf
+
+# Supported service for enter node (ap/eth)
+sudo cp "$BASE_DIR/radvd.conf" "/etc/radvd.conf"
+sudo cp "$BASE_DIR/75-lan-bridge.network" "/etc/systemd/network/75-lan-bridge.network"
+
+# Install Cert Generation Scripts incase we want to use WPA EAP
+sudo cp -r "$BASE_DIR/wpa-eap" "/opt"
+
 sudo systemctl daemon-reload
-sudo systemctl enable mesh.service
+
+# Switch from network manager to systemd for network control
+systemctl disable network-manager || true 
+systemctl stop network-manager || true
+systemctl enable systemd-networkd || true
+apt-get remove -y network-manager || true
+

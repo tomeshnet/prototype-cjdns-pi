@@ -1,0 +1,7 @@
+#SUBSYSTEM!="net", GOTO="mesh_end"
+KERNEL!="tun0", GOTO="mesh_end"
+ACTION!="add", GOTO="mesh_end"
+PROGRAM="/usr/local/sbin/mesh.cjdns.setup %k"
+LABEL="mesh_end"
+
+

@@ -1,0 +1,23 @@
+#!/bin/bash
+
+addr=$(ifconfig $1 | grep inet6 | grep "addr: fc" | awk '{print $3}')
+
+if [[ ! "$addr" == "" ]]; then 
+
+client="$(confget -f /etc/mesh.conf -s cjdns iptunnelclient)"
+
+	if [[ ! "$client" == "" ]]; then
+		/opt/cjdns/tools/cexec "IpTunnel_connectTo('$client')"
+		pingurl="$(confget -f /etc/mesh.conf -s cjdns pingurl)"
+		if [[ ! "$pingurl" == "" ]]; then
+			key=$(sudo grep -m 1 '"publicKey"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g')
+			curl $pingurl$key
+		fi
+
+		iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+		iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
+
+	fi
+
+fi
+

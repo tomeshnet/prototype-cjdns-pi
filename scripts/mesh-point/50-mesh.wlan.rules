@@ -1,0 +1,4 @@
+IMPORT{builtin}="net_setup_link"
+
+SUBSYSTEM=="net", ACTION=="add", RUN+="/usr/local/sbin/mesh.wlan.setup %k"
+SUBSYSTEM=="net", ACTION=="add", ENV{SYSTEMD_WANTS}+="hostapd@%k.service $name"
