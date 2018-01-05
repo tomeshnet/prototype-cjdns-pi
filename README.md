@@ -39,7 +39,7 @@ Many models of Orange Pi hardware running [Armbian](https://www.armbian.com/) ar
     The installation script can also install many optional features such as distributed applications and network analysis tools that are useful but non-essential to run a node. You can use flags to selectively enable them, or use the following command to install all optional features:
 
     ```
-    $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install && chmod +x install && WITH_MESH_POINT=true WITH_WIFI_AP=true WITH_IPFS=true WITH_PROMETHEUS_NODE_EXPORTER=true WITH_PROMETHEUS_SERVER=true WITH_GRAFANA=true WITH_H_DNS=true WITH_H_NTP=true WITH_FAKE_HWCLOCK=true WITH_EXTRA_TOOLS=true ./install
+    $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install && chmod +x install && WITH_MESH_POINT=true WITH_WIFI_AP=true WITH_CJDNS_IPTUNNEL=true WITH_IPFS=true WITH_PROMETHEUS_NODE_EXPORTER=true WITH_PROMETHEUS_SERVER=true WITH_GRAFANA=true WITH_H_DNS=true WITH_H_NTP=true WITH_FAKE_HWCLOCK=true WITH_EXTRA_TOOLS=true ./install
     ```
 
 ## Optional Features
@@ -48,11 +48,12 @@ Many models of Orange Pi hardware running [Armbian](https://www.armbian.com/) ar
 | :------------------------------ | :--------------------------------------------- | :---------- |
 | `WITH_MESH_POINT`               | None                                           | Set to `true` if you have a suitable USB WiFi adapter and want to configure it as a 802.11s Mesh Point interface. |
 | `WITH_WIFI_AP`                  | None                                           | Set to `true` if you have a Raspberry Pi 3 and want to configure the on-board WiFi as an Access Point. The default configuration routes all traffic to the Ethernet port `eth0`. |
+| `WITH_CJDNS_IPTUNNEL`           | None                                           | Set to `true` if you want to use the cjdns iptunnel feature to set up an Internet gateway for your node. To configure as a server (exit Internet traffic for other nodes), create **/etc/cjdns.iptunnel.server** containing a newline-separated list of cjdns public keys of allowed clients. To configure as a client (use an exit server to access the Internet), create **/etc/cjdns.iptunnel.client** containing a newline-separated list of cjdns public keys of the gateway servers. You can only configure as one or the other, not both. |
 | `WITH_IPFS`                     | **80**: HTTP-to-IPFS gateway at `/ipfs/HASH` | Set to `true` if you want to install [IPFS](https://ipfs.io). |
 | `WITH_PROMETHEUS_NODE_EXPORTER` | **9100**: Node Exporter UI                     | Set to `true` if you want to install [Prometheus Node Exporter](https://github.com/prometheus/node_exporter) to report network metrics. |
 | `WITH_PROMETHEUS_SERVER`        | **9090**: Prometheus Server UI                 | Set to `true` if you want to install [Prometheus Server](https://github.com/prometheus/prometheus) to collect network metrics. *Requires Prometheus Node Exporter.* |
 | `WITH_GRAFANA`                  | **3000**: Grafana UI (login: admin/admin)      | Set to `true` if you want to install [Grafana](https://grafana.com) to display network metrics. *Requires Prometheus Server.* |
-| `WITH_H_DNS`                    | None                                           | Set to `true` if you want to use Hyperboria-compatible DNS servers: `fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc` and `fc6e:691e:dfaa:b992:a10a:7b49:5a1a:5e09` |
+| `WITH_H_DNS`                    | None                                           | Set to `true` if you want to use Hyperboria-compatible DNS servers: `fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc`, `fc6e:691e:dfaa:b992:a10a:7b49:5a1a:5e09`, and `fc16:b44c:2bf9:467:8098:51c6:5849:7b4f` |
 | `WITH_H_NTP`                    | None                                           | Set to `true` if you want to use a Hyperboria-compatible NTP server: `fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc` |
 | `WITH_FAKE_HWCLOCK`             | None                                           | Set to `true` if you want to force hwclock to store its time every 5 minutes. |
 | `WITH_EXTRA_TOOLS`              | None                                           | Set to `true` if you want to install non-essential tools useful for network analysis: vim socat oping bmon iperf3 |
@@ -100,6 +101,7 @@ List of tested hardware:
 | Orange Pi One             | [Armbian Nightly](https://dl.armbian.com/orangepione/nightly/)           | 160k,  74k | 67 Mbps | 1       | 10/100 |                                       |
 | Orange Pi Zero            | [Armbian Nightly](https://dl.armbian.com/orangepizero/nightly/)          | 160k,  74k | 67 Mbps | 1 (+2*) | 10/100 | *Additional USB available via headers |
 | Orange Pi Zero Plus 2 H5  | [Armbian Nightly](https://dl.armbian.com/orangepizeroplus2-h5/nightly/)  | 190k, 130K | 80 Mbps | 0 (+2*) | None   | *USB available via headers            |
+| NanoPi Neo 2 | [Armbian Nightly](https://dl.armbian.com/nanopineo2/nightly/)  | 160k, 95K | 67 Mbps | 1 (+2*) | None   | *USB available via headers. Gigabit Ethernet        |
 
 ## Development
 
@@ -126,3 +128,25 @@ To add a new module, use **scripts/ipfs/** as an example to:
 * Your computer can be a node too! It will mesh with the Pi's over your router. See the [cjdns repository](https://github.com/cjdelisle/cjdns) on how to set this up.
 
 * Original plan for this repository and early benchmark results are available in [the doc folder](https://github.com/tomeshnet/prototype-cjdns-pi/blob/master/docs/).
+
+## FAQ
+
+**Q:** Orange Pi Zero USB headers do not work
+
+**A:** Add this to your /boot/armbianEnv.txt and restart the pi
+```overlays=usbhost2 usbhost3```
+
+**Q:** I get an error about a locked file
+
+**A**: The daily apt upgrade is running. Wait for it to finish.
+
+
+**Q:** Can I connect a serial cable (ttl) to a Raspbery Pi?
+
+**A:** Yes using these gpio pins.  
+```
+    VCC → RPi Pin 02 (DC Power 5V)
+    GND → RPi Pin 06 (Ground)
+    RXD → RPi Pin 08 (TX)
+    TXD → RPi Pin 10 (RX)
+```

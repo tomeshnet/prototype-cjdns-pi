@@ -13,8 +13,8 @@ if [ -z "$TAG_PROTOTYPE_CJDNS_PI" ]; then
 fi
 
 if ! [ -z "`ps xa | awk '{print $5}' | grep dpkg | grep -v grep`" ]; then 
-	echo -e "\e[1;31mDPKG is running in the background.\e[0m"
-	read -p "Would you like to KILL it to continue (Y/n)? " -n 1 -r
+    echo -e "\e[1;31mDPKG is running in the background.\e[0m"
+    read -p "Would you like to KILL it to continue (Y/n)? " -n 1 -r
     echo ""
     if [[ $REPLY =~ ^[Nn]$ ]]; then
         echo -e "\e[1;31mPlease stop DPKG Before Proceeding!\e[0m"
@@ -41,6 +41,7 @@ git checkout $TAG_PROTOTYPE_CJDNS_PI
 # Export environment variables
 export WITH_MESH_POINT
 export WITH_WIFI_AP
+export WITH_CJDNS_IPTUNNEL
 export WITH_IPFS
 export WITH_PROMETHEUS_NODE_EXPORTER
 export WITH_PROMETHEUS_SERVER
