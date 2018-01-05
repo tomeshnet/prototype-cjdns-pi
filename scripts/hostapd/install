@@ -9,7 +9,7 @@ H_DNS_SERVER_1="fc6e:691e:dfaa:b992:a10a:7b49:5a1a:5e09"
 H_DNS_SERVER_2="fc16:b44c:2bf9:467:8098:51c6:5849:7b4f"
 
 # Create radvd.conf before installing radvd, installation fails without it
-if ! [ -f /etc/radvd.conf ]; then 
+if ! [ -f /etc/radvd.conf ]; then
     sudo cp "$BASE_DIR/radvd.conf" /etc/radvd.conf
 fi
 
@@ -102,6 +102,17 @@ if [ -f /etc/dhcpcd.conf ]; then
     sudo echo "denyinterfaces wlan0" | sudo tee --append /etc/dhcpcd.conf > /dev/null
 fi
 
+
+# Pin internal wireless adapter to wlan0 on boot
+interfaces=$(ls /sys/class/net/ | grep wlan)
+for interface in $interfaces; do
+    interfaceDriver="$(basename $(readlink /sys/class/net/$interface/device/driver))";
+    if [ "$interfaceDriver" == 'xradio_wlan' ] || [ "$interfaceDriver" == 'brcmfmac' ]; then
+        mac=$(cat /sys/class/net/$interface/address | tr -d '\n')
+	echo "SUBSYSTEM==\"net\", ACTION==\"add\", ATTRS{address}==\"$mac\", KERNEL==\"wlan*\", NAME=\"wlan0\"" |  sudo tee  /etc/udev/rules.d/40-onboard-wlan-pin.rules 
+    fi
+done
+
 # Configure IPv6 router advertisement with radvd
 sudo cp "$BASE_DIR/radvd.conf" /etc/radvd.conf
 sudo systemctl daemon-reload
@@ -121,6 +132,6 @@ sudo systemctl start hostapd.service
 
 # dnsmasq for some reason won't bind to the hostapd on Orange Pi, restarting it works
 if [[ -z "$(cat /etc/rc.local | grep dnsmasq)" ]]; then
-    sudo sed -i 's/^exit 0/service dnsmasq restart\nexit 0/' /etc/rc.local 
+    sudo sed -i 's/^exit 0/service dnsmasq restart\nexit 0/' /etc/rc.local
 fi
 
