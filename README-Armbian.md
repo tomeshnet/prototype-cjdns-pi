@@ -1,6 +1,6 @@
 # Installing Base OS on Armbian (Orange Pi, NanoPi, etc)
 
-Notes that all variants of boards have NOT been tested, this does not mean it will not work.  If you have a board that is not listed that works please let us know.
+*Note: All variants of boards have NOT been tested, this does not mean it will not work.  If you have a board that is not listed that works please let us know.*
 
 1. Make sure you have the following items
     * Armbian compatible board
