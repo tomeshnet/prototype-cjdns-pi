@@ -9,4 +9,3 @@ ExecStart=/usr/bin/python /opt/tomesh/nodestats-tomesh.py
 ExecStop=/usr/bin/pkill $(ps aux | grep python | grep tomesh.py | awk '{print $2}')
 Restart=on-failure
 RestartSec=10s
-

@@ -99,9 +99,9 @@ List of tested hardware:
 | Raspberry Pi Zero         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         |  68k,  30k | ~9 Mbps | 1*      | None   | *Need OTG Cable No FPV                |
 | Orange Pi Lite            | [Armbian Nightly](https://dl.armbian.com/orangepilite/nightly/)          | 160k,  74k | 67 Mbps | 2       | None   |                                       |
 | Orange Pi One             | [Armbian Nightly](https://dl.armbian.com/orangepione/nightly/)           | 160k,  74k | 67 Mbps | 1       | 10/100 |                                       |
-| Orange Pi Zero            | [Armbian Nightly](https://dl.armbian.com/orangepizero/nightly/)          | 160k,  74k | 67 Mbps | 1 (+2*) | 10/100 | *Additional USB available via headers |
-| Orange Pi Zero Plus 2 H5  | [Armbian Nightly](https://dl.armbian.com/orangepizeroplus2-h5/nightly/)  | 190k, 130K | 80 Mbps | 0 (+2*) | None   | *USB available via headers            |
-| NanoPi Neo 2 | [Armbian Nightly](https://dl.armbian.com/nanopineo2/nightly/)  | 160k, 95K | 67 Mbps | 1 (+2*) | None   | *USB available via headers. Gigabit Ethernet        |
+| Orange Pi Zero            | [Armbian Nightly](https://dl.armbian.com/orangepizero/nightly/)          | 160k,  74k | 67 Mbps | 1 (+2*) | 10/100 | *USB Headers                          |
+| Orange Pi Zero Plus 2 H5  | [Armbian Nightly](https://dl.armbian.com/orangepizeroplus2-h5/nightly/)  | 190k, 130K | 80 Mbps | 0 (+2*) | None   | *USB Headers                          |
+| NanoPi Neo 2              | [Armbian Nightly](https://dl.armbian.com/nanopineo2/nightly/)            | 160k, 95K  | 67 Mbps | 1 (+2*) | None   | *USB Headers. Gigabit Eth             |
 
 ## Development
 
@@ -131,19 +131,20 @@ To add a new module, use **scripts/ipfs/** as an example to:
 
 ## FAQ
 
-**Q:** Orange Pi Zero USB headers do not work
+**Q:** Why do my Orange Pi Zero USB headers not work?
 
-**A:** Add this to your /boot/armbianEnv.txt and restart the pi
+**A:** Some images are missing the USB overlay.  Simply add the following to the /boot/armbianEnv.txt file and restart the pi.
 ```overlays=usbhost2 usbhost3```
 
-**Q:** I get an error about a locked file
 
-**A**: The daily apt upgrade is running. Wait for it to finish.
+**Q:** Why do I get an error about a locked files when I try to install the node on an Orange Pi?
+
+**A**: The daily apt upgrade sometimes starts up in the background locking the APT database.  This will cause the script to fail as it tries to install the required software. Wait for the upgrade to finish.
 
 
-**Q:** Can I connect a serial cable (ttl) to a Raspbery Pi?
+**Q:** Can I connect a serial cable (ttl) to a Raspberry Pi?
 
-**A:** Yes using these gpio pins.  
+**A:** Yes, there are TTL pins in the gpio pins. They are as follows  
 ```
     VCC → RPi Pin 02 (DC Power 5V)
     GND → RPi Pin 06 (Ground)

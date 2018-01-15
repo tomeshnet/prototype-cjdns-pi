@@ -5,7 +5,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/node_exporter  -collector.textfile.directory /var/lib/node_exporter
+ExecStart=/usr/local/bin/node_exporter -collector.textfile.directory /var/lib/node_exporter
 ExecStop=/usr/bin/pkill -f node_exporter
 Restart=on-failure
 RestartSec=10s
