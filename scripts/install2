@@ -224,12 +224,20 @@ if [ -z "$WITH_EXTRA_TOOLS" -o "$WITH_EXTRA_TOOLS" != "true" -a "$WITH_EXTRA_TOO
     fi
 fi
 
-# Prompt for name of the mesh network
-read -p "Enter the name of your mesh network (default: tomesh): " -r
-export MESH_NAME=`echo $REPLY | sed 's/ //g'`
-if [ "${#MESH_NAME}" == 0 ]; then
-    export MESH_NAME="tomesh"
+# Only if mesh point needs to be set
+if [ "$WITH_MESH_POINT" == "true" ]; then
+    if [ -z "$WITH_MESH_ID" ]; then
+       # Prompt for name of the mesh network
+        read -p "Enter the name of your mesh network (default: tomesh): " -r
+        export MESH_NAME=`echo $REPLY | sed 's/ //g'`
+        if [ "${#MESH_NAME}" == 0 ]; then
+           export MESH_NAME="tomesh"
+        fi
+    else
+       export MESH_NAME="$WITH_MESH_ID"
+    fi
 fi
+echo $MESH_NAME
 
 # Get tools
 if ! [ "$(which nodejs)" ]; then

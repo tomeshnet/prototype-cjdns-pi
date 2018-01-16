@@ -1,0 +1,122 @@
+#!/bin/bash
+dialogTitle="TOMesh Prototype Node"
+additionalParam="--ascii-lines "
+export WITH_MESH_POINT=false
+export WITH_WIFI_AP=false
+export WITH_IPFS=false
+export WITH_PROMETHEUS_NODE_EXPORTER=false
+export WITH_PROMETHEUS_SERVER=false
+export WITH_GRAFANA=false
+export WITH_EXTRA_TOOLS=false
+export WITH_H_DNS=false
+export WITH_H_NTP=false
+export WITH_FAKE_HWCLOCK=false
+
+export SET_MESH_POINT=off
+export SET_WIFI_AP=off
+export SET_IPFS=off
+export SET_PROMETHEUS_NODE_EXPORTER=off
+export SET_PROMETHEUS_SERVER=off
+export SET_GRAFANA=off
+export SET_EXTRA_TOOLS=off
+export SET_H_DNS=off
+export SET_H_NTP=off
+export SET_FAKE_HWCLOCK=off
+
+export WITH_MESH_ID=""
+
+sudo apt-get install dialog
+
+dialog --backtitle "$dialogTitle" $additionalParam --title "Select feature starting point (Customize next)" --menu "Presets" 20 70 10 \
+        BASIC "Basic" \
+        HYPE  "Basic With Hyperboria" \
+        FULL  "Install Everything" \
+2> /tmp/answer
+
+res=$(cat /tmp/answer)
+rm -rf /tmp/answer
+
+if [ "$res" == "" ]; then
+    exit 0
+fi
+if [ "$res" == "BASIC" ]; then
+    export SET_MESH_POINT=on
+    export SET_WIFI_AP=on
+fi
+
+if [ "$res" == "HYPE" ]; then
+    export SET_MESH_POINT=on
+    export SET_WIFI_AP=on
+    export SET_PROMETHEUS_NODE_EXPORTER=on
+    export SET_EXTRA_TOOLS=on
+    export SET_H_DNS=on
+    export SET_H_NTP=on
+    export SET_FAKE_HWCLOCK=on
+fi
+
+if [ "$res" == "FULL" ]; then
+    export SET_MESH_POINT=on
+    export SET_WIFI_AP=on
+    export SET_IPFS=on
+    export SET_PROMETHEUS_NODE_EXPORTER=on
+    export SET_PROMETHEUS_SERVER=on
+    export SET_GRAFANA=on
+    export SET_EXTRA_TOOLS=on
+    export SET_H_DNS=on
+    export SET_H_NTP=on
+    export SET_FAKE_HWCLOCK=on
+fi
+
+dialog --backtitle "$dialogTitle"  $additionalParam --title "Select Features" --checklist "Features:" 20 70 10 \
+        "WITH_MESH_POINT" "Mesh Point" $SET_MESH_POINT \
+        "WITH_WIFI_AP" "Access Point" $SET_WIFI_AP \
+        "WITH_IPFS" "IPFS Service" $SET_IPFS \
+        "WITH_PROMETHEUS_NODE_EXPORTER" "Node Exporter" $SET_PROMETHEUS_NODE_EXPORTER \
+        "WITH_PROMETHEUS_SERVER" "Prometheus" $SET_PROMETHEUS_SERVER \
+        "WITH_GRAFANA" "Grafana" $SET_GRAFANA \
+        "WITH_H_DNS" "Hyperboria DNS Server" $SET_EXTRA_TOOLS \
+        "WITH_H_NTP" "Hyperboria NTP Server" $SET_H_DNS \
+        "WITH_FAKE_HWCLOCK" "Set FAKECLOCK to 5 min" $SET_H_NTP \
+        "WITH_EXTRA_TOOLS" "Extra Tools" $SET_FAKE_HWCLOCK \
+2> /tmp/answer
+res=$(cat /tmp/answer)
+
+if [ "$res" == "" ]; then
+    exit 0
+fi
+rm -rf /tmp/answer
+
+for item in $res;do
+   t="export $item=true"
+   eval $t
+done
+
+if [ "$WITH_MESH_POINT" == "true" ]; then
+    dialog --backtitle "$dialogTitle" $additionalParam  --title "Meshing Setup" --inputbox "802.11s Mesh Name"  10 70  "tomseh" 2> /tmp/answer
+    res=$(cat /tmp/answer)
+    export WITH_MESH_ID="$res"
+fi
+
+
+
+    
+        read -p "Set WPA2-PSK password (8-63 characters): " APPASS;
+    done
+
+if [ "$WITH_WIFI_AP" == "true" ]; then
+    while [ "${#res}" -lt 8 ] || [ "${#res}" -gt 63 ]; do
+        dialog --backtitle "$dialogTitle" $additionalParam  --title "AP Password" --inputbox "Password"  10 70  "" 2> /tmp/answer
+        res=$(cat /tmp/answer)
+    done
+    export WITH_AP_PASSWORD="$res"
+fi
+
+if [ "$WITH_WIFI_AP" == "true" ]; then
+    dialog --backtitle "$dialogTitle"  $additionalParam --title "Select Features" --checklist "Features:" 20 70 10 \
+        "EAP"    "EAP Username/Password" on\
+        "WPA"    "Standard WPA Password"
+    2> /tmp/answer
+    export WITH_AP_WPA="$res"
+fi
+
+./install2

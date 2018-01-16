@@ -22,7 +22,7 @@ if ! [ -z "`ps xa | awk '{print $5}' | grep dpkg | grep -v grep`" ]; then
     else
         echo -e "\e[1;32mKilling DPKG and continuing\e[0m"
         sudo killall dpkg
-    fi	 
+    fi
 fi
 
 # Get git
@@ -47,6 +47,14 @@ export WITH_PROMETHEUS_NODE_EXPORTER
 export WITH_PROMETHEUS_SERVER
 export WITH_GRAFANA
 export WITH_EXTRA_TOOLS
+export WITH_MESH_ID
+export WITH_AP_WPA
+export WITH_AP_PASSWORD
 
 # Run the actual installation script
-./install2
+
+if [ "$1" = "gui" ]; then
+     ./installGUI
+else
+    ./install2
+fi
