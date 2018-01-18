@@ -1,0 +1,16 @@
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -i lo -j ACCEPT
+-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -p icmp --icmp-type echo-request -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 22 -j ACCEPT   # SSH connection
+-A INPUT -p tcp -m tcp --dport 80 -j ACCEPT   # IPFS and other web ports
+-A INPUT -p tcp -m tcp --dport 443 -j ACCEPT  # HTTPS, not currently used but common
+-A INPUT -p tcp -m tcp --dport 9100 -j ACCEPT #Node Exporter
+-A INPUT -p tcp -m tcp --dport 9090 -j ACCEPT #Prometheus Server
+-A INPUT -p tcp -m tcp --dport 3000 -j ACCEPT #Grafana Client
+
+-A INPUT -j DROP
+COMMIT

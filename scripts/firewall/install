@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -e
+
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Install Basic Firewall Rules
+
+sudo apt-get install -y iptables ip6tables 
+
+sudo cp "$BASE_DIR/iptables.rules" /etc/iptables.rules
+sudo cp "$BASE_DIR/ip6tables.rules" /etc/ip6tables.rules
