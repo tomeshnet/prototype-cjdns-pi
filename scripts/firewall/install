@@ -6,7 +6,13 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Install Basic Firewall Rules
 
-sudo apt-get install -y iptables ip6tables 
 
-sudo cp "$BASE_DIR/iptables.rules" /etc/iptables.rules
-sudo cp "$BASE_DIR/ip6tables.rules" /etc/ip6tables.rules
+# Prevent prompting user
+echo iptables-persistent iptables-persistent/autosave_v4 boolean false | sudo debconf-set-selections
+echo iptables-persistent iptables-persistent/autosave_v6 boolean false | sudo debconf-set-selections
+
+sudo apt-get install -y iptables iptables-persistent
+
+sudo cp "$BASE_DIR/iptables.rules" /etc/iptables/rules.v4
+sudo cp "$BASE_DIR/ip6tables.rules" /etc/iptables/rules.v6
+

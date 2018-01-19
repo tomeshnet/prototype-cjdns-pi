@@ -129,9 +129,8 @@ if [[ "$SUPPORT_HOSTAP" == "true" ]] && [ -z "$WITH_WIFI_AP" -o "$WITH_WIFI_AP" 
         WITH_WIFI_AP=true
     fi
 fi
-
-if [[ "$WITH_FIREWALL" == "true" ]] && [ -z "$WITH_FIREWALL" -o "$WITH_FIREWALL" != "true" -a "$WITH_FIREWALL" != "false" ]; then
-    read -p "Configure Basic Firewall(Y/n)? " -n 1 -r
+if [ -z "$WITH_FIREWALL" -o "$WITH_FIREWALL" != "true" -a "$WITH_FIREWALL" != "false" ]; then
+    read -p "Configure Basic Firewall (Y/n)? " -n 1 -r
     echo ""
     if [[ $REPLY =~ ^[Nn]$ ]]; then
         echo -e "\e[1;31mInternet Firewall will be skipped\e[0m"
@@ -140,8 +139,7 @@ if [[ "$WITH_FIREWALL" == "true" ]] && [ -z "$WITH_FIREWALL" -o "$WITH_FIREWALL"
         echo -e "\e[1;32mInternet Firewall will be configured\e[0m"
         WITH_FIREWALL=true
     fi
-if
-
+fi
 if [ -z "$WITH_CJDNS_IPTUNNEL" -o "$WITH_CJDNS_IPTUNNEL" != "true" -a "$WITH_CJDNS_IPTUNNEL" != "false" ]; then
     read -p "Configure Internet gateway (Y/n)? " -n 1 -r
     echo ""
