@@ -102,8 +102,8 @@ List of tested hardware:
 | Orange Pi One             | [Armbian Nightly](https://dl.armbian.com/orangepione/nightly/)           | 160k,  74k | 67 Mbps | 1       | 10/100 |                                       |
 | Orange Pi Zero            | [Armbian Nightly](https://dl.armbian.com/orangepizero/nightly/)          | 160k,  74k | 67 Mbps | 1 (+2*) | 10/100 | *USB Headers                          |
 | Orange Pi Zero Plus 2 H5  | [Armbian Nightly](https://dl.armbian.com/orangepizeroplus2-h5/nightly/)  | 190k, 130K | 80 Mbps | 0 (+2*) | None   | *USB Headers                          |
-| NanoPi Neo 2              | [Armbian Nightly](https://dl.armbian.com/nanopineo2/nightly/)            | 160k, 95K  | 67 Mbps | 1 (+2*) | None   | *USB Headers. Gigabit Eth             |
-
+| NanoPi Neo 2              | [Armbian Nightly](https://dl.armbian.com/nanopineo2/nightly/)            | 160k, 95K  | 67 Mbps | 1 (+2*) | 10/100/1000   | *USB Headers. Gigabit Eth             |
+| Rock64                    | [Armbian Nightly](https://dl.armbian.com/rock64/nightly/)            | 255k, 168K  | 94 Mbps | 3 | 10/100/1000   | 1 USB 3.0, Gigabit Eth             |
 ## Development
 
 You can install from a specific tag or branch, such as `develop`, with:
