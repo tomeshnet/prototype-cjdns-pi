@@ -143,7 +143,7 @@ To add a new module, use **scripts/ipfs/** as an example to:
 **A**: The daily apt upgrade sometimes starts up in the background locking the APT database.  This will cause the script to fail as it tries to install the required software. Wait for the upgrade to finish.
 
 
-**Q:** Can I connect a serial cable (ttl) to a Raspberry Pi?
+**Q:** Can I connect a serial cable (ttl) to a Raspberry Pi (or Rock64)?
 
 **A:** Yes, there are TTL pins in the gpio pins. They are as follows  
 ```
@@ -152,3 +152,4 @@ To add a new module, use **scripts/ipfs/** as an example to:
     RXD → RPi Pin 08 (TX)
     TXD → RPi Pin 10 (RX)
 ```
+*Note: Uboot will not appear on serial, only once kernal starts to boot do you see output*
