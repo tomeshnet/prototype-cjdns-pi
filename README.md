@@ -153,3 +153,7 @@ To add a new module, use **scripts/ipfs/** as an example to:
     TXD → RPi Pin 10 (RX)
 ```
 *Note: Uboot will not appear on serial, only once kernal starts to boot do you see output*
+
+**Q:** What is the baud rate for the Rock64?
+
+**A:** it is 1500000.
