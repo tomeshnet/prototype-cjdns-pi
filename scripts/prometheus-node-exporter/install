@@ -35,4 +35,3 @@ sudo systemctl enable prometheus-node-exporter.service
 sudo systemctl start prometheus-node-exporter.service
 sudo systemctl enable node-exporter-tomesh.service
 sudo systemctl start node-exporter-tomesh.service
-
