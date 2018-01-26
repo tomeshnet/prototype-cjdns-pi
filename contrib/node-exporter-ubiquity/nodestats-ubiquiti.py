@@ -11,10 +11,14 @@ if os.path.exists(path):
 
 os.mkfifo(path)
 
+
+nodeIP="192.168.1.20"
+
+
 while 1:
         fifo = open(path, "w")    
       
-        command_line = "snmpwalk -v 1 -c tomesh 192.168.1.20 1.3.6.1.4.1.41112"
+        command_line = "snmpwalk -v 1 -c tomesh " + nodeIP + " 1.3.6.1.4.1.41112"
         args = shlex.split(command_line)
         interfaces = subprocess.Popen(args,stdout=subprocess.PIPE)
         interfaces.wait()
@@ -36,7 +40,7 @@ while 1:
                     fifo.write("ubnt_signal_rx " + res2[1].strip() + "\n")
                 if res[0]=="iso.3.6.1.4.1.41112.1.4.5.1.8.1 ":
                     res2=res[1].split(":")
-        command_line = "snmpwalk -v 1 -c tomesh 192.168.1.20 iso.3.6.1.4.1.10002.1.1.1.4.2.1"
+        command_line = "snmpwalk -v 1 -c tomesh " + nodeIP + " iso.3.6.1.4.1.10002.1.1.1.4.2.1"
         args = shlex.split(command_line)
         interfaces = subprocess.Popen(args,stdout=subprocess.PIPE)
         interfaces.wait()
@@ -54,7 +58,7 @@ while 1:
                     res2=res[1].split(":")
                     fifo.write("ubnt_cpu_15min " + res2[1].strip() + "\n")
 
-        command_line = "snmpwalk -v 1 -c tomesh 192.168.1.20 iso.3.6.1.2.1.2.2.1"
+        command_line = "snmpwalk -v 1 -c tomesh " + nodeIP + " iso.3.6.1.2.1.2.2.1"
         args = shlex.split(command_line)
         interfaces = subprocess.Popen(args,stdout=subprocess.PIPE)
         interfaces.wait()
