@@ -102,8 +102,8 @@ List of tested hardware:
 | Orange Pi One             | [Armbian Nightly](https://dl.armbian.com/orangepione/nightly/)           | 160k,  74k | 67 Mbps | 1       | 10/100 |                                       |
 | Orange Pi Zero            | [Armbian Nightly](https://dl.armbian.com/orangepizero/nightly/)          | 160k,  74k | 67 Mbps | 1 (+2*) | 10/100 | *USB Headers                          |
 | Orange Pi Zero Plus 2 H5  | [Armbian Nightly](https://dl.armbian.com/orangepizeroplus2-h5/nightly/)  | 190k, 130K | 80 Mbps | 0 (+2*) | None   | *USB Headers                          |
-| NanoPi Neo 2              | [Armbian Nightly](https://dl.armbian.com/nanopineo2/nightly/)            | 160k, 95K  | 67 Mbps | 1 (+2*) | None   | *USB Headers. Gigabit Eth             |
-
+| NanoPi Neo 2              | [Armbian Nightly](https://dl.armbian.com/nanopineo2/nightly/)            | 160k, 95K  | 67 Mbps | 1 (+2*) | 10/100/1000   | *USB Headers. Gigabit Eth             |
+| Rock64                    | [Armbian Nightly](https://dl.armbian.com/rock64/nightly/)            | 255k, 168K  | 94 Mbps | 3 | 10/100/1000   | 1 USB 3.0, Gigabit Eth             |
 ## Development
 
 You can install from a specific tag or branch, such as `develop`, with:
@@ -143,7 +143,7 @@ To add a new module, use **scripts/ipfs/** as an example to:
 **A**: The daily apt upgrade sometimes starts up in the background locking the APT database.  This will cause the script to fail as it tries to install the required software. Wait for the upgrade to finish.
 
 
-**Q:** Can I connect a serial cable (ttl) to a Raspberry Pi?
+**Q:** Can I connect a serial cable (ttl) to a Raspberry Pi (or Rock64)?
 
 **A:** Yes, there are TTL pins in the gpio pins. They are as follows  
 ```
@@ -152,3 +152,8 @@ To add a new module, use **scripts/ipfs/** as an example to:
     RXD → RPi Pin 08 (TX)
     TXD → RPi Pin 10 (RX)
 ```
+*Note: Uboot will not appear on serial, only once kernal starts to boot do you see output*
+
+**Q:** What is the baud rate for the Rock64?
+
+**A:** it is 1500000.
