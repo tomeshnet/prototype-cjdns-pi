@@ -147,13 +147,13 @@ To add a new module, use **scripts/ipfs/** as an example to:
 
 **A:** Yes, there are TTL pins in the gpio pins. They are as follows  
 ```
-    VCC → RPi Pin 02 (DC Power 5V)
-    GND → RPi Pin 06 (Ground)
-    RXD → RPi Pin 08 (TX)
-    TXD → RPi Pin 10 (RX)
+    VCC → RPi Pin 02 (5V)
+    GND → RPi Pin 06
+    RXD → RPi Pin 08
+    TXD → RPi Pin 10
 ```
 *Note: Uboot will not appear on serial, only once kernal starts to boot do you see output*
 
 **Q:** What is the baud rate for the Rock64?
 
-**A:** it is 1500000.
+**A:** Uboot baud reat seems to be 1500000. Once ubuntu starts it is 115200
