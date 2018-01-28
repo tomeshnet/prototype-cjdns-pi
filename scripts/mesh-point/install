@@ -8,13 +8,14 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 sudo cp "$BASE_DIR/mesh.80211s" /usr/bin/mesh.80211s
 sudo cp "$BASE_DIR/mesh.adhoc" /usr/bin/mesh.adhoc
 
-sed -i "s/MESH_NAME/$MESH_NAME/g" "/usr/bin/mesh.80211s"
-sed -i "s/MESH_NAME/$MESH_NAME/g" "/usr/bin/mesh.adhoc"
+sudo sed -i "s/MESH_NAME/$MESH_NAME/g" "/usr/bin/mesh.80211s"
+sudo sed -i "s/MESH_NAME/$MESH_NAME/g" "/usr/bin/mesh.adhoc"
 
 
 if [[ "$WITH_80211s" == "false" ]]; then
     # Use adhoc if 80211s not set
     ln -s /usr/bin/mesh.80211s /usr/bin/mesh.adhoc
+else
     # Use 802.11s otherwise
     ln -s /usr/bin/mesh.80211s /usr/bin/mesh.80211s
 fi
