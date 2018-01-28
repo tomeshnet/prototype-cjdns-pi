@@ -22,7 +22,8 @@ sudo ifconfig $mesh_dev up
 # sudo ifconfig $mesh_dev 192.168.X.Y
 
 # Join the mesh network with radio in HT40+ htmode to enable 802.11n rates
-sudo iw dev $mesh_dev ibss join MESH_NAME freq 2412 HT40+
+##TODO## Check for HT40+ first
+sudo iw dev $mesh_dev ibss join MESH_NAME 2412 HT40+
 
 # Restart cjdns
 sudo killall cjdroute
