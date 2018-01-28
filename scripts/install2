@@ -10,11 +10,11 @@ BOARD_NAME="Generic"
 BOARD_REVISION="?"
 CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 ./do"
 
-# Possibly use /sys/firmware/devicetree/base/model
+##TODO## Possibly use /sys/firmware/devicetree/base/model
 BOARD_HARDWARE=$(cat /proc/cpuinfo | grep Hardware | awk '{print $3}' | head -n 1)
 
 # Flag to identify if board can support on-board AP. Default no false.
-SUPPORT_HOSTAP=false 
+SUPPORT_HOSTAP=false
 
 # If board cannot be determined from /proc/cpuinfo its most likely an arbmian board so you can use the armbian generated ID file
 if [[ -z "$BOARD_HARDWARE" ]]; then
@@ -87,7 +87,7 @@ if [[ -e '/etc/NetworkManager/NetworkManager.conf' ]]; then
 
 # Set configurations specific to the board
 if [[ $BOARD_FAMILY == "Orange Pi" ]]; then
-    # This can be removed soon as its no longer relivent with the latest images.
+    ##TODO## This can be removed soon as its no longer relivent with the latest images.
     # Downgrade kernel to enable XRadio in version 4.10 on Orange Pi Zero
     if ! [ -z "`uname -a | grep 4.11`" ]; then 
         if ! [ -z "`cat /sys/bus/mmc/devices/mmc1:0001/mmc1:0001:1/uevent | grep SDIO_ID | grep 0020:2281`" ]; then
@@ -119,8 +119,19 @@ if [ -z "$WITH_MESH_POINT" -o "$WITH_MESH_POINT" != "true" -a "$WITH_MESH_POINT"
     else
         echo -e "\e[1;32mMesh Point interface will be configured\e[0m"
         WITH_MESH_POINT=true
+        read -p "Continue with 802.11s instead of older AdHoc (IBSS)?  (Y/n)? " -n 1 -r
+        echo ""
+        if [[ $REPLY =~ ^[Nn]$ ]]; then
+            echo -e "\e[1;31mMesh Point will use AdHoc standard\e[0m"
+            WITH_80211s=false
+        else
+            echo -e "\e[1;32mMesh Point will use 802.11s standard\e[0m"
+            WITH_80211s=true
+        fi
+        export WITH_80211s
     fi
 fi
+
 if [[ "$SUPPORT_HOSTAP" == "true" ]] && [ -z "$WITH_WIFI_AP" -o "$WITH_WIFI_AP" != "true" -a "$WITH_WIFI_AP" != "false" ]; then
     read -p "Configure WiFi Access Point (Y/n)? " -n 1 -r
     echo ""
@@ -254,6 +265,7 @@ if [ -z "$WITH_EXTRA_TOOLS" -o "$WITH_EXTRA_TOOLS" != "true" -a "$WITH_EXTRA_TOO
 fi
 
 # Prompt for name of the mesh network
+##TODO## This should be moved up to to mesh point question
 read -p "Enter the name of your mesh network (default: tomesh): " -r
 export MESH_NAME=`echo $REPLY | sed 's/ //g'`
 if [ "${#MESH_NAME}" == 0 ]; then
