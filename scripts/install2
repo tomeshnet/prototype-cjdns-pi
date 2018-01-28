@@ -309,6 +309,12 @@ sudo chmod 644 /etc/systemd/system/cjdns-resume.service
 sudo systemctl daemon-reload
 sudo systemctl enable cjdns.service
 
+# Rename node based on CJDNS address
+oldhostname=$(hostname)
+newhostname=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-/g")
+sudo echo $newhostname | sudo tee /etc/hostname > /dev/null
+sudo sed -i -e "s/$oldhostname/$newhostname/" /etc/hosts
+
 # 802.11s Mesh Point interface
 if [ ! -z "$WITH_MESH_POINT" -a "$WITH_MESH_POINT" == "true" ]; then
     source mesh-point/install
@@ -381,6 +387,8 @@ echo "export MESH_NAME=$MESH_NAME" >> ~/.bash_profile
 echo "" >> ~/.bash_profile 
 echo "# print mesh node status" >> ~/.bash_profile
 echo "status" >> ~/.bash_profile
+
+echo -e "Your nodes new hostname is $newhostname"
 
 # Reboot device
 sudo reboot
