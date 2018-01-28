@@ -12,5 +12,9 @@ echo iptables-persistent iptables-persistent/autosave_v6 boolean false | sudo de
 
 sudo apt-get install -y iptables iptables-persistent
 
+# Bringing up the firewall on RaspberryPi before network breaks things
+# so patch the service to start the firewall after instead of before
+sed -i -e "s/Before=network-pre.target/After=network-pre.target/" /lib/systemd/system/netfilter-persistent.service
+
 sudo cp "$BASE_DIR/iptables.rules" /etc/iptables/rules.v4
 sudo cp "$BASE_DIR/ip6tables.rules" /etc/iptables/rules.v6
