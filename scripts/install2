@@ -384,7 +384,7 @@ echo "" >> ~/.bash_profile
 echo "# print mesh node status" >> ~/.bash_profile
 echo "status" >> ~/.bash_profile
 
-echo -e "Your nodes new hostname is $newhostname"
+echo -e "Your node's new hostname is $newhostname"
 
 # Reboot device
 sudo reboot
