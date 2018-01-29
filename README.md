@@ -137,23 +137,23 @@ To add a new module, use **scripts/ipfs/** as an example to:
 
 **Q:** Why do my Orange Pi Zero USB headers not work?
 
-**A:** Some images are missing the USB overlay.  Simply add the following to the /boot/armbianEnv.txt file and restart the pi.
-```overlays=usbhost2 usbhost3```
+**A:** Some images are missing the USB overlay.  Simply add the following to the **/boot/armbianEnv.txt** file and restart the pi.
+`overlays=usbhost2 usbhost3`
 
 
 **Q:** Why do I get an error about a locked file when I try to install the node on an Orange Pi?
 
-**A**: The daily apt upgrade sometimes starts up in the background locking the APT database.  This will cause the script to fail as it tries to install the required software. Wait for the upgrade to finish.
+**A**: The daily apt upgrade sometimes starts up in the background locking the APT database. This will cause the script to fail as it tries to install the required software. Wait for the upgrade to finish.
 
 
 **Q:** Can I connect a serial cable (ttl) to a Raspberry Pi (or Rock64)?
 
 **A:** Yes, there are TTL pins in the gpio pins. They are as follows  
 ```
-    VCC → RPi Pin 02 (5V)
-    GND → RPi Pin 06
-    RXD → RPi Pin 08
-    TXD → RPi Pin 10
+VCC → RPi Pin 02 (5V)
+GND → RPi Pin 06
+RXD → RPi Pin 08
+TXD → RPi Pin 10
 ```
 *Note: Uboot will not appear on serial, only once kernal starts to boot do you see output*
 
@@ -185,3 +185,4 @@ setenv bootcmd 'mmc dev 0; ext4load mmc 0:1 $kernel_addr $image_name;ext4load mm
 
 save env
 ```
+
