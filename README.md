@@ -164,7 +164,10 @@ TXD → RPi Pin 10
 **Q:** How do I upgrade the uBoot on EspressoBin?
 
 **A:** Manual flashing to latest u-boot is mandatory! [Download](https://dl.armbian.com/espressobin/u-boot/) the right boot flash for your board: 512,1G,2G and appropriate memory speeds. You can obtain numbers from current boot prompt. Copy this flash-image-MEM-CPU_DDR_boot_sd_and_usb.bin to your FAT formatted USB key, plug it into USB3.0 port and execute from u-boot prompt: 
-```bubt flash-image-MEM-CPU_DDR_boot_sd_and_usb.bin spi usb```
+
+   ```
+   bubt flash-image-MEM-CPU_DDR_boot_sd_and_usb.bin spi usb
+   ````
 
 **Q:** How do I boot Armbian on EspressoBin from sd card?
 
