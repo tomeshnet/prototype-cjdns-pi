@@ -241,17 +241,6 @@ if [ -z "$WITH_H_NTP" -o "$WITH_H_NTP" != "true" -a "$WITH_H_NTP" != "false" ]; 
         WITH_H_NTP=true
     fi
 fi
-if [ -z "$WITH_FAKE_HWCLOCK" -o "$WITH_FAKE_HWCLOCK" != "true" -a "$WITH_FAKE_HWCLOCK" != "false" ]; then
-    read -p "Configure Fake Hardware Clock to store time value every 5 minutes (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mFake Hardware Clock will be skipped\e[0m"
-        WITH_FAKE_HWCLOCK_=false
-    else
-        echo -e "\e[1;32mFake Hardware Clock will be configured\e[0m"
-        WITH_FAKE_HWCLOCK=true
-    fi
-fi
 if [ -z "$WITH_EXTRA_TOOLS" -o "$WITH_EXTRA_TOOLS" != "true" -a "$WITH_EXTRA_TOOLS" != "false" ]; then
     read -p "Install non-essential tools useful for network analysis (Y/n)? " -n 1 -r
     echo ""
@@ -375,11 +364,6 @@ fi
 # Configure Hyperboria NTP
 if [ ! -z "$WITH_H_NTP" -a "$WITH_H_NTP" == "true" ]; then
     source h-ntp/install
-fi
-
-# Configure Fake Hardware Clock
-if [ ! -z "$WITH_FAKE_HWCLOCK" -a "$WITH_FAKE_HWCLOCK" == "true" ]; then
-    source fake-hwclock/install
 fi
 
 # Non-essential extra tools
