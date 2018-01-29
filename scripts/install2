@@ -119,7 +119,7 @@ if [ -z "$WITH_MESH_POINT" -o "$WITH_MESH_POINT" != "true" -a "$WITH_MESH_POINT"
     else
         echo -e "\e[1;32mMesh Point interface will be configured\e[0m"
         WITH_MESH_POINT=true
-        read -p "Continue with 802.11s instead of older AdHoc (IBSS)?  (Y/n)? " -n 1 -r
+        read -p "Use 802.11s (Y) or AdHoc (IBBS) (n) for Mesh Point? (Y/n)? " -n 1 -r
         echo ""
         if [[ $REPLY =~ ^[Nn]$ ]]; then
             echo -e "\e[1;31mMesh Point will use AdHoc standard\e[0m"
