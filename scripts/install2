@@ -9,13 +9,22 @@ BOARD_FAMILY="Unknown"
 BOARD_NAME="Generic"
 BOARD_REVISION="?"
 CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 ./do"
-BOARD_HARDWARE=$(cat /proc/cpuinfo  | grep Hardware | awk '{print $3}' | head -n 1)
 
-# Flag to identify if board can support on-board AP
-SUPPORT_HOSTAP=false 
+##TODO## Possibly use /sys/firmware/devicetree/base/model
+BOARD_HARDWARE=$(cat /proc/cpuinfo | grep Hardware | awk '{print $3}' | head -n 1)
 
-# Possibly use /sys/firmware/devicetree/base/model
-if [[ "$BOARD_HARDWARE" == 'Allwinner' || "$BOARD_HARDWARE" == 'Generic' ]]; then   
+# Flag to identify if board can support on-board AP. Default no false.
+SUPPORT_HOSTAP=false
+
+# If board cannot be determined from /proc/cpuinfo its most likely an arbmian board so you can use the armbian generated ID file
+if [[ -z "$BOARD_HARDWARE" ]]; then
+    BOARD_HARDWARE="$(grep "BOARD=" /etc/armbian-image-release | awk -F \= '{print $2}' | tr -d \" | sed 's/Orange Pi //g')"
+fi
+
+if [[ "$BOARD_HARDWARE" == 'Allwinner' || "$BOARD_HARDWARE" == 'Generic' ]]; then
+    # Stop unattended upgrade that will block apt-get requests on some armbian boards
+    sudo service unattended-upgrades stop || true
+    sudo killall unattended-upgrade || true
     BOARD_FAMILY="Orange Pi"
     BOARD_NAME=$(grep BOARD_NAME /etc/armbian-image-release | awk -F \= '{print $2}' | tr -d \" | sed 's/Orange Pi //g')
     BOARD_REVISION="experimental"
@@ -26,11 +35,20 @@ if [[ "$BOARD_HARDWARE" == 'Allwinner' || "$BOARD_HARDWARE" == 'Generic' ]]; the
         fi
     fi
     CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -march=armv7-a -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -fomit-frame-pointer -marm\" ./do"
-elif [[ "$BOARD_HARDWARE" == 'sun50iw1p1' ]]; then
-    BOARD_FAMILY="Orange Pi"
+elif [[ "$BOARD_HARDWARE" == 'nanopineo2' ||
+        "$BOARD_HARDWARE" == 'orangepizeroplus2-h5' ||
+        "$BOARD_HARDWARE" == 'rock64' ||
+        "$BOARD_HARDWARE" == 'espressobin' ]]; then
+    # Stop unattended upgrade that will block apt-get requests on some armbian boards
+    sudo service unattended-upgrades stop || true
+    sudo killall unattended-upgrade || true
+    BOARD_FAMILY=""
     BOARD_NAME=$(grep BOARD_NAME /etc/armbian-image-release | awk -F \= '{print $2}' | tr -d \" | sed 's/Orange Pi //g')
     BOARD_REVISION="experimental"
-    CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -march=armv8-a+crc+crypto -mcpu=cortex-a53 -ftree-vectorize -mtune=cortex-a53 -fomit-frame-pointer\" ./do"
+    CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -march=armv8-a+crc+crypto -fomit-frame-pointer\" ./do"
+    if [[ "$BOARD_HARDWARE" == "orangepizeroplus2-h5" ]]; then
+            SUPPORT_HOSTAP=true
+    fi
 else
     BOARD_FAMILY="Raspberry Pi"
     BOARD_REVISION=`sed -rn 's/Revision\s+\:\s+([0-9a-z_\-\s\,\(\)]+)/\1/p' /proc/cpuinfo`
@@ -46,7 +64,6 @@ else
     elif [[ $BOARD_REVISION == *"a02082"* || $BOARD_REVISION == *"a22082"* ]]; then
         BOARD_NAME="3"
         CJDNS_BUILD_CMD="sudo CFLAGS=\"-march=armv8-a+crc -mtune=cortex-a53 -mfpu=crypto-neon-fp-armv8 -mfloat-abi=hard -O2\" ./do"
-
         # Raspberry Pi 3 has on-board WiFi that can be used as an AP
         SUPPORT_HOSTAP=true
     fi
@@ -70,6 +87,7 @@ if [[ -e '/etc/NetworkManager/NetworkManager.conf' ]]; then
 
 # Set configurations specific to the board
 if [[ $BOARD_FAMILY == "Orange Pi" ]]; then
+    ##TODO## This can be removed soon as its no longer relivent with the latest images.
     # Downgrade kernel to enable XRadio in version 4.10 on Orange Pi Zero
     if ! [ -z "`uname -a | grep 4.11`" ]; then 
         if ! [ -z "`cat /sys/bus/mmc/devices/mmc1:0001/mmc1:0001:1/uevent | grep SDIO_ID | grep 0020:2281`" ]; then
@@ -77,7 +95,7 @@ if [[ $BOARD_FAMILY == "Orange Pi" ]]; then
             echo ""
             if ! [[ $REPLY =~ ^[Nn]$ ]]; then
                 echo -e "\e[1;32mDowngrading Kernel...\e[0m"
-                wget https://github.com/darkdrgn2k/OrangePiXRadio/raw/master/linux-image-dev-sun8i_5.26_armhf.deb 
+                wget https://github.com/darkdrgn2k/OrangePiXRadio/raw/master/linux-image-dev-sun8i_5.26_armhf.deb
                 sudo dpkg -i linux-image-dev-sun8i_5.26_armhf.deb
                 rm -rf linux-image-dev-sun8i_5.26_armhf.deb
 
@@ -101,8 +119,19 @@ if [ -z "$WITH_MESH_POINT" -o "$WITH_MESH_POINT" != "true" -a "$WITH_MESH_POINT"
     else
         echo -e "\e[1;32mMesh Point interface will be configured\e[0m"
         WITH_MESH_POINT=true
+        read -p "Use 802.11s (Y) or AdHoc (IBBS) (n) for Mesh Point? (Y/n)? " -n 1 -r
+        echo ""
+        if [[ $REPLY =~ ^[Nn]$ ]]; then
+            echo -e "\e[1;31mMesh Point will use AdHoc standard\e[0m"
+            WITH_80211s=false
+        else
+            echo -e "\e[1;32mMesh Point will use 802.11s standard\e[0m"
+            WITH_80211s=true
+        fi
+        export WITH_80211s
     fi
 fi
+
 if [[ "$SUPPORT_HOSTAP" == "true" ]] && [ -z "$WITH_WIFI_AP" -o "$WITH_WIFI_AP" != "true" -a "$WITH_WIFI_AP" != "false" ]; then
     read -p "Configure WiFi Access Point (Y/n)? " -n 1 -r
     echo ""
@@ -112,6 +141,17 @@ if [[ "$SUPPORT_HOSTAP" == "true" ]] && [ -z "$WITH_WIFI_AP" -o "$WITH_WIFI_AP" 
     else
         echo -e "\e[1;32mWiFi Access Point will be configured\e[0m"
         WITH_WIFI_AP=true
+    fi
+fi
+if [ -z "$WITH_FIREWALL" -o "$WITH_FIREWALL" != "true" -a "$WITH_FIREWALL" != "false" ]; then
+    read -p "Configure Basic Firewall (Y/n)? " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo -e "\e[1;31mInternet Firewall will be skipped\e[0m"
+        WITH_FIREWALL=false
+    else
+        echo -e "\e[1;32mInternet Firewall will be configured\e[0m"
+        WITH_FIREWALL=true
     fi
 fi
 if [ -z "$WITH_CJDNS_IPTUNNEL" -o "$WITH_CJDNS_IPTUNNEL" != "true" -a "$WITH_CJDNS_IPTUNNEL" != "false" ]; then
@@ -201,17 +241,6 @@ if [ -z "$WITH_H_NTP" -o "$WITH_H_NTP" != "true" -a "$WITH_H_NTP" != "false" ]; 
         WITH_H_NTP=true
     fi
 fi
-if [ -z "$WITH_FAKE_HWCLOCK" -o "$WITH_FAKE_HWCLOCK" != "true" -a "$WITH_FAKE_HWCLOCK" != "false" ]; then
-    read -p "Configure Fake Hardware Clock to store time value every 5 minutes (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mFake Hardware Clock will be skipped\e[0m"
-        WITH_FAKE_HWCLOCK_=false
-    else
-        echo -e "\e[1;32mFake Hardware Clock will be configured\e[0m"
-        WITH_FAKE_HWCLOCK=true
-    fi
-fi
 if [ -z "$WITH_EXTRA_TOOLS" -o "$WITH_EXTRA_TOOLS" != "true" -a "$WITH_EXTRA_TOOLS" != "false" ]; then
     read -p "Install non-essential tools useful for network analysis (Y/n)? " -n 1 -r
     echo ""
@@ -225,6 +254,7 @@ if [ -z "$WITH_EXTRA_TOOLS" -o "$WITH_EXTRA_TOOLS" != "true" -a "$WITH_EXTRA_TOO
 fi
 
 # Prompt for name of the mesh network
+##TODO## This should be moved up to to mesh point question
 read -p "Enter the name of your mesh network (default: tomesh): " -r
 export MESH_NAME=`echo $REPLY | sed 's/ //g'`
 if [ "${#MESH_NAME}" == 0 ]; then
@@ -280,6 +310,12 @@ sudo chmod 644 /etc/systemd/system/cjdns-resume.service
 sudo systemctl daemon-reload
 sudo systemctl enable cjdns.service
 
+# Rename node based on CJDNS address
+oldhostname=$(hostname)
+newhostname=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-/g")
+sudo echo $newhostname | sudo tee /etc/hostname > /dev/null
+sudo sed -i -e "s/$oldhostname/$newhostname/" /etc/hosts
+
 # 802.11s Mesh Point interface
 if [ ! -z "$WITH_MESH_POINT" -a "$WITH_MESH_POINT" == "true" ]; then
     source mesh-point/install
@@ -288,6 +324,11 @@ fi
 # WiFi Access Point on RPi3
 if [[ "$SUPPORT_HOSTAP" == "true" ]] && [ ! -z "$WITH_WIFI_AP" -a "$WITH_WIFI_AP" == "true" ]; then
     source hostapd/install
+fi
+
+# Configure Internet firewall
+if [ ! -z "$WITH_FIREWALL" -a "$WITH_FIREWALL" == "true" ]; then
+    source firewall/install
 fi
 
 # Configure Internet gateway using cjdns iptunnel
@@ -325,11 +366,6 @@ if [ ! -z "$WITH_H_NTP" -a "$WITH_H_NTP" == "true" ]; then
     source h-ntp/install
 fi
 
-# Configure Fake Hardware Clock
-if [ ! -z "$WITH_FAKE_HWCLOCK" -a "$WITH_FAKE_HWCLOCK" == "true" ]; then
-    source fake-hwclock/install
-fi
-
 # Non-essential extra tools
 if [ ! -z "$WITH_EXTRA_TOOLS" -a "$WITH_EXTRA_TOOLS" == "true" ]; then
     source extra-tools/install
@@ -347,6 +383,8 @@ echo "export MESH_NAME=$MESH_NAME" >> ~/.bash_profile
 echo "" >> ~/.bash_profile 
 echo "# print mesh node status" >> ~/.bash_profile
 echo "status" >> ~/.bash_profile
+
+echo -e "Your node's new hostname is $newhostname"
 
 # Reboot device
 sudo reboot

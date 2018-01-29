@@ -117,7 +117,16 @@ fi
 sudo cp "$BASE_DIR/hostapd.service" /etc/systemd/system/hostapd.service
 sudo systemctl daemon-reload
 sudo systemctl enable hostapd.service
-sudo systemctl start hostapd.service
+
+# Find onboard adapter by driver and lock to wlan0
+for wlan in $(ls -1Atu /sys/class/net | grep wlan); do
+    driver="$(basename $(readlink /sys/class/net/$wlan/device/driver))"
+    mac="$(cat /sys/class/net/$wlan/address)"
+    if [ $driver == 'xradio_wlan' ]; then
+        echo SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"?*\", ATTR{address}==\"$mac\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan0\" |
+                sudo tee /etc/udev/rules.d/70-persistent-net.rules
+    fi
+done
 
 # dnsmasq for some reason won't bind to the hostapd on Orange Pi, restarting it works
 if [[ -z "$(cat /etc/rc.local | grep dnsmasq)" ]]; then

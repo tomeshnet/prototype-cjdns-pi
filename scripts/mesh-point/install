@@ -5,9 +5,20 @@ set -e
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Install bring-up script for the Mesh Point interface to /usr/bin
-cp "$BASE_DIR/mesh" "$BASE_DIR/mesh2"
-sed -i "s/MESH_NAME/$MESH_NAME/g" "$BASE_DIR/mesh2"
-sudo mv "$BASE_DIR/mesh2" /usr/bin/mesh
+sudo cp "$BASE_DIR/mesh.80211s" /usr/bin/mesh.80211s
+sudo cp "$BASE_DIR/mesh.adhoc" /usr/bin/mesh.adhoc
+
+sudo sed -i "s/MESH_NAME/$MESH_NAME/g" "/usr/bin/mesh.80211s"
+sudo sed -i "s/MESH_NAME/$MESH_NAME/g" "/usr/bin/mesh.adhoc"
+
+
+if [[ "$WITH_80211s" == "false" ]]; then
+    # Use adhoc if 80211s not set
+    sudo ln -s /usr/bin/mesh.adhoc /usr/bin/mesh
+else
+    # Use 802.11s otherwise
+    sudo ln -s /usr/bin/mesh.80211s /usr/bin/mesh
+fi
 
 # Configure systemd to start mesh.service on system boot
 sudo cp "$BASE_DIR/mesh.service" /etc/systemd/system/mesh.service
