@@ -282,18 +282,18 @@ fi
 sudo apt-get install haveged -y
 
 # Download cjdns repo and checkout TAG_CJDNS tag
-if [ ! -z "$CJDNS_PACKAGE"]; then
+if [ ! -z "$CJDNS_PACKAGE" ]; then
     read -p "Compile CJDNS from source (Y) or use $CJDNS_PACKAGE debain package (n)? (Y/n)? " -n 1 -r
     echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
+    if [[ ! $REPLY =~ ^[Nn]$ ]]; then
         CJDNS_PACKAGE="";
     fi
 fi
 
 
-if [ ! -z "$CJDNS_PACKAGE"]; then
+if [ ! -z "$CJDNS_PACKAGE" ]; then
     echo -e "\e[1;31mUsing debain pacakge\e[0m"    
-    wget https://github.com/darkdrgn2k/ToMeshStuff/raw/master/deb/$CJDNS_PACKAGE /tmp/cjdns.deb
+    wget https://github.com/darkdrgn2k/ToMeshStuff/raw/master/deb/$CJDNS_PACKAGE -O /tmp/cjdns.deb
     sudo dpkg -i /tmp/cjdns.deb
 else
     echo -e "\e[1;31mCompiling CJDNS\e[0m"
