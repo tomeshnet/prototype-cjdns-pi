@@ -28,7 +28,7 @@ Many models of Orange Pi hardware running [Armbian](https://www.armbian.com/) ar
 
     **Optional:** There are other ways to connect, such as connecting the Pi to your computer and sharing Internet to it. Or if you have multiple Pi's connected to your router, find its IP with `nmap -sn 192.168.X.0/24` (where 192.168.X is your subnet) and SSH to the local IP assigned to the Pi you want to address `ssh pi@192.168.X.Y`.  
 
-    **Note:** After the install the node will be renamed to tomesh-xxxx where xxxx is the last 4 characters of your CJDNS address.  Before the reboot the node will notify you of what the name is.
+    **Note:** After the install the node will be renamed to `tomesh-xxxx` where `xxxx` is the last 4 characters of your CJDNS address.  Before the reboot the node will notify you of what the name is.
 
 1. In your SSH session, run `passwd` and change your login password. It is very important to choose a strong password so others cannot remotely access your Pi.
 
@@ -137,31 +137,33 @@ To add a new module, use **scripts/ipfs/** as an example to:
 
 **Q:** Why do my Orange Pi Zero USB headers not work?
 
-**A:** Some images are missing the USB overlay.  Simply add the following to the **/boot/armbianEnv.txt** file and restart the pi.
-`overlays=usbhost2 usbhost3`
+**A:** Some images are missing the USB overlay.  Simply add the following to the **/boot/armbianEnv.txt** file and restart the Pi.
+````
+overlays=usbhost2 usbhost3
+```
 
 
 **Q:** Why do I get an error about a locked file when I try to install the node on an Orange Pi?
 
-**A**: The daily apt upgrade sometimes starts up in the background locking the APT database. This will cause the script to fail as it tries to install the required software. Wait for the upgrade to finish.
+**A**: The daily apt upgrade sometimes starts up in the background locking the apt database. This will cause the script to fail as it tries to install the required software. Wait for the upgrade to finish.
 
 
-**Q:** Can I connect a serial cable (ttl) to a Raspberry Pi (or Rock64)?
+**Q:** Can I connect a serial cable (TTL) to a Raspberry Pi (or Rock64)?
 
-**A:** Yes, there are TTL pins in the gpio pins. They are as follows  
+**A:** Yes, there are TTL pins in the GPIO pins. They are as follows  
 ```
 VCC → RPi Pin 02 (5V)
 GND → RPi Pin 06
 RXD → RPi Pin 08
 TXD → RPi Pin 10
 ```
-*Note: Uboot will not appear on serial, only once kernal starts to boot do you see output*
+*Note: U-boot will not appear on serial, only once kernel starts to boot do you see output*
 
 **Q:** What is the baud rate for the Rock64?
 
-**A:** Uboot baud rate seems to be 1500000. Once ubuntu starts it is 115200
+**A:** U-boot baud rate seems to be 1500000. Once ubuntu starts it is 115200
 
-**Q:** How do I upgrade the uBoot on EspressoBin?
+**Q:** How do I upgrade the U-boot on EspressoBin?
 
 **A:** Manual flashing to latest u-boot is mandatory! [Download](https://dl.armbian.com/espressobin/u-boot/) the right boot flash for your board: 512,1G,2G and appropriate memory speeds. You can obtain numbers from current boot prompt. Copy this flash-image-MEM-CPU_DDR_boot_sd_and_usb.bin to your FAT formatted USB key, plug it into USB3.0 port and execute from u-boot prompt: 
 
@@ -171,7 +173,7 @@ TXD → RPi Pin 10
 
 **Q:** How do I boot Armbian on EspressoBin from sd card?
 
-**A:** First update the uboot (above). Then run the following in uBoot.
+**A:** First update the u-oot (above). Then run the following in u-boot.
 
 ```
 setenv verbosity 2

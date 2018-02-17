@@ -11,6 +11,10 @@ sudo cp "$BASE_DIR/mesh.adhoc" /usr/bin/mesh.adhoc
 sudo sed -i "s/MESH_NAME/$MESH_NAME/g" "/usr/bin/mesh.80211s"
 sudo sed -i "s/MESH_NAME/$MESH_NAME/g" "/usr/bin/mesh.adhoc"
 
+# Remove old linked file in case it exists
+if ! [ -f "/usr/bin/mesh" ]; then
+    rm -rf /usr/bin/mesh
+fi
 
 if [[ "$WITH_80211s" == "false" ]]; then
     # Use adhoc if 80211s not set
