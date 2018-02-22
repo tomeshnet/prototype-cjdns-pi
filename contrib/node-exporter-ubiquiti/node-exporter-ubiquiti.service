@@ -10,3 +10,6 @@ ExecStop=/usr/bin/pkill $(ps aux | grep python | grep ubiquity.py | awk '{print 
 Restart=on-failure
 RestartSec=10s
 
+[Install]
+WantedBy=multi-user.target
+
