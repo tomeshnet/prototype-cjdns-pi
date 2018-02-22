@@ -9,7 +9,7 @@ H_DNS_SERVER_1="fc6e:691e:dfaa:b992:a10a:7b49:5a1a:5e09"
 H_DNS_SERVER_2="fc16:b44c:2bf9:467:8098:51c6:5849:7b4f"
 
 # Create radvd.conf before installing radvd, installation fails without it
-if ! [ -f /etc/radvd.conf ]; then 
+if ! [ -f /etc/radvd.conf ]; then
     sudo cp "$BASE_DIR/radvd.conf" /etc/radvd.conf
 fi
 
@@ -25,8 +25,8 @@ echo "" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "auto lo"  | sudo tee --append /etc/network/interfaces > /dev/null
 echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "allow-hotplug wlan0" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "iface wlan0 inet static" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "allow-hotplug wlan-ap" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "iface wlan-ap inet static" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    address 10.0.0.1" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    netmask 255.255.255.0" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    network 10.0.0.0" | sudo tee --append /etc/network/interfaces > /dev/null
@@ -122,8 +122,8 @@ sudo systemctl enable hostapd.service
 for wlan in $(ls -1Atu /sys/class/net | grep wlan); do
     driver="$(basename $(readlink /sys/class/net/$wlan/device/driver))"
     mac="$(cat /sys/class/net/$wlan/address)"
-    if [ $driver == 'xradio_wlan' ]; then
-        echo SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"?*\", ATTR{address}==\"$mac\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan0\" |
+    if [ "$driver" =="'xradio_wlan" || "$driver" == "brcm80211" ]; then
+        echo SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"?*\", ATTR{address}==\"$mac\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan-ap\" |
                 sudo tee /etc/udev/rules.d/70-persistent-net.rules
     fi
 done

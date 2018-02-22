@@ -44,7 +44,7 @@ while 1:
                         if type.find("type") > -1:
                                 words2= type.split(" ")
                                 if words2[1]  == "mesh":
-                                    fifo.write("wlan_mesh{iface=\"" + currentitn + "\"} 1\n")
+                                        fifo.write("wlan_mesh{iface=\"" + currentitn + "\"} 1\n")
                                         command_line = "iw dev " + currentitn + " station dump"
                                         args = shlex.split(command_line)
                                         links = subprocess.Popen(args,stdout=subprocess.PIPE)
