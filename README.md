@@ -12,9 +12,7 @@ Many models of Orange Pi hardware running [Armbian](https://www.armbian.com/) ar
 
     * Raspberry Pi Zero, 1, 2, 3 (Pi 3 recommended), or for advanced users other [compatible hardware](#hardware-table)
     * An SD card that works with the Pi
-    * **Optional:** A USB WiFi adapter 
-      * For [802.11s Mesh Point](https://github.com/o11s/open80211s/wiki/HOWTO) wireless links: Device such as the [TP-LINK TL-WN722N v1](http://www.tp-link.com/en/products/details/TL-WN722N.html), [Toplinkst TOP-GS07](https://github.com/tomeshnet/documents/blob/master/technical/20170208_mesh-point-with-topgs07-rt5572.md) or [other supported device](https://github.com/phillymesh/802.11s-adapters/blob/master/README.md) (preferred links)
-      * For [adhoc](https://en.wikipedia.org/wiki/Wireless_ad_hoc_network) wireless links: Any device that supports linux and adhoc. (in testing)
+-    * **Optional:** A USB WiFi adapter with [802.11s Mesh Point](https://github.com/o11s/open80211s/wiki/HOWTO) support, such as the [TP-LINK TL-WN722N](http://www.tp-link.com/en/products/details/TL-WN722N.html) or [Toplinkst TOP-GS07](https://github.com/tomeshnet/documents/blob/master/technical/20170208_mesh-point-with-topgs07-rt5572.md)
 
 1. Flash the SD card with [Raspbian Stretch Lite](https://www.raspberrypi.org/downloads/raspbian/).
 
