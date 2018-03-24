@@ -13,8 +13,8 @@ Many models of Orange Pi hardware running [Armbian](https://www.armbian.com/) ar
     * Raspberry Pi Zero, 1, 2, 3 (Pi 3 recommended), or for advanced users other [compatible hardware](#hardware-table)
     * An SD card that works with the Pi
     * **Optional:** A USB WiFi adapter 
-      * For [802.11s Mesh Point](https://github.com/o11s/open80211s/wiki/HOWTO) wireless links: Device such as the [TP-LINK TL-WN722N v1](http://www.tp-link.com/en/products/details/TL-WN722N.html), [Toplinkst TOP-GS07](https://github.com/tomeshnet/documents/blob/master/technical/20170208_mesh-point-with-topgs07-rt5572.md) or [other supported device](https://github.com/phillymesh/802.11s-adapters/blob/master/README.md) (preferred links)
-      * For [adhoc](https://en.wikipedia.org/wiki/Wireless_ad_hoc_network) wireless links: Any device that supports linux and adhoc. (in testing)
+      * For [802.11s Mesh Point](https://github.com/o11s/open80211s/wiki/HOWTO) wireless links: Device such as the [TP-LINK TL-WN722N v1](http://www.tp-link.com/en/products/details/TL-WN722N.html), [Toplinkst TOP-GS07](https://github.com/tomeshnet/documents/blob/master/technical/20170208_mesh-point-with-topgs07-rt5572.md) or [other supported device](https://github.com/phillymesh/802.11s-adapters/blob/master/README.md). (Preferred links)
+      * For [adhoc](https://en.wikipedia.org/wiki/Wireless_ad_hoc_network) wireless links: Any device that supports linux and adhoc. (In testing)
 
 1. Flash the SD card with [Raspbian Stretch Lite](https://www.raspberrypi.org/downloads/raspbian/).
 
@@ -26,9 +26,9 @@ Many models of Orange Pi hardware running [Armbian](https://www.armbian.com/) ar
 
 1. Plug the SD card and USB WiFi adapter into the Pi.
 
-1. Plug the Pi into your router, so it has connectivity to the Internet. SSH into the Pi with `ssh pi@raspberrypi.local` and password **raspberry**.
+1. Plug the Pi into your router so it has connectivity to the Internet. SSH into the Pi with `ssh pi@raspberrypi.local` and password **raspberry**.
 
-    **Optional:** There are other ways to connect, such as connecting the Pi to your computer and sharing Internet to it. Or if you have multiple Pi's connected to your router, find its IP with `nmap -sn 192.168.X.0/24` (where 192.168.X is your subnet) and SSH to the local IP assigned to the Pi you want to address `ssh pi@192.168.X.Y`.  
+    **Optional:** There are other ways to connect, such as connecting the Pi to your computer and sharing Internet to it. If you have multiple Pi's connected to your router, find their IPs with `nmap -sn 192.168.X.0/24` (where 192.168.X is your subnet) and SSH to the local IP assigned to the Pi you want to address `ssh pi@192.168.X.Y`.  
 
     **Note:** After the install the node will be renamed to `tomesh-xxxx` where `xxxx` is the last 4 characters of your CJDNS address.  Before the reboot the node will notify you of what the name is.
 
@@ -174,7 +174,7 @@ TXD → RPi Pin 10
    bubt flash-image-MEM-CPU_DDR_boot_sd_and_usb.bin spi usb
    ````
 
-**Q:** How do I boot Armbian on EspressoBin from sd card?
+**Q:** How do I boot Armbian on an EspressoBin from an sd card?
 
 **A:** First update the u-oot (above). Then run the following in u-boot.
 
