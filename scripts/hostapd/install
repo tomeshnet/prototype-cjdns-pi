@@ -16,7 +16,7 @@ fi
 # Install packages to run IEEE 802.11 Access Point
 sudo apt-get install hostapd radvd dnsmasq iptables -y
 
-# Configure wlan0 interface
+# Configure wlan-ap interface
 sudo mv /etc/network/interfaces /etc/network/interfaces.bak
 sudo touch /etc/network/interfaces
 
@@ -31,7 +31,7 @@ echo "    address 10.0.0.1" | sudo tee --append /etc/network/interfaces > /dev/n
 echo "    netmask 255.255.255.0" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    network 10.0.0.0" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    broadcast 10.0.0.255" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "iface wlan0 inet6 static" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "iface wlan-ap inet6 static" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    address fdfc::2" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    netmask 64" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "" | sudo tee --append /etc/network/interfaces > /dev/null
@@ -99,7 +99,7 @@ fi
 if [ -f /etc/dhcpcd.conf ]; then
     sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.bak
     sudo echo "" | sudo tee --append /etc/dhcpcd.conf > /dev/null
-    sudo echo "denyinterfaces wlan0" | sudo tee --append /etc/dhcpcd.conf > /dev/null
+    sudo echo "denyinterfaces wlan-ap" | sudo tee --append /etc/dhcpcd.conf > /dev/null
 fi
 
 # Configure IPv6 router advertisement with radvd
@@ -118,7 +118,7 @@ sudo cp "$BASE_DIR/hostapd.service" /etc/systemd/system/hostapd.service
 sudo systemctl daemon-reload
 sudo systemctl enable hostapd.service
 
-# Find onboard adapter by driver and lock to wlan0
+# Find onboard adapter by driver and lock to wlan-ap
 for wlan in $(ls -1Atu /sys/class/net | grep wlan); do
     driver="$(basename $(readlink /sys/class/net/$wlan/device/driver))"
     mac="$(cat /sys/class/net/$wlan/address)"
