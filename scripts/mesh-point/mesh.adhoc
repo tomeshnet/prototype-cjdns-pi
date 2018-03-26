@@ -7,7 +7,7 @@ sudo iw reg set CA
 
 # Select physical device that supports 802.11s Mesh Point
 
-mesh_dev="wlan1"
+mesh_dev="wlan0"
 
 # Shut down the mesh_dev interface
 sudo ifconfig $mesh_dev down
