@@ -366,12 +366,12 @@ if [ ! -z "$WITH_MESH_POINT" -a "$WITH_MESH_POINT" == "true" ]; then
     source mesh-point/install
 fi
 
-# WiFi Access Point on Supported Boards
+# WiFi Access Point on supported boards
 if [[ "$SUPPORT_HOSTAP" == "true" ]] && [ ! -z "$WITH_WIFI_AP" -a "$WITH_WIFI_AP" == "true" ]; then
     source hostapd/install
 fi
 
-# Watch Dog on Supported Boards
+# Watchdog on supported boards
 if [[ "$SUPPORT_WATCHDOG" == "true" ]] && [ ! -z "$WITH_WATCHDOG" -a "$WITH_WATCHDOG" == "true" ]; then
     source watchdog/install
 fi
