@@ -90,7 +90,7 @@ If you are updating, run the same uninstall script, but keep all configuration f
 
 ## Experimental Support for Other Boards
 
-We have added support for other Small Baord Computer boards such as the [Orange Pi](http://www.orangepi.org/) family of boards. So far all the boards that have been tested support [Armbian](http://www.armbian.com) and usualy need no modification to our install script.  To use one of these boards start with the Armbian nightly images linked in the table below, then follow the same installation steps as the Raspberry Pi.  Below is a table of boards we have tested and some metrics of what you can expect from the board.
+We have added support for other single board computers such as the [Orange Pi](http://www.orangepi.org/) family of boards. So far all the boards that have been tested support [Armbian](http://www.armbian.com) and usualy our install script needs no modification to work.  To use one of these boards start with the Armbian nightly images linked in the table below, then follow the same installation steps as the Raspberry Pi.  Below is a table of boards we have tested and some metrics of what you can expect from the board.
 
 ## Hardware Table
 
