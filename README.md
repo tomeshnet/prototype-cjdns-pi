@@ -88,9 +88,9 @@ To uninstall the services, run `./prototype-cjdns-pi/scripts/uninstall`.
 
 If you are updating, run the same uninstall script, but keep all configuration files and data directories when prompted, remove the **prototype-cjdns-pi** directory along with the **install** script, then repeat the last installation step.
 
-## Experimental Support for Orange Pi
+## Experimental Support for Other Boards
 
-We are adding support for [Orange Pi](http://www.orangepi.org/) boards and have tested with the [Orange Pi Zero (Armbian nightly)](https://dl.armbian.com/orangepizero/nightly/), [Orange Pi One (Armbian nightly)](https://dl.armbian.com/orangepione/nightly/), and [Orange Pi Lite  (Armbian nightly)](https://dl.armbian.com/orangepilite/nightly/). Instead of flashing Raspbian, start with the Armbian nightly images linked above, then follow the same installation steps as the Raspberry Pi.
+We have added support for other Small Baord Computer boards such as the [Orange Pi](http://www.orangepi.org/) family of boards. So far all the boards that have been tested support [Armbian](http://www.armbian.com) and usualy need no modification to our install script.  To use one of these boards start with the Armbian nightly images linked in the table below, then follow the same installation steps as the Raspberry Pi.  Below is a table of boards we have tested and some metrics of what you can expect from the board.
 
 ## Hardware Table
 
