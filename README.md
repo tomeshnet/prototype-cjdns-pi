@@ -178,7 +178,7 @@ TXD → RPi Pin 10
 
 **Q:** How do I boot Armbian on an EspressoBin from an sd card?
 
-**A:** First update the u-oot (above). Then run the following in u-boot.
+**A:** First update the u-boot (above). Then run the following in u-boot.
 
 ```
 setenv verbosity 2
