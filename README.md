@@ -143,7 +143,7 @@ To add a new module, use **scripts/ipfs/** as an example to:
 **Q:** Why do my Orange Pi Zero USB headers not work?
 
 **A:** Some images are missing the USB overlay.  Simply add the following to the **/boot/armbianEnv.txt** file and restart the Pi.
-````
+```
 overlays=usbhost2 usbhost3
 ```
 
