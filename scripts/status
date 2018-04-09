@@ -21,6 +21,11 @@ if [ "$(which mesh)" ]; then
         mp=$(iw dev $line info | grep "type mesh point")
         if [ "$mp" ]; then
             mpint=$line
+        else
+            mp=$(iw dev $line info | grep "type IBSS")
+            if [ "$mp" ]; then
+                mpint=$line
+            fi
         fi
     done <<< "$ints"
     if [ -n "$mpint" ] && [ "$(ifconfig | grep $mpint)" ]; then
