@@ -122,7 +122,7 @@ sudo systemctl enable hostapd.service
 for wlan in $(ls -1Atu /sys/class/net | grep wlan); do
     driver="$(basename $(readlink /sys/class/net/$wlan/device/driver))"
     mac="$(cat /sys/class/net/$wlan/address)"
-    if [[ "$driver" == "xradio_wlan" || "$driver" == "brcm80211" ]]; then
+    if [[ "$driver" == "xradio_wlan" || "$driver" == "brcm80211" | "$driver" == "brcmfmac" ]]; then
         echo SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"?*\", ATTR{address}==\"$mac\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan-ap\" |
                 sudo tee /etc/udev/rules.d/70-persistent-net.rules
     fi
