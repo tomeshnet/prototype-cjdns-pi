@@ -324,9 +324,9 @@ if [ ! -z "$CJDNS_PACKAGE" ]; then
     wget https://github.com/darkdrgn2k/ToMeshStuff/raw/master/deb/$CJDNS_PACKAGE -O /tmp/cjdns.deb
     sudo dpkg -i /tmp/cjdns.deb
     #Link up folder so files are in the same place as compiled
-    mkdir /opt/cjdns
-    ln -s /usr/share/cjdns /opt/cjdns/tools
-    ln -s /usr/bin/cjdroute /opt/cjdns/cjdroute
+    sudo mkdir /opt/cjdns
+    sudo ln -s /usr/share/cjdns /opt/cjdns/tools
+    sudo ln -s /usr/bin/cjdroute /opt/cjdns/cjdroute
 else
     # Download cjdns repo and checkout TAG_CJDNS tag
     echo -e "\e[1;31mCompiling CJDNS\e[0m"
