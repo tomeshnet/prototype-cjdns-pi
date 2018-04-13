@@ -12,9 +12,9 @@ Many models of Orange Pi hardware running [Armbian](https://www.armbian.com/) ar
 
     * Raspberry Pi Zero, 1, 2, 3 (Pi 3 recommended), or for advanced users other [compatible hardware](#hardware-table)
     * An SD card that works with the Pi
-    * **Optional:** A USB WiFi adapter 
-      * For [802.11s Mesh Point](https://github.com/o11s/open80211s/wiki/HOWTO) wireless links: Device such as the [TP-LINK TL-WN722N v1](http://www.tp-link.com/en/products/details/TL-WN722N.html), [Toplinkst TOP-GS07](https://github.com/tomeshnet/documents/blob/master/technical/20170208_mesh-point-with-topgs07-rt5572.md) or [other supported device](https://github.com/phillymesh/802.11s-adapters/blob/master/README.md). (Preferred links)
-      * For [adhoc](https://en.wikipedia.org/wiki/Wireless_ad_hoc_network) wireless links: Any device that supports linux and adhoc. (In testing)
+    * **Optional:** A USB WiFi adapter: 
+      * For [802.11s Mesh Point](https://github.com/o11s/open80211s/wiki/HOWTO) wireless links (recommended), device such as the [TP-LINK TL-WN722N v1](http://www.tp-link.com/en/products/details/TL-WN722N.html), [Toplinkst TOP-GS07](https://github.com/tomeshnet/documents/blob/master/technical/20170208_mesh-point-with-topgs07-rt5572.md) or [another supported device](https://github.com/phillymesh/802.11s-adapters/blob/master/README.md).
+      * For [ad-hoc](https://en.wikipedia.org/wiki/Wireless_ad_hoc_network) wireless links (experimental), any device that supports linux and ad-hoc.
 
 1. Flash the SD card with [Raspbian Stretch Lite](https://www.raspberrypi.org/downloads/raspbian/).
 
@@ -61,7 +61,7 @@ Many models of Orange Pi hardware running [Armbian](https://www.armbian.com/) ar
 | `WITH_H_DNS`                    | None                                           | Set to `true` if you want to use Hyperboria-compatible DNS servers: `fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc`, `fc6e:691e:dfaa:b992:a10a:7b49:5a1a:5e09`, and `fc16:b44c:2bf9:467:8098:51c6:5849:7b4f` |
 | `WITH_H_NTP`                    | None                                           | Set to `true` if you want to use a Hyperboria-compatible NTP server: `fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc` |
 | `WITH_EXTRA_TOOLS`              | None                                           | Set to `true` if you want to install non-essential tools useful for network analysis: vim socat oping bmon iperf3 |
-| `WITH_WATCHDOG`                 | None                                           | Set to `true` if you want to enable hardware watchdog that will reset the device when the operating system becomes unresponsive |
+| `WITH_WATCHDOG`                 | None                                           | Set to `true` if you want to enable hardware watchdog that will reset the device when the operating system becomes unresponsive. |
 
 
 If you are connected to the WiFi Access Point, all HTTP services are available via `http://10.0.0.1:PORT` as well as the cjdns IPv6. To connect with the cjdns address, first note your node's fc00::/8 address from `status`, then navigate to `http://[fcaa:bbbb:cccc:dddd:eeee:0000:1111:2222]:PORT` from your browser.
@@ -90,7 +90,7 @@ If you are updating, run the same uninstall script, but keep all configuration f
 
 ## Experimental Support for Other Boards
 
-We have added support for other single board computers such as the [Orange Pi](http://www.orangepi.org/) family of boards. So far all the boards that have been tested support [Armbian](http://www.armbian.com) and usualy our install script needs no modification to work.  To use one of these boards start with the Armbian nightly images linked in the table below, then follow the same installation steps as the Raspberry Pi.  Below is a table of boards we have tested and some metrics of what you can expect from the board.
+We have added support for other single board computers such as the [Orange Pi](http://www.orangepi.org) family of boards. So far all the boards that have been tested support [Armbian](http://www.armbian.com) and usualy our install script needs no modification to work.  To use one of these boards start with the Armbian nightly images linked in the table below, then follow the same installation steps as the Raspberry Pi.  Below is a table of boards we have tested and some metrics of what you can expect from the board.
 
 ## Hardware Table
 
@@ -134,65 +134,8 @@ To add a new module, use **scripts/ipfs/** as an example to:
 
 ## Notes
 
+* We keep a list of [Frequently Asked Questions](./FAQ.md). Feel free to add to this list with the issues you experienced on your boards.
+
 * Your computer can be a node too! It will mesh with the Pi's over your router. See the [cjdns repository](https://github.com/cjdelisle/cjdns) on how to set this up.
 
 * Original plan for this repository and early benchmark results are available in [the doc folder](https://github.com/tomeshnet/prototype-cjdns-pi/blob/master/docs/).
-
-## FAQ
-
-**Q:** Why do my Orange Pi Zero USB headers not work?
-
-**A:** Some images are missing the USB overlay.  Simply add the following to the **/boot/armbianEnv.txt** file and restart the Pi.
-```
-overlays=usbhost2 usbhost3
-```
-
-
-**Q:** Why do I get an error about a locked file when I try to install the node on an Orange Pi?
-
-**A**: The daily apt upgrade sometimes starts up in the background locking the apt database. This will cause the script to fail as it tries to install the required software. Wait for the upgrade to finish.
-
-
-**Q:** Can I connect a serial cable (TTL) to a Raspberry Pi (or Rock64)?
-
-**A:** Yes, there are TTL pins in the GPIO pins. They are as follows  
-```
-VCC → RPi Pin 02 (5V)
-GND → RPi Pin 06
-RXD → RPi Pin 08
-TXD → RPi Pin 10
-```
-*Note: U-boot will not appear on serial, only once kernel starts to boot do you see output*
-
-**Q:** What is the baud rate for the Rock64?
-
-**A:** U-boot baud rate seems to be 1500000. Once ubuntu starts it is 115200
-
-**Q:** How do I upgrade the U-boot on EspressoBin?
-
-**A:** Manual flashing to latest u-boot is mandatory! [Download](https://dl.armbian.com/espressobin/u-boot/) the right boot flash for your board: 512,1G,2G and appropriate memory speeds. You can obtain numbers from current boot prompt. Copy this flash-image-MEM-CPU_DDR_boot_sd_and_usb.bin to your FAT formatted USB key, plug it into USB3.0 port and execute from u-boot prompt: 
-
-   ```
-   bubt flash-image-MEM-CPU_DDR_boot_sd_and_usb.bin spi usb
-   ````
-
-**Q:** How do I boot Armbian on an EspressoBin from an sd card?
-
-**A:** First update the u-boot (above). Then run the following in u-boot.
-
-```
-setenv verbosity 2
-setenv boot_interface mmc
-setenv image_name boot/Image
-setenv fdt_name boot/dtb/marvell/armada-3720-community.dtb
-setenv fdt_high "0xffffffffffffffff"
-setenv rootdev "/dev/mmcblk0p1"
-setenv rootfstype "ext4"
-setenv verbosity "1"
-setenv initrd_addr "0x1100000"
-setenv initrd_image "boot/uInitrd"
-setenv bootcmd 'mmc dev 0; ext4load mmc 0:1 $kernel_addr $image_name;ext4load mmc 0:1 $initrd_addr $initrd_image; ext4load mmc 0:1 $fdt_addr $fdt_name; setenv bootargs $console root=$rootdev rw rootwait; booti $kernel_addr $initrd_addr $fdt_addr'
-
-save env
-```
-
