@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Uninstall Mesh Ah-hoc interface
+sudo systemctl disable mesh-adhoc.service 2>/dev/null || true
+sudo systemctl stop mesh-adhoc.service 2>/dev/null || true
+sudo systemctl daemon-reload
+sudo rm -f /usr/bin/mesh-adhoc
+sudo rm -f /etc/systemd/system/mesh-adhoc.service

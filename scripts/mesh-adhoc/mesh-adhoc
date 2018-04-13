@@ -5,14 +5,13 @@ set -e
 # Set wireless regulatory domain
 sudo iw reg set CA
 
-# Select physical device that supports 802.11s Mesh Point
-
+# Select physical device that supports IBSS Ad-hoc
 mesh_dev="wlan0"
 
 # Shut down the mesh_dev interface
 sudo ifconfig $mesh_dev down
 
-# Convert mesh_dev to adhoc interface
+# Convert mesh_dev to IBSS Ad-hoc interface
 sudo iw $mesh_dev set type ibss
 
 # Bring up the mesh_dev interface
