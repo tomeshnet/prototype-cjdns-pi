@@ -40,13 +40,16 @@ git checkout $TAG_PROTOTYPE_CJDNS_PI
 
 # Export environment variables
 export WITH_MESH_POINT
+export WITH_AD_HOC
 export WITH_WIFI_AP
+export WITH_FIREWALL
 export WITH_CJDNS_IPTUNNEL
 export WITH_IPFS
 export WITH_PROMETHEUS_NODE_EXPORTER
 export WITH_PROMETHEUS_SERVER
 export WITH_GRAFANA
 export WITH_EXTRA_TOOLS
+export WITH_WATCHDOG
 
 # Run the actual installation script
 ./install2

@@ -5,12 +5,12 @@ set -e
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Install bring-up script for the Mesh Point interface to /usr/bin
-cp "$BASE_DIR/mesh" "$BASE_DIR/mesh2"
-sed -i "s/MESH_NAME/$MESH_NAME/g" "$BASE_DIR/mesh2"
-sudo mv "$BASE_DIR/mesh2" /usr/bin/mesh
+cp "$BASE_DIR/mesh-point" "$BASE_DIR/mesh-point2"
+sed -i "s/MESH_NAME/$MESH_NAME/g" "$BASE_DIR/mesh-point2"
+sudo mv "$BASE_DIR/mesh-point2" /usr/bin/mesh-point
 
-# Configure systemd to start mesh.service on system boot
-sudo cp "$BASE_DIR/mesh.service" /etc/systemd/system/mesh.service
-sudo chmod 644 /etc/systemd/system/mesh.service
+# Configure systemd to start mesh-point.service on system boot
+sudo cp "$BASE_DIR/mesh-point.service" /etc/systemd/system/mesh-point.service
+sudo chmod 644 /etc/systemd/system/mesh-point.service
 sudo systemctl daemon-reload
-sudo systemctl enable mesh.service
+sudo systemctl enable mesh-point.service

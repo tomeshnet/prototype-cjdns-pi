@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -e
+
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Install Basic Firewall Rules
+
+# Suppress user prompt
+echo iptables-persistent iptables-persistent/autosave_v4 boolean false | sudo debconf-set-selections
+echo iptables-persistent iptables-persistent/autosave_v6 boolean false | sudo debconf-set-selections
+
+sudo apt-get install -y iptables iptables-persistent
+
+# Bringing up the firewall on RaspberryPi before network breaks things
+# so patch the service to start the firewall after the cjdns service starts
+sudo sed -i -e "s/Before=network-pre.target/After=cjdns.service/" /lib/systemd/system/netfilter-persistent.service
+
+sudo cp "$BASE_DIR/rules.v4" /etc/iptables/rules.v4
+sudo cp "$BASE_DIR/rules.v6" /etc/iptables/rules.v6
