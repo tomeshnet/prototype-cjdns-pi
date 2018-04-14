@@ -7,8 +7,8 @@ if [[ -e '/dev/watchdog' ]]; then
     sudo sed -i "/RuntimeWatchdogSec/d" /etc/systemd/system.conf
     sudo sed -i "/ShutdownWatchdogSec/d" /etc/systemd/system.conf
 
-    echo #RuntimeWatchdogSec=16 | sudo tee --append  /etc/systemd/system.conf > /dev/null
-    echo #ShutdownWatchdogSec=10min | sudo tee --append  /etc/systemd/system.conf > /dev/null
+    echo "#RuntimeWatchdogSec=16" | sudo tee --append  /etc/systemd/system.conf > /dev/null
+    echo "#ShutdownWatchdogSec=10min" | sudo tee --append  /etc/systemd/system.conf > /dev/null
 
 fi
 
