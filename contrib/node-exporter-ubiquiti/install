@@ -1,7 +1,8 @@
 #!/bin/sh
 
 sudo cp "nodestats-tomesh.py" "/opt/tomesh/nodestats-tomesh.py"
-sudo cp "node-exporter-ubiquiti.service" /lib/systemd/system/node-exporter-ubiquiti.service
+sudo cp "node-exporter-ubiquiti.service" /etc/systemd/system/node-exporter-ubiquiti.service
+sudo systemctl daemon-reload
 sudo systemctl enable node-exporter-ubiquiti.service
 sudo systemctl start node-exporter-ubiquiti.service
 
