@@ -5,4 +5,4 @@ sudo cp "node-exporter-ubiquiti.service" /lib/systemd/system/node-exporter-ubiqu
 sudo systemctl enable node-exporter-ubiquiti.service
 sudo systemctl start node-exporter-ubiquiti.service
 
-echo Remember to edit /opt/tomesh/nodestats-tomesh.py if your equipment ip address is different then 192.168.1.20
+echo Remember to edit /opt/tomesh/nodestats-tomesh.py if your equipment IP address is different from 192.168.1.20

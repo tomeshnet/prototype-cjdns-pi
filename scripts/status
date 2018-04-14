@@ -15,23 +15,32 @@ if [ $(systemctl status cjdns.service | grep 'Active: ' | awk '{ print $2 }') = 
 else
     echo -e "cjdns Service .............. $INACTIVE"
 fi
-if [ "$(which mesh)" ]; then
+if [ "$(which mesh-point)" ]; then
     ints=$(iw dev | grep Interface | awk '{print $2}')
     while read -r line; do
         mp=$(iw dev $line info | grep "type mesh point")
         if [ "$mp" ]; then
             mpint=$line
-        else
-            mp=$(iw dev $line info | grep "type IBSS")
-            if [ "$mp" ]; then
-                mpint=$line
-            fi
         fi
     done <<< "$ints"
     if [ -n "$mpint" ] && [ "$(ifconfig | grep $mpint)" ]; then
-        echo -e "Mesh Interface ............... $ACTIVE"
+        echo -e "Mesh Point Interface ......... $ACTIVE"
     else
-        echo -e "Mesh Interface ............. $INACTIVE"
+        echo -e "Mesh Point Interface ....... $INACTIVE"
+    fi
+fi
+if [ "$(which mesh-adhoc)" ]; then
+    ints=$(iw dev | grep Interface | awk '{print $2}')
+    while read -r line; do
+        mp=$(iw dev $line info | grep "type IBSS")
+        if [ "$mp" ]; then
+            mpint=$line
+        fi
+    done <<< "$ints"
+    if [ -n "$mpint" ] && [ "$(ifconfig | grep $mpint)" ]; then
+        echo -e "Ad-hoc Interface ............. $ACTIVE"
+    else
+        echo -e "Ad-hoc Interface ........... $INACTIVE"
     fi
 fi
 if [ "$(which hostapd)" ]; then

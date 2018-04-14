@@ -13,7 +13,7 @@ CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 ./do"
 ##TODO## Possibly use /sys/firmware/devicetree/base/model
 BOARD_HARDWARE=$(cat /proc/cpuinfo | grep Hardware | awk '{print $3}' | head -n 1)
 
-# Flag to identify if board can support on-board AP. Default no false.
+# Flag to identify if board can support on-board AP. Default to false.
 SUPPORT_HOSTAP=false
 SUPPORT_WATCHDOG=false
 CJDNS_PACKAGE=""
@@ -103,7 +103,7 @@ if [[ -e '/etc/NetworkManager/NetworkManager.conf' ]]; then
 
 # Set configurations specific to the board
 if [[ $BOARD_FAMILY == "Orange Pi" ]]; then
-    ##TODO## This can be removed soon as its no longer relivent with the latest images.
+    ##TODO## This can be removed soon as its no longer relevant with the latest images.
     # Downgrade kernel to enable XRadio in version 4.10 on Orange Pi Zero
     if ! [ -z "`uname -a | grep 4.11`" ]; then 
         if ! [ -z "`cat /sys/bus/mmc/devices/mmc1:0001/mmc1:0001:1/uevent | grep SDIO_ID | grep 0020:2281`" ]; then
@@ -135,19 +135,19 @@ if [ -z "$WITH_MESH_POINT" -o "$WITH_MESH_POINT" != "true" -a "$WITH_MESH_POINT"
     else
         echo -e "\e[1;32mMesh Point interface will be configured\e[0m"
         WITH_MESH_POINT=true
-        read -p "Use 802.11s (Y) or AdHoc (IBBS) (n) for Mesh Point? (Y/n)? " -n 1 -r
-        echo ""
-        if [[ $REPLY =~ ^[Nn]$ ]]; then
-            echo -e "\e[1;31mMesh Point will use AdHoc standard\e[0m"
-            WITH_80211s=false
-        else
-            echo -e "\e[1;32mMesh Point will use 802.11s standard\e[0m"
-            WITH_80211s=true
-        fi
-        export WITH_80211s
     fi
 fi
-
+if [ -z "$WITH_AD_HOC" -o "$WITH_AD_HOC" != "true" -a "$WITH_AD_HOC" != "false" ]; then
+    read -p "Configure Ad-hoc interface (Y/n)? " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo -e "\e[1;31mAd-hoc interface configuration will be skipped\e[0m"
+        WITH_AD_HOC=false
+    else
+        echo -e "\e[1;32mAd-hoc interface will be configured\e[0m"
+        WITH_AD_HOC=true
+    fi
+fi
 if [[ "$SUPPORT_HOSTAP" == "true" ]] && [ -z "$WITH_WIFI_AP" -o "$WITH_WIFI_AP" != "true" -a "$WITH_WIFI_AP" != "false" ]; then
     read -p "Configure WiFi Access Point (Y/n)? " -n 1 -r
     echo ""
@@ -159,19 +159,6 @@ if [[ "$SUPPORT_HOSTAP" == "true" ]] && [ -z "$WITH_WIFI_AP" -o "$WITH_WIFI_AP" 
         WITH_WIFI_AP=true
     fi
 fi
-
-if [[ "$SUPPORT_WATCHDOG" == "true" ]] && [ -z "$WITH_WATCHDOG" -o "$WITH_WATCHDOG" != "true" -a "$WITH_WATCHDOG" != "false" ]; then
-    read -p "Configure Hardware Watchdog (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mHardware Watchdog configuration will be skipped\e[0m"
-        WITH_WATCHDOG=false
-    else
-        echo -e "\e[1;32mHardware Watchdog will be configured\e[0m"
-        WITH_WATCHDOG=true
-    fi
-fi
-
 if [ -z "$WITH_FIREWALL" -o "$WITH_FIREWALL" != "true" -a "$WITH_FIREWALL" != "false" ]; then
     read -p "Configure Basic Firewall (Y/n)? " -n 1 -r
     echo ""
@@ -281,6 +268,17 @@ if [ -z "$WITH_EXTRA_TOOLS" -o "$WITH_EXTRA_TOOLS" != "true" -a "$WITH_EXTRA_TOO
         WITH_EXTRA_TOOLS=true
     fi
 fi
+if [[ "$SUPPORT_WATCHDOG" == "true" ]] && [ -z "$WITH_WATCHDOG" -o "$WITH_WATCHDOG" != "true" -a "$WITH_WATCHDOG" != "false" ]; then
+    read -p "Configure Hardware Watchdog (Y/n)? " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo -e "\e[1;31mHardware Watchdog configuration will be skipped\e[0m"
+        WITH_WATCHDOG=false
+    else
+        echo -e "\e[1;32mHardware Watchdog will be configured\e[0m"
+        WITH_WATCHDOG=true
+    fi
+fi
 
 # Prompt for name of the mesh network
 ##TODO## This should be moved up to to mesh point question
@@ -307,10 +305,10 @@ fi
 # Install possibly missing tools
 sudo apt-get install haveged -y
 
-# Check if CJDNS is to be compiled or downloaded
+# Check if cjdns is to be compiled or downloaded
 if [[ ! -e "/usr/bin/cjdroute" ]]; then
     if [ ! -z "$CJDNS_PACKAGE" ]; then
-        read -p "Compile CJDNS from source (Y) or use $CJDNS_PACKAGE debain package (n)? (Y/n)? " -n 1 -r
+        read -p "Compile cjdns from source (Y) or use $CJDNS_PACKAGE Debian package (n)?" -n 1 -r
         echo ""
         if [[ ! $REPLY =~ ^[Nn]$ ]]; then
             CJDNS_PACKAGE="";
@@ -318,9 +316,8 @@ if [[ ! -e "/usr/bin/cjdroute" ]]; then
     fi
 fi
 
-
 if [ ! -z "$CJDNS_PACKAGE" ]; then
-    echo -e "\e[1;31mUsing debain pacakge\e[0m"
+    echo -e "\e[1;31mInstalling cjdns Debian package\e[0m"
     wget https://github.com/darkdrgn2k/ToMeshStuff/raw/master/deb/$CJDNS_PACKAGE -O /tmp/cjdns.deb
     sudo dpkg -i /tmp/cjdns.deb
     #Link up folder so files are in the same place as compiled
@@ -329,7 +326,7 @@ if [ ! -z "$CJDNS_PACKAGE" ]; then
     sudo ln -s /usr/bin/cjdroute /opt/cjdns/cjdroute
 else
     # Download cjdns repo and checkout TAG_CJDNS tag
-    echo -e "\e[1;31mCompiling CJDNS\e[0m"
+    echo -e "\e[1;31mCompiling cjdns from source\e[0m"
     if ! [ -d "/opt/cjdns" ]; then
         here=`pwd`
         sudo git clone https://github.com/cjdelisle/cjdns.git /opt/cjdns
@@ -374,14 +371,14 @@ if [ ! -z "$WITH_MESH_POINT" -a "$WITH_MESH_POINT" == "true" ]; then
     source mesh-point/install
 fi
 
+# IBSS Ad-hoc interface
+if [ ! -z "$WITH_AD_HOC" -a "$WITH_AD_HOC" == "true" ]; then
+    source mesh-adhoc/install
+fi
+
 # WiFi Access Point on supported boards
 if [[ "$SUPPORT_HOSTAP" == "true" ]] && [ ! -z "$WITH_WIFI_AP" -a "$WITH_WIFI_AP" == "true" ]; then
     source hostapd/install
-fi
-
-# Watchdog on supported boards
-if [[ "$SUPPORT_WATCHDOG" == "true" ]] && [ ! -z "$WITH_WATCHDOG" -a "$WITH_WATCHDOG" == "true" ]; then
-    source watchdog/install
 fi
 
 # Configure Internet firewall
@@ -427,6 +424,11 @@ fi
 # Non-essential extra tools
 if [ ! -z "$WITH_EXTRA_TOOLS" -a "$WITH_EXTRA_TOOLS" == "true" ]; then
     source extra-tools/install
+fi
+
+# Watchdog on supported boards
+if [[ "$SUPPORT_WATCHDOG" == "true" ]] && [ ! -z "$WITH_WATCHDOG" -a "$WITH_WATCHDOG" == "true" ]; then
+    source watchdog/install
 fi
 
 # Install node status script
