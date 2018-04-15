@@ -23,7 +23,7 @@ sudo cp -r "$BASE_DIR/tmp" /opt/prometheus
 rm -rf "$BASE_DIR/tmp"
 
 # Configure systemd to start prometheus-server.service on system boot
-sudo cp "$BASE_DIR/prometheus-server.service" /lib/systemd/system/prometheus-server.service
+sudo cp "$BASE_DIR/prometheus-server.service" /etc/systemd/system/prometheus-server.service
 sudo systemctl daemon-reload
 sudo systemctl enable prometheus-server.service
 sudo systemctl start prometheus-server.service

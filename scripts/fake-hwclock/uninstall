@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-set -e
-
-sudo sed -i '/fake-hwclock/d' /etc/crontab

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -e
+
+sudo rm -f /etc/iptables/rules.v4
+sudo rm -f /etc/iptables/rules.v6

@@ -8,8 +8,8 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 sudo systemctl disable cjdns.service 2>/dev/null || true
 sudo systemctl stop cjdns.service 2>/dev/null || true
 sudo rm -f /usr/bin/cjdroute
-sudo rm -f /lib/systemd/system/cjdns.service
-sudo rm -f /lib/systemd/system/cjdns-resume.service
+sudo rm -f /etc/systemd/system/cjdns.service
+sudo rm -f /etc/systemd/system/cjdns-resume.service
 sudo rm -rf /opt/cjdns
 
 if [ -f "/etc/cjdroute.conf" ]; then
@@ -26,14 +26,19 @@ fi
 
 # Uninstall optional modules
 source "$BASE_DIR/mesh-point/uninstall"
+source "$BASE_DIR/mesh-adhoc/uninstall"
 source "$BASE_DIR/hostapd/uninstall"
+source "$BASE_DIR/firewall/uninstall"
 source "$BASE_DIR/ipfs/uninstall"
 source "$BASE_DIR/prometheus-node-exporter/uninstall"
 source "$BASE_DIR/prometheus-server/uninstall"
 source "$BASE_DIR/grafana/uninstall"
 source "$BASE_DIR/extra-tools/uninstall"
+source "$BASE_DIR/watchdog/uninstall"
 
 sudo systemctl daemon-reload
+
+sudo sed -i 's/service dnsmasq restart//' /etc/rc.local 
 
 # Uninstall status script
 sudo rm -f /usr/local/bin/status

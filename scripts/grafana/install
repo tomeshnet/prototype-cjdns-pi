@@ -26,5 +26,12 @@ sudo systemctl start grafana-server.service
 sleep 30
 
 # Add data source and dashboard
-curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary @$BASE_DIR/datasource.json http://localhost:3000/api/datasources
-curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary @$BASE_DIR/dashboard.json http://localhost:3000/api/dashboards/db
+
+# Check if port grafana is being listend in on if so configure if not notify and continue
+if [ ! -z "$(netstat --tcp -n | grep :3000)" ]; then
+    curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary @$BASE_DIR/datasource.json http://localhost:3000/api/datasources
+    curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary @$BASE_DIR/dashboard.json http://localhost:3000/api/dashboards/db
+else
+    echo -e "\e[1;31mGrafana is taking longer than normal to start\e[0m"
+    echo -e "\e[1;31mSkipping configuration and continuing install\e[0m"
+fi

@@ -7,7 +7,7 @@ sudo systemctl disable ipfs.service 2>/dev/null || true
 sudo systemctl stop ipfs.service 2>/dev/null || true
 sudo systemctl daemon-reload
 sudo rm -f /usr/local/bin/ipfs
-sudo rm -f /lib/systemd/system/ipfs.service
+sudo rm -f /etc/systemd/system/ipfs.service
 
 if [ -d "~/.ipfs" ]; then
     echo "Found ~/.ipfs"
