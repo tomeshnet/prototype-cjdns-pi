@@ -1,0 +1,9 @@
+#!/bin/sh
+
+sudo cp "nodestats-tomesh.py" "/opt/tomesh/nodestats-tomesh.py"
+sudo cp "node-exporter-ubiquiti.service" /etc/systemd/system/node-exporter-ubiquiti.service
+sudo systemctl daemon-reload
+sudo systemctl enable node-exporter-ubiquiti.service
+sudo systemctl start node-exporter-ubiquiti.service
+
+echo Remember to edit /opt/tomesh/nodestats-tomesh.py if your equipment IP address is different from 192.168.1.20

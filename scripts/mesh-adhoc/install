@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -e
+
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Install bring-up script for the Mesh Ad-hoc interface to /usr/bin
+cp "$BASE_DIR/mesh-adhoc" "$BASE_DIR/mesh-adhoc2"
+sed -i "s/MESH_NAME/$MESH_NAME/g" "$BASE_DIR/mesh-adhoc2"
+sudo mv "$BASE_DIR/mesh-adhoc2" /usr/bin/mesh-adhoc
+
+# Configure systemd to start mesh-adhoc.service on system boot
+sudo cp "$BASE_DIR/mesh-adhoc.service" /etc/systemd/system/mesh-adhoc.service
+sudo chmod 644 /etc/systemd/system/mesh-adhoc.service
+sudo systemctl daemon-reload
+sudo systemctl enable mesh-adhoc.service

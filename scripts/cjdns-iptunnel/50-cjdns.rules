@@ -1,0 +1,5 @@
+#SUBSYSTEM!="net", GOTO="cjdns_end"
+KERNEL!="tun0", GOTO="cjdns_end"
+ACTION!="add", GOTO="cjdns_end"
+PROGRAM="/usr/local/sbin/cjdns-setup %k"
+LABEL="cjdns_end"

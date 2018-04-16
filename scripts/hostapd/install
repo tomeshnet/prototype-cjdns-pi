@@ -9,14 +9,14 @@ H_DNS_SERVER_1="fc6e:691e:dfaa:b992:a10a:7b49:5a1a:5e09"
 H_DNS_SERVER_2="fc16:b44c:2bf9:467:8098:51c6:5849:7b4f"
 
 # Create radvd.conf before installing radvd, installation fails without it
-if ! [ -f /etc/radvd.conf ]; then 
+if ! [ -f /etc/radvd.conf ]; then
     sudo cp "$BASE_DIR/radvd.conf" /etc/radvd.conf
 fi
 
 # Install packages to run IEEE 802.11 Access Point
 sudo apt-get install hostapd radvd dnsmasq iptables -y
 
-# Configure wlan0 interface
+# Configure wlan-ap interface
 sudo mv /etc/network/interfaces /etc/network/interfaces.bak
 sudo touch /etc/network/interfaces
 
@@ -25,13 +25,13 @@ echo "" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "auto lo"  | sudo tee --append /etc/network/interfaces > /dev/null
 echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "allow-hotplug wlan0" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "iface wlan0 inet static" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "allow-hotplug wlan-ap" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "iface wlan-ap inet static" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    address 10.0.0.1" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    netmask 255.255.255.0" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    network 10.0.0.0" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    broadcast 10.0.0.255" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "iface wlan0 inet6 static" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "iface wlan-ap inet6 static" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    address fdfc::2" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    netmask 64" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "" | sudo tee --append /etc/network/interfaces > /dev/null
@@ -99,7 +99,7 @@ fi
 if [ -f /etc/dhcpcd.conf ]; then
     sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.bak
     sudo echo "" | sudo tee --append /etc/dhcpcd.conf > /dev/null
-    sudo echo "denyinterfaces wlan0" | sudo tee --append /etc/dhcpcd.conf > /dev/null
+    sudo echo "denyinterfaces wlan-ap" | sudo tee --append /etc/dhcpcd.conf > /dev/null
 fi
 
 # Configure IPv6 router advertisement with radvd
@@ -117,7 +117,16 @@ fi
 sudo cp "$BASE_DIR/hostapd.service" /etc/systemd/system/hostapd.service
 sudo systemctl daemon-reload
 sudo systemctl enable hostapd.service
-sudo systemctl start hostapd.service
+
+# Find onboard adapter by driver and lock to wlan-ap
+for wlan in $(ls -1Atu /sys/class/net | grep wlan); do
+    driver="$(basename $(readlink /sys/class/net/$wlan/device/driver))"
+    mac="$(cat /sys/class/net/$wlan/address)"
+    if [[ "$driver" == "xradio_wlan" || "$driver" == "brcm80211" | "$driver" == "brcmfmac" ]]; then
+        echo SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"?*\", ATTR{address}==\"$mac\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan-ap\" |
+                sudo tee /etc/udev/rules.d/70-persistent-net.rules
+    fi
+done
 
 # dnsmasq for some reason won't bind to the hostapd on Orange Pi, restarting it works
 if [[ -z "$(cat /etc/rc.local | grep dnsmasq)" ]]; then
