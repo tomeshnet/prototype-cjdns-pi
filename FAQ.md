@@ -43,14 +43,14 @@ overlays=usbhost2 usbhost3
 
 **Q:** How do I upgrade the U-boot on EspressoBin?
 
-**A:** Manual flashing to latest u-boot is mandatory! [Download](https://dl.armbian.com/espressobin/u-boot/) the right boot flash for your board: 512,1G,2G, number of RAM chips (one at the bottom or 2 one on each side of the board) and appropirate memory speeds. You can obtain numbers from current boot prompt.  Copy this flash-image-MEM-RAM_CHIPS-CPU_DDR_boot_sd_and_usb.bin to your FAT formatted USB key, plug it into USB3.0 port and execute from u-boot prompt: 
+**A:** Manual flashing to latest U-boot is mandatory! [Download](https://dl.armbian.com/espressobin/u-boot/) the right boot flash for your board: 512,1G,2G, number of RAM chips (one at the bottom or 2 one on each side of the board) and appropirate memory speeds. You can obtain numbers from current boot prompt.  Copy this flash-image-MEM-RAM_CHIPS-CPU_DDR_boot_sd_and_usb.bin to your FAT formatted USB key, plug it into USB3.0 port and execute from U-boot prompt: 
 ```
 bubt flash-image-MEM-CPU_DDR_boot_sd_and_usb.bin spi usb
 ```
 
 **Q:** How do I boot Armbian on an EspressoBin from an sd card?
 
-**A:** First update the u-boot (above). Then run the following in u-boot.
+**A:** First update the U-boot (above). Then run the following in U-boot.
 ```
 setenv initrd_addr 0x1100000
 setenv image_name boot/Image
