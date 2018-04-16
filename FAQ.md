@@ -11,7 +11,14 @@ GND → RPi Pin 06
 RXD → RPi Pin 08
 TXD → RPi Pin 10
 ```
+
+You will also need to configure Rasbian to output information on these pins.  To do so add this to your **config.txt** file located on your **boot** partition.
+```
+echo enable_uart=1  dtoverlay=pi3-disable-bt
+```
+
 **Note:** U-boot will not appear on serial, only once kernel starts to boot do you see output
+
 
 ## Orange Pi
 
@@ -36,7 +43,7 @@ overlays=usbhost2 usbhost3
 
 **Q:** How do I upgrade the U-boot on EspressoBin?
 
-**A:** Manual flashing to latest u-boot is mandatory! [Download](https://dl.armbian.com/espressobin/u-boot/) the right boot flash for your board: 512,1G,2G and appropriate memory speeds. You can obtain numbers from current boot prompt. Copy this flash-image-MEM-CPU_DDR_boot_sd_and_usb.bin to your FAT formatted USB key, plug it into USB3.0 port and execute from u-boot prompt: 
+**A:** Manual flashing to latest u-boot is mandatory! [Download](https://dl.armbian.com/espressobin/u-boot/) the right boot flash for your board: 512,1G,2G, number of RAM chips (one at the bottom or 2 one on each side of the board) and appropirate memory speeds. You can obtain numbers from current boot prompt.  Copy this flash-image-MEM-RAM_CHIPS-CPU_DDR_boot_sd_and_usb.bin to your FAT formatted USB key, plug it into USB3.0 port and execute from u-boot prompt: 
 ```
 bubt flash-image-MEM-CPU_DDR_boot_sd_and_usb.bin spi usb
 ```
@@ -45,17 +52,9 @@ bubt flash-image-MEM-CPU_DDR_boot_sd_and_usb.bin spi usb
 
 **A:** First update the u-boot (above). Then run the following in u-boot.
 ```
-setenv verbosity 2
-setenv boot_interface mmc
+setenv initrd_addr 0x1100000
 setenv image_name boot/Image
-setenv fdt_name boot/dtb/marvell/armada-3720-community.dtb
-setenv fdt_high "0xffffffffffffffff"
-setenv rootdev "/dev/mmcblk0p1"
-setenv rootfstype "ext4"
-setenv verbosity "1"
-setenv initrd_addr "0x1100000"
-setenv initrd_image "boot/uInitrd"
-setenv bootcmd 'mmc dev 0; ext4load mmc 0:1 $kernel_addr $image_name;ext4load mmc 0:1 $initrd_addr $initrd_image; ext4load mmc 0:1 $fdt_addr $fdt_name; setenv bootargs $console root=$rootdev rw rootwait; booti $kernel_addr $initrd_addr $fdt_addr'
-
-save env
+setenv load_script 'if test -e mmc 0:1 boot/boot.scr; then echo \"... booting from SD\";setenv boot_interface mmc;else echo \"... booting from USB/SATA\";usb start;setenv boot_interface usb;fi;if test -e \$boot_interface 0:1 boot/boot.scr;then ext4load \$boot_interface 0:1 0x00800000 boot/boot.scr; source; fi'
+setenv bootcmd 'run get_images; run set_bootargs; run load_script;booti \$kernel_addr \$ramfs_addr \$fdt_addr'
+saveenv
 ```
