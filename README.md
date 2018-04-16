@@ -16,6 +16,8 @@ Many models of Orange Pi hardware running [Armbian](https://www.armbian.com/) ar
       * For [802.11s Mesh Point](https://github.com/o11s/open80211s/wiki/HOWTO) wireless links (recommended), device such as the [TP-LINK TL-WN722N v1](http://www.tp-link.com/en/products/details/TL-WN722N.html), [Toplinkst TOP-GS07](https://github.com/tomeshnet/documents/blob/master/technical/20170208_mesh-point-with-topgs07-rt5572.md) or [another supported device](https://github.com/phillymesh/802.11s-adapters/blob/master/README.md).
       * For [ad-hoc](https://en.wikipedia.org/wiki/Wireless_ad_hoc_network) wireless links (experimental), any device that supports linux and ad-hoc.
 
+    **Note:** If you are running an Armbian board, follow steps in the [Armbian Readme](README-armbian.md) to install the base OS then continue with Step 7.
+
 1. Flash the SD card with [Raspbian Stretch Lite](https://www.raspberrypi.org/downloads/raspbian/).
 
 1. Create an empty file named **ssh** to enable SSH when the Pi boots:
@@ -30,7 +32,7 @@ Many models of Orange Pi hardware running [Armbian](https://www.armbian.com/) ar
 
     **Optional:** There are other ways to connect, such as connecting the Pi to your computer and sharing Internet to it. If you have multiple Pi's connected to your router, find their IPs with `nmap -sn 192.168.X.0/24` (where 192.168.X is your subnet) and SSH to the local IP assigned to the Pi you want to address `ssh pi@192.168.X.Y`.  
 
-    **Note:** After the install the node will be renamed to `tomesh-xxxx` where `xxxx` is the last 4 characters of your CJDNS address.  Before the reboot the node will notify you of what the name is.
+    **Note:** After the install the node will be renamed to `tomesh-xxxx` where `xxxx` is the last 4 characters of your cjdns address.  Before the reboot the node will notify you of what the name is.
 
 1. In your SSH session, run `passwd` and change your login password. It is very important to choose a strong password so others cannot remotely access your Pi.
 
@@ -97,7 +99,7 @@ We have added support for other single board computers such as the [Orange Pi](h
 
 List of tested hardware:
 
-| Hardware                  | Base OS         | [CJDNS Benchmark](https://github.com/phillymesh/cjdns-optimizations) <sub>(salsa20/poly1305, switching)</sub> | iPerf3 | USB | Ethernet | Notes    |
+| Hardware                  | Base OS         | [cjdns Benchmark](https://github.com/phillymesh/cjdns-optimizations) <sub>(salsa20/poly1305, switching)</sub> | iPerf3 | USB | Ethernet | Notes    |
 | :-------------------------|:----------------|:--------------------------------------------------------------------------------------------------------------|:-------|:----|:---------|:---------|
 | Raspberry Pi 3b+          | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         | 405k, 119k | ~90 Mbps | 2       | 10/100/1000 | Eth only 320mbps. Cjdns speed unstable. Dual band |
 | Raspberry Pi 3b           | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         | 350k, 100k | 89 Mbps | 2       | 10/100 |                                                 |
