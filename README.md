@@ -111,7 +111,7 @@ List of tested hardware:
 | Orange Pi Zero Plus 2 H5  | [Armbian Nightly](https://dl.armbian.com/orangepizeroplus2-h5/nightly/)  | 190k, 130K | 80 Mbps | 0 (+2*) | None   | *USB Headers                                    |
 | NanoPi Neo 2              | [Armbian Nightly](https://dl.armbian.com/nanopineo2/nightly/)            | 160k, 95K  | 67 Mbps | 1 (+2*) | 10/100/1000   | *USB Headers, Gigabit Eth                |
 | Rock64                    | [Armbian Nightly](https://dl.armbian.com/rock64/nightly/)                | 255k, 168K | 94 Mbps | 3       | 10/100/1000   | 1 USB 3.0, Gigabit Eth                   |
-| EspressoBin               | [Armbian Nightly](https://dl.armbian.com/espressobin/nightly/)           | 186k, 128K | 73 Mbps | 2       | 10/100/1000   | 1 USB 3.0, 2x Gigabit Eth, Sata, mPCIE   |
+| EspressoBin               | [Armbian](https://dl.armbian.com/espressobin/)           | 186k, 128K | 73 Mbps | 2       | 10/100/1000   | 1 USB 3.0, 3x Gigabit Eth, Sata, mPCIE. Use stable and apt-get upgrade after boot  |
 
 ## Development
 
