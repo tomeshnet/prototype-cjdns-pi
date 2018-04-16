@@ -4,7 +4,7 @@
 
 The following instructions will help you set up an encrypted mesh network on Raspberry Pi's. It takes about 15 minutes to set up a node with the Pi 3. Obviously, to have a mesh you will need more than one node. 
 
-Many models of Orange Pi hardware running [Armbian](https://www.armbian.com/) are also supported. The same installation steps can be followed, except you would flash the SD card with Armbian instead of Raspbian. See [Hardware Table](#hardware-table) for the full list of supported hardware.
+Many board that run [Armbian](https://www.armbian.com/) such as many models of Orange Pi hardware are also supported. The same installation steps can be followed, except you would flash the SD card with Armbian instead of Raspbian. See [Hardware Table](#hardware-table) for the full list of supported hardware and check for board specific installation details in our [Frequently Asked Questions](./FAQ.md).
 
 ## Set Up
 
