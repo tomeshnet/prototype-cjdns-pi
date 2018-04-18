@@ -37,7 +37,7 @@ echo enable_uart=1 dtoverlay=pi3-disable-bt
 
 1. Plug the board into your router, so it has connectivity to the Internet.
 
-1. SSH into the board with the username **root** and password **1234**. Default hostnames are similar to your boards name. For example **orangepizero** for an Orange Pi Zero **expressobin** for an Expresso Bin etc.
+1. SSH into the board with the username **root** and password **1234**. Default hostnames are similar to your boards name. For example **orangepizero** for an Orange Pi Zero **espressobin** for an ESPRESSObin etc.
 
 1. When prompted, enter the password **1234** again.
 
