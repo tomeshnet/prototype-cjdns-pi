@@ -455,5 +455,7 @@ sudo sed -i -e "s/$oldhostname/$newhostname/" /etc/hosts
 
 echo -e "Your node's new hostname is $newhostname"
 
+read -p "Installation complete. Press any key to reboot your node new node. " -n 1 -r
+
 # Reboot device
 sudo reboot
