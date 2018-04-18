@@ -20,7 +20,7 @@ echo enable_uart=1 dtoverlay=pi3-disable-bt
 **Note:** U-boot will not appear on serial, only once kernel starts to boot do you see output
 
 
-## Armbian
+## Armbian Boards
 
 **Q:** What are the instructions to install an Armbian?
 
@@ -64,13 +64,13 @@ overlays=usbhost2 usbhost3
 
 **A**: The daily apt upgrade sometimes starts up in the background locking the apt database. This will cause the script to fail as it tries to install the required software. Wait for the upgrade to finish.
 
-## Rock64
+### Rock64
 
 **Q:** What is the baud rate for the Rock64?
 
 **A:** U-boot baud rate seems to be 1500000. Once ubuntu starts it is 115200
 
-## EspressoBin
+### EspressoBin
 
 **Q:** How do I upgrade the U-boot on EspressoBin?
 
