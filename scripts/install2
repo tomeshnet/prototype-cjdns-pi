@@ -138,14 +138,14 @@ if [ -z "$WITH_MESH_POINT" -o "$WITH_MESH_POINT" != "true" -a "$WITH_MESH_POINT"
     fi
 fi
 if [ -z "$WITH_AD_HOC" -o "$WITH_AD_HOC" != "true" -a "$WITH_AD_HOC" != "false" ]; then
-    read -p "Configure Ad-hoc interface (Y/n)? " -n 1 -r
+    read -p "Configure Ad-hoc interface (n/Y)? " -n 1 -r
     echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mAd-hoc interface configuration will be skipped\e[0m"
-        WITH_AD_HOC=false
-    else
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
         echo -e "\e[1;32mAd-hoc interface will be configured\e[0m"
         WITH_AD_HOC=true
+    else
+        echo -e "\e[1;31mAd-hoc interface configuration will be skipped\e[0m"
+        WITH_AD_HOC=false
     fi
 fi
 if [[ "$SUPPORT_HOSTAP" == "true" ]] && [ -z "$WITH_WIFI_AP" -o "$WITH_WIFI_AP" != "true" -a "$WITH_WIFI_AP" != "false" ]; then
@@ -321,7 +321,9 @@ if [ ! -z "$CJDNS_PACKAGE" ]; then
     wget https://github.com/darkdrgn2k/ToMeshStuff/raw/master/deb/$CJDNS_PACKAGE -O /tmp/cjdns.deb
     sudo dpkg -i /tmp/cjdns.deb
     #Link up folder so files are in the same place as compiled
-    sudo mkdir /opt/cjdns
+    if [[ ! -d "/opt/cjdns" ]]; then 
+        sudo mkdir /opt/cjdns 
+    fi
     sudo ln -s /usr/share/cjdns /opt/cjdns/tools
     sudo ln -s /usr/bin/cjdroute /opt/cjdns/cjdroute
 else
