@@ -37,7 +37,7 @@ enable_uart=1 dtoverlay=pi3-disable-bt
 
 1. Plug the board into your router, so it has connectivity to the Internet.
 
-1. SSH into the board with the username **root** and password **1234**. Default hostnames are similar to your boards name. For example **orangepizero** for an Orange Pi Zero **espressobin** for an ESPRESSObin etc.
+1. SSH into the board with the username **root** and password **1234**. Default hostnames are similar to your boards name. For example **orangepizero** for an Orange Pi Zero **espressobin** for an Espressobin etc.
 
 1. When prompted, enter the password **1234** again.
 
@@ -72,16 +72,16 @@ overlays=usbhost2 usbhost3
 
 **A:** U-boot baud rate seems to be 1500000. Once ubuntu starts it is 115200
 
-### EspressoBin
+### ESPRESSObin
 
-**Q:** How do I upgrade the U-boot on EspressoBin?
+**Q:** How do I upgrade the U-boot on Espressobin?
 
 **A:** Manual flashing to latest U-boot is mandatory! [Download](https://dl.armbian.com/espressobin/u-boot/) the right boot flash for your board: 512,1G,2G, number of RAM chips (one at the bottom or 2 one on each side of the board) and appropirate memory speeds. You can obtain numbers from current boot prompt.  Copy this flash-image-MEM-RAM_CHIPS-CPU_DDR_boot_sd_and_usb.bin to your FAT formatted USB key, plug it into USB3.0 port and execute from U-boot prompt: 
 ```
 bubt flash-image-MEM-CPU_DDR_boot_sd_and_usb.bin spi usb
 ```
 
-**Q:** How do I boot Armbian on an EspressoBin from an sd card?
+**Q:** How do I boot Armbian on an Espressobin from an sd card?
 
 **A:** First update the U-boot (above). Then run the following in U-boot.
 ```
