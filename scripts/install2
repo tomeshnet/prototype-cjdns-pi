@@ -137,17 +137,23 @@ if [ -z "$WITH_MESH_POINT" -o "$WITH_MESH_POINT" != "true" -a "$WITH_MESH_POINT"
         WITH_MESH_POINT=true
     fi
 fi
-if [ -z "$WITH_AD_HOC" -o "$WITH_AD_HOC" != "true" -a "$WITH_AD_HOC" != "false" ]; then
-    read -p "Configure Ad-hoc interface (n/Y)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        echo -e "\e[1;32mAd-hoc interface will be configured\e[0m"
-        WITH_AD_HOC=true
-    else
-        echo -e "\e[1;31mAd-hoc interface configuration will be skipped\e[0m"
-        WITH_AD_HOC=false
+if [ "$WITH_MESH_POINT" == false ]; then
+    if [ -z "$WITH_AD_HOC" -o "$WITH_AD_HOC" != "true" -a "$WITH_AD_HOC" != "false" ]; then
+        read -p "Configure Ad-hoc interface (Y/n)? " -n 1 -r
+        echo ""
+        if [[ $REPLY =~ ^[Nn]$ ]]; then
+            echo -e "\e[1;31mAd-hoc interface configuration will be skipped\e[0m"
+            WITH_AD_HOC=false
+        else
+            echo -e "\e[1;32mAd-hoc interface will be configured\e[0m"
+            WITH_AD_HOC=true
+        fi
     fi
+else
+    echo -e "\e[1;31mAd-hoc interface configuration will be skipped\e[0m"
+    WITH_AD_HOC=false
 fi
+
 if [[ "$SUPPORT_HOSTAP" == "true" ]] && [ -z "$WITH_WIFI_AP" -o "$WITH_WIFI_AP" != "true" -a "$WITH_WIFI_AP" != "false" ]; then
     read -p "Configure WiFi Access Point (Y/n)? " -n 1 -r
     echo ""
