@@ -137,17 +137,23 @@ if [ -z "$WITH_MESH_POINT" -o "$WITH_MESH_POINT" != "true" -a "$WITH_MESH_POINT"
         WITH_MESH_POINT=true
     fi
 fi
-if [ -z "$WITH_AD_HOC" -o "$WITH_AD_HOC" != "true" -a "$WITH_AD_HOC" != "false" ]; then
-    read -p "Configure Ad-hoc interface (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mAd-hoc interface configuration will be skipped\e[0m"
-        WITH_AD_HOC=false
-    else
-        echo -e "\e[1;32mAd-hoc interface will be configured\e[0m"
-        WITH_AD_HOC=true
+if [ "$WITH_MESH_POINT" == false ]; then
+    if [ -z "$WITH_AD_HOC" -o "$WITH_AD_HOC" != "true" -a "$WITH_AD_HOC" != "false" ]; then
+        read -p "Configure Ad-hoc interface (Y/n)? " -n 1 -r
+        echo ""
+        if [[ $REPLY =~ ^[Nn]$ ]]; then
+            echo -e "\e[1;31mAd-hoc interface configuration will be skipped\e[0m"
+            WITH_AD_HOC=false
+        else
+            echo -e "\e[1;32mAd-hoc interface will be configured\e[0m"
+            WITH_AD_HOC=true
+        fi
     fi
+else
+    echo -e "\e[1;31mAd-hoc interface configuration will be skipped\e[0m"
+    WITH_AD_HOC=false
 fi
+
 if [[ "$SUPPORT_HOSTAP" == "true" ]] && [ -z "$WITH_WIFI_AP" -o "$WITH_WIFI_AP" != "true" -a "$WITH_WIFI_AP" != "false" ]; then
     read -p "Configure WiFi Access Point (Y/n)? " -n 1 -r
     echo ""
@@ -321,6 +327,9 @@ if [ ! -z "$CJDNS_PACKAGE" ]; then
     wget https://github.com/darkdrgn2k/ToMeshStuff/raw/master/deb/$CJDNS_PACKAGE -O /tmp/cjdns.deb
     sudo dpkg -i /tmp/cjdns.deb
     #Link up folder so files are in the same place as compiled
+    if [[ ! "/opt/cjdns" ]]; then 
+        sudo rm -rf /opt/cjdns 
+    fi
     sudo mkdir /opt/cjdns
     sudo ln -s /usr/share/cjdns /opt/cjdns/tools
     sudo ln -s /usr/bin/cjdroute /opt/cjdns/cjdroute
@@ -359,12 +368,6 @@ else
 fi
 
 sudo systemctl enable cjdns.service
-
-# Rename node based on CJDNS address
-oldhostname=$(hostname)
-newhostname=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-/g")
-sudo echo $newhostname | sudo tee /etc/hostname > /dev/null
-sudo sed -i -e "s/$oldhostname/$newhostname/" /etc/hosts
 
 # 802.11s Mesh Point interface
 if [ ! -z "$WITH_MESH_POINT" -a "$WITH_MESH_POINT" == "true" ]; then
@@ -444,7 +447,15 @@ echo "" >> ~/.bash_profile
 echo "# print mesh node status" >> ~/.bash_profile
 echo "status" >> ~/.bash_profile
 
+# Rename node based on cjdns address
+oldhostname=$(hostname)
+newhostname=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-/g")
+sudo echo $newhostname | sudo tee /etc/hostname > /dev/null
+sudo sed -i -e "s/$oldhostname/$newhostname/" /etc/hosts
+
 echo -e "Your node's new hostname is $newhostname"
+
+read -p "Installation complete. Press any key to reboot your new node. " -n 1 -r
 
 # Reboot device
 sudo reboot

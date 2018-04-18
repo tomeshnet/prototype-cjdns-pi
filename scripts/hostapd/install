@@ -95,7 +95,6 @@ if [ ! -z "$WITH_H_DNS" -a "$WITH_H_DNS" == "true" ]; then
    echo "server=$H_DNS_SERVER_1" | sudo tee --append /etc/dnsmasq.conf
    echo "server=$H_DNS_SERVER_2" | sudo tee --append /etc/dnsmasq.conf
 fi
-
 if [ -f /etc/dhcpcd.conf ]; then
     sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.bak
     sudo echo "" | sudo tee --append /etc/dhcpcd.conf > /dev/null
@@ -122,8 +121,8 @@ sudo systemctl enable hostapd.service
 for wlan in $(ls -1Atu /sys/class/net | grep wlan); do
     driver="$(basename $(readlink /sys/class/net/$wlan/device/driver))"
     mac="$(cat /sys/class/net/$wlan/address)"
-    if [[ "$driver" == "xradio_wlan" || "$driver" == "brcm80211" | "$driver" == "brcmfmac" ]]; then
-        echo SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"?*\", ATTR{address}==\"$mac\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan-ap\" |
+    if [[ "$driver" == "xradio_wlan" || "$driver" == "brcm80211" || "$driver" == "brcmfmac" ]]; then
+        echo SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"$driver\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan-ap\" |
                 sudo tee /etc/udev/rules.d/70-persistent-net.rules
     fi
 done
