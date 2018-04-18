@@ -14,7 +14,7 @@ TXD → RPi Pin 10
 
 You will also need to configure Rasbian to output information on these pins.  To do so add this to your **config.txt** file located on your **boot** partition.
 ```
-echo enable_uart=1 dtoverlay=pi3-disable-bt
+enable_uart=1 dtoverlay=pi3-disable-bt
 ```
 
 **Note:** U-boot will not appear on serial, only once kernel starts to boot do you see output
