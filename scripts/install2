@@ -330,8 +330,7 @@ if [ ! -z "$CJDNS_PACKAGE" ]; then
     if [[ ! "/opt/cjdns" ]]; then 
         sudo rm -rf /opt/cjdns 
     fi
-    sudo mkdir /opt/cjdns
-    sudo ln -s /usr/share/cjdns /opt/cjdns/tools
+    sudo ln -s /usr/share/cjdns /opt/cjdns
     sudo ln -s /usr/bin/cjdroute /opt/cjdns/cjdroute
 else
     # Download cjdns repo and checkout TAG_CJDNS tag
