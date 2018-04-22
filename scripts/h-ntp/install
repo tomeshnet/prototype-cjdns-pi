@@ -2,7 +2,8 @@
 
 set -e
 
-H_NTP_SERVER="fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc"
+H_NTP_SERVER1="fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc"
+H_NTP_SERVER2="fc41:47b9:dd78:ff21:1b24:dab8:3f81:168e"
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -13,4 +14,5 @@ fi
 
 # Configure Hyperboria NTP
 sudo sed -i '/pool /d' /etc/ntp.conf
-echo "pool -6 ${H_NTP_SERVER} iburst" | sudo tee --append /etc/ntp.conf > /dev/null
+echo "pool -6 ${H_NTP_SERVER1} iburst" | sudo tee --append /etc/ntp.conf > /dev/null
+echo "pool -6 ${H_NTP_SERVER2} iburst" | sudo tee --append /etc/ntp.conf > /dev/null
