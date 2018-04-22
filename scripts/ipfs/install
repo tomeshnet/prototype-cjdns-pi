@@ -2,7 +2,7 @@
 
 set -e
 
-GO_IPFS_VERSION=v0.4.6
+GO_IPFS_VERSION=v0.4.14
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
