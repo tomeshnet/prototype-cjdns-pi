@@ -68,8 +68,7 @@ while 1:
                                                                 if words3[1].find("tx") > -1 and words3[2].find("bytes") > -1:
                                                                     tx=words3[3]
                                                                 if words3[1].find("TDLS") > -1:
-                                                                    fifo.write('mesh_node_signal{mac="' + station + '"} ' + signal + "\n")
-#                                                                   fifo.write('mesh_node_status{mac="' + station + '"} ' + linkstatus + "\n")
+                                                                    fifo.write('mesh_node_signal{mac="' + station + '",link="' + linkstatus + '"} ' + signal + "\n")
                                                                     fifo.write('mesh_node_rx{mac="' + station + '"} ' + rx + "\n")
                                                                     fifo.write('mesh_node_tx{mac="' + station + '"} ' + tx + "\n")
 
