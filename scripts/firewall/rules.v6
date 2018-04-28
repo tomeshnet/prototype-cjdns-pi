@@ -7,12 +7,12 @@
 -A INPUT -p ipv6-icmp -j ACCEPT
 -A INPUT -i lo -j ACCEPT
 -A INPUT -i tun0 -j cjdns
--A INPUT -p tcp -m multiport --dports 80,443,9100,22
+-A INPUT -p tcp -m multiport --dports 80,443,9100,22,5021
 -A INPUT -j REJECT --reject-with icmp6-port-unreachable
 -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 -A INPUT -p ipv6-icmp -j ACCEPT
 -A INPUT -i lo -j ACCEPT
 -A INPUT -i tun0 -j cjdns
--A cjdns -p tcp -m multiport --dports 80,443,9100,22 -j ACCEPT
+-A cjdns -p tcp -m multiport --dports 80,443,9100,22,5021 -j ACCEPT
 -A cjdns -j REJECT --reject-with icmp6-port-unreachable
 COMMIT
