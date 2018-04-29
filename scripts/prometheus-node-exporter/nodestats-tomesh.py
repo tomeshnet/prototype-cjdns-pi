@@ -57,20 +57,19 @@ while 1:
                                         for link in linksline:
                                             if link <> "" :
                                                 words3 = link.replace("\t"," ").split(" ")
-                                            if words3[0].find("Station") > -1:
-                                                station=words3[1]
-                                            if words3[1].find("signal") > -1:
-                                                signal=words3[3]
-                                            if words3[1].find("mesh") > -1 and words3[2].find("plink") > -1:
-                                                 linkstatus=words3[3]
-                                            if words3[1].find("rx") > -1 and words3[2].find("bytes") > -1:
-                                                  rx=words3[3]
-                                            if words3[1].find("tx") > -1 and words3[2].find("bytes") > -1:
-                                                   tx=words3[3]
-                                            if words3[1].find("TDLS") > -1:
-                                                   fifo.write('mesh_node_signal{mac="' + station + '"} ' + signal + "\n")
-#                                                  fifo.write('mesh_node_status{mac="' + station + '"} ' + linkstatus + "\n")
-                                                   fifo.write('mesh_node_rx{mac="' + station + '"} ' + rx + "\n")
-                                                   fifo.write('mesh_node_tx{mac="' + station + '"} ' + tx + "\n")
+                                                if words3[0].find("Station") > -1:
+                                                    station=words3[1]
+                                                if words3[1].find("signal") > -1:
+                                                    signal=words3[3]
+                                                if words3[1].find("mesh") > -1 and words3[2].find("plink") > -1:
+                                                     linkstatus=words3[3]
+                                                if words3[1].find("rx") > -1 and words3[2].find("bytes") > -1:
+                                                      rx=words3[3]
+                                                if words3[1].find("tx") > -1 and words3[2].find("bytes") > -1:
+                                                       tx=words3[3]
+                                                if words3[1].find("TDLS") > -1:
+                                                       fifo.write('mesh_node_signal{mac="' + station + '",link="' + linkstatus + '"} ' + signal + "\n")
+                                                       fifo.write('mesh_node_rx{mac="' + station + '"} ' + rx + "\n")
+                                                       fifo.write('mesh_node_tx{mac="' + station + '"} ' + tx + "\n")
         fifo.close()
         time.sleep(1)
