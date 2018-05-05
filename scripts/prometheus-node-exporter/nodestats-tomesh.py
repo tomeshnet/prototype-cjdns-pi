@@ -49,7 +49,7 @@ while 1:
                     for type in types:
                         if type.find("type") > -1:
                                 words2= type.split(" ")
-                                if (words2[1]  == "mesh") or (words[1] == "IBSS"):
+                                if (words2[1]  == "mesh") or (words2[1] == "IBSS"):
                                         meshtype=words2[1]
                                         fifo.write("wlan_mesh{type=\"" + meshtype + "\", iface=\"" + currentitn + "\"} 1\n")
 
