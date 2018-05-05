@@ -68,6 +68,10 @@ while 1:
                                                 words3 = link.replace("\t"," ").split(" ")
                                                 if words3[0].find("Station") > -1:
                                                     station=words3[1]
+                                                    linkstatus=""
+                                                    rx=-1
+                                                    tx=-1
+                                                    signal=-100    
                                                 if words3[1].find("signal") > -1:
                                                     signal=words3[3]
                                                 if words3[1].find("mesh") > -1 and words3[2].find("plink") > -1:
