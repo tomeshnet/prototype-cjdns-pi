@@ -58,7 +58,7 @@ else
     BOARD_REVISION=`sed -rn 's/Revision\s+\:\s+([0-9a-z_\-\s\,\(\)]+)/\1/p' /proc/cpuinfo`
     if [[ $BOARD_REVISION == *"900092"* || $BOARD_REVISION == *"900093"* || $BOARD_REVISION == *"9000c1"* ]]; then
         BOARD_NAME="Zero"
-        sudo Seccomp_NO=1 NO_NEON=1 NO_TEST=1 CFLAGS="-s -mfpu=vfp -O2" ./do
+        CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 NO_TEST=1 CFLAGS=\"-s -mfpu=vfp -O2\" ./do"
     elif [[ $BOARD_REVISION == *"00"* ]]; then
         BOARD_NAME="1"
         CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 NO_TEST=1 CFLAGS=\"-s -static -Wall\" ./do"
