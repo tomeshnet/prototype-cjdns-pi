@@ -93,6 +93,13 @@ sudo sed -i 's/ALL=(ALL:ALL) ALL/ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
 # Disable predictable network interface naming
 sudo touch /etc/udev/rules.d/80-net-setup-link.rules
 
+# Check for broken interface file, create if broken
+if [ ! -e "/etc/network/interfaces" ] ; then
+  rm /etc/network/interfaces || true
+  echo "auto lo" | sudo tee /etc/network/interfaces > /dev/null
+  echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces > /dev/null  
+fi
+
 # Disable NetworkManager management of wlan1 so it doesn't pause it to scan every 60 seconds
 if [[ -e '/etc/NetworkManager/NetworkManager.conf' ]]; then
     if [[ -z "$(grep "\[keyfile\]" /etc/NetworkManager/NetworkManager.conf)" ]]; then
