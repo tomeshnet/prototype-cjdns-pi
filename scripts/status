@@ -83,7 +83,7 @@ echo -e 'NODE'
 sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g'
 echo -e '---------------------------------------'
 echo -e 'PEERS'
-read -a peers <<< `sudo nodejs /opt/cjdns/tools/peerStats 2>/dev/null | awk '{ if ($2 == "ESTABLISHED") print $1 }' | awk -F. '{ print $6".k" }' | xargs`
+read -a peers <<< `sudo nodejs /opt/cjdns/tools/peerStats 2>/dev/null | awk '{ if ($3 == "ESTABLISHED") print $2 }' | awk -F. '{ print $6".k" }' | xargs`
 for peer in "${peers[@]}"; do
     sudo /opt/cjdns/publictoip6 $peer
 done
