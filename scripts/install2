@@ -2,7 +2,7 @@
 
 set -e
 
-TAG_CJDNS=186169f9a8631633795e4e9d70c501519a7800f4
+TAG_CJDNS=77259a49e5bc7ca7bc6dca5bd423e02be563bdc5
 
 # Get board information and set flags accordingly
 BOARD_FAMILY="Unknown"
