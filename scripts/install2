@@ -100,11 +100,11 @@ if [ ! -e "/etc/network/interfaces" ] ; then
   echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces > /dev/null  
 fi
 
-# Disable NetworkManager management of wlan1 so it doesn't pause it to scan every 60 seconds
+# Disable NetworkManager management of wlan0 so it doesn't pause it to scan every 60 seconds
 if [[ -e '/etc/NetworkManager/NetworkManager.conf' ]]; then
     if [[ -z "$(grep "\[keyfile\]" /etc/NetworkManager/NetworkManager.conf)" ]]; then
         echo "[keyfile]" | sudo tee --append /etc/NetworkManager/NetworkManager.conf > /dev/null
-        echo "unmanaged-devices=interface-name:wlan1" | sudo tee --append /etc/NetworkManager/NetworkManager.conf > /dev/null
+        echo "unmanaged-devices=interface-name:wlan0" | sudo tee --append /etc/NetworkManager/NetworkManager.conf > /dev/null
     fi
  fi
 
