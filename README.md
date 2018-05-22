@@ -112,7 +112,7 @@ List of tested hardware:
 | NanoPi Neo 2              | [Armbian Nightly](https://dl.armbian.com/nanopineo2/nightly/)            | 160k, 95K  | 67 Mbps | 1 (+2*) | 10/100/1000   | *USB Headers, Gigabit Eth                |
 | Rock64                    | [Armbian Nightly](https://dl.armbian.com/rock64/nightly/)                | 255k, 168K | 94 Mbps | 3       | 10/100/1000   | 1 USB 3.0, Gigabit Eth                   |
 | EspressoBin               | [Armbian](https://dl.armbian.com/espressobin/)           | 186k, 128K | 73 Mbps | 2       | 10/100/1000   | 1 USB 3.0, 3x Gigabit Eth, Sata, mPCIE. Use stable and apt-get upgrade after boot  |
-
+| MK802ii       | Debian | 30k, 40k | 25Mbps | | | Android box. Single Core. Onboard wifi does Meshpoint |
 ## Development
 
 You can install from a specific tag or branch, such as `develop`, with:
