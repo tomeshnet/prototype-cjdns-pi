@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+set -e
+
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+mkdir "$BASEDIR/tmp"
+cd "$BASEDIR/tmp"
+git clone https://github.com/kpcyrd/yrd.git
+cd yrd
+# install dependencies
+sudo apt-get install python3 python3-pip python3-argh python3-requests
+# install yrd
+sudo -H python3 ./setup.py -v install
+# install and enable the service
+sudo cp init/yrd.service /etc/systemd/system/
+sudo systemctl enable yrd
+sudo systemctl start yrd
+
+rm -rf "$BASE_DIR/tmp"
