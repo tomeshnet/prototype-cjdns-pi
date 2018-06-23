@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-
-set -e
-
-BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-# Install non-essential tools useful for network analysis
-sudo apt-get install vim socat oping bmon iperf3 -y
