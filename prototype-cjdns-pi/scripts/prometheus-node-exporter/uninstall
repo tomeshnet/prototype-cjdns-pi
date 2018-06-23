@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Uninstall Prometheus Node Exporter
+sudo systemctl disable prometheus-node-exporter.service 2>/dev/null || true
+sudo systemctl stop prometheus-node-exporter.service 2>/dev/null || true
+sudo systemctl daemon-reload
+sudo rm -f /usr/local/bin/node_exporter
+sudo rm -f /etc/systemd/system/prometheus-node-exporter.service

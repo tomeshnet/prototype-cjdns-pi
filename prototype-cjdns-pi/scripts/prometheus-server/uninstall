@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Uninstall Prometheus Server
+sudo systemctl disable prometheus-server.service 2>/dev/null || true
+sudo systemctl stop prometheus-server.service 2>/dev/null || true
+sudo systemctl daemon-reload
+sudo rm -rf /opt/prometheus
+sudo rm -f /etc/systemd/system/prometheus-server.service

@@ -1,0 +1,13 @@
+[Unit]
+Description=Mesh Point Service
+Wants=network.target
+After=network.target
+
+[Service]
+Type=idle
+ExecStart=/usr/bin/mesh-point
+Restart=on-failure
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target

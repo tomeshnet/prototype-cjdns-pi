@@ -1,0 +1,90 @@
+#!/bin/bash
+
+INACTIVE='\e[1;31m[INACTIVE]\e[0m'
+ACTIVE='\e[1;32m[ACTIVE]\e[0m'
+
+echo "   _                           _     "
+echo "  | |_ ___  _ __ ___   ___ ___| |__  "
+echo "  | __/ _ \| '_ \` _ \ / _ / __| '_ \ "
+echo "  | || (_) | | | | | |  __\__ | | | |"
+echo "   \__\___/|_| |_| |_|\___|___|_| |_|"
+
+echo -e '---------------------------------------'
+if [ $(systemctl status cjdns.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
+    echo -e "cjdns Service ................ $ACTIVE"
+else
+    echo -e "cjdns Service .............. $INACTIVE"
+fi
+if [ "$(which mesh-point)" ]; then
+    ints=$(iw dev | grep Interface | awk '{print $2}')
+    while read -r line; do
+        mp=$(iw dev $line info | grep "type mesh point")
+        if [ "$mp" ]; then
+            mpint=$line
+        fi
+    done <<< "$ints"
+    if [ -n "$mpint" ] && [ "$(ifconfig | grep $mpint)" ]; then
+        echo -e "Mesh Point Interface ......... $ACTIVE"
+    else
+        echo -e "Mesh Point Interface ....... $INACTIVE"
+    fi
+fi
+if [ "$(which mesh-adhoc)" ]; then
+    ints=$(iw dev | grep Interface | awk '{print $2}')
+    while read -r line; do
+        mp=$(iw dev $line info | grep "type IBSS")
+        if [ "$mp" ]; then
+            mpint=$line
+        fi
+    done <<< "$ints"
+    if [ -n "$mpint" ] && [ "$(ifconfig | grep $mpint)" ]; then
+        echo -e "Ad-hoc Interface ............. $ACTIVE"
+    else
+        echo -e "Ad-hoc Interface ........... $INACTIVE"
+    fi
+fi
+if [ "$(which hostapd)" ]; then
+    if [ $(systemctl status hostapd.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ] && [ -n "$(ps aux | grep hostapd | grep -v grep)" ]; then
+        echo -e "WiFi Access Point ............ $ACTIVE"
+    else
+        echo -e "WiFi Access Point .......... $INACTIVE"
+    fi
+fi
+if [ "$(which ipfs)" ]; then
+    if [ $(systemctl status ipfs.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
+        echo -e "IPFS Service ................. $ACTIVE"
+    else
+        echo -e "IPFS Service ............... $INACTIVE"
+    fi
+fi
+if [ "$(which node_exporter)" ]; then
+    if [ $(systemctl status prometheus-node-exporter.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
+        echo -e "Prometheus Node Exporter ..... $ACTIVE"
+    else
+        echo -e "Prometheus Node Exporter ... $INACTIVE"
+    fi
+fi
+if [ "$(which /opt/prometheus/prometheus)" ]; then
+    if [ $(systemctl status prometheus-server.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
+        echo -e "Prometheus Server ............ $ACTIVE"
+    else
+        echo -e "Prometheus Server .......... $INACTIVE"
+    fi
+fi
+if [ "$(which /usr/sbin/grafana-server)" ]; then
+    if [ $(systemctl status grafana-server.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
+        echo -e "Grafana ...................... $ACTIVE"
+    else
+        echo -e "Grafana .................... $INACTIVE"
+    fi
+fi
+echo -e '---------------------------------------'
+echo -e 'NODE'
+sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g'
+echo -e '---------------------------------------'
+echo -e 'PEERS'
+read -a peers <<< `sudo nodejs /opt/cjdns/tools/peerStats 2>/dev/null | awk '{ if ($2 == "ESTABLISHED") print $1 }' | awk -F. '{ print $6".k" }' | xargs`
+for peer in "${peers[@]}"; do
+    sudo /opt/cjdns/publictoip6 $peer
+done
+echo -e '---------------------------------------'

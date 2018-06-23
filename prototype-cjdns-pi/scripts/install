@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Use provided repository or default to tomeshnet/prototype-cjdns-pi
+if [ -z "$GIT_PROTOTYPE_CJDNS_PI" ]; then
+    GIT_PROTOTYPE_CJDNS_PI="https://github.com/tomeshnet/prototype-cjdns-pi.git"
+fi
+
+# Use provided tag or default to master
+if [ -z "$TAG_PROTOTYPE_CJDNS_PI" ]; then
+    TAG_PROTOTYPE_CJDNS_PI=master
+fi
+
+if ! [ -z "`ps xa | awk '{print $5}' | grep dpkg | grep -v grep`" ]; then 
+    echo -e "\e[1;31mDPKG is running in the background.\e[0m"
+    read -p "Would you like to KILL it to continue (Y/n)? " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo -e "\e[1;31mPlease stop DPKG Before Proceeding!\e[0m"
+        exit
+    else
+        echo -e "\e[1;32mKilling DPKG and continuing\e[0m"
+        sudo killall dpkg
+    fi	 
+fi
+
+# Get git
+sudo apt-get update
+if ! [ "$(which git)" ]; then
+    sudo apt-get install git -y
+fi
+
+# Download prototype-cjdns-pi repo
+if ! [ -d "prototype-cjdns-pi" ]; then
+    git clone $GIT_PROTOTYPE_CJDNS_PI
+fi
+cd prototype-cjdns-pi/scripts
+git checkout $TAG_PROTOTYPE_CJDNS_PI
+
+# Export environment variables
+export WITH_MESH_POINT
+export WITH_AD_HOC
+export WITH_WIFI_AP
+export WITH_FIREWALL
+export WITH_CJDNS_IPTUNNEL
+export WITH_IPFS
+export WITH_PROMETHEUS_NODE_EXPORTER
+export WITH_PROMETHEUS_SERVER
+export WITH_GRAFANA
+export WITH_EXTRA_TOOLS
+export WITH_WATCHDOG
+
+# Run the actual installation script
+./install2

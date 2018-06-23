@@ -1,0 +1,28 @@
+#!/bin/bash
+
+set -e
+
+# Set wireless regulatory domain
+sudo iw reg set CA
+
+# Select physical device that supports IBSS Ad-hoc
+mesh_dev="wlan0"
+
+# Shut down the mesh_dev interface
+sudo ifconfig $mesh_dev down
+
+# Convert mesh_dev to IBSS Ad-hoc interface
+sudo iw $mesh_dev set type ibss
+
+# Bring up the mesh_dev interface
+sudo ifconfig $mesh_dev up
+
+# Optionally assign IPv4 address to the mesh_dev interface
+# sudo ifconfig $mesh_dev 192.168.X.Y
+
+# Join the mesh network with radio in HT40+ htmode to enable 802.11n rates
+##TODO## Check for HT40+ first
+sudo iw dev $mesh_dev ibss join MESH_NAME 2412 HT40+
+
+# Restart cjdns
+sudo killall cjdroute

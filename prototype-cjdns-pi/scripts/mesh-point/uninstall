@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Uninstall Mesh Point interface
+sudo systemctl disable mesh-point.service 2>/dev/null || true
+sudo systemctl stop mesh-point.service 2>/dev/null || true
+sudo systemctl daemon-reload
+sudo rm -f /usr/bin/mesh-point
+sudo rm -f /etc/systemd/system/mesh-point.service

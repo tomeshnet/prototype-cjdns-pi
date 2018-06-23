@@ -1,0 +1,14 @@
+[Unit]
+Description=hostapd IEEE 802.11 Access Point
+##TODO## Not sure why this does not work
+#After=sys-subsystem-net-devices-wlan\x2dap.device
+#BindsTo=sys-subsystem-net-devices-wlan\x2ap.device
+
+[Service]
+Type=forking
+PIDFile=/var/run/hostapd.pid
+ExecStart=/usr/sbin/hostapd -B /etc/hostapd/hostapd.conf -P /var/run/hostapd.pid
+ExecStartPost=/bin/sh /etc/hostapd/nat.sh
+
+[Install]
+WantedBy=multi-user.target

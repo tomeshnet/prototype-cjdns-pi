@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Uninstall Grafana
+sudo systemctl disable grafana-server.service 2>/dev/null || true
+sudo systemctl stop grafana-server.service 2>/dev/null || true
+sudo systemctl daemon-reload
+sudo apt-get -y remove grafana
