@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+
+sudo pip3 uninstall yrd
+sudo apt-get remove python3-argh python3-pip python3-requests python3
+sudo systemctl stop yrd
+sudo systemctl disable yrd
+sudo rm /etc/systemd/system/yrd.service
