@@ -93,11 +93,18 @@ sudo sed -i 's/ALL=(ALL:ALL) ALL/ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
 # Disable predictable network interface naming
 sudo touch /etc/udev/rules.d/80-net-setup-link.rules
 
-# Disable NetworkManager management of wlan1 so it doesn't pause it to scan every 60 seconds
+# Check for broken interface file, create if broken
+if [ ! -e "/etc/network/interfaces" ] ; then
+  rm /etc/network/interfaces || true
+  echo "auto lo" | sudo tee /etc/network/interfaces > /dev/null
+  echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces > /dev/null  
+fi
+
+# Disable NetworkManager management of wlan0 so it doesn't pause it to scan every 60 seconds
 if [[ -e '/etc/NetworkManager/NetworkManager.conf' ]]; then
     if [[ -z "$(grep "\[keyfile\]" /etc/NetworkManager/NetworkManager.conf)" ]]; then
         echo "[keyfile]" | sudo tee --append /etc/NetworkManager/NetworkManager.conf > /dev/null
-        echo "unmanaged-devices=interface-name:wlan1" | sudo tee --append /etc/NetworkManager/NetworkManager.conf > /dev/null
+        echo "unmanaged-devices=interface-name:wlan0" | sudo tee --append /etc/NetworkManager/NetworkManager.conf > /dev/null
     fi
  fi
 
@@ -314,7 +321,7 @@ if ! [ "$(which nodejs)" ]; then
         rm -rf /tmp/node-v6.11.0-linux-armv6l.tar.gz
         sudo ln -s /bin/node /bin/nodejs
     else
-       curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
+       curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
        sudo apt-get install nodejs -y
    fi
 fi
@@ -338,7 +345,7 @@ if [ ! -z "$CJDNS_PACKAGE" ]; then
     wget https://github.com/darkdrgn2k/ToMeshStuff/raw/master/deb/$CJDNS_PACKAGE -O /tmp/cjdns.deb
     sudo dpkg -i /tmp/cjdns.deb
     #Link up folder so files are in the same place as compiled
-    if [[ ! "/opt/cjdns" ]]; then 
+    if [[ -e "/opt/cjdns" ]]; then 
         sudo rm -rf /opt/cjdns 
     fi
     sudo ln -s /usr/share/cjdns /opt/cjdns
