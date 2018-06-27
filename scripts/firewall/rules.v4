@@ -13,6 +13,7 @@
 -A INPUT -p tcp -m tcp --dport 9090 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 3000 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 5201 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 4001 -j ACCEPT
 -A INPUT -i wlan* -j ACCEPT
 -A INPUT -j DROP
 COMMIT
