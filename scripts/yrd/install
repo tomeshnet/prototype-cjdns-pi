@@ -2,21 +2,18 @@
 
 set -e
 
-# get previous location - should be 
-START_DIR="$(pwd)"
-
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 mkdir "$BASEDIR/tmp"
 cd "$BASEDIR/tmp"
 git clone https://github.com/kpcyrd/yrd.git
 cd yrd
-# install dependencies
+# Install dependencies
 sudo apt-get install python3 python3-pip python3-argh python3-requests
-# install yrd
+# Install yrd
 sudo -H python3 ./setup.py -v install
-# install and enable the service
-cd "$START_DIR"
-sudo cp yrd.service /etc/systemd/system/
+# Install and enable the service
+sudo cp "$BASEDIR/yrd.service" /etc/systemd/system/
+sudo systemctl daemon-reload
 sudo systemctl enable yrd
 sudo systemctl start yrd
 

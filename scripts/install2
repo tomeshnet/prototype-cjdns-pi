@@ -416,7 +416,7 @@ if [ ! -x "$(command -v ipfs)" ] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" == "true
     source ipfs/install
 fi
 # yrd
-if [ ! -x "$(command -v ipfs)" ] && [ ! -z "$WITH_YRD" -a "$WITH_YRD" == "true" ]; then
+if [ ! -x "$(command -v yrd)" ] && [ ! -z "$WITH_YRD" -a "$WITH_YRD" == "true" ]; then
     source yrd/install
 fi
 # Prometheus Node Exporter
@@ -453,7 +453,6 @@ fi
 if [[ "$SUPPORT_WATCHDOG" == "true" ]] && [ ! -z "$WITH_WATCHDOG" -a "$WITH_WATCHDOG" == "true" ]; then
     source watchdog/install
 fi
-
 
 # Install node status script
 sudo cp status /usr/local/bin/status
