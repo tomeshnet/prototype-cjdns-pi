@@ -6,6 +6,6 @@ set -e
 sudo systemctl disable yrd 2>/dev/null || true
 sudo systemctl stop yrd 2>/dev/null || true
 sudo systemctl daemon-reload
-sudo pip3 uninstall yrd
-sudo apt-get remove python3-argh python3-pip python3-requests python3
+sudo pip3 uninstall -y yrd
+sudo apt-get remove -y python3-argh python3-pip python3-requests python3
 sudo rm -f /etc/systemd/system/yrd.service
