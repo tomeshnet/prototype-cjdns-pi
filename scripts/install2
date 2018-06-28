@@ -205,6 +205,17 @@ if [ -z "$WITH_IPFS" -o "$WITH_IPFS" != "true" -a "$WITH_IPFS" != "false" ]; the
         WITH_IPFS=true
     fi
 fi
+if [ -z "$WITH_YRD" -o "$WITH_YRD" != "true" -a "$WITH_YRD" != "false" ]; then
+    read -p "Install yrd (a cjdns command-line tool) (Y/n)? " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo -e "\e[1;31myrd installation will be skipped\e[0m"
+        WITH_IPFS=false
+    else
+        echo -e "\e[1;32myrd will be installed\e[0m"
+        WITH_YRD=true
+    fi
+fi
 if [ -z "$WITH_PROMETHEUS_NODE_EXPORTER" -o "$WITH_PROMETHEUS_NODE_EXPORTER" != "true" -a "$WITH_PROMETHEUS_NODE_EXPORTER" != "false" ]; then
     read -p "Install Prometheus Node Exporter (Y/n)? " -n 1 -r
     echo ""
@@ -404,7 +415,10 @@ fi
 if [ ! -x "$(command -v ipfs)" ] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" == "true" ]; then
     source ipfs/install
 fi
-
+# yrd
+if [ ! -x "$(command -v yrd)" ] && [ ! -z "$WITH_YRD" -a "$WITH_YRD" == "true" ]; then
+    source yrd/install
+fi
 # Prometheus Node Exporter
 if [ ! -x "$(command -v node_exporter)" ] && [ ! -z "$WITH_PROMETHEUS_NODE_EXPORTER" -a "$WITH_PROMETHEUS_NODE_EXPORTER" == "true" ]; then
     source prometheus-node-exporter/install

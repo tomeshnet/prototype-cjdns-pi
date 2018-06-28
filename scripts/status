@@ -78,6 +78,13 @@ if [ "$(which /usr/sbin/grafana-server)" ]; then
         echo -e "Grafana .................... $INACTIVE"
     fi
 fi
+if [ "$(which yrd)" ]; then
+    if [ $(systemctl status yrd.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
+        echo -e "yrd .......................... $ACTIVE"
+    else
+        echo -e "yrd ........................ $INACTIVE"
+    fi
+fi
 echo -e '---------------------------------------'
 echo -e 'NODE'
 sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g'
