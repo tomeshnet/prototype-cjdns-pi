@@ -10,7 +10,7 @@ sudo systemctl daemon-reload
 sudo rm -f /usr/local/bin/sbot
 sudo rm -f /etc/systemd/system/ssb.service
 
-if [ -d "~/.ssb" ]; then
+if [ -d "$HOME/.ssb" ]; then
     echo "Found ~/.ssb"
     read -p "Keep your SSB data (Y/n)? " -n 1 -r
     echo ""
