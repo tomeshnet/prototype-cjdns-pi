@@ -7,7 +7,9 @@ sudo systemctl stop ssb.service || true
 sudo systemctl disable ssb.service || true
 sudo systemctl daemon-reload
 
-sudo rm -f /usr/local/bin/sbot
+sudo npm uninstall scuttlebot -g
+
+sudo rm -f /usr/bin/sbot || true
 sudo rm -f /etc/systemd/system/ssb.service
 
 if [ -d "$HOME/.ssb" ]; then
