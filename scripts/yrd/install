@@ -22,3 +22,4 @@ sudo systemctl enable yrd
 sudo systemctl start yrd
 
 sudo rm -rf "$BASE_DIR/tmp"
+cd "$BASE_DIR/.."
