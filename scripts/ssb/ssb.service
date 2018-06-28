@@ -1,5 +1,5 @@
 [Unit]
-Description=Scuttlebutt (SSB) daemon
+Description=Scuttlebot (SSB) daemon
 Wants=network.target
 After=network.target
 
