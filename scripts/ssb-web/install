@@ -1,0 +1,46 @@
+#!/bin/sh
+
+#Install nginx
+sudo apt-get install -y nginx php-fpm socat
+
+# Install required parts of ssb from client
+sudo npm install -g --unsafe-perm \
+               ssb-keys \
+               ssb-client \
+               ssb-feed \
+               pull-stream
+
+# Define physical location of SSB
+ssbPath="$HOME/.ssb"
+
+# Set permissions to let nginx access it
+chmod a+rwX $ssbPath
+chmod -R a+rwX $ssbPath
+
+# Link .ssb to nginx's root director
+sudo ln -s $ssbPath /var/www/.ssb
+
+# Create ngix site
+cp $(BASE_DIR)/ssb-client.conf /etc/nginx/sites-available
+ln -s $(BASE_DIR)/ssb-client.conf /etc/nginx/sites-available
+
+# Pull and install Client
+mkdir tmp
+cd tmp
+git clone https://github.com/darkdrgn2k/ssb-web-pi.git ~/ssb-web-pi;
+sudo mkdir /var/www/sbot
+sudo cp -r ssb-web-pi/html /var/www/sbot;
+
+sudo  mkdir /var/www/backend
+sudo cp -r ssb-web-pi/backend /var/www/backend;
+
+
+mkdir /var/www/backend/keys 
+sudo ln -s /usr/lib/node_modules /var/www/backend
+sudo ln -s /usr/bin/sbot /usr/local/bin/sbot
+
+sudo chmod a+rwX /var/www/backend
+sudo chmod  -R a+rwX /var/www/backend
+sudo chown www-data.www-data /var/www/sbot
+sudo chown -R www-data.www-data /var/www/sbot
+
