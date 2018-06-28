@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Uninstall IPFS
+sudo systemctl stop ssb.service || true
+sudo systemctl disable ssb.service || true
+sudo systemctl daemon-reload
+
+sudo rm -f /usr/local/bin/sbot
+sudo rm -f /etc/systemd/system/ssb.service
+
+if [ -d "~/.ssb" ]; then
+    echo "Found ~/.ssb"
+    read -p "Keep your SSB data (Y/n)? " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo -e "\e[1;31mRemoving ~/.ssb\e[0m"
+        rm -rf ~/.ssb
+    else
+        echo -e "\e[1;32mKeeping ~/.ssb\e[0m"
+    fi
+fi
+
