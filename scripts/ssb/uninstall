@@ -2,7 +2,7 @@
 
 set -e
 
-# Uninstall IPFS
+# Uninstall SSB
 sudo systemctl stop ssb.service || true
 sudo systemctl disable ssb.service || true
 sudo systemctl daemon-reload
