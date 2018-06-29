@@ -52,6 +52,7 @@ export WITH_EXTRA_TOOLS
 export WITH_WATCHDOG
 export WITH_YRD
 export WITH_SSB
+export WITH_SSB_WEB
 
 # Run the actual installation script
 ./install2
