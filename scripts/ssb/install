@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -e
+
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+sudo npm install scuttlebot -g --unsafe-perm
+
+currentUser=$USER
+
+sudo cp "$BASE_DIR/ssb.service" /etc/systemd/system/ssb.service
+sudo sed -i "s|_USER_|${currentUser}|" /etc/systemd/system/ssb.service
+
+sudo systemctl daemon-reload
+sudo systemctl enable ssb.service
+sudo systemctl start ssb.service

@@ -51,6 +51,7 @@ export WITH_GRAFANA
 export WITH_EXTRA_TOOLS
 export WITH_WATCHDOG
 export WITH_YRD
+export WITH_SSB
 
 # Run the actual installation script
 ./install2
