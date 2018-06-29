@@ -8,7 +8,7 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 sudo apt-get install -y nginx php-fpm socat
 
 # Install required parts of ssb from npm
-sudo npm install -g --unsafe-perm \
+echo sudo npm install -g --unsafe-perm \
                  ssb-keys \
                  ssb-client \
                  ssb-feed \
@@ -23,23 +23,28 @@ chmod a+rwX $ssbPath
 chmod -R a+rwX $ssbPath
 
 # Link .ssb to nginx's home directory becuse that is where sbot looks for it
-sudo ln -s $ssbPath /var/www/.ssb
+if [ -e "/var/www/.ssb" ]; then
+  sudo rm -rf /var/www/.ssb
+fi
+sudo ln -s $ssbPath /var/www/
 
 # Create nginx site at /sbot
-cp $(BASE_DIR)/ssb-client.conf /etc/nginx/sites-available
-ln -s $(BASE_DIR)/ssb-client.conf /etc/nginx/sites-available
+sudo cp $BASE_DIR/ssb-web.conf /etc/nginx/sites-available
+#sudo ln -s $BASE_DIR/ssb-web.conf /etc/nginx/sites-available
 
 # Pull and install client
+if [ -e "$BASE_DIR/tmp" ]; then
+  sudo rm -rf "$BASE_DIR/tmp"
+fi
 mkdir "$BASE_DIR/tmp"
-
 git clone https://github.com/darkdrgn2k/ssb-web-pi.git "$BASE_DIR/tmp/ssb-web-pi"
 sudo mkdir /var/www/sbot
-sudo cp -r "$BASE_DIR/ssb-web-pi/html/" "/var/www/sbot/"
+sudo cp -r "$BASE_DIR/tmp/ssb-web-pi/html/." "/var/www/sbot/"
 
 sudo  mkdir /var/www/backend
-sudo cp -r "$BASE_DIR/ssb-web-pi/backend/" "/var/www/backend"
+sudo cp -r "$BASE_DIR/tmp/ssb-web-pi/backend/." "/var/www/backend"
 
-sudo mkdir /var/www/backend/keys 
+sudo mkdir /var/www/backend/keys
 
 # Some reason if the modules are not local it doesn't work
 sudo ln -s /usr/lib/node_modules /var/www/backend
@@ -50,4 +55,3 @@ sudo chmod a+rwX /var/www/backend
 sudo chmod  -R a+rwX /var/www/backend
 sudo chown www-data.www-data /var/www/sbot
 sudo chown -R www-data.www-data /var/www/sbot
-
