@@ -438,14 +438,14 @@ if [ ! -x "$(command -v ipfs)" ] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" == "true
     source ipfs/install
 fi
 
+# SSB
+if [ ! -x "$(command -v sbot)" ] && [ ! -z "$WITH_SSB" -a "$WITH_SSB" == "true" ]; then
+    source ssb/install
+fi
+
 # SSB Web
 if [ ! -x "$(command -v sbot)" ] && [ ! -z "$WITH_SSB_WEB" -a "$WITH_SSB_WEB" == "true" ]; then
     source ssb-web/install
-fi
-
-# IPFS
-if [ ! -x "$(command -v ipfs)" ] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" == "true" ]; then
-    source ipfs/install
 fi
 
 # yrd
