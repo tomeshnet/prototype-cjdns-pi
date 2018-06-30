@@ -5,10 +5,11 @@ set -e
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Install nginx and php
-sudo apt-get install -y nginx php-fpm socat
+$BASE_DIR/../shared/nginx/install
+sudo apt-get install -y php-fpm socat
 
 # Install required parts of ssb from npm
-echo sudo npm install -g --unsafe-perm \
+sudo npm install -g --unsafe-perm \
                  ssb-keys \
                  ssb-client \
                  ssb-feed \
@@ -29,8 +30,7 @@ fi
 sudo ln -s $ssbPath /var/www/
 
 # Create nginx site at /sbot
-sudo cp $BASE_DIR/ssb-web.conf /etc/nginx/sites-available
-#sudo ln -s $BASE_DIR/ssb-web.conf /etc/nginx/sites-available
+sudo cp $BASE_DIR/ssb-web.conf  /etc/nginx/site-path-enabled/ssb-web.conf
 
 # Pull and install client
 if [ -e "$BASE_DIR/tmp" ]; then
