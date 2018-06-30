@@ -24,11 +24,8 @@ sudo systemctl daemon-reload
 sudo systemctl enable ipfs.service
 sudo systemctl start ipfs.service
 
-# Install nginx
-sudo apt-get install nginx -y
-
 # Configure HTTP to IPFS gateway
-$BASE_DIR/../shared/nginx/install
+source "$BASE_DIR/../shared/nginx/install"
 sudo cp "$BASE_DIR/ipfs-http-gateway.conf" /etc/nginx/site-path-enabled/ipfs-http-gateway.conf
 sudo systemctl restart nginx.service
 
