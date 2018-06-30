@@ -5,7 +5,7 @@ set -e
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Install nginx and php
-$BASE_DIR/../shared/nginx/install
+source "$BASE_DIR/../shared/nginx/install"
 sudo apt-get install -y php-fpm socat
 
 # Install required parts of ssb from npm
