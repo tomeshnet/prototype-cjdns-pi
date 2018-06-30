@@ -232,7 +232,7 @@ if [ -z "$WITH_YRD" -o "$WITH_YRD" != "true" -a "$WITH_YRD" != "false" ]; then
     echo ""
     if [[ $REPLY =~ ^[Nn]$ ]]; then
         echo -e "\e[1;31myrd installation will be skipped\e[0m"
-        WITH_IPFS=false
+        WITH_YRD=false
     else
         echo -e "\e[1;32myrd will be installed\e[0m"
         WITH_YRD=true

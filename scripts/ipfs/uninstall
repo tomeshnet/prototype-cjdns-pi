@@ -9,7 +9,7 @@ sudo systemctl daemon-reload
 sudo rm -f /usr/local/bin/ipfs
 sudo rm -f /etc/systemd/system/ipfs.service
 
-if [ -d "~/.ipfs" ]; then
+if [ -d "$HOME/.ipfs" ]; then
     echo "Found ~/.ipfs"
     read -p "Keep your IPFS data (Y/n)? " -n 1 -r
     echo ""
