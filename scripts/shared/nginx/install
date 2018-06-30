@@ -2,7 +2,7 @@
 
 set -e
 
-if [ ! -x "$(command -v nginx)" ]  then
+if [ ! -x "$(command -v nginx)" ]; then
   BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
   sudo apt-get install nginx -y
