@@ -2,11 +2,13 @@
 
 set -e
 
-BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ ! -x "$(command -v nginx)" ]  then
+  BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-sudo apt-get install nginx -y
+  sudo apt-get install nginx -y
 
-sudo cp "$BASE_DIR/main.conf" /etc/nginx/sites-available/main.conf
-sudo ln -s /etc/nginx/sites-available/main.conf /etc/nginx/sites-enabled/main.conf
-sudo rm /etc/nginx/sites-enabled/default
-sudo mkdir /etc/nginx/site-path-enabled
+  sudo cp "$BASE_DIR/main.conf" /etc/nginx/sites-available/main.conf
+  sudo ln -s /etc/nginx/sites-available/main.conf /etc/nginx/sites-enabled/main.conf
+  sudo rm /etc/nginx/sites-enabled/default
+  sudo mkdir /etc/nginx/site-path-enabled
+fi
