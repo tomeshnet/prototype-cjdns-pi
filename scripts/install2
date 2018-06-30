@@ -443,8 +443,8 @@ if [ ! -x "$(command -v sbot)" ] && [ ! -z "$WITH_SSB" -a "$WITH_SSB" == "true" 
     source ssb/install
 fi
 
-# SSB Web
-if [ ! -x "$(command -v sbot)" ] && [ ! -z "$WITH_SSB_WEB" -a "$WITH_SSB_WEB" == "true" ]; then
+# SSB Web (logic inverted. Install if sbot exists only)
+if [ -x "$(command -v sbot)" ] && [ ! -z "$WITH_SSB_WEB" -a "$WITH_SSB_WEB" == "true" ]; then
     source ssb-web/install
 fi
 
