@@ -3,7 +3,6 @@
 sudo rm -rf /var/www/backend
 sudo rm -rf /var/www/sbot
 sudo rm -rf /usr/lib/node_modules
-sudo rm -rf /var/www/sbot
 sudo rm -rf /etc/nginx/site-path-enabled/ssb-web.conf
 
 sudo npm uninstall -g --unsafe-perm \
