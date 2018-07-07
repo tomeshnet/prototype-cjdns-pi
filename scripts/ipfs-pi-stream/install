@@ -15,5 +15,5 @@ sudo usermod -a -G $USER www-data
 
 sudo cp -f $BASE_DIR/process-stream.sh /usr/bin/process-stream.sh
 sudo cp -f $BASE_DIR/process-stream.service /etc/systemd/system/process-stream.service
-systemctl daemon-reload
-systemctl enable process-stream
+sudo systemctl daemon-reload
+sudo systemctl enable process-stream
