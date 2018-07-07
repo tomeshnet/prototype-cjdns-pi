@@ -2,6 +2,7 @@
 
 HLS_TIME=15
 M3U8_SIZE=10
+IPFS_GATEWAY="https://ipfs.io/ipfs/"
 
 # Load settings
 
@@ -64,7 +65,7 @@ while true; do
       reset_stream_marker=" #EXT-X-DISCONTINUITY"
     fi
     
-    echo 0 > ~/stream_reset
+    echo 0 > ~/stream-reset
     # Current UTC date for the log
     time=`date "+%F-%H-%M-%S"`
 
