@@ -2,7 +2,7 @@
 
 HLS_TIME=15
 M3U8_SIZE=10
-IPFS_GATEWAY="https://ipfs.io/ipfs/"
+IPFS_GATEWAY="https://ipfs.io"
 
 # Load settings
 
