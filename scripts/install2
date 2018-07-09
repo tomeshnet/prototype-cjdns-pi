@@ -207,13 +207,13 @@ if [ -z "$WITH_IPFS" -o "$WITH_IPFS" != "true" -a "$WITH_IPFS" != "false" ]; the
 fi
 if [ "$WITH_IPFS" == true -a "$BOARD_FAMILY" == "Raspberry Pi" ]; then
     if [ -z "$WITH_IPFS_PI_STREAM" -o "$WITH_IPFS_PI_STREAM" != "true" -a "$WITH_IPFS_PI_STREAM" != "false" ]; then
-        read -p "Install IPFS PI Stream (n/Y)? " -n 1 -r
+        read -p "Install IPFS Pi stream (y/N)? " -n 1 -r
         echo ""
         if [[ $REPLY =~ ^[Yy]$ ]]; then
-            echo -e "\e[1;32mIPFS Pi Stream will be installed\e[0m"
+            echo -e "\e[1;32mIPFS Pi stream will be installed\e[0m"
             WITH_IPFS_PI_STREAM=true
         else
-            echo -e "\e[1;31mIPFS Pi Stream installation will be skipped\e[0m"
+            echo -e "\e[1;31mIPFS Pi stream installation will be skipped\e[0m"
             WITH_IPFS_PI_STREAM=false
         fi
     fi
