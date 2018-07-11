@@ -5,6 +5,7 @@ set -e
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 sudo npm install scuttlebot -g --unsafe-perm
+apt-get install -y socat
 
 currentUser=$USER
 
@@ -18,6 +19,7 @@ sudo systemctl start ssb.service
 # Wait for ssb identity to be created
 sleep 3
 
+sudo cp "$BASE_DIR/ssb-broadcast-service.sh" "/usr/local/bin/ssb-broadcast-service.sh"
 sudo cp "$BASE_DIR/ssb-broadcast.service" /etc/systemd/system/ssb-broadcast.service
 sudo sed -i "s|_USER_|${currentUser}|" /etc/systemd/system/ssb-broadcast.service
 
