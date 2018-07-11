@@ -205,6 +205,19 @@ if [ -z "$WITH_IPFS" -o "$WITH_IPFS" != "true" -a "$WITH_IPFS" != "false" ]; the
         WITH_IPFS=true
     fi
 fi
+if [ "$WITH_IPFS" == true -a "$BOARD_FAMILY" == "Raspberry Pi" ]; then
+    if [ -z "$WITH_IPFS_PI_STREAM" -o "$WITH_IPFS_PI_STREAM" != "true" -a "$WITH_IPFS_PI_STREAM" != "false" ]; then
+        read -p "Install IPFS Pi stream (y/N)? " -n 1 -r
+        echo ""
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            echo -e "\e[1;32mIPFS Pi stream will be installed\e[0m"
+            WITH_IPFS_PI_STREAM=true
+        else
+            echo -e "\e[1;31mIPFS Pi stream installation will be skipped\e[0m"
+            WITH_IPFS_PI_STREAM=false
+        fi
+    fi
+fi
 if [ -z "$WITH_SSB" -o "$WITH_SSB" != "true" -a "$WITH_SSB" != "false" ]; then
     read -p "Install SSB (Y/n)? " -n 1 -r
     echo ""
@@ -437,7 +450,10 @@ fi
 if [ ! -x "$(command -v ipfs)" ] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" == "true" ]; then
     source ipfs/install
 fi
-
+# IPFS Pi Stream
+if [ ! -x "$(command -v process-stream.sh)" ] && [ ! -z "$WITH_IPFS_PI_STREAM" -a "$WITH_IPFS_PI_STREAM" == "true" ]; then
+    source ipfs-pi-stream/install
+fi
 # SSB
 if [ ! -x "$(command -v sbot)" ] && [ ! -z "$WITH_SSB" -a "$WITH_SSB" == "true" ]; then
     source ssb/install
