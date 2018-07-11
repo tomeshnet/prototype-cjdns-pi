@@ -14,3 +14,15 @@ sudo sed -i "s|_USER_|${currentUser}|" /etc/systemd/system/ssb.service
 sudo systemctl daemon-reload
 sudo systemctl enable ssb.service
 sudo systemctl start ssb.service
+
+# Wait for ssb identity to be created
+sleep 3
+
+sudo cp "$BASE_DIR/ssb-broadcast.service" /etc/systemd/system/ssb-broadcast.service
+sudo sed -i "s|_USER_|${currentUser}|" /etc/systemd/system/ssb-broadcast.service
+
+id=$(sbot whoami | grep id | awk -F "\"" '{print $4}' | sed 's/.ed25519//' | sed 's/@//')
+sudo sed -i "s|_ID_|${id}|" /etc/systemd/system/ssb-broadcast.service
+
+sudo systemctl daemon-reload
+sudo systemctl enable ssb-broadcast.service
