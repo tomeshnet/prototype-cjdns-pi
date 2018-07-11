@@ -5,12 +5,17 @@ set -e
 # Uninstall SSB
 sudo systemctl stop ssb.service || true
 sudo systemctl disable ssb.service || true
+sudo systemctl stop ssb-broadcast.service || true
+sudo systemctl disable ssb-broadcast.service || true
 sudo systemctl daemon-reload
 
 sudo npm uninstall scuttlebot -g
+apt-get remove -y socat
 
 sudo rm -f /usr/bin/sbot || true
 sudo rm -f /etc/systemd/system/ssb.service
+sudo rm -f /etc/systemd/system/ssb-broadcast.service
+sudo rm -f /usr/local/bin/ssb-broadcast-service.sh
 
 if [ -d "$HOME/.ssb" ]; then
     echo "Found ~/.ssb"
