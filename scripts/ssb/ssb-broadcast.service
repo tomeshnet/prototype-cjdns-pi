@@ -8,7 +8,7 @@ User=_USER_
 Group=_USER_
 Type=simple
 ExecStart=/usr/local/bin/ssb-broadcast-service.sh "_ID_"
-ExecStop=/usr/bin/pkill -f sbot
+ExecStop=/usr/bin/pkill -f ssb-broadcast-service.sh
 Restart=on-failure
 RestartSec=10s
 
