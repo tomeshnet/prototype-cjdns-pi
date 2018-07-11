@@ -216,6 +216,17 @@ if [ -z "$WITH_SSB" -o "$WITH_SSB" != "true" -a "$WITH_SSB" != "false" ]; then
         WITH_SSB=true
     fi
 fi
+if [ -z "$WITH_SSB_WEB" -o "$WITH_SSB_WEB" != "true" -a "$WITH_SSB_WEB" != "false" ]; then
+    read -p "Install SSB web client (Experimental) (Y/n)? " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo -e "\e[1;31mSSB web client installation will be skipped\e[0m"
+        WITH_SSB_WEB=false
+    else
+        echo -e "\e[1;32mSSB web client will be installed\e[0m"
+        WITH_SSB_WEB=true
+    fi
+fi
 if [ -z "$WITH_YRD" -o "$WITH_YRD" != "true" -a "$WITH_YRD" != "false" ]; then
     read -p "Install yrd (a cjdns command-line tool) (Y/n)? " -n 1 -r
     echo ""
@@ -430,6 +441,11 @@ fi
 # SSB
 if [ ! -x "$(command -v sbot)" ] && [ ! -z "$WITH_SSB" -a "$WITH_SSB" == "true" ]; then
     source ssb/install
+fi
+
+# SSB Web (logic inverted. Install if sbot exists only)
+if [ -x "$(command -v sbot)" ] && [ ! -z "$WITH_SSB_WEB" -a "$WITH_SSB_WEB" == "true" ]; then
+    source ssb-web/install
 fi
 
 # yrd

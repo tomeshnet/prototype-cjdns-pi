@@ -23,4 +23,3 @@ if [ -d "$HOME/.ssb" ]; then
         echo -e "\e[1;32mKeeping ~/.ssb\e[0m"
     fi
 fi
-
