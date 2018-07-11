@@ -1,7 +1,7 @@
 [Unit]
 Description=Scuttlebot (SSB) Service
 Wants=network.target
-After=ssb
+After=ssb.service
 
 [Service]
 User=_USER_
