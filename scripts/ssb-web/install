@@ -22,10 +22,11 @@ ssbPath="$HOME/.ssb"
 currentUser=$USER
 sudo cp "$BASE_DIR/ssb-web-broadcast-service.sh" "/usr/local/bin/ssb-web-broadcast-service.sh"
 sudo cp "$BASE_DIR/ssb-web-broadcast.service" /etc/systemd/system/ssb-web-broadcast.service
-sudo sed -i "s|__USER__|${currentUser}|" /etc/systemd/system/ssb-web-broadcast.service
+sudo sed -i "s|__USER__|${currentUser}|g" /etc/systemd/system/ssb-web-broadcast.service
 
 sudo systemctl daemon-reload
 sudo systemctl enable ssb-web-broadcast.service
+sudo systemctl start ssb-web-broadcast.service
 
 # Set permissions to let nginx access it
 # TODO find a better solution, maybe add user to nginx group?

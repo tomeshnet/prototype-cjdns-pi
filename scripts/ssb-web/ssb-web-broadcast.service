@@ -1,5 +1,5 @@
 [Unit]
-Description=Scuttlebot Web (SSB) Service
+Description=Scuttlebot Web Broadcast Service
 Wants=network.target
 After=ssb.service
 
