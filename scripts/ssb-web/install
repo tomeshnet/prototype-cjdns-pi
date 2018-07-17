@@ -22,7 +22,7 @@ ssbPath="$HOME/.ssb"
 currentUser=$USER
 sudo cp "$BASE_DIR/ssb-web-broadcast-service.sh" "/usr/local/bin/ssb-web-broadcast-service.sh"
 sudo cp "$BASE_DIR/ssb-web-broadcast.service" /etc/systemd/system/ssb-web-broadcast.service
-sudo sed -i "s|_USER_|${currentUser}|" /etc/systemd/system/ssb-web-broadcast.service
+sudo sed -i "s|__USER__|${currentUser}|" /etc/systemd/system/ssb-web-broadcast.service
 
 sudo systemctl daemon-reload
 sudo systemctl enable ssb-web-broadcast.service
