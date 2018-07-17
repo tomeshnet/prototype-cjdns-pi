@@ -18,6 +18,15 @@ sudo npm install -g --unsafe-perm \
 # Define location of SSB installation
 ssbPath="$HOME/.ssb"
 
+# Install broadcast service for users of sbot
+currentUser=$USER
+sudo cp "$BASE_DIR/ssb-web-broadcast-service.sh" "/usr/local/bin/ssb-web-broadcast-service.sh"
+sudo cp "$BASE_DIR/ssb-web-broadcast.service" /etc/systemd/system/ssb-web-broadcast.service
+sudo sed -i "s|_USER_|${currentUser}|" /etc/systemd/system/ssb-web-broadcast.service
+
+id=$(sbot whoami | grep id | awk -F "\"" '{print $4}' | sed 's/.ed25519//' | sed 's/@//')
+sudo sed -i "s|_ID_|${id}|" /etc/systemd/system/ssb-broadcast.service
+
 # Set permissions to let nginx access it
 # TODO find a better solution, maybe add user to nginx group?
 chmod a+rwX $ssbPath
