@@ -384,7 +384,7 @@ if [ ! -z "$CJDNS_PACKAGE" ]; then
         sudo rm -rf /opt/cjdns
     fi
     sudo ln -s /usr/share/cjdns /opt/cjdns
-    sudo ln -s /usr/bin/cjdroute /opt/cjdns/cjdroute/opt/cjdns/cjdroute || true
+    sudo ln -s /usr/bin/cjdroute /opt/cjdns/cjdroute || true
 else
     # Download cjdns repo and checkout TAG_CJDNS tag
     echo -e "\e[1;31mCompiling cjdns from source\e[0m"
