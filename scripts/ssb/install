@@ -21,7 +21,7 @@ sleep 3
 
 sudo cp "$BASE_DIR/ssb-broadcast-service.sh" "/usr/local/bin/ssb-broadcast-service.sh"
 sudo cp "$BASE_DIR/ssb-broadcast.service" /etc/systemd/system/ssb-broadcast.service
-sudo sed -i "s|_USER_|${currentUser}|g" /etc/systemd/system/ssb-broadcast.service
+sudo sed -i "s|__USER__|${currentUser}|g" /etc/systemd/system/ssb-broadcast.service
 
 id=$(sbot whoami | grep id | awk -F "\"" '{print $4}' | sed 's/.ed25519//' | sed 's/@//')
 sudo sed -i "s|__ID__|${id}|g" /etc/systemd/system/ssb-broadcast.service
