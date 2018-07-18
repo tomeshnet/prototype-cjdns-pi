@@ -58,7 +58,7 @@ if [ "$(which ipfs)" ]; then
     fi
 fi
 if [ "$(which sbot)" ]; then
-    if [ $(systemctl status sbot.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
+    if [ $(systemctl status ssb.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
         echo -e "ScuttleBot Service .......... $ACTIVE"
     else
         echo -e "ScuttleBot Service ........ $INACTIVE"
