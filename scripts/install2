@@ -32,7 +32,7 @@ if [[ "$BOARD_HARDWARE" == 'Allwinner' || "$BOARD_HARDWARE" == 'Generic' ]]; the
     BOARD_REVISION="experimental"
     if [[ "$BOARD_NAME" == "Zero" ]]; then
         # AP is supported if board already supports XRadio
-        if [ "$(lsmod | grep xradio_wlan)" ]; then 
+        if [ "$(lsmod | grep xradio_wlan)" ]; then
             SUPPORT_HOSTAP=true
         fi
         SUPPORT_WATCHDOG=true
@@ -70,7 +70,7 @@ else
         BOARD_NAME="3"
         CJDNS_BUILD_CMD="sudo CFLAGS=\"-march=armv8-a+crc -mtune=cortex-a53 -mfpu=crypto-neon-fp-armv8 -mfloat-abi=hard -O2\" ./do"
         CJDNS_PACKAGE="cjdns-neon.deb"
-        # Raspberry Pi 3 has on-board WiFi that can be used as an AP        
+        # Raspberry Pi 3 has on-board WiFi that can be used as an AP
         SUPPORT_HOSTAP=true
         # Raspberry Pi 3 has hardware watchdog
         SUPPORT_WATCHDOG=true
@@ -81,7 +81,7 @@ else
         # Raspberry Pi 3 has on-board WiFi that can be used as an AP
         SUPPORT_HOSTAP=true
         # Raspberry Pi 3 has hardware watchdog
-        SUPPORT_WATCHDOG=true        
+        SUPPORT_WATCHDOG=true
     fi
 fi
 
@@ -97,7 +97,7 @@ sudo touch /etc/udev/rules.d/80-net-setup-link.rules
 if [ ! -e "/etc/network/interfaces" ] ; then
   rm /etc/network/interfaces || true
   echo "auto lo" | sudo tee /etc/network/interfaces > /dev/null
-  echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces > /dev/null  
+  echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces > /dev/null
 fi
 
 # Disable NetworkManager management of wlan0 so it doesn't pause it to scan every 60 seconds
@@ -112,7 +112,7 @@ if [[ -e '/etc/NetworkManager/NetworkManager.conf' ]]; then
 if [[ $BOARD_FAMILY == "Orange Pi" ]]; then
     ##TODO## This can be removed soon as its no longer relevant with the latest images.
     # Downgrade kernel to enable XRadio in version 4.10 on Orange Pi Zero
-    if ! [ -z "`uname -a | grep 4.11`" ]; then 
+    if ! [ -z "`uname -a | grep 4.11`" ]; then
         if ! [ -z "`cat /sys/bus/mmc/devices/mmc1:0001/mmc1:0001:1/uevent | grep SDIO_ID | grep 0020:2281`" ]; then
             read -p "Downgrade kernel to enable XRadio on Orange Pi Zero (Y/n)? " -n 1 -r
             echo ""
@@ -123,10 +123,10 @@ if [[ $BOARD_FAMILY == "Orange Pi" ]]; then
                 rm -rf linux-image-dev-sun8i_5.26_armhf.deb
 
                 # AP supported on downgraded kernel
-                SUPPORT_HOSTAP=true 
+                SUPPORT_HOSTAP=true
             else
                 # AP not supported without kernel downgrade
-                SUPPORT_HOSTAP=false 
+                SUPPORT_HOSTAP=false
             fi
         fi
     fi
@@ -380,11 +380,11 @@ if [ ! -z "$CJDNS_PACKAGE" ]; then
     wget https://github.com/darkdrgn2k/ToMeshStuff/raw/master/deb/$CJDNS_PACKAGE -O /tmp/cjdns.deb
     sudo dpkg -i /tmp/cjdns.deb
     #Link up folder so files are in the same place as compiled
-    if [[ -e "/opt/cjdns" ]]; then 
-        sudo rm -rf /opt/cjdns 
+    if [[ -e "/opt/cjdns" ]]; then
+        sudo rm -rf /opt/cjdns
     fi
     sudo ln -s /usr/share/cjdns /opt/cjdns
-    sudo ln -s /usr/bin/cjdroute /opt/cjdns/cjdroute
+    sudo ln -s /usr/bin/cjdroute /opt/cjdns/cjdroute || true
 else
     # Download cjdns repo and checkout TAG_CJDNS tag
     echo -e "\e[1;31mCompiling cjdns from source\e[0m"
@@ -512,7 +512,7 @@ cp ~/.profile ~/.bash_profile
 echo "" >> ~/.bash_profile
 echo "# export mesh network name" >> ~/.bash_profile
 echo "export MESH_NAME=$MESH_NAME" >> ~/.bash_profile
-echo "" >> ~/.bash_profile 
+echo "" >> ~/.bash_profile
 echo "# print mesh node status" >> ~/.bash_profile
 echo "status" >> ~/.bash_profile
 

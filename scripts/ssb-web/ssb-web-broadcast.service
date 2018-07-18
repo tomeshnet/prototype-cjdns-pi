@@ -1,5 +1,5 @@
 [Unit]
-Description=Scuttlebot (SSB) Service
+Description=Scuttlebot Web Broadcast Service
 Wants=network.target
 After=ssb.service
 
@@ -7,8 +7,8 @@ After=ssb.service
 User=__USER__
 Group=__USER__
 Type=simple
-ExecStart=/usr/local/bin/ssb-broadcast-service.sh "__ID__"
-ExecStop=/usr/bin/pkill -f ssb-broadcast-service.sh
+ExecStart=/usr/local/bin/ssb-web-broadcast-service.sh
+ExecStop=/usr/bin/pkill -f ssb-web-broadcast-service.sh
 Restart=on-failure
 RestartSec=10s
 
