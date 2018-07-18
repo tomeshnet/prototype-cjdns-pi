@@ -2,6 +2,35 @@
 
 set -e
 
+# Script to check if module is set
+function askModule {
+     eval  res=\$$1
+     if [ -z "$res" -o "$res" != "true" -a "$res" != "false" ]; then
+        read -p "Install $2 (Y/n)? " -n 1 -r
+        echo ""
+        if [[ $REPLY =~ ^[Nn]$ ]]; then
+            res=false
+        else
+            res=true
+        fi
+    fi
+    if [ "$res" == "true" ]; then
+        echo -e "\e[1;32m$2 will be enabled\e[0m"
+    else
+        echo -e "\e[1;31m$2 will be skipped\e[0m"
+    fi
+    eval $1=\$res
+    return="$res"
+}
+function checkModule {
+     eval  res=\$$1
+     if [ ! -z "$res" -a "$res" == "true" ]; then
+        echo "1"
+    else
+        echo ""
+    fi
+}
+
 TAG_CJDNS=186169f9a8631633795e4e9d70c501519a7800f4
 
 # Get board information and set flags accordingly
@@ -133,210 +162,37 @@ if [[ $BOARD_FAMILY == "Orange Pi" ]]; then
 fi
 
 # Prompt and set missing flags
-if [ -z "$WITH_MESH_POINT" -o "$WITH_MESH_POINT" != "true" -a "$WITH_MESH_POINT" != "false" ]; then
-    read -p "Configure Mesh Point interface (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mMesh Point interface configuration will be skipped\e[0m"
-        WITH_MESH_POINT=false
-    else
-        echo -e "\e[1;32mMesh Point interface will be configured\e[0m"
-        WITH_MESH_POINT=true
-    fi
-fi
+askModule "WITH_MESH_POINT" "Mesh Point interface"
 if [ "$WITH_MESH_POINT" == false ]; then
-    if [ -z "$WITH_AD_HOC" -o "$WITH_AD_HOC" != "true" -a "$WITH_AD_HOC" != "false" ]; then
-        read -p "Configure Ad-hoc interface (Y/n)? " -n 1 -r
-        echo ""
-        if [[ $REPLY =~ ^[Nn]$ ]]; then
-            echo -e "\e[1;31mAd-hoc interface configuration will be skipped\e[0m"
-            WITH_AD_HOC=false
-        else
-            echo -e "\e[1;32mAd-hoc interface will be configured\e[0m"
-            WITH_AD_HOC=true
-        fi
-    fi
-else
-    echo -e "\e[1;31mAd-hoc interface configuration will be skipped\e[0m"
-    WITH_AD_HOC=false
+    askModule "WITH_AD_HOC" "Ad-hoc interface"
 fi
-
-if [[ "$SUPPORT_HOSTAP" == "true" ]] && [ -z "$WITH_WIFI_AP" -o "$WITH_WIFI_AP" != "true" -a "$WITH_WIFI_AP" != "false" ]; then
-    read -p "Configure WiFi Access Point (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mWiFi Access Point configuration will be skipped\e[0m"
-        WITH_WIFI_AP=false
-    else
-        echo -e "\e[1;32mWiFi Access Point will be configured\e[0m"
-        WITH_WIFI_AP=true
-    fi
+if [ "$SUPPORT_HOSTAP" == "true" ]; then
+    askModule "WITH_WIFI_AP" "WiFi Access Point"
 fi
-if [ -z "$WITH_FIREWALL" -o "$WITH_FIREWALL" != "true" -a "$WITH_FIREWALL" != "false" ]; then
-    read -p "Configure Basic Firewall (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mInternet Firewall will be skipped\e[0m"
-        WITH_FIREWALL=false
-    else
-        echo -e "\e[1;32mInternet Firewall will be configured\e[0m"
-        WITH_FIREWALL=true
-    fi
-fi
-if [ -z "$WITH_CJDNS_IPTUNNEL" -o "$WITH_CJDNS_IPTUNNEL" != "true" -a "$WITH_CJDNS_IPTUNNEL" != "false" ]; then
-    read -p "Configure Internet gateway (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mInternet gateway configuration will be skipped\e[0m"
-        WITH_CJDNS_IPTUNNEL=false
-    else
-        echo -e "\e[1;32mInternet gateway will be configured\e[0m"
-        WITH_CJDNS_IPTUNNEL=true
-    fi
-fi
-if [ -z "$WITH_IPFS" -o "$WITH_IPFS" != "true" -a "$WITH_IPFS" != "false" ]; then
-    read -p "Install IPFS (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mIPFS installation will be skipped\e[0m"
-        WITH_IPFS=false
-    else
-        echo -e "\e[1;32mIPFS will be installed\e[0m"
-        WITH_IPFS=true
-    fi
-fi
+askModule "WITH_FIREWALL" "Basic Firewall"
+askModule "WITH_CJDNS_IPTUNNEL" "Internet gateway"
+askModule "WITH_IPFS" "IPFS"
 if [ "$WITH_IPFS" == true -a "$BOARD_FAMILY" == "Raspberry Pi" ]; then
-    if [ -z "$WITH_IPFS_PI_STREAM" -o "$WITH_IPFS_PI_STREAM" != "true" -a "$WITH_IPFS_PI_STREAM" != "false" ]; then
-        read -p "Install IPFS Pi stream (y/N)? " -n 1 -r
-        echo ""
-        if [[ $REPLY =~ ^[Yy]$ ]]; then
-            echo -e "\e[1;32mIPFS Pi stream will be installed\e[0m"
-            WITH_IPFS_PI_STREAM=true
-        else
-            echo -e "\e[1;31mIPFS Pi stream installation will be skipped\e[0m"
-            WITH_IPFS_PI_STREAM=false
-        fi
-    fi
+    askModule "WITH_IPFS_PI_STREAM" "IPFS Pi stream"
 fi
-if [ -z "$WITH_SSB" -o "$WITH_SSB" != "true" -a "$WITH_SSB" != "false" ]; then
-    read -p "Install SSB (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mSSB installation will be skipped\e[0m"
-        WITH_SSB=false
-    else
-        echo -e "\e[1;32mSSB will be installed\e[0m"
-        WITH_SSB=true
-    fi
+askModule "WITH_SSB" "SSB"
+if [ "$WITH_SSB" == "true" ]; then
+    askModule "WITH_SSB_WEB" "SSB web client (Experimental)"
 fi
-if [ -z "$WITH_SSB_WEB" -o "$WITH_SSB_WEB" != "true" -a "$WITH_SSB_WEB" != "false" ]; then
-    read -p "Install SSB web client (Experimental) (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mSSB web client installation will be skipped\e[0m"
-        WITH_SSB_WEB=false
-    else
-        echo -e "\e[1;32mSSB web client will be installed\e[0m"
-        WITH_SSB_WEB=true
-    fi
-fi
-if [ -z "$WITH_YRD" -o "$WITH_YRD" != "true" -a "$WITH_YRD" != "false" ]; then
-    read -p "Install yrd (a cjdns command-line tool) (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31myrd installation will be skipped\e[0m"
-        WITH_YRD=false
-    else
-        echo -e "\e[1;32myrd will be installed\e[0m"
-        WITH_YRD=true
-    fi
-fi
-if [ -z "$WITH_PROMETHEUS_NODE_EXPORTER" -o "$WITH_PROMETHEUS_NODE_EXPORTER" != "true" -a "$WITH_PROMETHEUS_NODE_EXPORTER" != "false" ]; then
-    read -p "Install Prometheus Node Exporter (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mPrometheus Node Exporter installation will be skipped\e[0m"
-        WITH_PROMETHEUS_NODE_EXPORTER=false
-    else
-        echo -e "\e[1;32mPrometheus Node Exporter will be installed\e[0m"
-        WITH_PROMETHEUS_NODE_EXPORTER=true
-    fi
-fi
+askModule "WITH_YRD" "yrd (a cjdns command-line tool)"
+askModule "WITH_PROMETHEUS_NODE_EXPORTER" "Prometheus Node Exporter"
 if [ "$WITH_PROMETHEUS_NODE_EXPORTER" == true ]; then
-    if [ -z "$WITH_PROMETHEUS_SERVER" -o "$WITH_PROMETHEUS_SERVER" != "true" -a "$WITH_PROMETHEUS_SERVER" != "false" ]; then
-        read -p "Install Prometheus Server (Y/n)? " -n 1 -r
-        echo ""
-        if [[ $REPLY =~ ^[Nn]$ ]]; then
-            echo -e "\e[1;31mPrometheus installation will be skipped\e[0m"
-            WITH_PROMETHEUS_SERVER=false
-        else
-            echo -e "\e[1;32mPrometheus Server will be installed\e[0m"
-            WITH_PROMETHEUS_SERVER=true
-        fi
-    fi
-else
-    # Skip because Prometheus Node Exporter is not installed
-    WITH_PROMETHEUS_SERVER=false
+    askModule "WITH_PROMETHEUS_SERVER" "Prometheus Server"
 fi
 if [ "$WITH_PROMETHEUS_SERVER" == true ]; then
-    if [ -z "$WITH_GRAFANA" -o "$WITH_GRAFANA" != "true" -a "$WITH_GRAFANA" != "false" ]; then
-        read -p "Install Grafana (Y/n)? " -n 1 -r
-        echo ""
-        if [[ $REPLY =~ ^[Nn]$ ]]; then
-            echo -e "\e[1;31mGrafana installation will be skipped\e[0m"
-            WITH_GRAFANA=false
-        else
-            echo -e "\e[1;32mGrafana will be installed\e[0m"
-            WITH_GRAFANA=true
-        fi
-    fi
-else
-    # Skip because Prometheus Server is not installed
-    WITH_GRAFANA=false
+    askModule "WITH_GRAFANA" "Grafana"
 fi
-if [ -z "$WITH_H_DNS" -o "$WITH_H_DNS" != "true" -a "$WITH_H_DNS" != "false" ]; then
-    read -p "Configure Hyperboria-compatible Domain Name Servers (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mDNS settings will be skipped\e[0m"
-        WITH_H_DNS=false
-    else
-        echo -e "\e[1;32mDNS settings will be configured\e[0m"
-        WITH_H_DNS=true
-    fi
-fi
-if [ -z "$WITH_H_NTP" -o "$WITH_H_NTP" != "true" -a "$WITH_H_NTP" != "false" ]; then
-    read -p "Configure Hyperboria-compatible Network Time Protocol server (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mNTP settings will be skipped\e[0m"
-        WITH_H_NTP=false
-    else
-        echo -e "\e[1;32mNTP settings will be configured\e[0m"
-        WITH_H_NTP=true
-    fi
-fi
-if [ -z "$WITH_EXTRA_TOOLS" -o "$WITH_EXTRA_TOOLS" != "true" -a "$WITH_EXTRA_TOOLS" != "false" ]; then
-    read -p "Install non-essential tools useful for network analysis (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mExtra tools will be skipped\e[0m"
-        WITH_EXTRA_TOOLS=false
-    else
-        echo -e "\e[1;32mExtra tools will be installed\e[0m"
-        WITH_EXTRA_TOOLS=true
-    fi
-fi
-if [[ "$SUPPORT_WATCHDOG" == "true" ]] && [ -z "$WITH_WATCHDOG" -o "$WITH_WATCHDOG" != "true" -a "$WITH_WATCHDOG" != "false" ]; then
-    read -p "Configure Hardware Watchdog (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mHardware Watchdog configuration will be skipped\e[0m"
-        WITH_WATCHDOG=false
-    else
-        echo -e "\e[1;32mHardware Watchdog will be configured\e[0m"
-        WITH_WATCHDOG=true
-    fi
+
+askModule "WITH_H_DNS" "Hyperboria-compatible Domain Name Servers"
+askModule "WITH_H_NTP" "Hyperboria-compatible Network Time Protocol server"
+askModule "WITH_EXTRA_TOOLS" "non-essential tools useful for network analysis"
+if [ "$SUPPORT_WATCHDOG" == "true" ]; then
+    askModule "WITH_WATCHDOG" "Hardware Watchdog"
 fi
 
 # Prompt for name of the mesh network
@@ -422,84 +278,84 @@ fi
 sudo systemctl enable cjdns.service
 
 # 802.11s Mesh Point interface
-if [ ! -z "$WITH_MESH_POINT" -a "$WITH_MESH_POINT" == "true" ]; then
+if [ $(checkModule "WITH_MESH_POINT") ]; then
     source mesh-point/install
 fi
 
 # IBSS Ad-hoc interface
-if [ ! -z "$WITH_AD_HOC" -a "$WITH_AD_HOC" == "true" ]; then
+if [ $(checkModule "WITH_AD_HOC") ]; then
     source mesh-adhoc/install
 fi
 
 # WiFi Access Point on supported boards
-if [[ "$SUPPORT_HOSTAP" == "true" ]] && [ ! -z "$WITH_WIFI_AP" -a "$WITH_WIFI_AP" == "true" ]; then
+if [ "$SUPPORT_HOSTAP" == "true" -a $(checkModule "WITH_WIFI_AP") ]; then
     source hostapd/install
 fi
 
 # Configure Internet firewall
-if [ ! -z "$WITH_FIREWALL" -a "$WITH_FIREWALL" == "true" ]; then
+if [ $(checkModule "WITH_FIREWALL") ]; then
     source firewall/install
 fi
 
 # Configure Internet gateway using cjdns iptunnel
-if [ ! -z "$WITH_CJDNS_IPTUNNEL" -a "$WITH_CJDNS_IPTUNNEL" == "true" ]; then
+if [ $(checkModule "WITH_CJDNS_IPTUNNEL") ]; then
     source cjdns-iptunnel/install
 fi
 
 # IPFS
-if [ ! -x "$(command -v ipfs)" ] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" == "true" ]; then
+if [ ! -x "$(command -v ipfs)" -a ] && $(checkModule "WITH_IPFS") ]; then
     source ipfs/install
 fi
 # IPFS Pi Stream
-if [ ! -x "$(command -v process-stream.sh)" ] && [ ! -z "$WITH_IPFS_PI_STREAM" -a "$WITH_IPFS_PI_STREAM" == "true" ]; then
+if [ ! -x "$(command -v process-stream.sh)" -a $(checkModule "WITH_IPFS_PI_STREAM") ]; then
     source ipfs-pi-stream/install
 fi
 # SSB
-if [ ! -x "$(command -v sbot)" ] && [ ! -z "$WITH_SSB" -a "$WITH_SSB" == "true" ]; then
+if [ ! -x "$(command -v sbot)" -a $(checkModule "WITH_SSB") ]; then
     source ssb/install
 fi
 
 # SSB Web (logic inverted. Install if sbot exists only)
-if [ -x "$(command -v sbot)" ] && [ ! -z "$WITH_SSB_WEB" -a "$WITH_SSB_WEB" == "true" ]; then
+if [ -x "$(command -v sbot)" -a $(checkModule "WITH_SSB_WEB") ]; then
     source ssb-web/install
 fi
 
 # yrd
-if [ ! -x "$(command -v yrd)" ] && [ ! -z "$WITH_YRD" -a "$WITH_YRD" == "true" ]; then
+if [ ! -x "$(command -v yrd)" -a $(checkModule "WITH_YRD") ]; then
     source yrd/install
 fi
 # Prometheus Node Exporter
-if [ ! -x "$(command -v node_exporter)" ] && [ ! -z "$WITH_PROMETHEUS_NODE_EXPORTER" -a "$WITH_PROMETHEUS_NODE_EXPORTER" == "true" ]; then
+if [ ! -x "$(command -v node_exporter)" $(checkModule "WITH_PROMETHEUS_NODE_EXPORTER") ]; then
     source prometheus-node-exporter/install
 fi
 
 # Prometheus Server
-if [ ! -x "$(command -v /opt/prometheus/prometheus)" ] && [ ! -z "$WITH_PROMETHEUS_SERVER" -a "$WITH_PROMETHEUS_SERVER" == "true" ]; then
+if [ ! -x "$(command -v /opt/prometheus/prometheus)" -a $(checkModule "WITH_PROMETHEUS_SERVER") ]; then
     source prometheus-server/install
 fi
 
 # Grafana
-if [ ! -x "$(command -v /usr/sbin/grafana-server)" ] && [ ! -z "$WITH_GRAFANA" -a "$WITH_GRAFANA" == "true" ]; then
+if [ ! -x "$(command -v /usr/sbin/grafana-server)" -a $(checkModule "WITH_GRAFANA") ]; then
     source grafana/install
 fi
 
 # Configure Hyperboria DNS
-if [ ! -z "$WITH_H_DNS" -a "$WITH_H_DNS" == "true" ]; then
+if [ $(checkModule "WITH_H_DNS") ]; then
     source h-dns/install
 fi
 
 # Configure Hyperboria NTP
-if [ ! -z "$WITH_H_NTP" -a "$WITH_H_NTP" == "true" ]; then
+if [ $(checkModule "WITH_H_NTP") ]; then
     source h-ntp/install
 fi
 
 # Non-essential extra tools
-if [ ! -z "$WITH_EXTRA_TOOLS" -a "$WITH_EXTRA_TOOLS" == "true" ]; then
+if [ $(checkModule "WITH_EXTRA_TOOLS") ]; then
     source extra-tools/install
 fi
 
 # Watchdog on supported boards
-if [[ "$SUPPORT_WATCHDOG" == "true" ]] && [ ! -z "$WITH_WATCHDOG" -a "$WITH_WATCHDOG" == "true" ]; then
+if [ "$SUPPORT_WATCHDOG" == "true" -a $(checkModule "WITH_WATCHDOG") ]; then
     source watchdog/install
 fi
 
