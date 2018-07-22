@@ -6,6 +6,6 @@
         "municipality": "Toronto",
         "uri": "https://tomesh.net"
     },
-    "software": [
+    "software": {
         "repo": "prototype-cjdns-pi",
         "branch": "develop",
