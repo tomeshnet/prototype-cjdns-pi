@@ -12,6 +12,11 @@ sudo npm install -g cjdnstool
 sudo cp $BASE_DIR/check-and-add-peers.sh /usr/local/bin/
 sudo chmod +x /usr/local/bin/check-and-add-peers.sh
 
+# Create file for data
+sudo mkdir /var/lib/peer-ipfs-bootstrap
+sudo touch /var/lib/peer-ipfs-bootstrap/peers.data
+sudo chmod 777 /var/lib/peer-ipfs-boostrap/peers.data
+
 # Enable service
 sudo cp $BASE_DIR/peer-ipfs-bootstrap.service /etc/systemd/system
 sudo systemctl daemon-reload

@@ -14,6 +14,40 @@ ipfs_peers=$(ipfs swarm peers | wc -l)
 # Checking that there aren't any IPFS peers
 if [[ -z ${ipfs_peers} || ${ipfs_peers} -eq 0 ]]; then
         echo "No IPFS peers were found, looking for them now."
+        
+        # Were there any peers that were previously saved, but obviously now no longer work?
+        if ! [[ $(cat /var/lib/peer-ipfs-boostrap/peers.data | wc -l) -eq 0 || ( $(cat /var/lib/peer-ipfs-boostrap/peers.data | wc -l) -gt 0 && $(head -c 5 /var/lib/peer-ipfs-bootstrap/peers.data) = /ip6/ ) ]]; then
+            read -a prev_peers <<< `cat /var/lib/peer-ipfs-bootstrap/peers.data | xargs`
+            for peer in "${prev_peers[@]}"; do
+                address=$(echo ${peer} | awk -F / '{ print $(NF-4) }')
+
+                # Check if it's online
+                if ping -c 5 $address; then
+                    
+                    # It's online, check to see if IPFS is enabled
+                    res=$(curl ${address}/nodeinfo.json)
+                    if [[ echo ${res} | jq -r '.services | contains(["ipfs"])' ]]; then
+
+                        # IPFS is enabled, but bootstrapping still failed
+                        # Either nodeinfo is lying, or IPFS is temporarily down at the moment for this node
+                        # The second is assumed and so the peer is not removed from the bootstrap list
+                        continue
+                    else
+
+                        # IPFS has been removed from nodeinfo manually. It is assumed the peer will never be a candidate for bootstrapping again
+                        # The peer is removed
+                        ipfs bootstrap rm $peer
+                        sed -i "/$peer/d" /var/lib/peer-ipfs-bootstrap/peers.data
+                    fi
+                else
+
+                    # It's not online. The peer is removed, since this script does not track long term uptime stats of nodes.
+                    ipfs bootstrap rm $peer
+                    sed -i "/$peer/d" /var/lib/peer-ipfs-bootstrap/peers.data
+                fi
+
+            done
+        fi
 
         # Get 1-hop cjdns peers to query them
         new_peers=0
@@ -32,6 +66,7 @@ if [[ -z ${ipfs_peers} || ${ipfs_peers} -eq 0 ]]; then
                                 
                         # Add them as a bootstrap peer 
                         ipfs bootstrap add "/ip6/${peer}/tcp/4001/ipfs/${id}"
+                        echo "/ip6/${peer}/tcp/4001/ipfs/${id}" >> /var/lib/peer-ipfs-bootstrap/peers.data
                         new_peers=$((new_peers + 1))
                         echo "Added cjdns peer ${peer} as a bootstrap node for IPFS."
                 fi
