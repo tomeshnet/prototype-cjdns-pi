@@ -27,8 +27,8 @@ if [[ -z ${ipfs_peers} || ${ipfs_peers} -eq 0 ]]; then
                 
                 # See if they have IPFS enabled
                 res=$(curl ${peer}/nodeinfo.json)
-                if [[ echo ${res} | jq 'contains(["ipfs"])' ]]; then
-                        id=$(echo ${res} | jq '.services.ipfs.ID')
+                if [[ echo ${res} | jq -r '.services | contains(["ipfs"])' ]]; then
+                        id=$(echo ${res} | jq -r '.services.ipfs.ID')
                                 
                         # Add them as a bootstrap peer 
                         ipfs bootstrap add "/ip6/${peer}/tcp/4001/ipfs/${id}"
