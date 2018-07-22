@@ -510,6 +510,7 @@ echo -e "Run \e[1;32mstatus\e[0m anytime to print the status of your node"
 # Setup nodeinfo.json, adding non-static info
 echo '"installed":'"$(date)"', "uri":"https://github.com/tomeshnet/prototype-cjdns-pi/tree/develop"],' >> shared/nodeinfo/nodeinfo.json
 echo '"key":'"$(cat /etc/cjdroute.conf | jq '.publicKey')"',' >> shared/nodeinfo/nodeinfo.json
+echo '"org":'"$MESH_NAME"',' >> shared/nodeinfo/nodeinfo.json
 echo '"services":[' >> shared/nodeinfo/nodeinfo.json
 
 # Only adding IPFS for now, more to come later
