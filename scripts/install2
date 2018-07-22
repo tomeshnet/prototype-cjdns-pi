@@ -525,6 +525,8 @@ echo '}' >> shared/nodeinfo/nodeinfo.json
 # Reformat it so it looks nice
 cat shared/nodeinfo/nodeinfo.json | jq '.' > shared/nodeinfo/nodeinfo.json
 
+# Install it
+source shared/nodeinfo/install
 
 # Print node status on login
 cp ~/.profile ~/.bash_profile
