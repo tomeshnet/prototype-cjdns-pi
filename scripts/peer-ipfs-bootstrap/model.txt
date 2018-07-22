@@ -4,12 +4,12 @@ jq, cjdns, cjdnstool, ipfs
 Many things can be changed now that jq is installed -- getting stuff from cjdroute.conf for example
 The "installed" parameter in nodeinfo.json should be in addition to a version number once we create a versioning system.
 
-Setup nginx /nodeinfo.json 
-setup install uninstall, docs, status, etc.
-setup .service -- wait for ipfs, networking and cjdns to start first
+setup docs
 
 DONE
 ~~~~
+setup .service -- wait for ipfs and cjdns to start first
+setup install uninstall
 Logging
 Rework so that it loops over peers -
 Peers are removed a list as they are checked, and _their peers_ are
