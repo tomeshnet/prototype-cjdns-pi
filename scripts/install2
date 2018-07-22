@@ -507,15 +507,15 @@ fi
 sudo cp status /usr/local/bin/status
 echo -e "Run \e[1;32mstatus\e[0m anytime to print the status of your node"
 
-# Setup nodeinfo.json
-echo "{" >> shared/nodeinfo/nodeinfo.json 
+# Setup nodeinfo.json, adding non-static info
+echo '"installed":'"$(date)"', "uri":"https://github.com/tomeshnet/prototype-cjdns-pi/tree/develop"],' >> shared/nodeinfo/nodeinfo.json
 echo '"key":'"$(cat /etc/cjdroute.conf | jq '.publicKey')"',' >> shared/nodeinfo/nodeinfo.json
-echo '"location":{"continent":"NA","country":"Canada","city":"Toronto","uri":"https://tomesh.net"}' >> shared/nodeinfo/nodeinfo.json
 echo '"services":[' >> shared/nodeinfo/nodeinfo.json
 
 # Only adding IPFS for now, more to come later
 if [[ "$SUPPORT_IPFS" == "true" ]] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" == "true" ]; then
         echo '"ipfs":{"version":"'"$(ipfs --version | awk '{ print $3 }')"'","ID":'"$(ipfs id | jq '.ID')}"
+
 echo ']' >> shared/nodeinfo/nodeinfo.json
 
 echo '}' >> shared/nodeinfo/nodeinfo.json

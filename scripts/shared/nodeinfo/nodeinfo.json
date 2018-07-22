@@ -1,0 +1,12 @@
+{
+    "org": "tomesh",
+    "location": {
+        "continent": "NA",
+        "country": "Canada",
+        "region": "Ontario",
+        "municipality": "Toronto",
+        "uri": "https://tomesh.net"
+    },
+    "software": [
+        "repo": "prototype-cjdns-pi",
+        "branch": "develop",

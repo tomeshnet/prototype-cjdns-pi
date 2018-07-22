@@ -2,6 +2,7 @@ Deps:
 jq, cjdns, cjdnstool, ipfs
 
 Many things can be changed now that jq is installed -- getting stuff from cjdroute.conf for example
+The "installed" parameter in nodeinfo.json should be in addition to a version number once we create a versioning system.
 
 Setup nginx /nodeinfo.json 
 setup install uninstall, docs, status, etc.
