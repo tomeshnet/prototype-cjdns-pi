@@ -4,8 +4,9 @@ set -e
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+sudo apt-get install -y socat python-dev
+
 sudo npm install scuttlebot -g --unsafe-perm
-sudo apt-get install -y socat
 
 currentUser=$USER
 
