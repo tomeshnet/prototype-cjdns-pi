@@ -389,7 +389,7 @@ else
     # Download cjdns repo and checkout TAG_CJDNS tag
     echo -e "\e[1;31mCompiling cjdns from source\e[0m"
     if ! [ -d "/opt/cjdns" ]; then
-        sudo apt-get install python
+        sudo apt-get install -y python
         here=`pwd`
         sudo git clone https://github.com/cjdelisle/cjdns.git /opt/cjdns
         cd /opt/cjdns
