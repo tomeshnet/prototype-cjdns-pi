@@ -25,3 +25,4 @@ fi
 sudo rm -f /etc/nginx/sites-enabled/ipfs-http-gateway
 sudo rm -f /etc/nginx/sites-available/ipfs-http-gateway
 sudo systemctl restart nginx.service
+

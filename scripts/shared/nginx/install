@@ -13,4 +13,7 @@ if [ ! -x "$(command -v nginx)" ];  then
   sudo rm /etc/nginx/sites-enabled/default
   sudo mkdir /etc/nginx/site-path-enabled
   BASE_DIR="$LAST_BASE"
+
+  sudo mkdir /var/www/files
+
 fi

@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -e
+
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Download dependencies
+sudo apt-get install jq
+sudo npm install -g cjdnstool
+
+# Move file
+sudo cp $BASE_DIR/check-and-add-peers.sh /usr/local/bin/
+sudo chmod +x /usr/local/bin/check-and-add-peers.sh
+
+# Create file for data
+sudo mkdir /var/lib/peer-ipfs-bootstrap
+sudo touch /var/lib/peer-ipfs-bootstrap/peers.data
+sudo chmod 777 /var/lib/peer-ipfs-boostrap/peers.data
+
+# Enable service
+sudo cp $BASE_DIR/peer-ipfs-bootstrap.service /etc/systemd/system
+sudo systemctl daemon-reload
+sudo systemctl enable peer-ipfs-bootstrap.service

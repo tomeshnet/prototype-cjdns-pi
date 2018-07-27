@@ -37,6 +37,7 @@ source "$BASE_DIR/grafana/uninstall"
 source "$BASE_DIR/extra-tools/uninstall"
 source "$BASE_DIR/watchdog/uninstall"
 source "$BASE_DIR/yrd/uninstall"
+source "$BASE_DIR/peer-ipfs-bootstrap/uninstall"
 
 sudo systemctl daemon-reload
 

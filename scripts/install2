@@ -451,6 +451,7 @@ fi
 # IPFS
 if [ ! -x "$(command -v ipfs)" ] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" == "true" ]; then
     source ipfs/install
+    source peer-ipfs-bootstrap/install
 fi
 # IPFS Pi Stream
 if [ ! -x "$(command -v process-stream.sh)" ] && [ ! -z "$WITH_IPFS_PI_STREAM" -a "$WITH_IPFS_PI_STREAM" == "true" ]; then
@@ -508,6 +509,9 @@ fi
 # Install node status script
 sudo cp status /usr/local/bin/status
 echo -e "Run \e[1;32mstatus\e[0m anytime to print the status of your node"
+
+# Install nodeinfo
+source shared/nodeinfo/install
 
 # Print node status on login
 cp ~/.profile ~/.bash_profile
