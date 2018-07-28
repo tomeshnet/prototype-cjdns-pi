@@ -8,6 +8,7 @@ Type=oneshot
 ProtectHome=true
 ProtectSystem=true
 ExecStart=/usr/local/bin/yrd start --attach
+ExecStop=/bin/kill -s QUIT $MAINPID
 RemainAfterExit=true
 
 [Install]
