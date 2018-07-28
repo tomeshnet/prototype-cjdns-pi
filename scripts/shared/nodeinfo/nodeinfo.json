@@ -7,3 +7,15 @@
         "uri": "https://tomesh.net"
     },
     "software": {
+        "repo": "REPO",
+        "branch": "BRANCH",
+        "commit": "COMMIT",
+        "installed": "INSTALLED",
+        "uri": "https://github.com/tomeshnet/prototype-cjdns-pi/"
+    },
+    "key": "KEY",
+    "org": "ORG",
+    "services": {
+        SERVICES
+    }
+}

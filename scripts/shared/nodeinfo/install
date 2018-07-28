@@ -2,22 +2,20 @@
 
 set -e
 
-# Add non-static info
+# Replace placeholders with dynamic info
+sed -i -e "s/REPO/$(git remote get-url origin | awk -F / '{print $5}'| cut -d '.' -f1)/g" nodeinfo.json
+sed -i -e "s/BRANCH/$(git rev-parse --abbrev-ref HEAD)/g" nodeinfo.json
+sed -i -e "s/COMMIT/$(git rev-parse HEAD)/g" nodeinfo.json
+sed -i -e "s/INSTALLED/$(date)/g" nodeinfo.json
 
-echo '"repo":"'"$(git remote get-url origin | awk -F / '{print $5}'| cut -d '.' -f1)"'", "branch":"'"$(git rev-parse --abbrev-ref HEAD)"'", "commit":"'"$(git rev-parse HEAD)"'", "installed":"'"$(date)"'", "uri":"https://github.com/tomeshnet/prototype-cjdns-pi/"},' >> shared/nodeinfo/nodeinfo.json
-echo '"key":'"$(cat /etc/cjdroute.conf | jq '.publicKey')"',' >> shared/nodeinfo/nodeinfo.json
-echo '"org":'"$MESH_NAME"',' >> shared/nodeinfo/nodeinfo.json
-echo '"services":{' >> shared/nodeinfo/nodeinfo.json
+sed -i -e "s/KEY/$(cat /etc/cjdroute.conf | jq '.publicKey')/g" nodeinfo.json
+sed -i -e "s/ORG/$MESH_NAME/g" nodeinfo.json
 
 # Only adding IPFS for now, more to come later
 if [[ "$SUPPORT_IPFS" == "true" ]] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" == "true" ]; then
-        echo '"ipfs":{"version":"'"$(ipfs --version | awk '{ print $3 }')"'","ID":'"$(ipfs id | jq '.ID')}"
-
-echo '}' >> shared/nodeinfo/nodeinfo.json
-
-echo '}' >> shared/nodeinfo/nodeinfo.json
-
-# Reformat it so it looks nice
-cat shared/nodeinfo/nodeinfo.json | jq '.' > shared/nodeinfo/nodeinfo.json
-
+        sed -i -e 's/SERVICES/"ipfs":{"version":"'"$(ipfs --version | awk '{ print $3 }')"'","ID":'"$(ipfs id | jq '.ID')}"/g nodeinfo.json
+else
+    sed -i -e 's/SERVICES//g' # Leave it empty
+fi
+ 
 sudo cp nodeinfo.json /var/www/html
