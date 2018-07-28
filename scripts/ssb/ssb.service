@@ -8,7 +8,7 @@ User=__USER__
 Group=__USER__
 Type=simple
 ExecStart=/usr/bin/sbot server 
-ExecStop=/usr/bin/pkill -f sbot
+ExecStop=/bin/kill -s QUIT $MAINPID
 Restart=on-failure
 RestartSec=10s
 
