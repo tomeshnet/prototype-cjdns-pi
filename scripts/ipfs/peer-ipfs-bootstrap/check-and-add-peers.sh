@@ -1,9 +1,5 @@
 #!/bin/bash
 
-
-# The amount of bootstrap peers to find
-MAX_PEERS=1
-
 # Wait for peers to be gathered
 echo "Waiting 10 seconds for IPFS to bootstrap..."
 sleep 10
