@@ -2,6 +2,7 @@
 
 set -e
 
+LAST_BASE="$BASE_DIR"
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 cp $BASE_DIR/nodeinfo.json /tmp
@@ -22,4 +23,6 @@ else
     sed -i -e 's/SERVICES//g' /tmp/nodeinfo.json# Leave it empty
 fi
 
+BASE_DIR="$LAST_BASE"
+ 
 sudo cp /tmp/nodeinfo.json /var/www/html
