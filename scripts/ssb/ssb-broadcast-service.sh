@@ -1,5 +1,5 @@
 #!/bin/sh
-id="$1"
+id=$(sbot whoami | grep id | awk -F "\"" '{print $4}' | sed 's/.ed25519//' | sed 's/@//')
 
 while true; do
     for int in $(ls -1Atu /sys/class/net ); do
