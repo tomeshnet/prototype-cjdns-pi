@@ -2,20 +2,24 @@
 
 set -e
 
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+cp $BASE_DIR/nodeinfo.json /tmp
+
 # Replace placeholders with dynamic info
-sed -i -e "s/REPO/$(git remote get-url origin | awk -F / '{print $5}'| cut -d '.' -f1)/g" nodeinfo.json
-sed -i -e "s/BRANCH/$(git rev-parse --abbrev-ref HEAD)/g" nodeinfo.json
-sed -i -e "s/COMMIT/$(git rev-parse HEAD)/g" nodeinfo.json
+sed -i -e "s/REPO/$(git remote get-url origin | awk -F / '{print $5}'| cut -d '.' -f1)/g" /tmp/nodeinfo.json
+sed -i -e "s/BRANCH/$(git rev-parse --abbrev-ref HEAD)/g" /tmp/nodeinfo.json
+sed -i -e "s/COMMIT/$(git rev-parse HEAD)/g" /tmp/nodeinfo.json
 sed -i -e "s/INSTALLED/$(date)/g" nodeinfo.json
 
-sed -i -e "s/KEY/$(cat /etc/cjdroute.conf | jq '.publicKey')/g" nodeinfo.json
-sed -i -e "s/ORG/$MESH_NAME/g" nodeinfo.json
+sed -i -e "s/KEY/$(cat /etc/cjdroute.conf | jq '.publicKey')/g" /tmp/nodeinfo.json
+sed -i -e "s/ORG/$MESH_NAME/g" /tmp/nodeinfo.json
 
 # Only adding IPFS for now, more to come later
 if [[ "$SUPPORT_IPFS" == "true" ]] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" == "true" ]; then
-        sed -i -e 's/SERVICES/"ipfs":{"version":"'"$(ipfs --version | awk '{ print $3 }')"'","ID":'"$(ipfs id | jq '.ID')}"/g nodeinfo.json
+        sed -i -e 's/SERVICES/"ipfs":{"version":"'"$(ipfs --version | awk '{ print $3 }')"'","ID":'"$(ipfs id | jq '.ID')}"/g /tmp/nodeinfo.json
 else
-    sed -i -e 's/SERVICES//g' # Leave it empty
+    sed -i -e 's/SERVICES//g' /tmp/nodeinfo.json# Leave it empty
 fi
- 
-sudo cp nodeinfo.json /var/www/html
+
+sudo cp /tmp/nodeinfo.json /var/www/html
