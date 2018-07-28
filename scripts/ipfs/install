@@ -19,7 +19,7 @@ ipfs init
 
 # Configure systemd to start ipfs.service on system boot
 sudo cp "$BASE_DIR/ipfs.service" /etc/systemd/system/ipfs.service
-sudo sed -i "s|USER_HOME|${HOME}|" /etc/systemd/system/ipfs.service
+sudo sed -i "s|__USER_HOME__|${HOME}|" /etc/systemd/system/ipfs.service
 sudo systemctl daemon-reload
 sudo systemctl enable ipfs.service
 sudo systemctl start ipfs.service
@@ -31,3 +31,23 @@ sudo systemctl restart nginx.service
 
 # add cjdns bootstrap address
 ipfs bootstrap add /ip6/fc6e:691e:dfaa:b992:a10a:7b49:5a1a:5e09/tcp/4001/ipfs/QmU6NeD2Uu34WKest1NZGvGmScLhN1zVo66K35GeE6Jft2
+
+# Service to bootstrap neighboring cjdns nodes if no other ipfs is found
+
+# Download dependencies
+sudo apt-get install jq
+sudo npm install -g cjdnstool
+
+# Move file
+sudo cp $BASE_DIR/peer-ipfs-bootstrap/check-and-add-peers.sh /usr/local/bin/
+sudo chmod +x /usr/local/bin/check-and-add-peers.sh
+
+# Create file for data
+sudo mkdir /var/lib/peer-ipfs-bootstrap
+sudo touch /var/lib/peer-ipfs-bootstrap/peers.data
+sudo chmod 777 /var/lib/peer-ipfs-boostrap/peers.data
+
+# Enable service
+sudo cp $BASE_DIR/peer-ipfs-bootstrap/peer-ipfs-bootstrap.service /etc/systemd/system
+sudo systemctl daemon-reload
+sudo systemctl enable peer-ipfs-bootstrap.service
