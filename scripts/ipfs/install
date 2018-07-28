@@ -35,7 +35,7 @@ ipfs bootstrap add /ip6/fc6e:691e:dfaa:b992:a10a:7b49:5a1a:5e09/tcp/4001/ipfs/Qm
 # Service to bootstrap neighboring cjdns nodes if no other ipfs is found
 
 # Download dependencies
-sudo apt-get install jq
+sudo apt-get install -y jq
 sudo npm install -g cjdnstool
 
 # Move file
@@ -45,7 +45,7 @@ sudo chmod +x /usr/local/bin/check-and-add-peers.sh
 # Create file for data
 sudo mkdir /var/lib/peer-ipfs-bootstrap
 sudo touch /var/lib/peer-ipfs-bootstrap/peers.data
-sudo chmod 777 /var/lib/peer-ipfs-boostrap/peers.data
+sudo chmod 777 /var/lib/peer-ipfs-bootstrap/peers.data
 
 # Enable service
 sudo cp $BASE_DIR/peer-ipfs-bootstrap/peer-ipfs-bootstrap.service /etc/systemd/system
