@@ -22,7 +22,7 @@ sed -i -e "s/ORG/$MESH_NAME/g" /tmp/nodeinfo.json
 if [[ "$SUPPORT_IPFS" == "true" ]] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" == "true" ]; then
         sed -i -e 's/SERVICES/"ipfs":{"version":"'"$(ipfs --version | awk '{ print $3 }')"'","ID":'"$(ipfs id | jq '.ID')}"/g /tmp/nodeinfo.json
 else
-    sed -i -e 's/SERVICES//g' /tmp/nodeinfo.json# Leave it empty
+    sed -i -e 's/SERVICES//g' /tmp/nodeinfo.json # Leave it empty
 fi
 
 BASE_DIR="$LAST_BASE"
