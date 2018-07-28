@@ -9,6 +9,6 @@ while true; do
                 echo -n "net:$ip:8008~shs:$id" |  sudo socat -T 1 - UDP4-DATAGRAM:255.255.255.255:8008,broadcast,so-bindtodevice=$int &
             fi
         done
-    done
+    fi
     sleep 5
 done
