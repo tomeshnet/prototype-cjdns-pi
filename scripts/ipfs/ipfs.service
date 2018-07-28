@@ -6,7 +6,7 @@ After=network.target
 [Service]
 Type=simple
 Environment=IPFS_PATH=USER_HOME/.ipfs
-ExecStart=/usr/local/bin/ipfs daemon --enable-namesys-pubsub
+ExecStart=/usr/local/bin/ipfs daemon --enable-namesys-pubsub --migrate=true
 ExecStop=/usr/bin/pkill -f ipfs
 Restart=on-failure
 RestartSec=10s
