@@ -451,7 +451,6 @@ fi
 # IPFS
 if [ ! -x "$(command -v ipfs)" ] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" == "true" ]; then
     source ipfs/install
-    source peer-ipfs-bootstrap/install
 fi
 # IPFS Pi Stream
 if [ ! -x "$(command -v process-stream.sh)" ] && [ ! -z "$WITH_IPFS_PI_STREAM" -a "$WITH_IPFS_PI_STREAM" == "true" ]; then
