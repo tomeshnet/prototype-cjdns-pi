@@ -36,7 +36,6 @@ ipfs bootstrap add /ip6/fc6e:691e:dfaa:b992:a10a:7b49:5a1a:5e09/tcp/4001/ipfs/Qm
 
 # Download dependencies
 sudo apt-get install -y jq
-sudo npm install -g cjdnstool
 
 # Move file
 sudo cp $BASE_DIR/peer-ipfs-bootstrap/check-and-add-peers.sh /usr/local/bin/

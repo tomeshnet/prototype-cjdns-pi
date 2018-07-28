@@ -11,7 +11,6 @@ sudo rm -f /etc/systemd/system/peer-ipfs-bootstrap.service || true
 
 # Uninstall dependencies
 sudo apt-get remove -y jq
-sudo npm uninstall -g cjdnstool
 
 # Uninstall IPFS
 sudo systemctl disable ipfs.service 2>/dev/null || true
