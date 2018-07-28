@@ -10,7 +10,7 @@ cp $BASE_DIR/nodeinfo.json /tmp
 sed -i -e "s/REPO/$(git remote get-url origin | awk -F / '{print $5}'| cut -d '.' -f1)/g" /tmp/nodeinfo.json
 sed -i -e "s/BRANCH/$(git rev-parse --abbrev-ref HEAD)/g" /tmp/nodeinfo.json
 sed -i -e "s/COMMIT/$(git rev-parse HEAD)/g" /tmp/nodeinfo.json
-sed -i -e "s/INSTALLED/$(date)/g" nodeinfo.json
+sed -i -e "s/INSTALLED/$(date)/g" /tmp/nodeinfo.json
 
 sed -i -e "s/KEY/$(cat /etc/cjdroute.conf | jq '.publicKey')/g" /tmp/nodeinfo.json
 sed -i -e "s/ORG/$MESH_NAME/g" /tmp/nodeinfo.json
