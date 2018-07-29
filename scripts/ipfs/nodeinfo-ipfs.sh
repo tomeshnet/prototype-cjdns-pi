@@ -9,4 +9,4 @@ fi
 
 echo '    "ID":'${id}
 
-echo "}"
+echo "},"
