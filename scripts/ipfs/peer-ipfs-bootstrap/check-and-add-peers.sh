@@ -49,19 +49,16 @@ if [[ -z ${ipfs_peers} || ${ipfs_peers} -eq 0 ]]; then
             done
         fi
 
-        # Get 1-hop cjdns peers to query them
-        new_peers=0
-        read -a peers <<< `sudo nodejs /opt/cjdns/tools/peerStats 2>/dev/null | awk '{ if ($2 == "ESTABLISHED") print $1 }' | awk -F. '{ print $6".k" }' | xargs`
-
-        until [[ ${new_peers} -eq ${MAX_PEERS} || ${#peers[@]} -eq 0 ]]; do
+        while read -r peers; do
 
                 # Reset the list to the next top unchecked peer
                 peer=${peers[0]}
                 peer=$(sudo /opt/cjdns/publictoip6 $peer)
 
                 # See if they have IPFS enabled
-                res=$(curl ${peer}/nodeinfo.json)
-                if [[ $(echo ${res} | jq -r '.services | contains(["ipfs"])') ]]; then
+                res=$(curl http://[${peer}]/nodeinfo.json)
+                if [ ! -x "$res" ]; then
+                    if [[ $(echo ${res} | jq -r '.services | contains(["ipfs"])') ]]; then
                         id=$(echo ${res} | jq -r '.services.ipfs.ID')
 
                         # Add them as a bootstrap peer
@@ -69,6 +66,7 @@ if [[ -z ${ipfs_peers} || ${ipfs_peers} -eq 0 ]]; then
                         echo "/ip6/${peer}/tcp/4001/ipfs/${id}" >> /var/lib/peer-ipfs-bootstrap/peers.data
                         new_peers=$((new_peers + 1))
                         echo "Added cjdns peer ${peer} as a bootstrap node for IPFS."
+                    fi
                 fi
 
                 # Remove them
@@ -78,7 +76,8 @@ if [[ -z ${ipfs_peers} || ${ipfs_peers} -eq 0 ]]; then
                 # XXX: The below command hasn't been working -- so for now only 1-hop peers are checked
                 #peers+=$(cjdnstool query getpeers $peer | sed -e '1d;$d' |awk -F. '{ print $6".k" }')
 
-        done
+        done <<< `sudo nodejs /opt/cjdns/tools/peerStats 2>/dev/null | awk '{ if ($2 == "ESTABLISHED") print $1 }' | awk -F. '{ print $6".k" }' | xargs`
+
         echo "Restarting ipfs.service..."
         sudo systemctl restart ipfs
         echo "Restarted."
