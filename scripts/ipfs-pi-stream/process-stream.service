@@ -8,7 +8,7 @@ Type=simple
 User=pi
 Group=pi
 ExecStart=/usr/bin/process-stream.sh
-ExecStop=ExecStop=/bin/kill -s QUIT $MAINPID; /usr/bin/pkill -f ffmpeg
+ExecStop=/bin/kill -s QUIT $MAINPID; /usr/bin/pkill -f ffmpeg
 Restart=on-failure
 RestartSec=10s
 
