@@ -60,7 +60,6 @@ if [[ -z ${ipfs_peers} || ${ipfs_peers} -eq 0 ]]; then
                         # Add them as a bootstrap peer
                         ipfs bootstrap add "/ip6/${peer}/tcp/4001/ipfs/${id}"
                         echo "/ip6/${peer}/tcp/4001/ipfs/${id}" >> /var/lib/peer-ipfs-bootstrap/peers.data
-                        new_peers=$((new_peers + 1))
                         echo "Added cjdns peer ${peer} as a bootstrap node for IPFS."
                     fi
                 fi
@@ -74,7 +73,4 @@ if [[ -z ${ipfs_peers} || ${ipfs_peers} -eq 0 ]]; then
 
         done <<< `sudo nodejs /opt/cjdns/tools/peerStats 2>/dev/null | awk '{ if ($2 == "ESTABLISHED") print $1 }' | awk -F. '{ print $6".k" }' | xargs`
 
-        echo "Restarting ipfs.service..."
-        sudo systemctl restart ipfs
-        echo "Restarted."
 fi
