@@ -1,4 +1,5 @@
 {
+    "version": 0,
     "location": {
         "continent": "NA",
         "country": "Canada",
@@ -10,7 +11,7 @@
         "repo": "__REPO__",
         "branch": "__BRANCH__",
         "commit": "__COMMIT__",
-        "installed": "__INSTALLED__",
+        "installed": "__INSTALLED__",        
         "uri": "https://github.com/tomeshnet/prototype-cjdns-pi/"
     },
     "key": "__KEY__",
