@@ -31,19 +31,12 @@ sudo cp $BASE_DIR/nodeinfo-ipfs /opt/tomesh/nodeinfo.d/ipfs
 # add cjdns bootstrap address
 ipfs bootstrap add "$IPFS_PEER"
 
-# Service to bootstrap neighboring cjdns nodes if no other ipfs is found
-
 # Download dependencies
 sudo apt-get install -y jq
 
 # Move file
-sudo cp $BASE_DIR/peer-ipfs-bootstrap/check-and-add-peers.sh /usr/local/bin/
-sudo chmod +x /usr/local/bin/check-and-add-peers.sh
-
-# Create file for data
-sudo mkdir /var/lib/peer-ipfs-bootstrap
-sudo touch /var/lib/peer-ipfs-bootstrap/peers.data
-sudo chmod 777 /var/lib/peer-ipfs-bootstrap/peers.data
+sudo cp $BASE_DIR/ipfs-swarm-cjdns.sh /usr/local/bin/
+sudo chmod +x /usr/local/bin/ipfs-swarm-cjdns.sh
 
 # Configure systemd to start ipfs.service on system boot
 sudo cp "$BASE_DIR/ipfs.service" /etc/systemd/system/ipfs.service
