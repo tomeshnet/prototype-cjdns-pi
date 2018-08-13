@@ -18,7 +18,7 @@ if [[ -z ${ipfs_peers} || ${ipfs_peers} -eq 0 ]]; then
                 address=$(echo ${peer} | awk -F / '{ print $(NF-4) }')
 
                 # It's online, check to see if IPFS is enabled
-                res=$(curl ${address}/nodeinfo.json)
+                res=$(curl http://[${address}]/nodeinfo.json)
                 
                 if [[ -z "$res" ]] || [[ -z $(echo ${res} | jq -r -M '.version') ]] ; then
                     # Could not find or parse nodeinfo.json
