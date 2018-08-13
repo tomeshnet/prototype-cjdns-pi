@@ -22,7 +22,7 @@ if [[ -z ${ipfs_peers} || ${ipfs_peers} -eq 0 ]]; then
 
                     # It's online, check to see if IPFS is enabled
                     res=$(curl ${address}/nodeinfo.json)
-                    if [[ $(echo ${res} | jq -r '.services | contains(["ipfs"])') ]]; then
+                    if [[ ! $(echo ${res} | jq -r -M '.services.ipfs') == "null" ]]; then
 
                         # IPFS is enabled, but bootstrapping still failed
                         # Either nodeinfo is lying, or IPFS is temporarily down at the moment for this node
