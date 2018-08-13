@@ -30,7 +30,7 @@ sudo cp "$BASE_DIR/ipfs-http-gateway.conf" /etc/nginx/site-path-enabled/ipfs-htt
 sudo systemctl restart nginx.service
 
 source "$BASE_DIR/../shared/nodeinfo/install"
-sudo cp $BASE_DIR/nodeinfo-ipfs.sh /opt/tomesh/nodeinfo.d/nodeinfo-ipfs.sh
+sudo cp $BASE_DIR/nodeinfo-ipfs /opt/tomesh/nodeinfo.d/ipfs
 sudo chmod + /opt/tomesh/nodeinfo.d/nodeinfo-ipfs.sh
 
 # add cjdns bootstrap address
