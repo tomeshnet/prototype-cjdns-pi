@@ -2,7 +2,7 @@
 echo '"ipfs":{'
 echo '    "version":"'$(ipfs --version | awk '{ print $3 }')'",'
 
-id=$(ipfs id | jq '.ID') 2>/dev/null
+id=$(IPFS_PATH="__USER_HOME__/.ipfs" ipfs id | jq '.ID') 2>/dev/null
 if [ -z "$id" ]; then
     id='""'
 fi
