@@ -12,4 +12,4 @@ sudo cp $BASE_DIR/nodeinfo-update.sh /usr/local/bin/nodeinfo-update.sh
 
 BASE_DIR="$LAST_BASE"
 
-sudo sed -i 's/^exit 0//usr/local/bin/nodeinfo-update.sh\nexit 0/' /etc/rc.local
+sudo sed -i 's#^exit 0#/usr/local/bin/nodeinfo-update.sh\nexit 0#' /etc/rc.local
