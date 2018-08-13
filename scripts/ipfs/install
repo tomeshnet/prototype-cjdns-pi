@@ -32,6 +32,10 @@ source "$BASE_DIR/../shared/nginx/install"
 sudo cp "$BASE_DIR/ipfs-http-gateway.conf" /etc/nginx/site-path-enabled/ipfs-http-gateway.conf
 sudo systemctl restart nginx.service
 
+source "$BASE_DIR/../shared/nodeinfo/install"
+sudo cp $BASE_DIR/nodeinfo-ipfs /opt/tomesh/nodeinfo.d/ipfs
+sudo sed -i "s|__USER_HOME__|${HOME}|" /opt/tomesh/nodeinfo.d/ipfs
+
 # add cjdns bootstrap address
 ipfs bootstrap add "$IPFS_PEER"
 

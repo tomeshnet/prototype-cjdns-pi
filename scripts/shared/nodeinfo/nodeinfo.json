@@ -1,4 +1,5 @@
 {
+    "version": 0,
     "location": {
         "continent": "NA",
         "country": "Canada",
@@ -16,6 +17,6 @@
     "key": "__KEY__",
     "org": "__ORG__",
     "services": {
-        __SERVICES__
+    __SERVICES__
     }
 }
