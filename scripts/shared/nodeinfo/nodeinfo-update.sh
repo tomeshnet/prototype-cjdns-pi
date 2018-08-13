@@ -10,4 +10,4 @@ services=${services%,*}
 
 sed -i -e "s/__SERVICES__/$services/g" /tmp/nodeinfo.json
 
-cat  /tmp/nodeinfo.json | jq > /var/www/html/nodeinfo.json 
+jq . /tmp/nodeinfo.json > /var/www/html/nodeinfo.json 
