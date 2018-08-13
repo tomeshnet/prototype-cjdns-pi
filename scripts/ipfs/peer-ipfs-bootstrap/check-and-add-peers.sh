@@ -17,27 +17,23 @@ if [[ -z ${ipfs_peers} || ${ipfs_peers} -eq 0 ]]; then
             for peer in "${prev_peers[@]}"; do
                 address=$(echo ${peer} | awk -F / '{ print $(NF-4) }')
 
-                # Check if it's online
-                if ping -c 5 $address; then
-
-                    # It's online, check to see if IPFS is enabled
-                    res=$(curl ${address}/nodeinfo.json)
-                    if [[ ! $(echo ${res} | jq -r -M '.services.ipfs') == "null" ]]; then
-
-                        # IPFS is enabled, but bootstrapping still failed
-                        # Either nodeinfo is lying, or IPFS is temporarily down at the moment for this node
-                        # The second is assumed and so the peer is not removed from the bootstrap list
-                        continue
-                    else
-
-                        # IPFS has been removed from nodeinfo manually. It is assumed the peer will never be a candidate for bootstrapping again
-                        # The peer is removed
-                        ipfs bootstrap rm $peer
-                        sed -i "/$peer/d" /var/lib/peer-ipfs-bootstrap/peers.data
-                    fi
+                # It's online, check to see if IPFS is enabled
+                res=$(curl ${address}/nodeinfo.json)
+                
+                if [[ -z "$res" ]] || [[ -z $(echo ${res} | jq -r -M '.version') ]] ; then
+                    # Could not find or parse nodeinfo.json
+                    # Node is down or no longer reponsing
+                    ipfs bootstrap rm $peer
+                    sed -i "/$peer/d" /var/lib/peer-ipfs-bootstrap/peers.data                
+                elif [[ ! $(echo ${res} | jq -r -M '.services.ipfs') == "null" ]]; then
+                
+                    # IPFS is enabled, but bootstrapping still failed
+                    # Either nodeinfo is lying, or IPFS is temporarily down at the moment for this node
+                    # The second is assumed and so the peer is not removed from the bootstrap list
+                    continue
                 else
-
-                    # It's not online. The peer is removed, since this script does not track long term uptime stats of nodes.
+                    # nodeinfo.json no longer reports IPFS installed
+                    # The peer is removed
                     ipfs bootstrap rm $peer
                     sed -i "/$peer/d" /var/lib/peer-ipfs-bootstrap/peers.data
                 fi
