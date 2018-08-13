@@ -8,13 +8,11 @@ until [[ $( curl http://localhost:5001/api/v0/id -q 2>/dev/null) || ${attempts} 
 done
 
 while read -r peer; do
-
     peer=$(sudo /opt/cjdns/publictoip6 $peer)
 
     # See if they have IPFS enabled
     res=$(curl http://[${peer}]/nodeinfo.json)
-    if [ ! -x "$res" ]; then
-            
+    if [ ! -x "$res" ]; then        
         id=$(echo ${res} | jq -r -M '.services.ipfs.ID')
         # Value is found
         if [[ ! ${id} == "null" ]] && [[ ! "${id}" == "" ]]; then
