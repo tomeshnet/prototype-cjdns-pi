@@ -41,27 +41,23 @@ if [[ -z ${ipfs_peers} || ${ipfs_peers} -eq 0 ]]; then
             done
         fi
 
-        while read -r peers; do
+        while read -r peer; do
 
-                # Reset the list to the next top unchecked peer
-                peer=${peers[0]}
                 peer=$(sudo /opt/cjdns/publictoip6 $peer)
 
                 # See if they have IPFS enabled
                 res=$(curl http://[${peer}]/nodeinfo.json)
                 if [ ! -x "$res" ]; then
-                    if [[ $(echo ${res} | jq -r '.services | contains(["ipfs"])') ]]; then
-                        id=$(echo ${res} | jq -r '.services.ipfs.ID')
-
+                
+                    id=$(echo ${res} | jq -r -M '.services.ipfs.ID')
+                    # Value is found
+                    if [[ ! ${id} == "null" ]] && [[ ! "${id}" == "" ]]; then
                         # Add them as a bootstrap peer
                         ipfs bootstrap add "/ip6/${peer}/tcp/4001/ipfs/${id}"
                         echo "/ip6/${peer}/tcp/4001/ipfs/${id}" >> /var/lib/peer-ipfs-bootstrap/peers.data
                         echo "Added cjdns peer ${peer} as a bootstrap node for IPFS."
                     fi
                 fi
-
-                # Remove them
-                peers=("${peers[@]/$peer}")
 
                 # Add all that node's peers to the bottom of the list to check further hop peers
                 # XXX: The below command hasn't been working -- so for now only 1-hop peers are checked
