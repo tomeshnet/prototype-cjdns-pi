@@ -7,6 +7,10 @@ until [[ $(curl http://localhost:5001/api/v0/id -q 2>/dev/null) || ${attempts} -
     attempts=$((attempts-1))
 done
 
+if [[  ${attempts} -eq 0 ]]; then
+    exit 1
+fi
+
 while read -r cjdns_peer; do
     cjdns_addr=$(sudo /opt/cjdns/publictoip6 $cjdns_peer)
 
