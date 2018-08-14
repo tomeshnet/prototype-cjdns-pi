@@ -7,6 +7,7 @@ After=network.target
 Type=simple
 Environment=IPFS_PATH=__USER_HOME__/.ipfs
 ExecStart=/usr/local/bin/ipfs daemon --enable-namesys-pubsub --migrate=true
+ExecStartPost=/usr/local/bin/ipfs-swarm-cjdns.sh
 ExecStop=/bin/kill -s QUIT $MAINPID
 Restart=on-failure
 RestartSec=10s
