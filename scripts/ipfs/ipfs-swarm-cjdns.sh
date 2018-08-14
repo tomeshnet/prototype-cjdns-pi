@@ -20,7 +20,7 @@ while read -r cjdns_peer; do
         id=$(echo ${res} | jq -r -M '.services.ipfs.ID')
         # Value is found
         if [[ ! ${id} == "null" ]] && [[ ! "${id}" == "" ]]; then
-            # Add them as a bootstrap peer
+            # Connect IPFS to the peer
             ipfs swarm connect "/ip6/${cjdns_addr}/tcp/4001/ipfs/${id}"
             echo "Connecting to ${cjdns_addr}."
         fi
