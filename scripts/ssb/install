@@ -4,10 +4,13 @@ set -e
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Install dependencies
 sudo apt-get install -y socat python-dev libtool python-setuptools autoconf automake
 
+# Install scuttlebot
 sudo npm install scuttlebot -g --unsafe-perm
 
+# Store current user as sudo will change it
 currentUser=$USER
 
 sudo cp "$BASE_DIR/ssb.service" /etc/systemd/system/ssb.service
@@ -17,6 +20,7 @@ sudo systemctl daemon-reload
 sudo systemctl enable ssb.service
 sudo systemctl start ssb.service
 
+# Install broadcast service to workaround issue with sbot not broadcasting correctly
 sudo cp "$BASE_DIR/ssb-broadcast-service.sh" "/usr/local/bin/ssb-broadcast-service.sh"
 sudo cp "$BASE_DIR/ssb-broadcast.service" /etc/systemd/system/ssb-broadcast.service
 sudo sed -i "s|__USER__|${currentUser}|g" /etc/systemd/system/ssb-broadcast.service

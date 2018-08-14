@@ -1,4 +1,5 @@
 {
+    "version": 0,
     "location": {
         "continent": "NA",
         "country": "Canada",
@@ -7,15 +8,15 @@
         "uri": "https://tomesh.net"
     },
     "software": {
-        "repo": "REPO",
-        "branch": "BRANCH",
-        "commit": "COMMIT",
-        "installed": "INSTALLED",
+        "repo": "__REPO__",
+        "branch": "__BRANCH__",
+        "commit": "__COMMIT__",
+        "installed": "__INSTALLED__",
         "uri": "https://github.com/tomeshnet/prototype-cjdns-pi/"
     },
-    "key": "KEY",
-    "org": "ORG",
+    "key": "__KEY__",
+    "org": "__ORG__",
     "services": {
-        SERVICES
+    __SERVICES__
     }
 }

@@ -7,8 +7,8 @@ After=network.target
 User=__USER__
 Group=__USER__
 Type=simple
-ExecStart=/usr/bin/sbot server 
-ExecStop=/usr/bin/pkill -f sbot
+ExecStart=/usr/bin/sbot server
+ExecStop=/bin/kill -s QUIT $MAINPID
 Restart=on-failure
 RestartSec=10s
 

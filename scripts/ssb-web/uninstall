@@ -17,5 +17,5 @@ sudo npm uninstall -g --unsafe-perm \
                  ssb-client \
                  ssb-feed \
                  pull-stream
-                 
-sudo apt-get remove -y php-fpm socat 
+
+sudo apt-get remove -y php-fpm socat

@@ -2,6 +2,12 @@
 
 set -e
 
+# Remove script and service for ipfs bootstrap
+sudo rm -r /usr/local/bin/ipfs-swarm-cjdns.sh || true
+
+# Uninstall dependencies
+sudo apt-get remove -y jq
+
 # Uninstall IPFS
 sudo systemctl disable ipfs.service 2>/dev/null || true
 sudo systemctl stop ipfs.service 2>/dev/null || true
@@ -25,4 +31,3 @@ fi
 sudo rm -f /etc/nginx/sites-enabled/ipfs-http-gateway
 sudo rm -f /etc/nginx/sites-available/ipfs-http-gateway
 sudo systemctl restart nginx.service
-

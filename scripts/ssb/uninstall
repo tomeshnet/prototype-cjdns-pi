@@ -10,7 +10,7 @@ sudo systemctl disable ssb-broadcast.service || true
 sudo systemctl daemon-reload
 
 sudo npm uninstall scuttlebot -g
-apt-get remove -y socat
+sudo apt-get remove -y socat
 
 sudo rm -f /usr/bin/sbot || true
 sudo rm -f /etc/systemd/system/ssb.service

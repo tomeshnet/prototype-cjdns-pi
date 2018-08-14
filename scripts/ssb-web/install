@@ -35,23 +35,23 @@ chmod -R a+rwX $ssbPath
 
 # Link .ssb to nginx's home directory becuse that is where sbot looks for it
 if [ -e "/var/www/.ssb" ]; then
-  sudo rm -rf /var/www/.ssb
+    sudo rm -rf /var/www/.ssb
 fi
 sudo ln -s $ssbPath /var/www/
 
 # Create nginx site at /sbot
-sudo cp $BASE_DIR/ssb-web.conf  /etc/nginx/site-path-enabled/ssb-web.conf
+sudo cp $BASE_DIR/ssb-web.conf /etc/nginx/site-path-enabled/ssb-web.conf
 
 # Pull and install client
 if [ -e "$BASE_DIR/tmp" ]; then
-  sudo rm -rf "$BASE_DIR/tmp"
+    sudo rm -rf "$BASE_DIR/tmp"
 fi
 mkdir "$BASE_DIR/tmp"
 git clone https://github.com/darkdrgn2k/ssb-web-pi.git "$BASE_DIR/tmp/ssb-web-pi"
 sudo mkdir /var/www/sbot
 sudo cp -r "$BASE_DIR/tmp/ssb-web-pi/html/." "/var/www/sbot/"
 
-sudo  mkdir /var/www/backend
+sudo mkdir /var/www/backend
 sudo cp -r "$BASE_DIR/tmp/ssb-web-pi/backend/." "/var/www/backend"
 
 sudo mkdir /var/www/backend/keys
@@ -62,6 +62,6 @@ sudo ln -s /usr/bin/sbot /usr/local/bin/sbot
 
 # Set permissions
 sudo chmod a+rwX /var/www/backend
-sudo chmod  -R a+rwX /var/www/backend
+sudo chmod -R a+rwX /var/www/backend
 sudo chown www-data.www-data /var/www/sbot
 sudo chown -R www-data.www-data /var/www/sbot

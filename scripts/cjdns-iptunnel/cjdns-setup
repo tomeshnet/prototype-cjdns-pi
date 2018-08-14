@@ -30,10 +30,10 @@ elif [ -e /etc/cjdns.iptunnel.client ]; then
     while read -r PUBLIC_KEY; do
         if [[ "${PUBLIC_KEY}" =~ ^[0-z]{52}\.k ]]; then
             /opt/cjdns/tools/cexec  "IpTunnel_connectTo('${PUBLIC_KEY}')"
-        fi        
+        fi
     done < /etc/cjdns.iptunnel.client
 
     # Route NAT traffic through to cjdns tun0 interface to use iptunnel exit server
     iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE || true
-    iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE    
+    iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
 fi
