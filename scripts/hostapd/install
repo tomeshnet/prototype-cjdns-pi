@@ -10,8 +10,8 @@ H_DNS_SERVER_1="fc6e:691e:dfaa:b992:a10a:7b49:5a1a:5e09"
 H_DNS_SERVER_2="fc16:b44c:2bf9:467:8098:51c6:5849:7b4f"
 
 # Internet DNS servers
-I_DNS_SERVER_0="8.8.8.8"
-I_DNS_SERVER_1="8.8.4.4"
+I_DNS_SERVER_0="1.1.1.1"
+I_DNS_SERVER_1="1.0.0.1"
 
 # Create radvd.conf before installing radvd, installation fails without it
 if ! [ -f /etc/radvd.conf ]; then
