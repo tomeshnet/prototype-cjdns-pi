@@ -37,6 +37,10 @@ source "$BASE_DIR/grafana/uninstall"
 source "$BASE_DIR/extra-tools/uninstall"
 source "$BASE_DIR/watchdog/uninstall"
 source "$BASE_DIR/yrd/uninstall"
+source "$BASE_DIR/shared/nodeinfo/uninstall"
+source "$BASE_DIR/shared/nginx/uninstall"
+
+
 
 sudo systemctl daemon-reload
 
