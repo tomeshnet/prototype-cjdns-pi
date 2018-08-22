@@ -9,7 +9,9 @@ source "$BASE_DIR/../shared/nginx/install"
 sudo apt-get install -y php-fpm socat
 
 # Install required parts of ssb from npm
-sudo npm install -g --unsafe-perm \
+# sudo sudo is a hack to allow post-install scripts that drop one level of sudo and still be sudoed
+# otherwise you get permissions errors when it tries to write to root owned folders
+sudo sudo npm install -g --unsafe-perm \
                  ssb-keys \
                  ssb-client \
                  ssb-feed \
