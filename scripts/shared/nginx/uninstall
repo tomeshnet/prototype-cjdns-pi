@@ -1,0 +1,7 @@
+#!/bin/sh
+
+sudo rm -rf /etc/nginx/sites-available/main.conf
+sudo rm -rf /etc/nginx/sites-enabled/main.conf
+sudo rm /etc/nginx/sites-enabled/default
+sudo rm -rf /etc/nginx/site-path-enabled
+sudo apt-get remove nginx -y
