@@ -10,7 +10,7 @@ if [ ! -x "$(command -v nginx)" ]; then
 
     sudo cp "$BASE_DIR/main.conf" /etc/nginx/sites-available/main.conf
     sudo ln -s /etc/nginx/sites-available/main.conf /etc/nginx/sites-enabled/main.conf
-    sudo rm /etc/nginx/sites-enabled/default
+    sudo rm /etc/nginx/sites-enabled/default || true
     sudo mkdir /etc/nginx/site-path-enabled
     BASE_DIR="$LAST_BASE"
 
