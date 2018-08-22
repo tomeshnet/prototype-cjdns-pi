@@ -2,7 +2,7 @@
 
 sudo sed -i 'd#/usr/local/bin/nodeinfo-update.sh#' /etc/rc.local
 
-rm -rf /usr/local/bin/nodeinfo-update.sh 
-rm -rf /opt/tomesh/nodeinfo.json
-sudo rm -rf /opt/tomesh/nodeinfo.d
+sudo rm -rf /usr/local/bin/nodeinfo-update.sh || true 
+sudo rm -rf /opt/tomesh/nodeinfo.json || true
+sudo rm -rf /opt/tomesh/nodeinfo.d || true
 sudo apt-get remove -y jq
