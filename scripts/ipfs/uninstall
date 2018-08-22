@@ -21,7 +21,7 @@ if [ -d "$HOME/.ipfs" ]; then
     echo ""
     if [[ $REPLY =~ ^[Nn]$ ]]; then
         echo -e "\e[1;31mRemoving ~/.ipfs\e[0m"
-        rm -rf ~/.ipfs
+        sudo rm -rf ~/.ipfs
     else
         echo -e "\e[1;32mKeeping ~/.ipfs\e[0m"
     fi
