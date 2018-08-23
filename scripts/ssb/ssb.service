@@ -1,15 +1,16 @@
 [Unit]
-Description=Prometheus Node Exporter daemon addons
+Description=Scuttlebot (SSB) daemon
 Wants=network.target
 After=network.target
 
 [Service]
+User=__USER__
+Group=__USER__
 Type=simple
-ExecStart=/usr/bin/python /opt/tomesh/nodestats-ubiquity.py
+ExecStart=/usr/bin/sbot server
 ExecStop=/bin/kill -s QUIT $MAINPID
 Restart=on-failure
 RestartSec=10s
 
 [Install]
 WantedBy=multi-user.target
-

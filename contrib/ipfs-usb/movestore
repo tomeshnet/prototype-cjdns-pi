@@ -1,0 +1,20 @@
+#!/bin/sh
+if [ -z "$1" ] && [ -z "$2" ]; then
+   echo Syntax 
+   echo movestore \[Device\] \[User\]
+   echo Device - Device to format and mount
+   echo User - User running ipfs that the repo will be moved to
+   exit 0
+fi
+device="$1"
+user="$2"
+
+mkfs.ext3 /dev/$device
+service ipfs stop
+e2label  /dev/$device ipfs-data
+mkdir /mnt/ipfs-data
+echo "LABEL=ipfs-data  /mnt/ipfs-data ext3  defaults,noatime  0  0" >> /etc/fstab
+mount /mnt/ipfs-data
+mv /home/$user/.ipfs /mnt/ipfs-data/
+ln -s /mnt/ipfs-data/.ipfs /home/$user/.ipfs
+service ipfs start

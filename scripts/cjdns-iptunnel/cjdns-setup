@@ -5,9 +5,9 @@ set -e
 # Configure as cjdns iptunnel server if server file is present (this is simply a newline-separated list
 # of cjdns public keys in /etc/cjdns.iptunnel.server, each key indicating an allowed iptunnel client)
 if [ -e /etc/cjdns.iptunnel.server ]; then
-    # Add subnet and route for cjdns tun0 interface
-    sudo ifconfig tun0 10.1.0.1/24
-    sudo route add -net 10.1.0.0/24 tun0
+    # Add subnet and route for cjdns tun0 interface    
+    ifconfig tun0 10.1.0.1/24
+    route add -net 10.1.0.0/24 tun0 || true
 
     # Define local IP range for assigning to iptunnel clients (10.1.0.2 to 10.1.0.254)
     SUBNET="10.1.0."
@@ -30,10 +30,10 @@ elif [ -e /etc/cjdns.iptunnel.client ]; then
     while read -r PUBLIC_KEY; do
         if [[ "${PUBLIC_KEY}" =~ ^[0-z]{52}\.k ]]; then
             /opt/cjdns/tools/cexec  "IpTunnel_connectTo('${PUBLIC_KEY}')"
-
-            # Route NAT traffic through to cjdns tun0 interface to use iptunnel exit server
-            sudo iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE || true
-            sudo iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
         fi
     done < /etc/cjdns.iptunnel.client
+
+    # Route NAT traffic through to cjdns tun0 interface to use iptunnel exit server
+    iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE || true
+    iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
 fi

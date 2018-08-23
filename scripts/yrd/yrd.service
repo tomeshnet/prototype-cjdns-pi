@@ -1,0 +1,15 @@
+[Unit]
+Description=yrd: cjdroute configuration utils
+Requires=cjdns.service
+After=cjdns.service
+
+[Service]
+Type=oneshot
+ProtectHome=true
+ProtectSystem=true
+ExecStart=/usr/local/bin/yrd start --attach
+ExecStop=/bin/kill -s QUIT $MAINPID
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target

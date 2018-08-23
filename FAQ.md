@@ -66,6 +66,18 @@ overlays=usbhost2 usbhost3
 
 **A**: The daily apt upgrade sometimes starts up in the background locking the apt database. This will cause the script to fail as it tries to install the required software. Wait for the upgrade to finish.
 
+**Q:** Seems all my mac addresses are the same across multiple boards. How do I fix this?
+
+Seems some of the Armbian images have a hardcoded machine id.  Generate a new one using the following script 
+```
+if [ `cat /etc/machine-id` == "f3f0aa4383b442e6ae0b889a10144d76" ]; then  
+    echo Generating new ID
+    sudo mv /etc/machine-id /etc/machine-id.old
+    dbus-uuidgen | sudo tee /var/lib/dbus/machine-id
+    sudo cp /var/lib/dbus/machine-id /etc/machine-id
+fi
+```
+
 ### Rock64
 
 **Q:** What is the baud rate for the Rock64?

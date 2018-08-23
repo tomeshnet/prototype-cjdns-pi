@@ -25,6 +25,7 @@ if [ -f "/etc/cjdroute.conf" ]; then
 fi
 
 # Uninstall optional modules
+source "$BASE_DIR/ssb/uninstall"
 source "$BASE_DIR/mesh-point/uninstall"
 source "$BASE_DIR/mesh-adhoc/uninstall"
 source "$BASE_DIR/hostapd/uninstall"
@@ -35,6 +36,9 @@ source "$BASE_DIR/prometheus-server/uninstall"
 source "$BASE_DIR/grafana/uninstall"
 source "$BASE_DIR/extra-tools/uninstall"
 source "$BASE_DIR/watchdog/uninstall"
+source "$BASE_DIR/yrd/uninstall"
+source "$BASE_DIR/shared/nodeinfo/uninstall"
+source "$BASE_DIR/shared/nginx/uninstall"
 
 sudo systemctl daemon-reload
 
