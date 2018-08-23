@@ -53,6 +53,6 @@ export WITH_WATCHDOG
 export WITH_YRD
 export WITH_SSB
 export WITH_SSB_WEB
-
+export WITH_IPFS_PI_STREAM
 # Run the actual installation script
 ./install2
