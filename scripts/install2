@@ -205,15 +205,17 @@ if [ -z "$WITH_SSB" -o "$WITH_SSB" != "true" -a "$WITH_SSB" != "false" ]; then
         WITH_SSB=true
     fi
 fi
-if [ -z "$WITH_SSB_WEB" -o "$WITH_SSB_WEB" != "true" -a "$WITH_SSB_WEB" != "false" ]; then
-    read -p "Install SSB web client (Experimental) (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mSSB web client installation will be skipped\e[0m"
-        WITH_SSB_WEB=false
-    else
-        echo -e "\e[1;32mSSB web client will be installed\e[0m"
-        WITH_SSB_WEB=true
+if [ "$WITH_SSB" == true ]; then
+    if [ -z "$WITH_SSB_WEB" -o "$WITH_SSB_WEB" != "true" -a "$WITH_SSB_WEB" != "false" ]; then
+        read -p "Install SSB web client (Experimental) (Y/n)? " -n 1 -r
+        echo ""
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            echo -e "\e[1;32mSSB web client will be installed\e[0m"
+            WITH_SSB_WEB=true        
+        else
+            echo -e "\e[1;31mSSB web client installation will be skipped\e[0m"
+            WITH_SSB_WEB=false
+                fi
     fi
 fi
 if [ -z "$WITH_YRD" -o "$WITH_YRD" != "true" -a "$WITH_YRD" != "false" ]; then
