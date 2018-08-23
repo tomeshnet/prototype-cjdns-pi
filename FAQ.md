@@ -66,6 +66,18 @@ overlays=usbhost2 usbhost3
 
 **A**: The daily apt upgrade sometimes starts up in the background locking the apt database. This will cause the script to fail as it tries to install the required software. Wait for the upgrade to finish.
 
+**Q:** Seems all my mac addresses are the same across multiple boards. How do I fix this?
+
+Seems some of the Armbian images have a hardcoded machine id.  Generate a new one using the following script 
+```
+if [ `cat /etc/machine-id` == "f3f0aa4383b442e6ae0b889a10144d76" ]; then  
+    echo Generating new ID
+    sudo mv /etc/machine-id /etc/machine-id.old
+    dbus-uuidgen | sudo tee /var/lib/dbus/machine-id
+    sudo cp /var/lib/dbus/machine-id /etc/machine-id
+fi
+```
+
 ### Rock64
 
 **Q:** What is the baud rate for the Rock64?
@@ -90,15 +102,4 @@ setenv image_name boot/Image
 setenv load_script 'if test -e mmc 0:1 boot/boot.scr; then echo \"... booting from SD\";setenv boot_interface mmc;else echo \"... booting from USB/SATA\";usb start;setenv boot_interface usb;fi;if test -e \$boot_interface 0:1 boot/boot.scr;then ext4load \$boot_interface 0:1 0x00800000 boot/boot.scr; source; fi'
 setenv bootcmd 'run get_images; run set_bootargs; run load_script;booti \$kernel_addr \$ramfs_addr \$fdt_addr'
 saveenv
-```
-**Q:** Seems all my mac addresses are the same across multiple boards. How do I fix this?
-
-Seems some of the Armbian images have a hardcoded machine id.  Generate a new one using the following script 
-```
-if [ `cat /etc/machine-id` == "f3f0aa4383b442e6ae0b889a10144d76" ]; then  
-    echo Generating new ID
-    sudo mv /etc/machine-id /etc/machine-id.old
-    dbus-uuidgen | sudo tee /var/lib/dbus/machine-id
-    sudo cp /var/lib/dbus/machine-id /etc/machine-id
-fi
 ```
