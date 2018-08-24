@@ -103,3 +103,22 @@ setenv load_script 'if test -e mmc 0:1 boot/boot.scr; then echo \"... booting fr
 setenv bootcmd 'run get_images; run set_bootargs; run load_script;booti \$kernel_addr \$ramfs_addr \$fdt_addr'
 saveenv
 ```
+## Wireless
+
+**Q:** Can I use the on board wireless of my RaspberryPi/OrangePi/etc to mesh?
+
+**A:** Maybe. 
+
+On board wireless we have seen so far
+* Do NOT support 802.11s/meshpoint
+* Do report to support Ad-Hoc mode 
+* Do NOT support 40Mhz width
+* Will only connect to other devices using Ad-Hoc and not using 40Mhz
+* May or may not work. Protocol is not usually maintained as part of drivers
+
+To install
+* Install Ad-Hoc mesh module
+* Do NOT install Access Point
+* After install remove `HT40+` from `/usr/bin/mesh-adhoc`
+
+If you have success using ad-hoc with on board cards please let us know your experience.
