@@ -15,4 +15,4 @@ sudo apt-get -y remove ffmpeg lsof inotify-tools
 
 # Revert permissions
 sudo chmod 755 /var/www/html
-echo -i "/ipfs repo gc/d" | sudo tee --append /etc/crontab
+sed -i "/ipfs repo gc/d" | sudo tee --append /etc/crontab
