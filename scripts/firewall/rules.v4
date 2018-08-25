@@ -7,12 +7,15 @@
 -A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
 -A INPUT -p udp -m udp --sport 67:68 --dport 67:68 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 53 -j ACCEPT
+-A INPUT -p udp -m udp --dport 53 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 443 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 9100 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 9090 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 3000 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 5201 -j ACCEPT
--A INPUT -i wlan* -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 4001 -j ACCEPT
+-A INPUT -i wlan+ -j ACCEPT
 -A INPUT -j DROP
 COMMIT

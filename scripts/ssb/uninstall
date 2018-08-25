@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Uninstall SSB
+sudo systemctl stop ssb.service || true
+sudo systemctl disable ssb.service || true
+sudo systemctl stop ssb-broadcast.service || true
+sudo systemctl disable ssb-broadcast.service || true
+sudo systemctl daemon-reload
+
+sudo npm uninstall scuttlebot -g
+sudo apt-get remove -y socat
+
+sudo rm -f /usr/bin/sbot || true
+sudo rm -f /etc/systemd/system/ssb.service
+sudo rm -f /etc/systemd/system/ssb-broadcast.service
+sudo rm -f /usr/local/bin/ssb-broadcast-service.sh
+
+if [ -d "$HOME/.ssb" ]; then
+    echo "Found ~/.ssb"
+    read -p "Keep your SSB data (Y/n)? " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo -e "\e[1;31mRemoving ~/.ssb\e[0m"
+        rm -rf ~/.ssb
+    else
+        echo -e "\e[1;32mKeeping ~/.ssb\e[0m"
+    fi
+fi

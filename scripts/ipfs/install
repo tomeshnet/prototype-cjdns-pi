@@ -2,7 +2,10 @@
 
 set -e
 
-GO_IPFS_VERSION=v0.4.14
+GO_IPFS_VERSION=v0.4.17
+
+# Hyperborea connected peer used to bootstrap hyperborea only ipfs nodes
+IPFS_PEER="/ip6/fc6e:691e:dfaa:b992:a10a:7b49:5a1a:5e09/tcp/4001/ipfs/QmU6NeD2Uu34WKest1NZGvGmScLhN1zVo66K35GeE6Jft2"
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -17,21 +20,27 @@ rm -rf "$BASE_DIR/tmp"
 # Initialize IPFS
 ipfs init
 
+# Configure HTTP to IPFS gateway
+source "$BASE_DIR/../shared/nginx/install"
+sudo cp "$BASE_DIR/ipfs-http-gateway.conf" /etc/nginx/site-path-enabled/ipfs-http-gateway.conf
+sudo systemctl restart nginx.service
+
+source "$BASE_DIR/../shared/nodeinfo/install"
+sudo cp $BASE_DIR/nodeinfo-ipfs /opt/tomesh/nodeinfo.d/ipfs
+
+# add cjdns bootstrap address
+ipfs bootstrap add "$IPFS_PEER"
+
+# Download dependencies
+sudo apt-get install -y jq
+
+# Move file
+sudo cp $BASE_DIR/ipfs-swarm-cjdns.sh /usr/local/bin/
+sudo chmod +x /usr/local/bin/ipfs-swarm-cjdns.sh
+
 # Configure systemd to start ipfs.service on system boot
 sudo cp "$BASE_DIR/ipfs.service" /etc/systemd/system/ipfs.service
-sudo sed -i "s|USER_HOME|${HOME}|" /etc/systemd/system/ipfs.service
+sudo sed -i "s|__USER_HOME__|${HOME}|" /etc/systemd/system/ipfs.service
 sudo systemctl daemon-reload
 sudo systemctl enable ipfs.service
 sudo systemctl start ipfs.service
-
-# Install nginx
-sudo apt-get install nginx -y
-
-# Configure HTTP to IPFS gateway
-sudo cp "$BASE_DIR/ipfs-http-gateway.nginx" /etc/nginx/sites-available/ipfs-http-gateway
-sudo ln -s /etc/nginx/sites-available/ipfs-http-gateway /etc/nginx/sites-enabled/ipfs-http-gateway
-sudo rm /etc/nginx/sites-enabled/default
-sudo systemctl restart nginx.service
-
-# add cjdns bootstrap address
-ipfs bootstrap add /ip6/fc6e:691e:dfaa:b992:a10a:7b49:5a1a:5e09/tcp/4001/ipfs/QmU6NeD2Uu34WKest1NZGvGmScLhN1zVo66K35GeE6Jft2

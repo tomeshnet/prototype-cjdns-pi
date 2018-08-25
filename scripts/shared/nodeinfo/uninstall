@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+sudo sed -i 'd#/usr/local/bin/nodeinfo-update.sh#' /etc/rc.local
+
+sudo rm -rf /usr/local/bin/nodeinfo-update.sh || true 
+sudo rm -rf /opt/tomesh/nodeinfo.json || true
+sudo rm -rf /opt/tomesh/nodeinfo.d || true
+sudo apt-get remove -y jq

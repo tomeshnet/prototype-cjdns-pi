@@ -4,9 +4,14 @@ set -e
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Hyperboria DNS servers
 H_DNS_SERVER_0="fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc"
 H_DNS_SERVER_1="fc6e:691e:dfaa:b992:a10a:7b49:5a1a:5e09"
 H_DNS_SERVER_2="fc16:b44c:2bf9:467:8098:51c6:5849:7b4f"
+
+# Internet DNS servers
+I_DNS_SERVER_0="1.1.1.1"
+I_DNS_SERVER_1="1.0.0.1"
 
 # Create radvd.conf before installing radvd, installation fails without it
 if ! [ -f /etc/radvd.conf ]; then
@@ -88,13 +93,17 @@ if [ -f /etc/dnsmasq.conf ]; then
     sudo cp /etc/dnsmasq.conf /etc/dnsmasq.conf.bak
 fi
 
-# Use hyperborea dns addressses if h-dns is enabled
+# Use Hyperboria DNS addressses if h-dns is enabled
 sudo cp "$BASE_DIR/dnsmasq.conf" /etc/dnsmasq.conf
 if [ ! -z "$WITH_H_DNS" -a "$WITH_H_DNS" == "true" ]; then
    echo "server=$H_DNS_SERVER_0" | sudo tee --append /etc/dnsmasq.conf
    echo "server=$H_DNS_SERVER_1" | sudo tee --append /etc/dnsmasq.conf
    echo "server=$H_DNS_SERVER_2" | sudo tee --append /etc/dnsmasq.conf
+elif [ ! -z "$WITH_CJDNS_IPTUNNEL" -a "$WITH_CJDNS_IPTUNNEL" ]; then
+   echo "server=$I_DNS_SERVER_0" | sudo tee --append /etc/dnsmasq.conf
+   echo "server=$I_DNS_SERVER_1" | sudo tee --append /etc/dnsmasq.conf
 fi
+
 if [ -f /etc/dhcpcd.conf ]; then
     sudo cp /etc/dhcpcd.conf /etc/dhcpcd.conf.bak
     sudo echo "" | sudo tee --append /etc/dhcpcd.conf > /dev/null
@@ -132,3 +141,6 @@ if [[ -z "$(cat /etc/rc.local | grep dnsmasq)" ]]; then
     sudo sed -i 's/^exit 0/service dnsmasq restart\nexit 0/' /etc/rc.local 
 fi
 
+if [[ -z "$(cat /etc/rc.local | grep rfkill)" ]]; then
+    sudo sed -i 's/^exit 0/rfkill unblock wifi \&\& service hostapd restart\nexit 0/' /etc/rc.local 
+fi

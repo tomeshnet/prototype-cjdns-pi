@@ -7,7 +7,7 @@ After=network.target
 WorkingDirectory=/opt/prometheus
 Type=simple
 ExecStart=/opt/prometheus/prometheus
-ExecStop=/usr/bin/pkill -f prometheus
+ExecStop=/bin/kill -s QUIT $MAINPID
 Restart=on-failure
 RestartSec=10s
 
