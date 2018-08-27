@@ -343,6 +343,9 @@ fi
 sudo apt-get install haveged -y || true
 sudo apt-get install iw -y || true
 
+# Add /sbin to $PATH, this was an issue on Orange Pi Zero, certain commands didn't work
+echo 'export PATH="/sbin:$PATH"' | sudo tee -a /etc/profile
+
 # Check if cjdns is to be compiled or downloaded
 if [[ ! -e "/usr/bin/cjdroute" ]]; then
     if [ ! -z "$CJDNS_PACKAGE" ]; then
