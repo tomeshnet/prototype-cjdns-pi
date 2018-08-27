@@ -340,7 +340,8 @@ if ! [ "$(which nodejs)" ]; then
 fi
 
 # Install possibly missing tools
-sudo apt-get install haveged -y
+sudo apt-get install haveged -y || true
+sudo apt-get install iw -y || true
 
 # Check if cjdns is to be compiled or downloaded
 if [[ ! -e "/usr/bin/cjdroute" ]]; then
