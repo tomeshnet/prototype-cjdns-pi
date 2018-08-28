@@ -18,37 +18,6 @@ SUPPORT_HOSTAP=false
 SUPPORT_WATCHDOG=false
 CJDNS_PACKAGE=""
 
-# Normalize OS environment
-
-# Enable password-less sudo on Armbian
-sudo sed -i 's/ALL=(ALL:ALL) ALL/ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
-
-# Disable predictable network interface naming
-sudo touch /etc/udev/rules.d/80-net-setup-link.rules
-
-# Check for broken interface file, create if broken
-if [ ! -e "/etc/network/interfaces" ] ; then
-  rm /etc/network/interfaces || true
-  echo "auto lo" | sudo tee /etc/network/interfaces > /dev/null
-  echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces > /dev/null
-fi
-
-# Disable NetworkManager management of wlan0 so it doesn't pause it to scan every 60 seconds
-if [[ -e '/etc/NetworkManager/NetworkManager.conf' ]]; then
-    if [[ -z "$(grep "\[keyfile\]" /etc/NetworkManager/NetworkManager.conf)" ]]; then
-        echo "[keyfile]" | sudo tee --append /etc/NetworkManager/NetworkManager.conf > /dev/null
-        echo "unmanaged-devices=interface-name:wlan0" | sudo tee --append /etc/NetworkManager/NetworkManager.conf > /dev/null
-    fi
- fi
- 
-# Detect missing /sbin from $PATH variable on Debian distros, and add it
-if [ -z $(echo $PATH | grep "/sbin") ]; then 
-    # Current environment
-    export PATH="/sbin:$PATH"
-    # Next login
-    echo 'export PATH="/sbin:$PATH"' | sudo tee -a /etc/profile
-fi
-
 # If board cannot be determined from /proc/cpuinfo its most likely an arbmian board so you can use the armbian generated ID file
 if [[ -z "$BOARD_HARDWARE" ]]; then
     BOARD_HARDWARE="$(grep "BOARD=" /etc/armbian-image-release | awk -F \= '{print $2}' | tr -d \" | sed 's/Orange Pi //g')"
@@ -118,6 +87,37 @@ else
 fi
 
 echo -e "\e[1;32mStarting installation on ${BOARD_FAMILY} ${BOARD_NAME} (${BOARD_REVISION})...\e[0m"
+
+# Normalize OS environment
+
+# Enable password-less sudo on Armbian
+sudo sed -i 's/ALL=(ALL:ALL) ALL/ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
+
+# Disable predictable network interface naming
+sudo touch /etc/udev/rules.d/80-net-setup-link.rules
+
+# Check for broken interface file, create if broken
+if [ ! -e "/etc/network/interfaces" ] ; then
+  rm /etc/network/interfaces || true
+  echo "auto lo" | sudo tee /etc/network/interfaces > /dev/null
+  echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces > /dev/null
+fi
+
+# Disable NetworkManager management of wlan0 so it doesn't pause it to scan every 60 seconds
+if [[ -e '/etc/NetworkManager/NetworkManager.conf' ]]; then
+    if [[ -z "$(grep "\[keyfile\]" /etc/NetworkManager/NetworkManager.conf)" ]]; then
+        echo "[keyfile]" | sudo tee --append /etc/NetworkManager/NetworkManager.conf > /dev/null
+        echo "unmanaged-devices=interface-name:wlan0" | sudo tee --append /etc/NetworkManager/NetworkManager.conf > /dev/null
+    fi
+ fi
+ 
+# Detect missing /sbin from $PATH variable on Debian distros, and add it
+if [ -z $(echo $PATH | grep "/sbin") ]; then 
+    # Current environment
+    export PATH="/sbin:$PATH"
+    # Next login
+    echo 'export PATH="/sbin:$PATH"' | sudo tee -a /etc/profile
+fi
 
 # Prompt and set missing flags
 
@@ -352,7 +352,6 @@ fi
 
 # Install possibly missing tools
 sudo apt-get install haveged -y || true
-sudo apt-get install iw -y || true
 
 # Check if cjdns is to be compiled or downloaded
 if [[ ! -e "/usr/bin/cjdroute" ]]; then
