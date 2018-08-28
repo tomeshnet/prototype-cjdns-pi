@@ -88,6 +88,8 @@ fi
 
 echo -e "\e[1;32mStarting installation on ${BOARD_FAMILY} ${BOARD_NAME} (${BOARD_REVISION})...\e[0m"
 
+# Normalize OS environment
+
 # Enable password-less sudo on Armbian
 sudo sed -i 's/ALL=(ALL:ALL) ALL/ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
 
@@ -108,8 +110,17 @@ if [[ -e '/etc/NetworkManager/NetworkManager.conf' ]]; then
         echo "unmanaged-devices=interface-name:wlan0" | sudo tee --append /etc/NetworkManager/NetworkManager.conf > /dev/null
     fi
  fi
+ 
+# Detect missing /sbin from $PATH variable on Debian distros, and add it
+if [ -z $(echo $PATH | grep "/sbin") ]; then 
+    # Current environment
+    export PATH="/sbin:$PATH"
+    # Next login
+    echo 'export PATH="/sbin:$PATH"' | sudo tee -a /etc/profile
+fi
 
 # Prompt and set missing flags
+
 if [ -z "$WITH_MESH_POINT" -o "$WITH_MESH_POINT" != "true" -a "$WITH_MESH_POINT" != "false" ]; then
     read -p "Configure Mesh Point interface (Y/n)? " -n 1 -r
     echo ""
@@ -342,9 +353,6 @@ fi
 # Install possibly missing tools
 sudo apt-get install haveged -y || true
 sudo apt-get install iw -y || true
-
-# Add /sbin to $PATH, this was an issue on Orange Pi Zero, certain commands didn't work
-echo 'export PATH="/sbin:$PATH"' | sudo tee -a /etc/profile
 
 # Check if cjdns is to be compiled or downloaded
 if [[ ! -e "/usr/bin/cjdroute" ]]; then
