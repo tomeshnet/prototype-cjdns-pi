@@ -112,11 +112,11 @@ if [[ -e '/etc/NetworkManager/NetworkManager.conf' ]]; then
  fi
  
 # Detect missing /sbin from $PATH variable on Debian distros, and add it
-if [ -z $(echo $PATH | grep "/sbin") ]; then 
+if [ -z $(echo $PATH | grep "/sbin")  ]; then 
     # Current environment
-    export PATH="/sbin:$PATH"
+    export PATH="/sbin:/usr/sbin:$PATH"
     # Next login
-    echo 'export PATH="/sbin:$PATH"' | sudo tee -a /etc/profile
+    echo 'export PATH="/sbin:/usr/sbin:$PATH"' | sudo tee -a /etc/profile
 fi
 
 # Prompt and set missing flags
