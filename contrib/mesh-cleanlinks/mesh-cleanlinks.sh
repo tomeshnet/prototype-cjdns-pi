@@ -2,6 +2,7 @@
 #script to remove poor quality links 
 #usage: mesh-cleanlinks.sh <interface>
 #requires gawk (apt-get install gawk)
+
 limit="-65"
 
 sudo iw dev $1 set mesh_param mesh_rssi_threshold $limit
