@@ -21,3 +21,6 @@ sudo cp -f $BASE_DIR/process-stream.sh /usr/bin/process-stream.sh
 sudo cp -f $BASE_DIR/process-stream.service /etc/systemd/system/process-stream.service
 sudo systemctl daemon-reload
 sudo systemctl enable process-stream
+
+# Add hourly job to clear out old data
+echo "41 * * * * $USER /usr/local/bin/ipfs repo gc" | sudo tee --append /etc/crontab

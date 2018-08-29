@@ -57,11 +57,18 @@ if [ "$(which ipfs)" ]; then
         echo -e "IPFS Service ............... $INACTIVE"
     fi
 fi
+if [ "$(which sbot)" ]; then
+    if [ $(systemctl status ssb.service | grep 'Active: ' | awk '{ print $2 }') = 'active' ]; then
+        echo -e "ScuttleBot Service ........... $ACTIVE"
+    else
+        echo -e "ScuttleBot Service ......... $INACTIVE"
+    fi
+fi
 if [ "$(which ffmpeg)" ]; then
     if [ ! -z "ps aux | grep ffmpeg | grep -v grep" ] && [ $(systemctl status process-stream.service | grep 'Active: ' | awk '{ print $2 }') = 'active'  ]; then
         echo -e "IPFS Pi Stream Service ....... $ACTIVE"
     else
-        echo -e "IPFS Pi Stream Service ....... $INACTIVE"
+        echo -e "IPFS Pi Stream Service ..... $INACTIVE"
     fi
 fi
 if [ "$(which node_exporter)" ]; then

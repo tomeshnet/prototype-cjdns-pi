@@ -1,0 +1,19 @@
+#!/bin/sh
+
+ipfsinfo=$( curl -s http://localhost:5001/api/v0/id)
+id=$(echo $ipfsinfo | jq ".ID")
+version=$(echo $ipfsinfo | jq ".AgentVersion")
+
+if [ -z "$id" ]; then 
+    id='""'
+fi
+if [ -z "$version" ]; then 
+    version='""'
+fi
+
+echo '"ipfs":{'
+echo '"version":'${version}','
+
+echo '"ID":'${id}
+
+echo "},"

@@ -4,27 +4,28 @@ set -e
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-sudo npm install scuttlebot -g --unsafe-perm
-sudo apt-get install -y socat
+# Install dependencies
+sudo apt-get install -y socat python-dev libtool python-setuptools autoconf automake
 
+# Install scuttlebot
+# sudo sudo is a hack to allow post-install scripts that drop one level of sudo and still be sudoed
+# otherwise you get permissions errors when it tries to write to root owned folders
+sudo sudo npm install scuttlebot -g --unsafe-perm
+
+# Store current user as sudo will change it
 currentUser=$USER
 
 sudo cp "$BASE_DIR/ssb.service" /etc/systemd/system/ssb.service
-sudo sed -i "s|_USER_|${currentUser}|" /etc/systemd/system/ssb.service
+sudo sed -i "s|__USER__|${currentUser}|g" /etc/systemd/system/ssb.service
 
 sudo systemctl daemon-reload
 sudo systemctl enable ssb.service
 sudo systemctl start ssb.service
 
-# Wait for ssb identity to be created
-sleep 3
-
+# Install broadcast service to workaround issue with sbot not broadcasting correctly
 sudo cp "$BASE_DIR/ssb-broadcast-service.sh" "/usr/local/bin/ssb-broadcast-service.sh"
 sudo cp "$BASE_DIR/ssb-broadcast.service" /etc/systemd/system/ssb-broadcast.service
-sudo sed -i "s|_USER_|${currentUser}|" /etc/systemd/system/ssb-broadcast.service
-
-id=$(sbot whoami | grep id | awk -F "\"" '{print $4}' | sed 's/.ed25519//' | sed 's/@//')
-sudo sed -i "s|_ID_|${id}|" /etc/systemd/system/ssb-broadcast.service
+sudo sed -i "s|__USER__|${currentUser}|g" /etc/systemd/system/ssb-broadcast.service
 
 sudo systemctl daemon-reload
 sudo systemctl enable ssb-broadcast.service

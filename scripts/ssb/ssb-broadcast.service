@@ -4,11 +4,11 @@ Wants=network.target
 After=ssb.service
 
 [Service]
-User=_USER_
-Group=_USER_
+User=__USER__
+Group=__USER__
 Type=simple
-ExecStart=/usr/local/bin/ssb-broadcast-service.sh "_ID_"
-ExecStop=/usr/bin/pkill -f ssb-broadcast-service.sh
+ExecStart=/usr/local/bin/ssb-broadcast-service.sh
+ExecStop=/bin/kill -s QUIT $MAINPID
 Restart=on-failure
 RestartSec=10s
 

@@ -10,7 +10,7 @@ git clone https://github.com/kpcyrd/yrd.git
 cd yrd
 
 # Install dependencies
-sudo apt-get install -y python3 python3-pip python3-argh python3-requests
+sudo apt-get install -y python3 python3-pip python3-argh python3-requests python3-setuptools
 
 # Install yrd
 sudo -H python3 ./setup.py -v install
