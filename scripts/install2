@@ -3,6 +3,7 @@
 set -e
 
 # Ask if module is to be enabled if not defined
+#    askModule <Variable> <Description> [default answer]
 function askModule {
 
     # Define standard behaviour (default yes)
@@ -39,6 +40,7 @@ function askModule {
 }
 
 # Check to see if module is enabled
+#    checkModule <Variable>
 function checkModule {
      eval res=\$$1
      if [ ! -z "$res" -a "$res" == "true" ]; then
