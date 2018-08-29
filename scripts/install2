@@ -2,6 +2,7 @@
 
 set -e
 
+dialogGlobalParams="--backtitle Installation --ascii-lines"
 # Ask if module is to be enabled if not defined
 #    askModule <Variable> <Description> [default answer]
 function askModule {
@@ -11,6 +12,7 @@ function askModule {
     nonDefaultMatch="Nn"
     defaultValue=true
     nonDefaultValue=false
+    dialogParam=""
 
     # Define alternative behaviour (default no)
     if [ "$3" == "n" ]; then
@@ -18,16 +20,28 @@ function askModule {
         nonDefaultMatch="Yy"
         nonDefaultValue=true
         defaultValue=false
+        dialogParam=" --defaultno "
     fi
 
     eval res=\$$1
-    if [ -z "$res" -o "$res" != "true" -a "$res" != "false" ]; then
-        read -p "Install $2 $askPrompt? " -n 1 -r
-        echo ""
-        if [[ $REPLY =~ ^[$nonDefaultMatch]$ ]]; then
-            res=$nonDefaultValue
-        else
-            res=$defaultValue
+
+    if [ $(checkModule "WITH_DIALOG") ]; then                
+        dialog $dialogGlobalParams $dialogParam --title "$2" --yesno "Install $2?" 6 40
+        response=$?
+        case $response in
+            0) res="true";;
+            1) res="false";;
+            255) exit;;
+        esac
+    else
+        if [ -z "$res" -o "$res" != "true" -a "$res" != "false" ]; then
+            read -p "Install $2 $askPrompt? " -n 1 -r
+            echo ""
+            if [[ $REPLY =~ ^[$nonDefaultMatch]$ ]]; then
+                res=$nonDefaultValue
+            else
+                res=$defaultValue
+            fi
         fi
     fi
     if [ "$res" == "true" ]; then
@@ -165,6 +179,11 @@ if [ -z $(echo $PATH | grep "/sbin")  ]; then
     export PATH="/sbin:/usr/sbin:$PATH"
     # Next login
     echo 'export PATH="/sbin:/usr/sbin:$PATH"' | sudo tee -a /etc/profile
+fi
+
+askModule "WITH_DIALOG" "Text User Interface?" "n"
+if [ $(checkModule "WITH_DIALOG") ]; then
+    sudo apt-get install dialog -y    
 fi
 
 # Prompt and set missing flags
