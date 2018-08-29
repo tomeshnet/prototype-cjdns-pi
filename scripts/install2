@@ -4,14 +4,29 @@ set -e
 
 # Ask if module is to be enabled if not defined
 function askModule {
-     eval  res=\$$1
-     if [ -z "$res" -o "$res" != "true" -a "$res" != "false" ]; then
-        read -p "Install $2 (Y/n)? " -n 1 -r
+
+    # Define standard behaviour (default yes)
+    askPrompt="(Y/n)"
+    nonDefaultMatch="Nn"
+    defaultValue=true
+    nonDefaultValue=false
+
+    # Define alternative behaviour (default no)
+    if [ "$3" == "n" ]; then
+        askPrompt="(N/y)"
+        nonDefaultMatch="Yy"
+        nonDefaultValue=true
+        defaultValue=false
+    fi
+
+    eval res=\$$1
+    if [ -z "$res" -o "$res" != "true" -a "$res" != "false" ]; then
+        read -p "Install $2 $askPrompt? " -n 1 -r
         echo ""
-        if [[ $REPLY =~ ^[Nn]$ ]]; then
-            res=false
+        if [[ $REPLY =~ ^[$nonDefaultMatch]$ ]]; then
+            res=$nonDefaultValue
         else
-            res=true
+            res=$defaultValue
         fi
     fi
     if [ "$res" == "true" ]; then
@@ -25,7 +40,7 @@ function askModule {
 
 # Check to see if module is enabled
 function checkModule {
-     eval  res=\$$1
+     eval res=\$$1
      if [ ! -z "$res" -a "$res" == "true" ]; then
         echo "1"
     else
@@ -163,11 +178,11 @@ askModule "WITH_FIREWALL" "Basic Firewall"
 askModule "WITH_CJDNS_IPTUNNEL" "Internet gateway"
 askModule "WITH_IPFS" "IPFS"
 if [ "$WITH_IPFS" == true -a "$BOARD_FAMILY" == "Raspberry Pi" ]; then
-    askModule "WITH_IPFS_PI_STREAM" "IPFS Pi stream"
+    askModule "WITH_IPFS_PI_STREAM" "IPFS Pi stream" "n"
 fi
 askModule "WITH_SSB" "SSB"
 if [ "$WITH_SSB" == "true" ]; then
-    askModule "WITH_SSB_WEB" "SSB web client (Experimental)"
+    askModule "WITH_SSB_WEB" "SSB web client (Experimental)" "n"
 fi
 askModule "WITH_YRD" "yrd (a cjdns command-line tool)"
 askModule "WITH_PROMETHEUS_NODE_EXPORTER" "Prometheus Node Exporter"
