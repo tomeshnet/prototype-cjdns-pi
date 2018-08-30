@@ -23,10 +23,11 @@ function askModule {
         dialogParam=" --defaultno "
     fi
 
+    # This reads variable repersented by the string
     eval res=\$$1
 
-    if [ $(checkModule "WITH_DIALOG") ]; then
-    
+    if [ "$(checkModule 'WITH_DIALOG')" ]; then
+
         # Do not stop exec on non 0 return values
         set +e
         dialog $dialogGlobalParams $dialogParam --title "$2" --yesno "Install $2?" 6 55
@@ -187,7 +188,7 @@ if [ -z $(echo $PATH | grep "/sbin")  ]; then
 fi
 
 askModule "WITH_DIALOG" "Text User Interface?" "n"
-if [ $(checkModule "WITH_DIALOG") ]; then
+if [ "$(checkModule 'WITH_DIALOG')" ]; then
     sudo apt-get install dialog -y    
 fi
 
@@ -311,84 +312,84 @@ fi
 sudo systemctl enable cjdns.service
 
 # 802.11s Mesh Point interface
-if [ $(checkModule "WITH_MESH_POINT") ]; then
+if [ "$(checkModule 'WITH_MESH_POINT')" ]; then
     source mesh-point/install
 fi
 
 # IBSS Ad-hoc interface
-if [ $(checkModule "WITH_AD_HOC") ]; then
+if [ "$(checkModule 'WITH_AD_HOC')" ]; then
     source mesh-adhoc/install
 fi
 
 # WiFi Access Point on supported boards
-if [ "$SUPPORT_HOSTAP" == "true" -a $(checkModule "WITH_WIFI_AP") ]; then
+if [ "$SUPPORT_HOSTAP" == "true" -a "$(checkModule 'WITH_WIFI_AP')" ]; then
     source hostapd/install
 fi
 
 # Configure Internet firewall
-if [ $(checkModule "WITH_FIREWALL") ]; then
+if [ "$(checkModule 'WITH_FIREWALL')" ]; then
     source firewall/install
 fi
 
 # Configure Internet gateway using cjdns iptunnel
-if [ $(checkModule "WITH_CJDNS_IPTUNNEL") ]; then
+if [ "$(checkModule 'WITH_CJDNS_IPTUNNEL')" ]; then
     source cjdns-iptunnel/install
 fi
 
 # IPFS
-if [ ! -x "$(command -v ipfs)" -a ] && $(checkModule "WITH_IPFS") ]; then
+if [ ! -x "$(command -v ipfs)" -a "$(checkModule 'WITH_IPFS')" ]; then
     source ipfs/install
 fi
 # IPFS Pi Stream
-if [ ! -x "$(command -v process-stream.sh)" -a $(checkModule "WITH_IPFS_PI_STREAM") ]; then
+if [ ! -x "$(command -v process-stream.sh)" -a "$(checkModule 'WITH_IPFS_PI_STREAM')" ]; then
     source ipfs-pi-stream/install
 fi
 # SSB
-if [ ! -x "$(command -v sbot)" -a $(checkModule "WITH_SSB") ]; then
+if [ ! -x "$(command -v sbot)" -a "$(checkModule 'WITH_SSB')" ]; then
     source ssb/install
 fi
 
 # SSB Web (logic inverted. Install if sbot exists only)
-if [ -x "$(command -v sbot)" -a $(checkModule "WITH_SSB_WEB") ]; then
+if [ -x "$(command -v sbot)" -a "$(checkModule 'WITH_SSB_WEB')" ]; then
     source ssb-web/install
 fi
 
 # yrd
-if [ ! -x "$(command -v yrd)" -a $(checkModule "WITH_YRD") ]; then
+if [ ! -x "$(command -v yrd)" -a "$(checkModule 'WITH_YRD')" ]; then
     source yrd/install
 fi
 # Prometheus Node Exporter
-if [ ! -x "$(command -v node_exporter)" $(checkModule "WITH_PROMETHEUS_NODE_EXPORTER") ]; then
+if [ ! -x "$(command -v node_exporter)" -a "$(checkModule 'WITH_PROMETHEUS_NODE_EXPORTER')" ]; then
     source prometheus-node-exporter/install
 fi
 
 # Prometheus Server
-if [ ! -x "$(command -v /opt/prometheus/prometheus)" -a $(checkModule "WITH_PROMETHEUS_SERVER") ]; then
+if [ ! -x "$(command -v /opt/prometheus/prometheus)" -a "$(checkModule 'WITH_PROMETHEUS_SERVER')" ]; then
     source prometheus-server/install
 fi
 
 # Grafana
-if [ ! -x "$(command -v /usr/sbin/grafana-server)" -a $(checkModule "WITH_GRAFANA") ]; then
+if [ ! -x "$(command -v /usr/sbin/grafana-server)" -a "$(checkModule 'WITH_GRAFANA')" ]; then
     source grafana/install
 fi
 
 # Configure Hyperboria DNS
-if [ $(checkModule "WITH_H_DNS") ]; then
+if [ "$(checkModule 'WITH_H_DNS')" ]; then
     source h-dns/install
 fi
 
 # Configure Hyperboria NTP
-if [ $(checkModule "WITH_H_NTP") ]; then
+if [ "$(checkModule 'WITH_H_NTP')" ]; then
     source h-ntp/install
 fi
 
 # Non-essential extra tools
-if [ $(checkModule "WITH_EXTRA_TOOLS") ]; then
+if [ "$(checkModule 'WITH_EXTRA_TOOLS')" ]; then
     source extra-tools/install
 fi
 
 # Watchdog on supported boards
-if [ "$SUPPORT_WATCHDOG" == "true" -a $(checkModule "WITH_WATCHDOG") ]; then
+if [ "$SUPPORT_WATCHDOG" == "true" -a "$(checkModule 'WITH_WATCHDOG')" ]; then
     source watchdog/install
 fi
 
