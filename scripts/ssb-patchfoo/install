@@ -1,0 +1,27 @@
+#!/bin/bash
+
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+sleep 5
+cd ~/.ssb/node_modules
+
+# Install dependencies
+sudo npm install asyncmemo hashlru pull-stream pull-cat multicb hyperscript pull-paramap ssb-contact ssb-sort stream-to-pull-stream emoji-server pull-paginate ssb-mentions busboy mime-types pull-identify-filetype human-time pull-hyperscript jpeg-autorotate pull-catch diff pull-split pull-utf8-decoder ssb-web-resolver highlight.js pull-box-stream base64-url ssb-backlinks
+
+# Install patchfoo and enable plugin
+git clone https://github.com/ssbc/patchfoo.git patchfoo
+sbot plugins.enable patchfoo
+
+# Stop ssb service
+sudo systemctl stop ssb
+
+# Disable the git-ssb requirement
+sed -i 's#var Git#//var Git#' patchfoo/lib/app.js  patchfoo/lib/app.js
+sed -i 's#this.git = new Git(this.sbot, this.config)#//this.git = new Git(this.sbot, this.config)#' patchfoo/lib/app.js
+
+# Start service again
+sudo systemctl start ssb
+
+# Install nginx reverse proxy
+sudo cp "$BASE_DIR/ssb-patchfoo.conf" /etc/nginx/site-path-enabled/ssb-patchfoo.conf
+
