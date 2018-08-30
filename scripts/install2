@@ -25,9 +25,14 @@ function askModule {
 
     eval res=\$$1
 
-    if [ $(checkModule "WITH_DIALOG") ]; then                
-        dialog $dialogGlobalParams $dialogParam --title "$2" --yesno "Install $2?" 6 40
+    if [ $(checkModule "WITH_DIALOG") ]; then
+    
+        # Do not stop exec on non 0 return values
+        set +e
+        dialog $dialogGlobalParams $dialogParam --title "$2" --yesno "Install $2?" 6 55
         response=$?
+        # Return to previous setting
+        set -e
         case $response in
             0) res="true";;
             1) res="false";;
