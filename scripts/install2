@@ -6,7 +6,6 @@ dialogGlobalParams="--backtitle Installation --ascii-lines"
 # Ask if module is to be enabled if not defined
 #    askModule <Variable> <Description> [default answer]
 function askModule {
-
     # Define standard behaviour (default yes)
     askPrompt="(Y/n)"
     nonDefaultMatch="Nn"
@@ -27,11 +26,11 @@ function askModule {
     eval res=\$$1
 
     if [ "$(checkModule 'WITH_DIALOG')" ]; then
-
         # Do not stop exec on non 0 return values
         set +e
         dialog $dialogGlobalParams $dialogParam --title "$2" --yesno "Install $2?" 6 55
         response=$?
+
         # Return to previous setting
         set -e
         case $response in
@@ -180,7 +179,7 @@ if [[ -e '/etc/NetworkManager/NetworkManager.conf' ]]; then
  fi
  
 # Detect missing /sbin from $PATH variable on Debian distros, and add it
-if [ -z $(echo $PATH | grep "/sbin")  ]; then 
+if [ -z $(echo $PATH | grep "/sbin")  ]; then
     # Current environment
     export PATH="/sbin:/usr/sbin:$PATH"
     # Next login
@@ -189,29 +188,29 @@ fi
 
 askModule "WITH_DIALOG" "Text User Interface?" "n"
 if [ "$(checkModule 'WITH_DIALOG')" ]; then
-    sudo apt-get install dialog -y    
+    sudo apt-get install dialog -y
 fi
 
 # Prompt and set missing flags
 
-askModule "WITH_MESH_POINT" "Mesh Point interface"
+askModule "WITH_MESH_POINT" "Mesh Point Interface"
 if [ "$WITH_MESH_POINT" == false ]; then
-    askModule "WITH_AD_HOC" "Ad-hoc interface"
+    askModule "WITH_AD_HOC" "Ad-Hoc Interface"
 fi
 if [ "$SUPPORT_HOSTAP" == "true" ]; then
     askModule "WITH_WIFI_AP" "WiFi Access Point"
 fi
 askModule "WITH_FIREWALL" "Basic Firewall"
-askModule "WITH_CJDNS_IPTUNNEL" "Internet gateway"
+askModule "WITH_CJDNS_IPTUNNEL" "Internet Gateway"
 askModule "WITH_IPFS" "IPFS"
 if [ "$WITH_IPFS" == true -a "$BOARD_FAMILY" == "Raspberry Pi" ]; then
-    askModule "WITH_IPFS_PI_STREAM" "IPFS Pi stream" "n"
+    askModule "WITH_IPFS_PI_STREAM" "IPFS Pi Stream" "n"
 fi
 askModule "WITH_SSB" "SSB"
 if [ "$WITH_SSB" == "true" ]; then
-    askModule "WITH_SSB_WEB" "SSB web client (Experimental)" "n"
+    askModule "WITH_SSB_WEB" "SSB Web Client (Experimental)" "n"
 fi
-askModule "WITH_YRD" "yrd (a cjdns command-line tool)"
+askModule "WITH_YRD" "Yrd (a cjdns command-line tool)"
 askModule "WITH_PROMETHEUS_NODE_EXPORTER" "Prometheus Node Exporter"
 if [ "$WITH_PROMETHEUS_NODE_EXPORTER" == true ]; then
     askModule "WITH_PROMETHEUS_SERVER" "Prometheus Server"
@@ -219,9 +218,9 @@ fi
 if [ "$WITH_PROMETHEUS_SERVER" == true ]; then
     askModule "WITH_GRAFANA" "Grafana"
 fi
-askModule "WITH_H_DNS" "Hyperboria-compatible Domain Name Servers"
-askModule "WITH_H_NTP" "Hyperboria-compatible Network Time Protocol server"
-askModule "WITH_EXTRA_TOOLS" "non-essential tools useful for network analysis"
+askModule "WITH_H_DNS" "Hyperboria Domain Name Servers"
+askModule "WITH_H_NTP" "Hyperboria Network Time Protocol Server"
+askModule "WITH_EXTRA_TOOLS" "Non-Essential Tools Useful for Network Analysis"
 if [ "$SUPPORT_WATCHDOG" == "true" ]; then
     askModule "WITH_WATCHDOG" "Hardware Watchdog"
 fi
@@ -421,3 +420,4 @@ read -p "Installation complete. Press any key to reboot your new node. " -n 1 -r
 
 # Reboot device
 sudo reboot
+
