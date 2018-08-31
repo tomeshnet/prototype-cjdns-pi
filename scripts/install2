@@ -2,12 +2,14 @@
 
 set -e
 
+TAG_CJDNS=186169f9a8631633795e4e9d70c501519a7800f4
+
 dialogGlobalParams="--backtitle Installation --ascii-lines"
 # Ask if module is to be enabled if not defined
 #    askModule <Variable> <Description> [default answer]
 function askModule {
     # Define standard behaviour (default yes)
-    askPrompt="(Y/n)"
+    askPrompt="[Y/n)]"
     nonDefaultMatch="Nn"
     defaultValue=true
     nonDefaultValue=false
@@ -15,7 +17,7 @@ function askModule {
 
     # Define alternative behaviour (default no)
     if [ "$3" == "n" ]; then
-        askPrompt="(N/y)"
+        askPrompt="[y/N]"
         nonDefaultMatch="Yy"
         nonDefaultValue=true
         defaultValue=false
@@ -68,8 +70,6 @@ function checkModule {
         echo ""
     fi
 }
-
-TAG_CJDNS=186169f9a8631633795e4e9d70c501519a7800f4
 
 # Get board information and set flags accordingly
 BOARD_FAMILY="Unknown"
