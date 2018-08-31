@@ -9,7 +9,7 @@ dialogGlobalParams="--backtitle Installation --ascii-lines"
 #    askModule <Variable> <Description> [default answer]
 function askModule {
     # Define standard behaviour (default yes)
-    askPrompt="[Y/n)]"
+    askPrompt="[Y/n]"
     nonDefaultMatch="Nn"
     defaultValue=true
     nonDefaultValue=false
