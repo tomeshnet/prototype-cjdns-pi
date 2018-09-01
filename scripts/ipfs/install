@@ -18,7 +18,7 @@ sudo chown root:staff /usr/local/bin/ipfs
 rm -rf "$BASE_DIR/tmp"
 
 # Initialize IPFS
-ipfs init
+ipfs init || true
 
 # Configure HTTP to IPFS gateway
 source "$BASE_DIR/../shared/nginx/install"
