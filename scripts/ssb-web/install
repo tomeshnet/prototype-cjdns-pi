@@ -42,7 +42,7 @@ fi
 sudo ln -s "$ssbPath" /var/www/
 
 # Create nginx site at /sbot
-sudo cp "$BASE_DIR/ssb-web.conf" /etc/nginx/site-path-enabled/ssb-web.conf
+sudo cp "$BASE_DIR/ssb-web.conf" "/etc/nginx/site-path-enabled/ssb-web.conf"
 
 # Pull and install client
 if [ -e "$BASE_DIR/tmp" ]; then

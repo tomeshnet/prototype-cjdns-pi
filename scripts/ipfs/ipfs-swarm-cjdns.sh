@@ -30,7 +30,7 @@ while read -r cjdns_peer; do
     # XXX: The below command hasn't been working -- so for now only 1-hop peers are checked
     #peers+=$(cjdnstool query getpeers $peer | sed -e '1d;$d' |awk -F. '{ print $6".k" }')
 
-done <<< `sudo nodejs /opt/cjdns/tools/peerStats 2>/dev/null | awk '{ if ($2 == "ESTABLISHED") print $1 }' | awk -F. '{ print $6".k" }' | xargs`
+done <<< `sudo nodejs /opt/cjdns/tools/peerStats 2>/dev/null | awk '{ if ($3 == "ESTABLISHED") print $2 }' | awk -F. '{ print $6".k" }' | xargs`
 
 # Update peers data since ipfs just started
 sudo /usr/local/bin/nodeinfo-update.sh
