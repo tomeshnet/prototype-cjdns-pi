@@ -13,7 +13,7 @@ if uname -m | grep -Eq ^armv6; then
     URL="https://bintray.com/fg2it/deb-rpi-1b/download_file?file_path=main%2Fg%2Fgrafana_4.3.2_armhf.deb"
 fi
 mkdir "$BASE_DIR/tmp"
-wget ${URL} -O "$BASE_DIR/tmp/go-grafana.tar.gz"
+wget "${URL}" -O "$BASE_DIR/tmp/go-grafana.tar.gz"
 sudo dpkg -i "$BASE_DIR/tmp/go-grafana.tar.gz"
 rm -rf "$BASE_DIR/tmp"
 
