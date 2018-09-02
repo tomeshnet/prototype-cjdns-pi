@@ -35,7 +35,7 @@ ipfs bootstrap add "$IPFS_PEER"
 sudo apt-get install -y jq
 
 # Move file
-sudo cp $BASE_DIR/ipfs-swarm-cjdns.sh /usr/local/bin/
+sudo cp "$BASE_DIR/ipfs-swarm-cjdns.sh" /usr/local/bin/
 sudo chmod +x /usr/local/bin/ipfs-swarm-cjdns.sh
 
 # Configure systemd to start ipfs.service on system boot
