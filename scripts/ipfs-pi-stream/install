@@ -11,7 +11,7 @@ sudo "$BASE_DIR/enable-camera.sh"
 sudo apt-get -y install ffmpeg lsof inotify-tools nginx
 
 # Add user to be able to modify nginx directories
-sudo usermod -a -G $USER www-data
+sudo usermod -a -G "$USER" www-data
 sudo chmod g+rw /var/www/html
 
 # TODO: why is this needed?
