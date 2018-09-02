@@ -32,17 +32,17 @@ sudo systemctl start ssb-web-broadcast.service
 
 # Set permissions to let nginx access it
 # TODO find a better solution, maybe add user to nginx group?
-chmod a+rwX $ssbPath
-chmod -R a+rwX $ssbPath
+chmod a+rwX "$ssbPath"
+chmod -R a+rwX "$ssbPath"
 
 # Link .ssb to nginx's home directory becuse that is where sbot looks for it
 if [ -e "/var/www/.ssb" ]; then
     sudo rm -rf /var/www/.ssb
 fi
-sudo ln -s $ssbPath /var/www/
+sudo ln -s "$ssbPath" /var/www/
 
 # Create nginx site at /sbot
-sudo cp $BASE_DIR/ssb-web.conf /etc/nginx/site-path-enabled/ssb-web.conf
+sudo cp "$BASE_DIR/ssb-web.conf" "/etc/nginx/site-path-enabled/ssb-web.conf"
 
 # Pull and install client
 if [ -e "$BASE_DIR/tmp" ]; then
