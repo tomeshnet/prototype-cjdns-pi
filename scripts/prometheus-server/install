@@ -8,11 +8,12 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Download and install Prometheus Server
 ARM_VERSION=v7
-if $(uname -m | grep -Eq ^armv6); then
+if uname -m | grep -Eq ^armv6; then
     ARM_VERSION=v6
-elif ! [ -z $(uname -m | grep aarch64) ]; then
+elif ! uname -m | grep aarch64; then
     ARM_VERSION=64
 fi
+
 mkdir "$BASE_DIR/tmp"
 wget "https://github.com/prometheus/prometheus/releases/download/v${PROMETHEUS_VERSION}/prometheus-${PROMETHEUS_VERSION}.linux-arm${ARM_VERSION}.tar.gz" -O "$BASE_DIR/tmp/prometheus.tar.gz"
 tar xvfz "$BASE_DIR/tmp/prometheus.tar.gz" -C "$BASE_DIR/tmp" --strip 1
