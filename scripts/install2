@@ -282,7 +282,7 @@ else
     echo -e "\e[1;31mCompiling cjdns from source\e[0m"
     if ! [ -d "/opt/cjdns" ]; then
         sudo apt-get install -y python
-        here=$(pwd)
+        here="$(pwd)"
         sudo git clone https://github.com/cjdelisle/cjdns.git /opt/cjdns
         cd /opt/cjdns
         sudo git checkout $TAG_CJDNS
@@ -291,7 +291,7 @@ else
 
     # Build cjdns
     if ! [ -x "/opt/cjdns/cjdroute" ]; then
-        here=$"(pwd)"
+        here="$(pwd)"
         cd /opt/cjdns && eval "$CJDNS_BUILD_CMD" && cd "$here"
     fi
 
