@@ -57,12 +57,12 @@ echo ""
 if [[ $REPLY =~ ^[Nn]$ ]]; then
     USE_EAP=false
     while [ "${#APPASS}" -lt 8 ] || [ "${#APPASS}" -gt 63 ]; do
-        read -p -r "Set WPA2-PSK password (8-63 characters): " APPASS;
+        read -r -p "Set WPA2-PSK password (8-63 characters): " APPASS;
     done
 else
     USE_EAP=true
     while [ "${#APPASS}" -lt 8 ] || [ "${#APPASS}" -gt 63 ]; do
-        read -p -r "Set WPA-EAP password (8-63 characters) for user \"guest\": " APPASS;
+        read -r -p "Set WPA-EAP password (8-63 characters) for user \"guest\": " APPASS;
     done
 fi
 
