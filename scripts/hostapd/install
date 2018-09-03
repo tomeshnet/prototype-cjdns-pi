@@ -127,7 +127,7 @@ sudo systemctl daemon-reload
 sudo systemctl enable hostapd.service
 
 # Find onboard adapter by driver and lock to wlan-ap
-for wlan in $(ls -d /sys/class/net/wlan*); do
+for wlan in $(ls -d1 /sys/class/net/wlan* | xargs basename ); do
     driverPath="$(readlink /sys/class/net/$wlan/device/driver)"
     driver="$(basename $driverPath)"
 #    mac="$(cat /sys/class/net/$wlan/address)"
