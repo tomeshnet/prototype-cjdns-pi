@@ -16,12 +16,15 @@ env:
 
 script:
 #  - cp /usr/bin/qemu-arm-static travis/${DISTRO}/
+  # Correct brach 
+  - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
+  - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH, PR=$PR, BRANCH=$BRANCH"
   - git clone https://github.com/tomeshnet/prototype-cjdns-pi.git
   - cd prototype-cjdns-pi/scripts
-  - git checkout ${TRAVIS_BRANCH}
-  - bash -c 'shopt -s globstar; shellcheck install2'
-  - bash -c 'shopt -s globstar; shellcheck */install'
-  - bash -c 'shopt -s globstar; shellcheck **/*.sh'
+  - git checkout ${BRANCH}
+  - bash -c 'shopt -s globstar; shellcheck -x install2'
+  - bash -c 'shopt -s globstar; shellcheck -x */install'
+  - bash -c 'shopt -s globstar; shellcheck -x **/*.sh'
 #  - WITH_IPFS=true WITH_IPFS_PI_STREAM=false WITH_MESH_POINT=true WITH_AD_HOC=true WITH_WIFI_AP=false WITH_FIREWALL=true WITH_CJDNS_IPTUNNEL=true WITH_IPFS=true WITH_SSB=true WITH_SSB_WEB=true WITH_PROMETHEUS_NODE_EXPORTER=true WITH_PROMETHEUS_SERVER=true WITH_GRAFANA=true WITH_H_DNS=true WITH_H_NTP=true WITH_EXTRA_TOOLS=true WITH_YRD=true ./install2
 #  - docker build -t tomeshnet/prototype-cjdns-pi:${DISTRO} travis/${DISTRO}/
 
