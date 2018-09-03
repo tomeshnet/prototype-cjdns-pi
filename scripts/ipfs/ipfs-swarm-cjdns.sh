@@ -12,10 +12,10 @@ if [[  ${attempts} -eq 0 ]]; then
 fi
 
 while read -r cjdns_peer; do
-    cjdns_addr=$(sudo /opt/cjdns/publictoip6 $cjdns_peer)
+    cjdns_addr="$(sudo /opt/cjdns/publictoip6 $cjdns_peer)"
 
     # See if they have IPFS enabled
-    res=$(curl http://[${cjdns_addr}]/nodeinfo.json -s)
+    res="$(curl http://[${cjdns_addr}]/nodeinfo.json -s)"
     if [ ! -x "$res" ]; then
         id=$(echo ${res} | jq -r -M '.services.ipfs.ID')
         # Value is found
