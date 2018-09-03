@@ -28,7 +28,7 @@ sleep 30
 # Add data source and dashboard
 
 # Check if port grafana is being listend in on if so configure if not notify and continue
-if ! netstat --tcp -n -l | grep -q :3000; then
+if netstat --tcp -n -l | grep -q :3000; then
     curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary "@$BASE_DIR/datasource.json" http://localhost:3000/api/datasources
     curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary "@$BASE_DIR/dashboard.json" http://localhost:3000/api/dashboards/db
 else
