@@ -21,7 +21,7 @@ script:
   - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH, PR=$PR, BRANCH=$BRANCH"
   - git clone https://github.com/tomeshnet/prototype-cjdns-pi.git
   - cd prototype-cjdns-pi/scripts
-  - git checkout ${TRAVIS_BRANCH}
+  - git checkout ${BRANCH}
   - bash -c 'shopt -s globstar; shellcheck install2'
   - bash -c 'shopt -s globstar; shellcheck */install'
   - bash -c 'shopt -s globstar; shellcheck **/*.sh'
