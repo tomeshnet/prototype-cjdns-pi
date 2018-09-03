@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC1091
-true
+# s_h_e_l_lcheck disable=SC1091
+# true
 
 set -e
 
