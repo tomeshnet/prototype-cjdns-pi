@@ -218,7 +218,7 @@ if [ -z "$WITH_SSB" -o "$WITH_SSB" != "true" -a "$WITH_SSB" != "false" ]; then
 fi
 if [ "$WITH_SSB" == true ]; then
     if [ -z "$WITH_SSB_WEB" -o "$WITH_SSB_WEB" != "true" -a "$WITH_SSB_WEB" != "false" ]; then
-        read -p "Install SSB web client (Experimental) (Y/n)? " -n 1 -r
+        read -p "Install SSB web client (Experimental) (y/N)? " -n 1 -r
         echo ""
         if [[ $REPLY =~ ^[Yy]$ ]]; then
             echo -e "\e[1;32mSSB web client will be installed\e[0m"
