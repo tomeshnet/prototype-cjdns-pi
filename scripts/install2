@@ -232,10 +232,11 @@ fi
 # Prompt for name of the mesh network
 ##TODO## This should be moved up to to mesh point question
 read -p "Enter the name of your mesh network (default: tomesh): " -r
-export MESH_NAME="$(echo $REPLY | sed 's/ //g')"
+MESH_NAME=$(echo "${REPLY// }")
 if [ "${#MESH_NAME}" == 0 ]; then
-    export MESH_NAME="tomesh"
+    MESH_NAME="tomesh"
 fi
+export MESH_NAME
 
 # Get tools
 if ! [ "$(which nodejs)" ]; then
@@ -408,13 +409,14 @@ source shared/nodeinfo/install
 
 # Print node status on login
 cp ~/.profile ~/.bash_profile
-echo "" >> ~/.bash_profile
-echo "# export mesh network name" >> ~/.bash_profile
-echo "export MESH_NAME=$MESH_NAME" >> ~/.bash_profile
-echo "" >> ~/.bash_profile
-echo "# print mesh node status" >> ~/.bash_profile
-echo "status" >> ~/.bash_profile
-
+{
+    echo ""
+    echo "# export mesh network name"
+    echo "export MESH_NAME=$MESH_NAME"
+    echo ""
+    echo "# print mesh node status"
+    echo "status" >>
+}  >> ~/.bash_profile
 # Rename node based on cjdns address
 oldhostname=$(hostname)
 newhostname=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-/g")
