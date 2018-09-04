@@ -12,7 +12,7 @@ if [ -z "$TAG_PROTOTYPE_CJDNS_PI" ]; then
     TAG_PROTOTYPE_CJDNS_PI=master
 fi
 
-if ! ps xa | awk '{print $5}' | grep dpkg | grep -q grep; then
+if ps xa | awk '{print $5}' | grep dpkg | grep -q grep; then
     echo -e "\e[1;31mDPKG is running in the background.\e[0m"
     read -p "Would you like to KILL it to continue (Y/n)? " -n 1 -r
     echo ""
