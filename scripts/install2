@@ -415,7 +415,7 @@ cp ~/.profile ~/.bash_profile
     echo "export MESH_NAME=$MESH_NAME"
     echo ""
     echo "# print mesh node status"
-    echo "status" >>
+    echo "status"
 }  >> ~/.bash_profile
 # Rename node based on cjdns address
 oldhostname=$(hostname)
