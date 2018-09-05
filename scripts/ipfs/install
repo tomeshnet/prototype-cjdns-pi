@@ -23,10 +23,12 @@ rm -rf "$BASE_DIR/tmp"
 ipfs init || true
 
 # Configure HTTP to IPFS gateway
+# shellcheck source=../shared/nginx/install
 source "$BASE_DIR/../shared/nginx/install"
 sudo cp "$BASE_DIR/ipfs-http-gateway.conf" /etc/nginx/site-path-enabled/ipfs-http-gateway.conf
 sudo systemctl restart nginx.service
 
+# shellcheck source=../shared/nodeinfo/install
 source "$BASE_DIR/../shared/nodeinfo/install"
 sudo cp "$BASE_DIR/nodeinfo-ipfs" /opt/tomesh/nodeinfo.d/ipfs
 
