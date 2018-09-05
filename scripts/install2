@@ -114,6 +114,7 @@ if [[ "$BOARD_HARDWARE" == 'Allwinner' || "$BOARD_HARDWARE" == 'Generic' ]]; the
 elif [[ "$BOARD_HARDWARE" == 'nanopineo2' || "$BOARD_HARDWARE" == 'sun50iw1p1' ||
         "$BOARD_HARDWARE" == 'orangepizeroplus2-h5' ||
         "$BOARD_HARDWARE" == 'rock64' ||
+        "$BOARD_HARDWARE" == 'Pine64+' ||
         "$BOARD_HARDWARE" == 'espressobin' ]]; then
     # Stop unattended upgrade that will block apt-get requests on some armbian boards
     sudo service unattended-upgrades stop || true
