@@ -107,14 +107,15 @@ List of tested hardware:
 | Raspberry Pi 3b           | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         | 350k, 100k | 89 Mbps | 2       | 10/100 |                                                 |
 | Raspberry Pi 2            | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         | 145k,  55k | 39 Mbps | 2       | 10/100 |                                                 |
 | Raspberry Pi 1 A+         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         |  35k,   -  | ~9 Mbps | 1       | None   |                                                 |
-| Raspberry Pi 1 B+         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         |  51k,  22k | ~9 Mbps | 2       | 10/100 |                                                 |
+| Raspberry Pi 1 B+         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         |  51k,  22k | ~8 Mbps | 2       | 10/100 |                                                 |
 | Raspberry Pi Zero         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/)         |  68k,  30k | ~9 Mbps | 1*      | None   | *Need OTG Cable No FPV                          |
-| Orange Pi Lite            | [Armbian Nightly](https://dl.armbian.com/orangepilite/nightly/)          | 160k,  74k | 67 Mbps | 2       | None   |                                                 |
-| Orange Pi One             | [Armbian Nightly](https://dl.armbian.com/orangepione/nightly/)           | 160k,  74k | 67 Mbps | 1       | 10/100 |                                                 |
-| Orange Pi Zero            | [Armbian Nightly](https://dl.armbian.com/orangepizero/nightly/)          | 160k,  74k | 67 Mbps | 1 (+2*) | 10/100 | *USB Headers                                    |
-| Orange Pi Zero Plus 2 H5  | [Armbian Nightly](https://dl.armbian.com/orangepizeroplus2-h5/nightly/)  | 190k, 130K | 80 Mbps | 0 (+2*) | None   | *USB Headers                                    |
-| NanoPi Neo 2              | [Armbian Nightly](https://dl.armbian.com/nanopineo2/nightly/)            | 160k, 95K  | 67 Mbps | 1 (+2*) | 10/100/1000   | *USB Headers, Gigabit Eth                |
-| Rock64                    | [Armbian Nightly](https://dl.armbian.com/rock64/nightly/)                | 255k, 168K | 94 Mbps | 3       | 10/100/1000   | 1 USB 3.0, Gigabit Eth                   |
+| Orange Pi Lite            | [Armbian](https://dl.armbian.com/orangepilite/)          | 160k,  74k | 67 Mbps | 2       | None   |                                                 |
+| Orange Pi One             | [Armbian](https://dl.armbian.com/orangepione/)           | 160k,  74k | 67 Mbps | 1       | 10/100 |                                                 |
+| Orange Pi Zero            | [Armbian](https://dl.armbian.com/orangepizero/)          | 160k,  74k | 67 Mbps | 1 (+2*) | 10/100 | *USB Headers                                    |
+| Orange Pi Zero Plus 2 H5  | [Armbian](https://dl.armbian.com/orangepizeroplus2-h5/)  | 190k, 130K | 80 Mbps | 0 (+2*) | None   | *USB Headers                                    |
+| NanoPi Neo 2              | [Armbian](https://dl.armbian.com/nanopineo2/)            | 160k, 95K  | 67 Mbps | 1 (+2*) | 10/100/1000   | *USB Headers, Gigabit Eth                |
+| Rock64                    | [Armbian](https://dl.armbian.com/rock64/)                | 255k, 168K | 94 Mbps | 3       | 10/100/1000   | 1 USB 3.0, Gigabit Eth                   |
+| Pine64                    | [Armbian](https://dl.armbian.com/pine/nightly/)                | 227k, 151k | 78 Mbps | 2       | 10/100/1000   |  Gigabit Eth                   |
 | EspressoBin               | [Armbian](https://dl.armbian.com/espressobin/)           | 186k, 128K | 73 Mbps | 2       | 10/100/1000   | 1 USB 3.0, 3x Gigabit Eth, Sata, mPCIE. Use stable and apt-get upgrade after boot  |
 
 ## Development

@@ -34,7 +34,7 @@ while 1:
             if int.find("Interface") > -1:
                     words = int.split()
                     currentitn=words[1]
-                
+
                     # Read mac address from system file
                     with open("/sys/class/net/" + currentitn + "/address") as f:
                         mac = f.readlines()

@@ -57,12 +57,12 @@ echo ""
 if [[ $REPLY =~ ^[Nn]$ ]]; then
     USE_EAP=false
     while [ "${#APPASS}" -lt 8 ] || [ "${#APPASS}" -gt 63 ]; do
-        read -p "Set WPA2-PSK password (8-63 characters): " APPASS;
+        read -r -p "Set WPA2-PSK password (8-63 characters): " APPASS;
     done
 else
     USE_EAP=true
     while [ "${#APPASS}" -lt 8 ] || [ "${#APPASS}" -gt 63 ]; do
-        read -p "Set WPA-EAP password (8-63 characters) for user \"guest\": " APPASS;
+        read -r -p "Set WPA-EAP password (8-63 characters) for user \"guest\": " APPASS;
     done
 fi
 
@@ -95,11 +95,11 @@ fi
 
 # Use Hyperboria DNS addressses if h-dns is enabled
 sudo cp "$BASE_DIR/dnsmasq.conf" /etc/dnsmasq.conf
-if [ ! -z "$WITH_H_DNS" -a "$WITH_H_DNS" == "true" ]; then
+if [ ! -z "$WITH_H_DNS" ] && [ "$WITH_H_DNS" == "true" ]; then
    echo "server=$H_DNS_SERVER_0" | sudo tee --append /etc/dnsmasq.conf
    echo "server=$H_DNS_SERVER_1" | sudo tee --append /etc/dnsmasq.conf
    echo "server=$H_DNS_SERVER_2" | sudo tee --append /etc/dnsmasq.conf
-elif [ ! -z "$WITH_CJDNS_IPTUNNEL" -a "$WITH_CJDNS_IPTUNNEL" ]; then
+elif [ ! -z "$WITH_CJDNS_IPTUNNEL" ] && [ "$WITH_CJDNS_IPTUNNEL" ]; then
    echo "server=$I_DNS_SERVER_0" | sudo tee --append /etc/dnsmasq.conf
    echo "server=$I_DNS_SERVER_1" | sudo tee --append /etc/dnsmasq.conf
 fi
@@ -127,20 +127,21 @@ sudo systemctl daemon-reload
 sudo systemctl enable hostapd.service
 
 # Find onboard adapter by driver and lock to wlan-ap
-for wlan in $(ls -1Atu /sys/class/net | grep wlan); do
-    driver="$(basename $(readlink /sys/class/net/$wlan/device/driver))"
-    mac="$(cat /sys/class/net/$wlan/address)"
+for wlan in $(find /sys/class/net -maxdepth 1 -name 'wlan*' | xargs -0 basename); do
+    driverPath=$(readlink "/sys/class/net/$wlan/device/driver")
+    driver=$(basename "$driverPath")
+#    mac="$(cat /sys/class/net/$wlan/address)"
     if [[ "$driver" == "xradio_wlan" || "$driver" == "brcm80211" || "$driver" == "brcmfmac" ]]; then
-        echo SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"$driver\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan-ap\" |
+        echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"$driver\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan-ap\"" |
                 sudo tee /etc/udev/rules.d/70-persistent-net.rules
     fi
 done
 
 # dnsmasq for some reason won't bind to the hostapd on Orange Pi, restarting it works
-if [[ -z "$(cat /etc/rc.local | grep dnsmasq)" ]]; then
+if ! grep -q dnsmasq /etc/rc.local; then
     sudo sed -i 's/^exit 0/service dnsmasq restart\nexit 0/' /etc/rc.local 
 fi
 
-if [[ -z "$(cat /etc/rc.local | grep rfkill)" ]]; then
+if ! grep rfkill /etc/rc.local; then
     sudo sed -i 's/^exit 0/rfkill unblock wifi \&\& service hostapd restart\nexit 0/' /etc/rc.local 
 fi
