@@ -26,6 +26,7 @@ sudo umount "${currentpath}"
 rm -rf "${currentpath}"
 mkdir "${currentpath}"
 sudo mount -t tmpfs tmpfs "${currentpath}"
+# shellcheck disable=SC2164
 cd "${currentpath}"
 
 what="$(date +%Y%m%d%H%M)-LIVE"
@@ -34,6 +35,8 @@ what="$(date +%Y%m%d%H%M)-LIVE"
 startFFmpeg &
 
 while true; do
+#TODO# Fix this one
+# shellcheck disable=SC2164
   nextfile=$(ls -tr "${what}*.ts" 2>/dev/null | tail -n 1)
 
   if ! [ -z "${nextfile}" ]; then

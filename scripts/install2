@@ -233,7 +233,7 @@ fi
 # Prompt for name of the mesh network
 ##TODO## This should be moved up to to mesh point question
 read -p "Enter the name of your mesh network (default: tomesh): " -r
-MESH_NAME=$(echo "${REPLY// }")
+MESH_NAME="${REPLY// }"
 if [ "${#MESH_NAME}" == 0 ]; then
     MESH_NAME="tomesh"
 fi
