@@ -21,5 +21,6 @@ script:
   - bash -c 'shopt -s globstar; shellcheck -x install install2 */install **/*.sh'
   
   # Validate install script download and make executable
+  - cp /usr/bin/qemu-arm-static travis/${DISTRO}/
   - docker build -t tomeshnet/prototype-cjdns-pi:${DISTRO} travis/${DISTRO}/
   - docker run tomeshnet/prototype-cjdns-pi:${DISTRO} /bin/sh -c "wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install; chmod +x install"
