@@ -2,17 +2,20 @@
 
 set -e
 
+GRAFANA_VERSION=5.1.4
+
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Install Grafana dependencies
 sudo apt-get install libfontconfig1 fontconfig-config fonts-dejavu-core ttf-bitstream-vera fonts-liberation sqlite3 -y
 
 # Download and install unofficial build of Grafana for ARM
-URL="https://bintray.com/fg2it/deb/download_file?file_path=main%2Fg%2Fgrafana_4.3.2_armhf.deb"
+URL="https://bintray.com/fg2it/deb/download_file?file_path=main%2Fg%2Fgrafana_${GRAFANA_VERSION}_armhf.deb"
 if uname -m | grep -Eq ^armv6; then
-    URL="https://bintray.com/fg2it/deb-rpi-1b/download_file?file_path=main%2Fg%2Fgrafana_4.3.2_armhf.deb"
+    # Raspberry Pi 1
+    URL="https://bintray.com/fg2it/deb-rpi-1b/download_file?file_path=main%2Fg%2Fgrafana_${GRAFANA_VERSION}_armhf.deb"
 elif uname -m | grep -Eq ^aarch64; then
-    URL="https://bintray.com/fg2it/deb-arm64/download_file?file_path=main%2Fg%2Fgrafana_5.1.4_arm64.deb"
+    URL="https://bintray.com/fg2it/deb-arm64/download_file?file_path=main%2Fg%2Fgrafana_${GRAFANA_VERSION}_arm64.deb"
 fi
 
 mkdir "$BASE_DIR/tmp" || true
