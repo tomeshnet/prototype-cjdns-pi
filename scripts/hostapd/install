@@ -142,6 +142,6 @@ if ! grep -q dnsmasq /etc/rc.local; then
     sudo sed -i 's/^exit 0/service dnsmasq restart\nexit 0/' /etc/rc.local 
 fi
 
-if ! grep rfkill /etc/rc.local; then
+if ! grep -q rfkill /etc/rc.local; then
     sudo sed -i 's/^exit 0/rfkill unblock wifi \&\& service hostapd restart\nexit 0/' /etc/rc.local 
 fi
