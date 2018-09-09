@@ -11,6 +11,7 @@ before_script:
 
 env:
   - DISTRO=jessie
+  - DISTRO=latest
 
 script:
   # Run shellcheck on branch
