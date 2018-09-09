@@ -21,7 +21,7 @@ script:
   - cd prototype-cjdns-pi/scripts
   - git checkout ${BRANCH}
   - bash -c 'shopt -s globstar; shellcheck -x install install2 */install **/*.sh'
-  - cd $HOME
+  - cd ../..
 
   # Build docker for ARM tests
   - cp /usr/bin/qemu-arm-static travis/${DISTRO}/
