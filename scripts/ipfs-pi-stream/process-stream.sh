@@ -37,7 +37,7 @@ startFFmpeg &
 while true; do
 #TODO# Fix this one
 # shellcheck disable=SC2012
-  nextfile=$(ls -tr "${what}*.ts" 2>/dev/null | tail -n 1)
+  nextfile=$(ls -tr ${what}*.ts 2>/dev/null | tail -n 1)
 
   if ! [ -z "${nextfile}" ]; then
     # Check if the next file on the list is still being written to by ffmpeg
