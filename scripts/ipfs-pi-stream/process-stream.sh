@@ -41,7 +41,7 @@ while true; do
 
   if ! [ -z "${nextfile}" ]; then
     # Check if the next file on the list is still being written to by ffmpeg
-    if ! lsof "${nextfile}" | grep -1 ffmpeg; then
+    if lsof "${nextfile}" | grep -1 ffmpeg; then
       # Wait for file to finish writing
       # If not finished in 45 seconds something is wrong, timeout
       inotifywait -e close_write "${nextfile}" -t 45
