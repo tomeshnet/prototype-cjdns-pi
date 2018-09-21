@@ -2,7 +2,7 @@
 
 set -e
 
-TAG_CJDNS=186169f9a8631633795e4e9d70c501519a7800f4
+TAG_CJDNS=d2e55d58548d83940482fe1bbbe1fd36f7f1b4ef
 
 dialogGlobalParams="--backtitle Installation --ascii-lines"
 # Ask if module is to be enabled if not defined
@@ -25,23 +25,25 @@ function askModule {
     fi
 
     # This reads variable repersented by the string
-    eval res=\$$1
+    eval "res=\$$1"
 
     if [ "$(checkModule 'WITH_DIALOG')" ]; then
+
         # Do not stop exec on non 0 return values
         set +e
+        # shellcheck disable=SC2086
         dialog $dialogGlobalParams $dialogParam --title "$2" --yesno "Install $2?" 6 55
         response=$?
-
         # Return to previous setting
         set -e
+
         case $response in
             0) res="true";;
             1) res="false";;
             255) exit;;
         esac
     else
-        if [ -z "$res" -o "$res" != "true" -a "$res" != "false" ]; then
+        if [ -z "$res" ] || [ "$res" != "true" ] && [ "$res" != "false" ]; then
             read -p "Install $2 $askPrompt? " -n 1 -r
             echo ""
             if [[ $REPLY =~ ^[$nonDefaultMatch]$ ]]; then
@@ -56,15 +58,14 @@ function askModule {
     else
         echo -e "\e[1;31m$2 will be skipped\e[0m"
     fi
-    eval $1=\$res
-    return="$res"
+    eval "$1=\$res"
 }
 
 # Check to see if module is enabled
 #    checkModule <Variable>
 function checkModule {
-     eval res=\$$1
-     if [ ! -z "$res" -a "$res" == "true" ]; then
+     eval "res=\$$1"
+     if [ ! -z "$res" ] && [ "$res" == "true" ]; then
         echo "1"
     else
         echo ""
@@ -78,7 +79,7 @@ BOARD_REVISION="?"
 CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 ./do"
 
 ##TODO## Possibly use /sys/firmware/devicetree/base/model
-BOARD_HARDWARE=$(cat /proc/cpuinfo | grep Hardware | awk '{print $3}' | head -n 1)
+BOARD_HARDWARE=$(grep Hardware /proc/cpuinfo | awk '{print $3}' | head -n 1)
 
 # Flag to identify if board can support on-board AP. Default to false.
 SUPPORT_HOSTAP=false
@@ -87,7 +88,7 @@ CJDNS_PACKAGE=""
 
 # If board cannot be determined from /proc/cpuinfo its most likely an arbmian board so you can use the armbian generated ID file
 if [[ -z "$BOARD_HARDWARE" ]]; then
-    BOARD_HARDWARE="$(grep "BOARD=" /etc/armbian-image-release | awk -F \= '{print $2}' | tr -d \" | sed 's/Orange Pi //g')"
+    BOARD_HARDWARE="$(grep "BOARD=" /etc/armbian-image-release | awk -F '=' '{print $2}' | tr -d \" | sed 's/Orange Pi //g')"
 fi
 
 if [[ "$BOARD_HARDWARE" == 'Allwinner' || "$BOARD_HARDWARE" == 'Generic' ]]; then
@@ -95,27 +96,28 @@ if [[ "$BOARD_HARDWARE" == 'Allwinner' || "$BOARD_HARDWARE" == 'Generic' ]]; the
     sudo service unattended-upgrades stop || true
     sudo killall unattended-upgrade || true
     BOARD_FAMILY="Orange Pi"
-    BOARD_NAME=$(grep BOARD_NAME /etc/armbian-image-release | awk -F \= '{print $2}' | tr -d \" | sed 's/Orange Pi //g')
+    BOARD_NAME=$(grep BOARD_NAME /etc/armbian-image-release | awk -F '=' '{print $2}' | tr -d \" | sed 's/Orange Pi //g')
     BOARD_REVISION="experimental"
     if [[ "$BOARD_NAME" == "Zero" ]]; then
         # AP is supported if board already supports XRadio
-        if [ "$(lsmod | grep xradio_wlan)" ]; then
+        if lsmod | grep -q xradio_wlan; then
             SUPPORT_HOSTAP=true
         fi
         SUPPORT_WATCHDOG=true
     fi
     #TODO# -O2 workaround. Needs to be resolved.
     CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-O2 -s -static -Wall -march=armv7-a -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -fomit-frame-pointer -marm\" ./do"
-    CJDNS_PACKAGE="cjdns-neon.deb"
+    CJDNS_PACKAGE="cjdns-neon-v4.deb"
 elif [[ "$BOARD_HARDWARE" == 'nanopineo2' || "$BOARD_HARDWARE" == 'sun50iw1p1' ||
         "$BOARD_HARDWARE" == 'orangepizeroplus2-h5' ||
         "$BOARD_HARDWARE" == 'rock64' ||
+        "$BOARD_HARDWARE" == 'Pine64+' ||
         "$BOARD_HARDWARE" == 'espressobin' ]]; then
     # Stop unattended upgrade that will block apt-get requests on some armbian boards
     sudo service unattended-upgrades stop || true
     sudo killall unattended-upgrade || true
     BOARD_FAMILY=""
-    BOARD_NAME=$(grep BOARD_NAME /etc/armbian-image-release | awk -F \= '{print $2}' | tr -d \" | sed 's/Orange Pi //g')
+    BOARD_NAME=$(grep BOARD_NAME /etc/armbian-image-release | awk -F '=' '{print $2}' | tr -d \" | sed 's/Orange Pi //g')
     BOARD_REVISION="experimental"
     CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -march=armv8-a+crc+crypto -fomit-frame-pointer\" ./do"
     if [[ "$BOARD_HARDWARE" == "orangepizeroplus2-h5" ]]; then
@@ -123,7 +125,7 @@ elif [[ "$BOARD_HARDWARE" == 'nanopineo2' || "$BOARD_HARDWARE" == 'sun50iw1p1' |
     fi
 else
     BOARD_FAMILY="Raspberry Pi"
-    BOARD_REVISION=`sed -rn 's/Revision\s+\:\s+([0-9a-z_\-\s\,\(\)]+)/\1/p' /proc/cpuinfo`
+    BOARD_REVISION="$(sed -rn 's/Revision\s+\:\s+([0-9a-z_\-\s\,\(\)]+)/\1/p' /proc/cpuinfo)"
     if [[ $BOARD_REVISION == *"900092"* || $BOARD_REVISION == *"900093"* || $BOARD_REVISION == *"9000c1"* ]]; then
         BOARD_NAME="Zero"
         CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 NO_TEST=1 CFLAGS=\"-s -mfpu=vfp -O2\" ./do"
@@ -133,11 +135,11 @@ else
     elif [[ $BOARD_REVISION == *"a01041"* || $BOARD_REVISION == *"a21041"* ]]; then
         BOARD_NAME="2"
         CJDNS_BUILD_CMD="sudo NO_TEST=1 CFLAGS=\"-mfpu=neon-vfpv4 -O2\" ./do"
-        CJDNS_PACKAGE="cjdns-neon.deb"
+        CJDNS_PACKAGE="cjdns-neon-v4.deb"
     elif [[ $BOARD_REVISION == *"a02082"* || $BOARD_REVISION == *"a22082"* ]]; then
         BOARD_NAME="3"
         CJDNS_BUILD_CMD="sudo CFLAGS=\"-march=armv8-a+crc -mtune=cortex-a53 -mfpu=crypto-neon-fp-armv8 -mfloat-abi=hard -O2\" ./do"
-        CJDNS_PACKAGE="cjdns-neon.deb"
+        CJDNS_PACKAGE="cjdns-neon-v4.deb"
         # Raspberry Pi 3 has on-board WiFi that can be used as an AP
         SUPPORT_HOSTAP=true
         # Raspberry Pi 3 has hardware watchdog
@@ -145,7 +147,7 @@ else
     elif [[ $BOARD_REVISION == *"a020d3"* ]]; then
         BOARD_NAME="3b+"
         CJDNS_BUILD_CMD="sudo CFLAGS=\"-march=armv8-a+crc -mtune=cortex-a53 -mfpu=crypto-neon-fp-armv8 -mfloat-abi=hard -O2\" ./do"
-        CJDNS_PACKAGE="cjdns-neon.deb"
+        CJDNS_PACKAGE="cjdns-neon-v4.deb"
         # Raspberry Pi 3 has on-board WiFi that can be used as an AP
         SUPPORT_HOSTAP=true
         # Raspberry Pi 3 has hardware watchdog
@@ -172,18 +174,18 @@ fi
 
 # Disable NetworkManager management of wlan0 so it doesn't pause it to scan every 60 seconds
 if [[ -e '/etc/NetworkManager/NetworkManager.conf' ]]; then
-    if [[ -z "$(grep "\[keyfile\]" /etc/NetworkManager/NetworkManager.conf)" ]]; then
+    if ! grep -q "\[keyfile\]" /etc/NetworkManager/NetworkManager.conf; then
         echo "[keyfile]" | sudo tee --append /etc/NetworkManager/NetworkManager.conf > /dev/null
         echo "unmanaged-devices=interface-name:wlan0" | sudo tee --append /etc/NetworkManager/NetworkManager.conf > /dev/null
     fi
  fi
- 
+
 # Detect missing /sbin from $PATH variable on Debian distros, and add it
-if [ -z $(echo $PATH | grep "/sbin")  ]; then
+if ! echo "$PATH" | grep -q "/sbin" ; then
     # Current environment
     export PATH="/sbin:/usr/sbin:$PATH"
     # Next login
-    echo 'export PATH="/sbin:/usr/sbin:$PATH"' | sudo tee -a /etc/profile
+    echo "export PATH=\"/sbin:/usr/sbin:$PATH\"" | sudo tee -a /etc/profile
 fi
 
 askModule "WITH_DIALOG" "Text User Interface?" "n"
@@ -203,7 +205,7 @@ fi
 askModule "WITH_FIREWALL" "Basic Firewall"
 askModule "WITH_CJDNS_IPTUNNEL" "Internet Gateway"
 askModule "WITH_IPFS" "IPFS"
-if [ "$WITH_IPFS" == true -a "$BOARD_FAMILY" == "Raspberry Pi" ]; then
+if [ "$WITH_IPFS" == true ] && [ "$BOARD_FAMILY" == "Raspberry Pi" ]; then
     askModule "WITH_IPFS_PI_STREAM" "IPFS Pi Stream" "n"
 fi
 askModule "WITH_SSB" "SSB"
@@ -229,15 +231,16 @@ fi
 # Prompt for name of the mesh network
 ##TODO## This should be moved up to to mesh point question
 read -p "Enter the name of your mesh network (default: tomesh): " -r
-export MESH_NAME=`echo $REPLY | sed 's/ //g'`
+MESH_NAME="${REPLY// }"
 if [ "${#MESH_NAME}" == 0 ]; then
-    export MESH_NAME="tomesh"
+    MESH_NAME="tomesh"
 fi
+export MESH_NAME
 
 # Get tools
 if ! [ "$(which nodejs)" ]; then
     # Check for armv6 and install nodejs manually instead since it will not install via repo
-    if $(uname -m | grep -Eq ^armv6); then
+    if uname -m | grep -Eq ^armv6; then
         wget -O /tmp/node-v6.11.0-linux-armv6l.tar.gz https://nodejs.org/dist/v6.11.0/node-v6.11.0-linux-armv6l.tar.gz
         sudo tar xfz /tmp/node-v6.11.0-linux-armv6l.tar.gz --strip 1 -C /
         rm -rf /tmp/node-v6.11.0-linux-armv6l.tar.gz
@@ -264,8 +267,8 @@ fi
 
 if [ ! -z "$CJDNS_PACKAGE" ]; then
     if ! [ -x "/opt/cjdns/cjdroute" ]; then
-        echo -e "\e[1;31mInstalling cjdns Debian package\e[0m"
-        wget https://github.com/darkdrgn2k/ToMeshStuff/raw/master/deb/$CJDNS_PACKAGE -O /tmp/cjdns.deb
+        echo -e "\e[1;31mInstalling cjdns debian package\e[0m"
+        wget https://github.com/darkdrgn2k/ToMeshPackages/raw/master/CJDNS/$CJDNS_PACKAGE -O /tmp/cjdns.deb
         sudo dpkg -i /tmp/cjdns.deb
         #Link up folder so files are in the same place as compiled
         if [[ -e "/opt/cjdns" ]]; then
@@ -279,17 +282,17 @@ else
     echo -e "\e[1;31mCompiling cjdns from source\e[0m"
     if ! [ -d "/opt/cjdns" ]; then
         sudo apt-get install -y python
-        here=`pwd`
+        here="$(pwd)"
         sudo git clone https://github.com/cjdelisle/cjdns.git /opt/cjdns
         cd /opt/cjdns
         sudo git checkout $TAG_CJDNS
-        cd $here
+        cd "$here"
     fi
 
     # Build cjdns
     if ! [ -x "/opt/cjdns/cjdroute" ]; then
-        here=`pwd`
-        cd /opt/cjdns && eval $CJDNS_BUILD_CMD && cd $here
+        here="$(pwd)"
+        cd /opt/cjdns && eval "$CJDNS_BUILD_CMD" && cd "$here"
     fi
 
     # Install cjdns to /usr/bin
@@ -322,7 +325,7 @@ if [ "$(checkModule 'WITH_AD_HOC')" ]; then
 fi
 
 # WiFi Access Point on supported boards
-if [ "$SUPPORT_HOSTAP" == "true" -a "$(checkModule 'WITH_WIFI_AP')" ]; then
+if [ "$SUPPORT_HOSTAP" == "true" ] && [ "$(checkModule 'WITH_WIFI_AP')" ]; then
     source hostapd/install
 fi
 
@@ -337,44 +340,47 @@ if [ "$(checkModule 'WITH_CJDNS_IPTUNNEL')" ]; then
 fi
 
 # IPFS
-if [ ! -x "$(command -v ipfs)" -a "$(checkModule 'WITH_IPFS')" ]; then
+if [ ! -x "$(command -v ipfs)" ] && [ "$(checkModule 'WITH_IPFS')" ]; then
     source ipfs/install
 fi
+
 # IPFS Pi Stream
-if [ ! -x "$(command -v process-stream.sh)" -a "$(checkModule 'WITH_IPFS_PI_STREAM')" ]; then
+if [ ! -x "$(command -v process-stream.sh)" ] && [ "$(checkModule 'WITH_IPFS_PI_STREAM')" ]; then
     source ipfs-pi-stream/install
 fi
+
 # SSB
-if [ ! -x "$(command -v sbot)" -a "$(checkModule 'WITH_SSB')" ]; then
+if [ ! -x "$(command -v sbot)" ] && [ "$(checkModule 'WITH_SSB')" ]; then
     source ssb/install
 fi
 
-# SSB Web (logic inverted. Install if sbot exists only)
+# SSB patchfoo  (logic inverted. Install if sbot exists only)
 if [ -x "$(command -v sbot)" -a "$(checkModule 'WITH_SSB_PATCHFOO')" ]; then
     source ssb-patchfoo/install
 fi
 
 # SSB Web (logic inverted. Install if sbot exists only)
-if [ -x "$(command -v sbot)" -a "$(checkModule 'WITH_SSB_WEB')" ]; then
+if [ -x "$(command -v sbot)" ] && [ "$(checkModule 'WITH_SSB_WEB')" ]; then
     source ssb-web/install
 fi
 
 # yrd
-if [ ! -x "$(command -v yrd)" -a "$(checkModule 'WITH_YRD')" ]; then
+if [ ! -x "$(command -v yrd)" ] && [ "$(checkModule 'WITH_YRD')" ]; then
     source yrd/install
 fi
+
 # Prometheus Node Exporter
-if [ ! -x "$(command -v node_exporter)" -a "$(checkModule 'WITH_PROMETHEUS_NODE_EXPORTER')" ]; then
+if [ ! -x "$(command -v node_exporter)" ] && [ "$(checkModule 'WITH_PROMETHEUS_NODE_EXPORTER')" ]; then
     source prometheus-node-exporter/install
 fi
 
 # Prometheus Server
-if [ ! -x "$(command -v /opt/prometheus/prometheus)" -a "$(checkModule 'WITH_PROMETHEUS_SERVER')" ]; then
+if [ ! -x "$(command -v /opt/prometheus/prometheus)" ] && [ "$(checkModule 'WITH_PROMETHEUS_SERVER')" ]; then
     source prometheus-server/install
 fi
 
 # Grafana
-if [ ! -x "$(command -v /usr/sbin/grafana-server)" -a "$(checkModule 'WITH_GRAFANA')" ]; then
+if [ ! -x "$(command -v /usr/sbin/grafana-server)" ] && [ "$(checkModule 'WITH_GRAFANA')" ]; then
     source grafana/install
 fi
 
@@ -394,7 +400,7 @@ if [ "$(checkModule 'WITH_EXTRA_TOOLS')" ]; then
 fi
 
 # Watchdog on supported boards
-if [ "$SUPPORT_WATCHDOG" == "true" -a "$(checkModule 'WITH_WATCHDOG')" ]; then
+if [ "$SUPPORT_WATCHDOG" == "true" ] && [ "$(checkModule 'WITH_WATCHDOG')" ]; then
     source watchdog/install
 fi
 
@@ -407,17 +413,18 @@ source shared/nodeinfo/install
 
 # Print node status on login
 cp ~/.profile ~/.bash_profile
-echo "" >> ~/.bash_profile
-echo "# export mesh network name" >> ~/.bash_profile
-echo "export MESH_NAME=$MESH_NAME" >> ~/.bash_profile
-echo "" >> ~/.bash_profile
-echo "# print mesh node status" >> ~/.bash_profile
-echo "status" >> ~/.bash_profile
-
+{
+    echo ""
+    echo "# export mesh network name"
+    echo "export MESH_NAME=$MESH_NAME"
+    echo ""
+    echo "# print mesh node status"
+    echo "status"
+} >> ~/.bash_profile
 # Rename node based on cjdns address
 oldhostname=$(hostname)
 newhostname=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-/g")
-sudo echo $newhostname | sudo tee /etc/hostname > /dev/null
+sudo echo "$newhostname" | sudo tee /etc/hostname > /dev/null
 sudo sed -i -e "s/$oldhostname/$newhostname/" /etc/hosts
 
 echo -e "Your node's new hostname is $newhostname"
@@ -426,4 +433,3 @@ read -p "Installation complete. Press any key to reboot your new node. " -n 1 -r
 
 # Reboot device
 sudo reboot
-
