@@ -5,20 +5,20 @@ set -e
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Enable camera on the Raspberry Pi
-sudo $BASE_DIR/enable-camera.sh
+sudo "$BASE_DIR/enable-camera.sh"
 
 # Install ffmpeg and supporting tools
 sudo apt-get -y install ffmpeg lsof inotify-tools nginx
 
 # Add user to be able to modify nginx directories
-sudo usermod -a -G $USER www-data
+sudo usermod -a -G "$USER" www-data
 sudo chmod g+rw /var/www/html
 
 # TODO: why is this needed?
 sudo chmod a+rw /var/www/html
 
-sudo cp -f $BASE_DIR/process-stream.sh /usr/bin/process-stream.sh
-sudo cp -f $BASE_DIR/process-stream.service /etc/systemd/system/process-stream.service
+sudo cp -f "$BASE_DIR/process-stream.sh" /usr/bin/process-stream.sh
+sudo cp -f "$BASE_DIR/process-stream.service" /etc/systemd/system/process-stream.service
 sudo systemctl daemon-reload
 sudo systemctl enable process-stream
 

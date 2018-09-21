@@ -1,4 +1,4 @@
-#/bin/bash
+#!/usr/bin/env bash
 
 # Enable camera on Raspberry Pi
 # set_config_var taken from raspi-config

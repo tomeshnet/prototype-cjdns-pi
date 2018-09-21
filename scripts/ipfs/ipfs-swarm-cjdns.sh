@@ -12,12 +12,12 @@ if [[  ${attempts} -eq 0 ]]; then
 fi
 
 while read -r cjdns_peer; do
-    cjdns_addr=$(sudo /opt/cjdns/publictoip6 $cjdns_peer)
+    cjdns_addr=$(sudo /opt/cjdns/publictoip6 "$cjdns_peer")
 
     # See if they have IPFS enabled
-    res=$(curl http://[${cjdns_addr}]/nodeinfo.json -s)
-    if [ ! -x "$res" ]; then
-        id=$(echo ${res} | jq -r -M '.services.ipfs.ID')
+    res=$(curl http://["${cjdns_addr}"]/nodeinfo.json -s)
+    if [ ! -x "${res}" ]; then
+        id=$(echo "${res}" | jq -r -M '.services.ipfs.ID')
         # Value is found
         if [[ ! ${id} == "null" ]] && [[ ! "${id}" == "" ]]; then
             # Connect to neighbouring ipfs
@@ -30,7 +30,7 @@ while read -r cjdns_peer; do
     # XXX: The below command hasn't been working -- so for now only 1-hop peers are checked
     #peers+=$(cjdnstool query getpeers $peer | sed -e '1d;$d' |awk -F. '{ print $6".k" }')
 
-done <<< `sudo nodejs /opt/cjdns/tools/peerStats 2>/dev/null | awk '{ if ($3 == "ESTABLISHED") print $2 }' | awk -F. '{ print $6".k" }' | xargs`
+done <<< "$(sudo nodejs /opt/cjdns/tools/peerStats 2>/dev/null | awk '{ if ($3 == "ESTABLISHED") print $2 }' | awk -F. '{ print $6".k" }' | xargs)"
 
 # Update peers data since ipfs just started
 sudo /usr/local/bin/nodeinfo-update.sh

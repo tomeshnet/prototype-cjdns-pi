@@ -2,18 +2,24 @@
 
 set -e
 
+GRAFANA_VERSION=5.1.4
+
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Install Grafana dependencies
 sudo apt-get install libfontconfig1 fontconfig-config fonts-dejavu-core ttf-bitstream-vera fonts-liberation sqlite3 -y
 
 # Download and install unofficial build of Grafana for ARM
-URL="https://bintray.com/fg2it/deb/download_file?file_path=main%2Fg%2Fgrafana_4.3.2_armhf.deb"
-if $(uname -m | grep -Eq ^armv6); then
-    URL="https://bintray.com/fg2it/deb-rpi-1b/download_file?file_path=main%2Fg%2Fgrafana_4.3.2_armhf.deb"
+URL="https://bintray.com/fg2it/deb/download_file?file_path=main%2Fg%2Fgrafana_${GRAFANA_VERSION}_armhf.deb"
+if uname -m | grep -Eq ^armv6; then
+    # Raspberry Pi 1
+    URL="https://bintray.com/fg2it/deb-rpi-1b/download_file?file_path=main%2Fg%2Fgrafana_${GRAFANA_VERSION}_armhf.deb"
+elif uname -m | grep -Eq ^aarch64; then
+    URL="https://bintray.com/fg2it/deb-arm64/download_file?file_path=main%2Fg%2Fgrafana_${GRAFANA_VERSION}_arm64.deb"
 fi
-mkdir "$BASE_DIR/tmp"
-wget ${URL} -O "$BASE_DIR/tmp/go-grafana.tar.gz"
+
+mkdir "$BASE_DIR/tmp" || true
+wget "${URL}" -O "$BASE_DIR/tmp/go-grafana.tar.gz"
 sudo dpkg -i "$BASE_DIR/tmp/go-grafana.tar.gz"
 rm -rf "$BASE_DIR/tmp"
 
@@ -28,9 +34,9 @@ sleep 30
 # Add data source and dashboard
 
 # Check if port grafana is being listend in on if so configure if not notify and continue
-if [ ! -z "$(netstat --tcp -n | grep :3000)" ]; then
-    curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary @$BASE_DIR/datasource.json http://localhost:3000/api/datasources
-    curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary @$BASE_DIR/dashboard.json http://localhost:3000/api/dashboards/db
+if netstat --tcp -n -l | grep -q :3000; then
+    curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary "@$BASE_DIR/datasource.json" http://localhost:3000/api/datasources
+    curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary "@$BASE_DIR/dashboard.json" http://localhost:3000/api/dashboards/db
 else
     echo -e "\e[1;31mGrafana is taking longer than normal to start\e[0m"
     echo -e "\e[1;31mSkipping configuration and continuing install\e[0m"
