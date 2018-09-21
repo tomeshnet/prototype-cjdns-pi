@@ -36,7 +36,7 @@ startFFmpeg &
 
 while true; do
 #TODO# Fix this one
-# shellcheck disable=SC2012
+# shellcheck disable=SC2086,SC2012
   nextfile=$(ls -tr ${what}*.ts 2>/dev/null | tail -n 1)
 
   if ! [ -z "${nextfile}" ]; then
