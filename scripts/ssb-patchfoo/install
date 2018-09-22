@@ -4,6 +4,7 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 current="$(pwd)"
 
 sleep 5
+# shellcheck disable=SC2164
 cd ~/.ssb/node_modules
 
 # Install dependencies
@@ -26,5 +27,6 @@ sudo systemctl start ssb
 # Install nginx reverse proxy
 sudo cp "$BASE_DIR/ssb-patchfoo.conf" /etc/nginx/site-path-enabled/ssb-patchfoo.conf
 
+# shellcheck disable=SC2164
 cd "$current"
 
