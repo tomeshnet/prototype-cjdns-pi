@@ -1,16 +1,18 @@
 #!/usr/bin/env bash
 
 set -e
+SUBNET="10.1.0."
+SUBNET6="fe80::"
 
 # Configure as cjdns iptunnel server if server file is present (this is simply a newline-separated list
 # of cjdns public keys in /etc/cjdns.iptunnel.server, each key indicating an allowed iptunnel client)
 if [ -e /etc/cjdns.iptunnel.server ]; then
-    # Add subnet and route for cjdns tun0 interface    
-    ifconfig tun0 10.1.0.1/24
-    route add -net 10.1.0.0/24 tun0 || true
+    # Add subnet and route for cjdns tun0 interface
+    ifconfig tun0 "${SUBNET}1/24"
+    route add -net "${SUBNET}0/24" tun0 || true
+    ip addr add "${SUBNET6}1/64" dev tun0 || true
 
     # Define local IP range for assigning to iptunnel clients (10.1.0.2 to 10.1.0.254)
-    SUBNET="10.1.0."
     CLIENT=2
     LAST=254
 
@@ -18,11 +20,13 @@ if [ -e /etc/cjdns.iptunnel.server ]; then
     while read -r PUBLIC_KEY; do
         if [[ "${PUBLIC_KEY}" =~ ^[0-z]{52}\.k && ${CLIENT} -le ${LAST} ]]; then
             ASSIGNED_IP="${SUBNET}${CLIENT}"
-            /opt/cjdns/tools/cexec "IpTunnel_allowConnection('${PUBLIC_KEY}',null,null,null,0,null,'${ASSIGNED_IP}')"
+            ASSIGNEDIP6="${SUBNET6}${CLIENT}"
+            /opt/cjdns/tools/cexec "IpTunnel_allowConnection('${PUBLIC_KEY}',null,64,'${ASSIGNED_IP6}',0,null,'${ASSIGNED_IP}')"
             ((CLIENT++))
         fi
     done < /etc/cjdns.iptunnel.server
-
+    echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
+    echo 1 > /proc/sys/net/ipv4/ip_forward
 # Configure as cjdns iptunnel client if client file is present (this is simply a newline-separated list
 # of cjdns public keys in /etc/cjdns.iptunnel.client, each key indicating an iptunnel exit server)
 elif [ -e /etc/cjdns.iptunnel.client ]; then
