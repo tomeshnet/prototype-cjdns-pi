@@ -37,7 +37,7 @@ while 1:
             data = json.loads(output)
             tmp=data["myAddr"].split(".")
             myaddress=tmp[5] + ".k"
-
+            myaddress=myaddress.splitlines()[0]
             command_line = "/opt/cjdns/tools/peerStats"
             args = shlex.split(command_line)
             interface = subprocess.Popen(args,stdout=subprocess.PIPE)
