@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-
+# shellcheck disable=SC2034
+true
 set -e
 
 TAG_CJDNS=d2e55d58548d83940482fe1bbbe1fd36f7f1b4ef
@@ -257,7 +258,6 @@ if [ "$(checkModule 'WITH_DIALOG')" ]; then
     sudo apt-get install dialog -y
 fi
 
-# shellcheck disable=SC1091
 askSelection "A Basic node\nB Pi Stream\nZ Custom" "Select install type" Z
 case "$dialogREPLY" in
     "A")
