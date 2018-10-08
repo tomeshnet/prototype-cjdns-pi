@@ -86,7 +86,6 @@ function askSelection {
     dialogREPLY=""
     default="$3"
     if [ "$(checkModule 'WITH_DIALOG')" ]; then
-        # Do not stop exec on non 0 return values
         selection=$(echo -e "$selection" | while read -r selected; do
                     selectedItem="${selected:0:1}"
                     selectedText="${selected:2}"
@@ -259,7 +258,7 @@ if [ "$(checkModule 'WITH_DIALOG')" ]; then
 fi
 
 # shellcheck disable=SC1091
-askSelection "A Basic node\nB Pi Stream\nZ Custom" "Select install type" z
+askSelection "A Basic node\nB Pi Stream\nZ Custom" "Select install type" Z
 case "$dialogREPLY" in
     "A")
         echo "Basic node"
