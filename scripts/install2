@@ -42,24 +42,9 @@ function askModule {
             1) res="false";;
             255) exit;;
         esac
-    else        set +e
-        # shellcheck disable=SC2086
-        dialog $dialogGlobalParams $dialogParam --title "$2" --yesno "Install $2?" 6 55
-        response=$?
-        # Return to previous setting
-        set -e
-                set +e
-        # shellcheck disable=SC2086
-        dialog $dialogGlobalParams $dialogParam --title "$2" --yesno "Install $2?" 6 55
-        response=$?
-        # Return to previous setting
-        set -e"$res" != "false" ]; then
-                set +e
-        # shellcheck disable=SC2086
-        dialog $dialogGlobalParams $dialogParam --title "$2" --yesno "Install $2?" 6 55
-        response=$?
-        # Return to previous setting
-        set -e
+    else
+        if [ -z "$res" ] || [ "$res" != "true" ] && [ "$res" != "false" ]; then
+            read -p "Install $2 $askPrompt? " -n 1 -r
             echo ""
             if [[ $REPLY =~ ^[$nonDefaultMatch]$ ]]; then
                 res=$nonDefaultValue
