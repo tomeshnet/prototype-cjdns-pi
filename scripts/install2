@@ -28,7 +28,6 @@ function askModule {
     eval "res=\$$1"
 
     if [ "$(checkModule 'WITH_DIALOG')" ]; then
-
         # Do not stop exec on non 0 return values
         set +e
         # shellcheck disable=SC2086
@@ -83,13 +82,11 @@ function checkModule {
 # Result is stored in $dialogREPLY
 dialogREPLY=""
 function askSelection {
-
     selection=$1
     dialogREPLY=""
     default="$3"
     if [ "$(checkModule 'WITH_DIALOG')" ]; then
         # Do not stop exec on non 0 return values
-
         selection=$(echo -e "$selection" | while read -r selected; do
                     selectedItem="${selected:0:1}"
                     selectedText="${selected:2}"
@@ -106,16 +103,17 @@ function askSelection {
         rm -f selectionList
         response=$(cat /tmp/res)
         rm -f /tmp/res
-        # Return to previous setting
 
+        # Return if canceled
         if [[ "$response" == "" ]]; then
             exit 1
         fi
+
+        # Set response variable
         dialogREPLY="$response"
     else
         isValid=""
         while [[ "$isValid" == "" ]]; do
-
             echo "$2"
             echo -------------------
             echo -e "$1"
