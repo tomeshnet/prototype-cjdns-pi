@@ -101,7 +101,7 @@ function askSelection {
                         echo "$selectedItem \"$selectedText\" off"
                     fi
             done)
-        echo $selection > /tmp/selectionList
+        echo "$selection" > /tmp/selectionList
 
         # shellcheck disable=SC2086
         dialog $dialogGlobalParams --radiolist "$2" 10 55 4  --file /tmp/selectionList 2> /tmp/res
@@ -263,9 +263,9 @@ if [ "$(checkModule 'WITH_DIALOG')" ]; then
     sudo apt-get install dialog -y
 fi
 
-askSelection "a Basic node\nb Pi Stream\nz Custom" "Select install type" z
-case $dialogREPLY in
-    a)
+askSelection "A Basic node\nB Pi Stream\nZ Custom" "Select install type" z
+case "$dialogREPLY" in
+    "A")
         echo "Basic node"
         WITH_MESH_POINT=true
         WITH_WIFI_AP=""
@@ -275,14 +275,14 @@ case $dialogREPLY in
         WITH_PROMETHEUS_NODE_EXPORTER=true
         WITH_PROMETHEUS_SERVER=false
         WITH_GRAFANA=false
-        WITH_EXTRA_TOOLS="
+        WITH_EXTRA_TOOLS=""
         WITH_WATCHDOG=""
         WITH_YRD=""
         WITH_SSB=false
         WITH_SSB_WEB=false
         WITH_IPFS_PI_STREAM=false
     ;;
-    b)
+    "B")
         WITH_MESH_POINT=true
         WITH_WIFI_AP=true
         WITH_FIREWALL=""
@@ -298,12 +298,13 @@ case $dialogREPLY in
         WITH_SSB_WEB=true
         WITH_IPFS_PI_STREAM=true
     ;;
-    z)
+    "Z")
     ;;
     *)
         echo "Error unknown response $dialogREPLY"
         exit
     ;;
+esac
 
 # Prompt and set missing flags
 
