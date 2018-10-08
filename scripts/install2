@@ -29,13 +29,7 @@ function askModule {
 
     if [ "$(checkModule 'WITH_DIALOG')" ]; then
 
-               set +e
-        # shellcheck disable=SC2086
-        dialog $dialogGlobalParams $dialogParam --title "$2" --yesno "Install $2?" 6 55
-        response=$?
-        # Return to previous setting
-        set -e
- # Do not stop exec on non 0 return values
+        # Do not stop exec on non 0 return values
         set +e
         # shellcheck disable=SC2086
         dialog $dialogGlobalParams $dialogParam --title "$2" --yesno "Install $2?" 6 55
@@ -48,9 +42,24 @@ function askModule {
             1) res="false";;
             255) exit;;
         esac
-    else
-        if [ -z "$res" ] || [ "$res" != "true" ] && [ "$res" != "false" ]; then
-            read -p "Install $2 $askPrompt? " -n 1 -r
+    else        set +e
+        # shellcheck disable=SC2086
+        dialog $dialogGlobalParams $dialogParam --title "$2" --yesno "Install $2?" 6 55
+        response=$?
+        # Return to previous setting
+        set -e
+                set +e
+        # shellcheck disable=SC2086
+        dialog $dialogGlobalParams $dialogParam --title "$2" --yesno "Install $2?" 6 55
+        response=$?
+        # Return to previous setting
+        set -e"$res" != "false" ]; then
+                set +e
+        # shellcheck disable=SC2086
+        dialog $dialogGlobalParams $dialogParam --title "$2" --yesno "Install $2?" 6 55
+        response=$?
+        # Return to previous setting
+        set -e
             echo ""
             if [[ $REPLY =~ ^[$nonDefaultMatch]$ ]]; then
                 res=$nonDefaultValue
@@ -79,10 +88,14 @@ function checkModule {
 }
 
 # Ask user to choose from a selection of items
-# list is \n delimited list in formation "x text"
-# where x is the single character selection that is returned
+# list is \n delimited. Each line formated as
+#      "x text"
+#       x - single capital character that will be returned
+#       text - description of item
+#
 #    askSelection <list> <message> <default>
-# result is stored in dialogReply
+#
+# Result is stored in $dialogREPLY
 dialogREPLY=""
 function askSelection {
 
@@ -224,7 +237,6 @@ else
     fi
 fi
 
-
 echo -e "\e[1;32mStarting installation on ${BOARD_FAMILY} ${BOARD_NAME} (${BOARD_REVISION})...\e[0m"
 
 # Normalize OS environment
@@ -263,6 +275,7 @@ if [ "$(checkModule 'WITH_DIALOG')" ]; then
     sudo apt-get install dialog -y
 fi
 
+# shellcheck disable=SC1091
 askSelection "A Basic node\nB Pi Stream\nZ Custom" "Select install type" z
 case "$dialogREPLY" in
     "A")
