@@ -1,7 +1,12 @@
 #!/bin/bash
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 current="$(pwd)"
+
+# Install nginx
+# shellcheck source=../shared/nginx/install
+source "$BASE_DIR/../shared/nginx/install"
 
 sleep 5
 # shellcheck disable=SC2164
