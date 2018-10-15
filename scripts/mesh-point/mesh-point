@@ -21,7 +21,7 @@ set -e
 # Set wireless regulatory domain
 sudo iw reg set CA
 
-# Find first 802.11s Mesh Point capable device you can
+# Find first 802.11s Mesh Point capable device
 for int in $(find /sys/class/net/* -maxdepth 1 -print0 | xargs -0 -l basename); do
     if [ -d "/sys/class/net/$int/wireless" ]; then
         phy=$(iw dev "$int" info | grep wiphy | awk '{print $2}')
