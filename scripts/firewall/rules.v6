@@ -6,6 +6,11 @@
 -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 -A INPUT -p ipv6-icmp -j ACCEPT
 -A INPUT -i lo -j ACCEPT
--A INPUT -j ACCEPT -p tcp -m multiport --dports 80,443,9100,22,5201,4001
+-A INPUT -j ACCEPT -p tcp --dport 22
+-A INPUT -j ACCEPT -p tcp --dport 80
+-A INPUT -j ACCEPT -p tcp --dport 443
+-A INPUT -j ACCEPT -p tcp --dport 5201
+-A INPUT -j ACCEPT -p tcp --dport 4001
+-A INPUT -j ACCEPT -p tcp --dport 9100
 -A INPUT -j REJECT --reject-with icmp6-port-unreachable
 COMMIT
