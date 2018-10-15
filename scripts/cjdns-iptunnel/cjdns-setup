@@ -21,7 +21,7 @@ if [ -e /etc/cjdns.iptunnel.server ]; then
         if [[ "${PUBLIC_KEY}" =~ ^[0-z]{52}\.k && ${CLIENT} -le ${LAST} ]]; then
             ASSIGNED_IP="${SUBNET}${CLIENT}"
             ASSIGNED_IP6="${SUBNET6}${CLIENT}"
-            /opt/cjdns/tools/cexec "IpTunnel_allowConnection('${PUBLIC_KEY}',null,64,'${ASSIGNED_IP6}',0,null,'${ASSIGNED_IP}')"
+            /opt/cjdns/tools/cexec "IpTunnel_allowConnection('${PUBLIC_KEY}',0,null,'${ASSIGNED_IP6}',0,null,'${ASSIGNED_IP}')"
             ((CLIENT++))
         fi
     done < /etc/cjdns.iptunnel.server
@@ -40,7 +40,10 @@ elif [ -e /etc/cjdns.iptunnel.client ]; then
     # Route NAT traffic through to cjdns tun0 interface to use iptunnel exit server
     iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE || true
     iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
+
+    echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
+    echo 1 > /proc/sys/net/ipv4/ip_forward
     
     # add default ipv6 router over tun0
-    ip -6 route add default  dev tun0
+    ip -6 route add default dev tun0
 fi
