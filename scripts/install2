@@ -83,8 +83,12 @@ BOARD_HARDWARE=$(grep Hardware /proc/cpuinfo | awk '{print $3}' | head -n 1)
 
 # Flag to identify if board can support on-board AP. Default to false.
 SUPPORT_HOSTAP=false
+# Flag to identify if board can support on-board hardware watchdog.
 SUPPORT_WATCHDOG=false
+
+# Variables
 CJDNS_PACKAGE=""
+CHANGE_PASSWORD=""
 
 # If board cannot be determined from /proc/cpuinfo its most likely an arbmian board so you can use the armbian generated ID file
 if [[ -z "$BOARD_HARDWARE" ]]; then
@@ -126,6 +130,9 @@ elif [[ "$BOARD_HARDWARE" == 'nanopineo2' || "$BOARD_HARDWARE" == 'sun50iw1p1' |
 else
     BOARD_FAMILY="Raspberry Pi"
     BOARD_REVISION="$(sed -rn 's/Revision\s+\:\s+([0-9a-z_\-\s\,\(\)]+)/\1/p' /proc/cpuinfo)"
+
+    CHANGE_PASSWORD="pi"
+
     if [[ $BOARD_REVISION == *"900092"* || $BOARD_REVISION == *"900093"* || $BOARD_REVISION == *"9000c1"* ]]; then
         BOARD_NAME="Zero"
         CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 NO_TEST=1 CFLAGS=\"-s -mfpu=vfp -O2\" ./do"
@@ -421,6 +428,12 @@ newhostname=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | 
 sudo echo "$newhostname" | sudo tee /etc/hostname > /dev/null
 sudo sed -i -e "s/$oldhostname/$newhostname/" /etc/hosts
 
+if [[ "$CHANGE_PASSWORD" == "pi" ]]; then
+    sudo passwd -e "$CHANGE_PASSWORD"
+    echo -e "You will need to change the password next login."
+fi
+
+echo -e ""
 echo -e "Your node's new hostname is $newhostname"
 
 read -p "Installation complete. Press any key to reboot your new node. " -n 1 -r
