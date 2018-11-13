@@ -210,7 +210,8 @@ if [ "$WITH_IPFS" == true ] && [ "$BOARD_FAMILY" == "Raspberry Pi" ]; then
 fi
 askModule "WITH_SSB" "SSB"
 if [ "$WITH_SSB" == "true" ]; then
-    askModule "WITH_SSB_WEB" "SSB Web Client (Experimental)" "n"
+    askModule "WITH_SSB_PATCHFOO" "SSB PatchFoo Web Client"
+    askModule "WITH_SSB_WEB_PI" "SSB Web Pi Client (Experimental)" "n"
 fi
 askModule "WITH_YRD" "Yrd (a cjdns command-line tool)"
 askModule "WITH_PROMETHEUS_NODE_EXPORTER" "Prometheus Node Exporter"
@@ -353,9 +354,14 @@ if [ ! -x "$(command -v sbot)" ] && [ "$(checkModule 'WITH_SSB')" ]; then
     source ssb/install
 fi
 
-# SSB Web (logic inverted. Install if sbot exists only)
-if [ -x "$(command -v sbot)" ] && [ "$(checkModule 'WITH_SSB_WEB')" ]; then
-    source ssb-web/install
+# SSB patchfoo (only install if sbot exists)
+if [ -x "$(command -v sbot)" ] && [ "$(checkModule 'WITH_SSB_PATCHFOO')" ]; then
+    source ssb-patchfoo/install
+fi
+
+# SSB Web (only install if sbot exists)
+if [ -x "$(command -v sbot)" ] && [ "$(checkModule 'WITH_SSB_WEB_PI')" ]; then
+    source ssb-web-pi/install
 fi
 
 # yrd
