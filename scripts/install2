@@ -129,7 +129,14 @@ elif [[ "$BOARD_HARDWARE" == 'nanopineo2' || "$BOARD_HARDWARE" == 'sun50iw1p1' |
 else
     BOARD_FAMILY="Raspberry Pi"
     BOARD_REVISION="$(sed -rn 's/Revision\s+\:\s+([0-9a-z_\-\s\,\(\)]+)/\1/p' /proc/cpuinfo)"
-    CHANGE_PASSWORD="pi"
+    
+    # Check for default password is still set for user pi
+    # If it is force password before reboot
+    DEFAULT="oAHCmfg/$uJxKZP0oOHCaz5CzamfdyDb12tKfm9RsXP1M2MmzonMyChiudpmw2gEMHEdEefrkvnQ2O4vKdXzMUXexH3bF91"
+    if ! [ -z "$(sudo grep pi\: /etc/shadow | grep $DEFAULT)" ]; then
+        CHANGE_PASSWORD="pi"
+    fi
+
     if [[ $BOARD_REVISION == *"900092"* || $BOARD_REVISION == *"900093"* || $BOARD_REVISION == *"9000c1"* ]]; then
         BOARD_NAME="Zero"
         CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 NO_TEST=1 CFLAGS=\"-s -mfpu=vfp -O2\" ./do"
