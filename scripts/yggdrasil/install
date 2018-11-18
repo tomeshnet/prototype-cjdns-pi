@@ -15,6 +15,6 @@ fi
 
 if [[ ! -f "/usr/local/bin/node_exporter" ]]; then
     mkdir "$BASE_DIR/tmp"
-    wget "https://236-115685026-gh.circle-artifacts.com/0/yggdrasil-${YGGDRASIL_VERSION}-${ARM_VERSION}.deb" -o "$BASE_DIR/tmp/yggdrasil.deb"
-    dpkg -i yggdrasil.deb
+    wget "https://236-115685026-gh.circle-artifacts.com/0/yggdrasil-${YGGDRASIL_VERSION}-${ARM_VERSION}.deb" -O "$BASE_DIR/tmp/yggdrasil.deb"
+    sudo dpkg -i "$BASE_DIR/tmp/yggdrasil.deb"
 fi
