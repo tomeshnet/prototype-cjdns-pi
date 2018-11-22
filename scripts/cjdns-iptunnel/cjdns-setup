@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+sleep 8
 
 SUBNET4="10.1.0."
 SUBNET6="fe80::"
