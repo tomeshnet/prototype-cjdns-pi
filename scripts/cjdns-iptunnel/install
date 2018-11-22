@@ -5,5 +5,14 @@ set -e
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Install scripts that run after cjdns tun0 is configured
-sudo cp "$BASE_DIR/50-cjdns.rules" /etc/udev/rules.d/50-cjdns.rules
 sudo cp "$BASE_DIR/cjdns-setup" /usr/local/sbin/cjdns-setup
+
+# Update service to start script on cjdns start
+if [ -f /lib/systemd/system/cjdns.service ]; then
+    sudo sed /ExecStartPost/d /lib/systemd/system/cjdns.service
+    sed -i s#Restart=always#Restart=always\\nExecStartPost=/usr/local/sbin/cjdns-setup# /lib/systemd/system/cjdns.service
+fi
+if [ -f /etc/systemd/system/cjdns.service ]; then 
+    sudo sed /ExecStartPost/d /etc/systemd/system/cjdns.service
+    sed -i s#Restart=always#Restart=always\\nExecStartPost=/usr/local/sbin/cjdns-setup# /etc/systemd/system/cjdns.service
+fi
