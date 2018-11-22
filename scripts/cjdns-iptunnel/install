@@ -16,3 +16,5 @@ if [ -f /etc/systemd/system/cjdns.service ]; then
     sudo sed /ExecStartPost/d /etc/systemd/system/cjdns.service
     sed -i s#Restart=always#Restart=always\\nExecStartPost=/usr/local/sbin/cjdns-setup# /etc/systemd/system/cjdns.service
 fi
+
+sudo systemctl daemon-reload
