@@ -27,11 +27,12 @@ echo "41 * * * * $USER /usr/local/bin/ipfs repo gc" | sudo tee --append /etc/cro
 
 # Install the ipfs video player
 mkdir "$BASE_DIR/tmp"
-git clone https://github.com/tomeshnet/ipfs-live-streaming.git "$BASE_DIR/tmp/live-streaming"
-cp -r "$BASE_DIR/tmp/live-streaming/terraform/shared/video-player" /var/www/html/video-player
-sed -i s#__IPFS_GATEWAY_SELF__#/ipfs/# /var/www/html/video-player/js/common.js
-sed -i s#__IPFS_GATEWAY_ORIGIN__#https://ipfs.io/ipfs/# /var/www/html/video-player/js/common.js
+git clone https://github.com/tomeshnet/ipfs-live-streaming.git "$BASE_DIR/tmp/ipfs-live-streaming"
+VIDEO_PLAYER_PATH="$BASE_DIR/tmp/live-streaming/terraform/shared/video-player"
+sed -i s#__IPFS_GATEWAY_SELF__#/ipfs/# "$VIDEO_PLAYER_PATH/js/common.js"
+sed -i s#__IPFS_GATEWAY_ORIGIN__#https://ipfs.io/ipfs/# "$VIDEO_PLAYER_PATH/js/common.js"
 IPFS_ID=$(ipfs id | grep ID | head -n 1 | awk -F\" '{print $4}')
-sed -i "s#live.m3u8#/ipns/$IPFS_ID#" /var/www/html/video-player/js/common.js
-sed -i s#__M3U8_HTTP_URLS__#\ # /var/www/html/video-player/js/common.js
+sed -i "s#live.m3u8#/ipns/$IPFS_ID#" "$VIDEO_PLAYER_PATH/js/common.js"
+sed -i s#__M3U8_HTTP_URLS__#\ # "$VIDEO_PLAYER_PATH/js/common.js"
+cp -r "$VIDEO_PLAYER_PATH" /var/www/html/video-player
 rm -rf "$BASE_DIR/tmp"
