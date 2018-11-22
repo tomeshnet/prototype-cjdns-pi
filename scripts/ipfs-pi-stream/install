@@ -32,6 +32,6 @@ cp -r "$BASE_DIR/tmp/live-streaming/terraform/shared/video-player" /var/www/html
 sed -i s#__IPFS_GATEWAY_SELF__#/ipfs/# /var/www/html/video-player/js/common.js
 sed -i s#__IPFS_GATEWAY_ORIGIN__#https://ipfs.io/ipfs/# /var/www/html/video-player/js/common.js
 IPFS_ID=$(ipfs id | grep ID | head -n 1 | awk -F\" '{print $4}')
-sed -i s#live.m3u8#/ipns/$IPFS_ID# /var/www/html/video-player/js/common.js
+sed -i "s#live.m3u8#/ipns/$IPFS_ID#" /var/www/html/video-player/js/common.js
 sed -i s#__M3U8_HTTP_URLS__#\ # /var/www/html/video-player/js/common.js
 rm -rf "$BASE_DIR/tmp"
