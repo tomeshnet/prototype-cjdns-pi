@@ -133,7 +133,7 @@ else
     # Check for default password is still set for user pi
     # If it is force password before reboot
     DEFAULT="oAHCmfg/$uJxKZP0oOHCaz5CzamfdyDb12tKfm9RsXP1M2MmzonMyChiudpmw2gEMHEdEefrkvnQ2O4vKdXzMUXexH3bF91"
-    # shellcheck disable=SC2143
+    # shellcheck disable=SC2143,SC2086
     if [ "$(sudo grep pi: /etc/shadow | grep $DEFAULT)" ]; then
         CHANGE_PASSWORD="pi"
     fi
