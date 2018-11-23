@@ -14,6 +14,16 @@ env:
   - DISTRO=latest
 
 script:
+  # Run shellcheck on branch
+  - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
+  - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH, PR=$PR, BRANCH=$BRANCH"
+  - git clone https://github.com/tomeshnet/prototype-cjdns-pi.git
+  - cd prototype-cjdns-pi/scripts
+  - git checkout ${BRANCH}
+  - bash -c 'shopt -s globstar; shellcheck -x install install2 */install **/*.sh'
+  - cd ../..
+
+  # Build docker for ARM tests
   - cp /usr/bin/qemu-arm-static travis/${DISTRO}/
   - docker build -t tomeshnet/prototype-cjdns-pi:${DISTRO} travis/${DISTRO}/
 

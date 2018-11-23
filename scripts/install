@@ -12,7 +12,7 @@ if [ -z "$TAG_PROTOTYPE_CJDNS_PI" ]; then
     TAG_PROTOTYPE_CJDNS_PI=master
 fi
 
-if ! [ -z "`ps xa | awk '{print $5}' | grep dpkg | grep -v grep`" ]; then
+if ps xa | awk '{print $5}' | grep -q dpkg; then
     echo -e "\e[1;31mDPKG is running in the background.\e[0m"
     read -p "Would you like to KILL it to continue (Y/n)? " -n 1 -r
     echo ""
@@ -52,7 +52,8 @@ export WITH_EXTRA_TOOLS
 export WITH_WATCHDOG
 export WITH_YRD
 export WITH_SSB
-export WITH_SSB_WEB
+export WITH_SSB_PATCHFOO
+export WITH_SSB_WEB_PI
 export WITH_IPFS_PI_STREAM
 # Run the actual installation script
 ./install2

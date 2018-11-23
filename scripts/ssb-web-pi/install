@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC1091
+true
 
 set -e
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Install nginx and php
+# shellcheck source=../shared/nginx/install
 source "$BASE_DIR/../shared/nginx/install"
 sudo apt-get install -y php-fpm socat
 
@@ -22,27 +25,27 @@ ssbPath="$HOME/.ssb"
 
 # Install broadcast service for users of sbot
 currentUser=$USER
-sudo cp "$BASE_DIR/ssb-web-broadcast-service.sh" "/usr/local/bin/ssb-web-broadcast-service.sh"
-sudo cp "$BASE_DIR/ssb-web-broadcast.service" /etc/systemd/system/ssb-web-broadcast.service
-sudo sed -i "s|__USER__|${currentUser}|g" /etc/systemd/system/ssb-web-broadcast.service
+sudo cp "$BASE_DIR/ssb-web-pi-broadcast-service.sh" "/usr/local/bin/ssb-web-pi-broadcast-service.sh"
+sudo cp "$BASE_DIR/ssb-web-pi-broadcast.service" /etc/systemd/system/ssb-web-pi-broadcast.service
+sudo sed -i "s|__USER__|${currentUser}|g" /etc/systemd/system/ssb-web-pi-broadcast.service
 
 sudo systemctl daemon-reload
-sudo systemctl enable ssb-web-broadcast.service
-sudo systemctl start ssb-web-broadcast.service
+sudo systemctl enable ssb-web-pi-broadcast.service
+sudo systemctl start ssb-web-pi-broadcast.service
 
 # Set permissions to let nginx access it
 # TODO find a better solution, maybe add user to nginx group?
-chmod a+rwX $ssbPath
-chmod -R a+rwX $ssbPath
+chmod a+rwX "$ssbPath"
+chmod -R a+rwX "$ssbPath"
 
 # Link .ssb to nginx's home directory becuse that is where sbot looks for it
 if [ -e "/var/www/.ssb" ]; then
     sudo rm -rf /var/www/.ssb
 fi
-sudo ln -s $ssbPath /var/www/
+sudo ln -s "$ssbPath" /var/www/
 
 # Create nginx site at /sbot
-sudo cp $BASE_DIR/ssb-web.conf /etc/nginx/site-path-enabled/ssb-web.conf
+sudo cp "$BASE_DIR/ssb-web-pi.conf" "/etc/nginx/site-path-enabled/ssb-web-pi.conf"
 
 # Pull and install client
 if [ -e "$BASE_DIR/tmp" ]; then

@@ -9,8 +9,8 @@ sudo apt-get install -y jq
 
 sudo mkdir -p /opt/tomesh/nodeinfo.d
 
-sudo cp $BASE_DIR/nodeinfo.json /opt/tomesh/nodeinfo.json
-sudo cp $BASE_DIR/nodeinfo-update.sh /usr/local/bin/nodeinfo-update.sh
+sudo cp "$BASE_DIR/nodeinfo.json" /opt/tomesh/nodeinfo.json
+sudo cp "$BASE_DIR/nodeinfo-update.sh" /usr/local/bin/nodeinfo-update.sh
 
 sudo sed -i -e "s/__REPO__/$(git remote get-url origin | awk -F / '{print $5}'| cut -d '.' -f1)/g" /opt/tomesh/nodeinfo.json
 sudo sed -i -e "s/__BRANCH__/$(git rev-parse --abbrev-ref HEAD)/g" /opt/tomesh/nodeinfo.json
