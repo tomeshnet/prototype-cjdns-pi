@@ -91,6 +91,8 @@ if [ ! -z "$UNATTENDED" ]; then
     WITH_SSB_PATCHFOO=true
     WITH_SSB_WEB_PI=true
     WITH_IPFS_PI_STREAM=true
+    WITH_H_DNS=true
+    WITH_H_NTP=true
     
     WITH_DIALOG=false
     MESH_NAME=testnet
