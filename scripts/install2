@@ -72,6 +72,27 @@ function checkModule {
     fi
 }
 
+# Unattended install
+
+if [ -z "$UNATTENDED"]; then
+    WITH_MESH_POINT=true
+    WITH_AD_HOC=true
+    WITH_WIFI_AP=false
+    WITH_FIREWALL=true
+    WITH_CJDNS_IPTUNNEL=true
+    WITH_IPFS=true
+    WITH_PROMETHEUS_NODE_EXPORTER=true
+    WITH_PROMETHEUS_SERVER=true
+    WITH_GRAFANA=true
+    WITH_EXTRA_TOOLS=true
+    WITH_WATCHDOG=true
+    WITH_YRD=true
+    WITH_SSB=true
+    WITH_SSB_PATCHFOO=true
+    WITH_SSB_WEB_PI=true
+    WITH_IPFS_PI_STREAM=true
+    MESH_NAME=testnet
+fi
 # Get board information and set flags accordingly
 BOARD_FAMILY="Unknown"
 BOARD_NAME="Generic"
@@ -241,12 +262,15 @@ if [ "$SUPPORT_WATCHDOG" == "true" ]; then
     askModule "WITH_WATCHDOG" "Hardware Watchdog"
 fi
 
+if [ -z "$MESH_NAME" ]; then
 # Prompt for name of the mesh network
 ##TODO## This should be moved up to to mesh point question
 read -p "Enter the name of your mesh network (default: tomesh): " -r
 MESH_NAME="${REPLY// }"
 if [ "${#MESH_NAME}" == 0 ]; then
     MESH_NAME="tomesh"
+fi
+export MESH_NAME
 fi
 export MESH_NAME
 
