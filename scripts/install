@@ -58,4 +58,4 @@ export WITH_IPFS_PI_STREAM
 
 export UNATTENDED
 # Run the actual installation script
-./install2
+bash -x install2
