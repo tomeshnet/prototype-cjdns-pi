@@ -28,6 +28,6 @@ script:
   - docker build -t tomeshnet/prototype-cjdns-pi:${DISTRO} travis/${DISTRO}/
 
   # Validate install script download and make executable
-  - docker run tomeshnet/prototype-cjdns-pi:${DISTRO} /bin/sh -c "wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install; chmod +x install"
+  - docker run tomeshnet/prototype-cjdns-pi:${DISTRO} /bin/sh -c "wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install; chmod +x install; UNATTENDED=true ./install"
 
   # TODO Test installation
