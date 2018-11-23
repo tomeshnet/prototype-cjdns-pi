@@ -38,5 +38,9 @@ sudo systemctl start ssb
 # Install nginx reverse proxy file
 sudo cp "$BASE_DIR/ssb-patchfoo.conf" /etc/nginx/site-path-enabled/ssb-patchfoo.conf
 
+# Add entry into nginx home screen
+APP="<div class='app'><h2>Patch Foo</h2>Plain SSB web UI. <br/><a href='/patchfoo'>Go</a></div>"
+sudo sed -i "#<!--APPLIST-->#$APP<!--APPLIST-->#" "/var/www/html/index.html"
+
 # shellcheck disable=SC2164
 cd "$CURRENT_DIR"

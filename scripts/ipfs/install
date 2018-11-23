@@ -48,3 +48,7 @@ sudo sed -i "s|__USER_HOME__|${HOME}|" /etc/systemd/system/ipfs.service
 sudo systemctl daemon-reload
 sudo systemctl enable ipfs.service
 sudo systemctl start ipfs.service
+
+# Add entry into nginx home screen
+APP="<div class='app'><h2>IPFS</h2>A peer-to-peer hypermedia protocol to make the web faster, safer, and more open. <br/><a href='/ipfs/QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG/readme'>Go</a></div>"
+sudo sed -i "#<!--APPLIST-->#$APP<!--APPLIST-->#" "/var/www/html/index.html"

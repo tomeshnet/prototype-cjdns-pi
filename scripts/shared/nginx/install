@@ -13,4 +13,8 @@ if [ ! -x "$(command -v nginx)" ] || [ ! -d "/etc/nginx/site-path-enabled" ]; th
     sudo rm /etc/nginx/sites-enabled/default || true
     sudo mkdir /etc/nginx/site-path-enabled || true
     BASE_DIR="$LAST_BASE"
+
+    sudo cp "$BASE_DIR/index.html" "/var/www/html/index.html"
+    sudo sed -i "s/__NODENAME__/$NEWHOSTNAME/" "/var/www/html/index.html"
+
 fi

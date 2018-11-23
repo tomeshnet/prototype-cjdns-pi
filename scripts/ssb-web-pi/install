@@ -70,3 +70,7 @@ sudo chmod a+rwX /var/www/backend
 sudo chmod -R a+rwX /var/www/backend
 sudo chown www-data.www-data /var/www/sbot
 sudo chown -R www-data.www-data /var/www/sbot
+
+# Add entry into nginx home screen
+APP="<div class='app'><h2>SSB Web Pi</h2>Very experimental interface for SSB. <br/><a href='/ssb-web-pi'>Go</a></div>"
+sudo sed -i "#<!--APPLIST-->#$APP<!--APPLIST-->#" "/var/www/html/index.html"
