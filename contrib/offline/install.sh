@@ -5,7 +5,7 @@ echo iptables -t nat -I PREROUTING -i wlan-ap -p tcp --dport 80 -j DNAT --to-des
 
 # Prevent masquarading out ipv4
 # This is prevent IPTUNNEL and routing to the internet (Exit node)
-sed -i "/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE/d" /etc/hostapd/nat.sh 
+sudo sed -i "/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE/d" /etc/hostapd/nat.sh 
 
 # Set nginx to redirect any 404 errors to /
-sed "s/}/    error_page 404 =200 \/index.html;\\n}/" /etc/nginx/sites-enabled/main.conf
+sudo sed -i "s/}/    error_page 404 =200 \/index.html;\\n}/" /etc/nginx/sites-enabled/main.conf
