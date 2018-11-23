@@ -51,19 +51,24 @@ sudo sed -i 's/#net.ipv6.conf.all.forwarding=1/net.ipv6.conf.all.forwarding=1/' 
 # Get network name and password
 APSSID=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-/g")
 
-# Select wpa-eap or wpa-psk
-read -p "Use WPA-EAP (Y) or WPA2-PSK (n) for WiFi Access Point $APSSID? " -n 1 -r
-echo ""
-if [[ $REPLY =~ ^[Nn]$ ]]; then
-    USE_EAP=false
-    while [ "${#APPASS}" -lt 8 ] || [ "${#APPASS}" -gt 63 ]; do
-        read -r -p "Set WPA2-PSK password (8-63 characters): " APPASS;
-    done
+if [ ! -z "$UNATTENDED" ]; then
+    # Select wpa-eap or wpa-psk
+    read -p "Use WPA-EAP (Y) or WPA2-PSK (n) for WiFi Access Point $APSSID? " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        USE_EAP=false
+        while [ "${#APPASS}" -lt 8 ] || [ "${#APPASS}" -gt 63 ]; do
+            read -r -p "Set WPA2-PSK password (8-63 characters): " APPASS;
+        done
+    else
+        USE_EAP=true
+        while [ "${#APPASS}" -lt 8 ] || [ "${#APPASS}" -gt 63 ]; do
+            read -r -p "Set WPA-EAP password (8-63 characters) for user \"guest\": " APPASS;
+        done
+    fi
 else
-    USE_EAP=true
-    while [ "${#APPASS}" -lt 8 ] || [ "${#APPASS}" -gt 63 ]; do
-        read -r -p "Set WPA-EAP password (8-63 characters) for user \"guest\": " APPASS;
-    done
+    USE_EAP=false
+    APPASS="password"
 fi
 
 # Configure network with hostapd
