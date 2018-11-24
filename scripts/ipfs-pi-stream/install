@@ -34,7 +34,7 @@ cd "$BASE_DIR/tmp/ipfs-live-streaming"
 git checkout b9be352582317e5336ddd7183ecf49042dafb33e
 cd "$current_dir"
 
-VIDEO_PLAYER_PATH="$BASE_DIR/tmp/live-streaming/terraform/shared/video-player"
+VIDEO_PLAYER_PATH="$BASE_DIR/tmp/ipfs-live-streaming/terraform/shared/video-player"
 sed -i s#__IPFS_GATEWAY_SELF__#/ipfs/# "$VIDEO_PLAYER_PATH/js/common.js"
 sed -i s#__IPFS_GATEWAY_ORIGIN__#https://ipfs.io/ipfs/# "$VIDEO_PLAYER_PATH/js/common.js"
 IPFS_ID=$(ipfs id | grep ID | head -n 1 | awk -F\" '{print $4}')
