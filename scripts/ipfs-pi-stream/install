@@ -42,3 +42,7 @@ sed -i "s#live.m3u8#/ipns/$IPFS_ID#" "$VIDEO_PLAYER_PATH/js/common.js"
 sed -i s#__M3U8_HTTP_URLS__#\ # "$VIDEO_PLAYER_PATH/js/common.js"
 cp -r "$VIDEO_PLAYER_PATH" /var/www/html/video-player
 rm -rf "$BASE_DIR/tmp"
+
+# Add entry into nginx home screen
+APP="<div class='app'><h2>IPFS Pi Stream Player</h2>IPFS Video player for Pi Stream. <br/><a href='/video-player/'>Go</a></div>"
+sudo sed -i "s#<\!--APPLIST-->#$APP\n<\!--APPLIST-->#" "/var/www/html/index.html"
