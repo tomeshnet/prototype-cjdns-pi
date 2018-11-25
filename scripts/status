@@ -99,6 +99,7 @@ if [ "$(which yrd)" ]; then
         echo -e "yrd ........................ $INACTIVE"
     fi
 fi
+
 if [ "$(which cjdroute)" ]; then
     echo -e '---------------------------------------'
     echo -e 'CJDNS NODE'
