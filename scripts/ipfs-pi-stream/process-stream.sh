@@ -20,7 +20,7 @@ function startFFmpeg() {
     
     # Stream FM Station from a SDR module (see pi-stream contrib to install drivers)
     # Frequency ends in M IE 99.9M
-    # rtl_fm  -f 99.9M -M fm -s 170k -A std -l0 -E deemp -r 44.1k | ffmpeg  -r 15 -loop 1 -i ../radio.jpg  -f s16le -ac 1 -i pipe:0 -c:v libx264 -tune stillimage -preset ultrafast  -hls_time "${HLS_TIME}" "${what}.m3u8"  > ~/ffmpeg 2>&1
+    # rtl_fm  -f 99.9M -M fm -s 170k -A std -l0 -E deemp -r 44.1k | ffmpeg  -r 15 -loop 1 -i ../audio.jpg  -f s16le -ac 1 -i pipe:0 -c:v libx264 -tune stillimage -preset ultrafast  -hls_time "${HLS_TIME}" "${what}.m3u8"  > ~/ffmpeg 2>&1
     
     sleep 0.5
   done
