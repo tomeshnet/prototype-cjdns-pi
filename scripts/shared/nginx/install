@@ -28,7 +28,7 @@ if [ ! -x "$(command -v nginx)" ] || [ ! -d "/etc/nginx/site-path-enabled" ]; th
     sudo cp -r "$BASE_DIR/tmp/cjdns_tool/lib" "/var/www/html/cgi-bin/"
     rm -rf "$BASE_DIR/tmp"
     sudo cp "$BASE_DIR/peers" "/var/www/html/cgi-bin/peers"
-    sudo chmod +x /var/www/html/cgi-bin/peers"
+    sudo chmod +x "/var/www/html/cgi-bin/peers"
     BASE_DIR="$LAST_BASE"
     
 fi
