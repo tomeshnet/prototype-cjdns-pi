@@ -114,10 +114,12 @@ if [ "$(which cjdroute)" ]; then
 fi
 
 if [ "$(which yggdrasil)" ]; then
+    MYIP=$(yggdrasilctl  getPEers | grep "0             0" | awk '{print $1}')    
     echo -e '---------------------------------------'
     echo -e 'YGGDRASIL NODE'
+    echo -e $MYIP
     echo -e '---------------------------------------'
     echo -e 'PEERS'
-    yggdrasilctl getPeers
+    yggdrasilctl getPeers | grep -v "$MYIP" | awk '{print $1}' | grep -v "bytes_recvd"
     echo -e '---------------------------------------'
 fi
