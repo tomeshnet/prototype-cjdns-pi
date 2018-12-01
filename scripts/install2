@@ -335,7 +335,7 @@ export NEWHOSTNAME
 
 # Install yggdrasil
 if [ "$(checkModule 'WITH_YGGDRASIL')" ]; then
-    source mesh-yggdrasil/install
+    source yggdrasil/install
 fi
 
 # 802.11s Mesh Point interface
