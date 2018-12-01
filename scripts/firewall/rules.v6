@@ -2,7 +2,6 @@
 :INPUT ACCEPT [0:0]
 :FORWARD ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
-:cjdns - [0:0]
 -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 -A INPUT -p ipv6-icmp -j ACCEPT
 -A INPUT -i lo -j ACCEPT
@@ -14,5 +13,7 @@
 -A INPUT -j ACCEPT -p tcp --dport 4001
 -A INPUT -j ACCEPT -p tcp --dport 9090
 -A INPUT -j ACCEPT -p tcp --dport 9100
+-A INPUT -j ACCEPT -p udp --dport 12345
+-A INPUT -j ACCEPT -p udp --dport 9001 -d ff02::114
 -A INPUT -j REJECT --reject-with icmp6-port-unreachable
 COMMIT
