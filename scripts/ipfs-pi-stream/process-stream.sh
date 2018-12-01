@@ -14,7 +14,7 @@ function startFFmpeg() {
   while true; do
     mv ~/ffmpeg.log ~/ffmpeg.1
     echo 1 > ~/stream-reset
-    ffmpeg -f video4linux2 -input_format h264 -video_size 1280x720 -framerate 30 -i /dev/video0 -vcodec copy -hls_time "${HLS_TIME}" "${what}.m3u8" > ~/ffmpeg.log 2>&1
+    ffmpeg -f video4linux2 -input_format h264 -video_size 1280x720 -framerate 30 -i /dev/video0 -vcodec copy -hls_time "${HLS_TIME}" "${what}.m3u8"   > ~/ffmpeg 2>&1
     sleep 0.5
   done
 }
