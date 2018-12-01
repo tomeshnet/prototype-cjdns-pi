@@ -15,6 +15,12 @@ if [ "$(systemctl status cjdns.service | grep 'Active: ' | awk '{ print $2 }')" 
 else
     echo -e "cjdns Service .............. $INACTIVE"
 fi
+if [ "$(systemctl status yggdrasil.service | grep 'Active: ' | awk '{ print $2 }')" = 'active' ]; then
+    echo -e "Yggdrasil Service ............ $ACTIVE"
+else
+    echo -e "Yggdrasil Service .......... $INACTIVE"
+fi
+
 if [ "$(which mesh-point)" ]; then
     ints=$(iw dev | grep Interface | awk '{print $2}')
     while read -r line; do
