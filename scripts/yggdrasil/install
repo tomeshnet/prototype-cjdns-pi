@@ -26,6 +26,6 @@ fi
 sudo sed -i "s/IfName: auto/IfName: ygg0/" /etc/yggdrasil.conf 
 
 # Change port to 12345 for firewall
-YGGDRASIL_PORT=$(sudo cat /etc/yggdrasil.conf | grep \ Listen\: | awk  '{print $2}' | tr -d \")
-YGGDRASIL_PORT=$(printf "%q" $YGGDRASIL_PORT) # Escape for sed
+YGGDRASIL_PORT=$(sudo cat /etc/yggdrasil.conf | grep \ Listen: | awk  '{print $2}' | tr -d \")
+YGGDRASIL_PORT=$(printf "%q" "$YGGDRASIL_PORT") # Escape for sed
 sudo sed  -i "s/$YGGDRASIL_PORT/\[::\]:12345/" /etc/yggdrasil.conf
