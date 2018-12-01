@@ -22,7 +22,7 @@ if [[ ! -f "/usr/bin/yggdrasil" ]]; then
     rm -rf "$BASE_DIR/tmp"
 fi
 
-# Change configuration to have yaggdrasil's tun interface called ygg0
+# Change configuration to have yggdrasil's tun interface called ygg0
 sudo sed -i "s/IfName: auto/IfName: ygg0/" /etc/yggdrasil.conf 
 
 # Change port to 12345 for firewall
