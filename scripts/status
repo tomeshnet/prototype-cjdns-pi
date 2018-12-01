@@ -111,7 +111,7 @@ if [ "$(which cjdroute)" ]; then
     echo -e 'CJDNS NODE'
     sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g'
     echo -e '---------------------------------------'
-    echo -e 'PEERS'
+    echo -e 'CJDNS PEERS'
     read -a peers <<< `sudo nodejs /opt/cjdns/tools/peerStats 2>/dev/null | awk '{ if ($3 == "ESTABLISHED") print $2 }' | awk -F. '{ print $6".k" }' | xargs`
     for peer in "${peers[@]}"; do
         sudo /opt/cjdns/publictoip6 "$peer"
@@ -125,7 +125,7 @@ if [ "$(which yggdrasil)" ]; then
     echo -e 'YGGDRASIL NODE'
     echo -e $MYIP
     echo -e '---------------------------------------'
-    echo -e 'PEERS'
+    echo -e 'YGGDRASIL PEERS'
     yggdrasilctl getPeers | grep -v "$MYIP" | awk '{print $1}' | grep -v "bytes_recvd"
     echo -e '---------------------------------------'
 fi
