@@ -208,6 +208,15 @@ fi
 
 # Prompt and set missing flags
 
+# Prompt for name of the mesh network
+##TODO## Add dialog option
+read -p "Enter the name of your mesh network (default: tomesh): " -r
+MESH_NAME="${REPLY// }"
+if [ "${#MESH_NAME}" == 0 ]; then
+    MESH_NAME="tomesh"
+fi
+export MESH_NAME
+
 askModule "WITH_YGGDRASIL" "Yggdrasil routing engine"
 
 askModule "WITH_MESH_POINT" "Mesh Point Interface"
@@ -242,15 +251,6 @@ askModule "WITH_EXTRA_TOOLS" "Non-Essential Tools Useful for Network Analysis"
 if [ "$SUPPORT_WATCHDOG" == "true" ]; then
     askModule "WITH_WATCHDOG" "Hardware Watchdog"
 fi
-
-# Prompt for name of the mesh network
-##TODO## This should be moved up to to mesh point question
-read -p "Enter the name of your mesh network (default: tomesh): " -r
-MESH_NAME="${REPLY// }"
-if [ "${#MESH_NAME}" == 0 ]; then
-    MESH_NAME="tomesh"
-fi
-export MESH_NAME
 
 # Get tools
 if ! [ "$(which nodejs)" ]; then
@@ -328,6 +328,9 @@ else
 fi
 
 sudo systemctl enable cjdns.service
+
+NEWHOSTNAME=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-/g")
+export NEWHOSTNAME
 
 # Install yggdrasil
 if [ "$(checkModule 'WITH_YGGDRASIL')" ]; then
@@ -443,9 +446,7 @@ cp ~/.profile ~/.bash_profile
 } >> ~/.bash_profile
 # Rename node based on cjdns address
 oldhostname=$(hostname)
-newhostname=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-/g")
-sudo echo "$newhostname" | sudo tee /etc/hostname > /dev/null
-sudo sed -i -e "s/$oldhostname/$newhostname/" /etc/hosts
+sudo sed -i -e "s/$oldhostname/$NEWHOSTNAME/" /etc/hosts
 
 if [[ "$CHANGE_PASSWORD" == "pi" ]]; then
     sudo passwd -e "$CHANGE_PASSWORD"
