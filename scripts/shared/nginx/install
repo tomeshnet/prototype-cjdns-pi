@@ -21,6 +21,7 @@ if [ ! -x "$(command -v nginx)" ] || [ ! -d "/etc/nginx/site-path-enabled" ]; th
     sudo cp "$BASE_DIR/vis-network.min.css" "/var/www/html/vis-network.min.css"
     sudo cp "$BASE_DIR/map.js" "/var/www/html/map.js"
     sudo cp "$BASE_DIR/common.css" "/var/www/html/common.css"
+    sudo cp "$BASE_DIR/common.js" "/var/www/html/common.js"
 
     sudo cp "$BASE_DIR/cgi-bin.conf" "/etc/nginx/site-path-enabled/cgi-bin.conf"
 
