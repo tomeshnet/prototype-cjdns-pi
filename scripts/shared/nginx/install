@@ -20,15 +20,22 @@ if [ ! -x "$(command -v nginx)" ] || [ ! -d "/etc/nginx/site-path-enabled" ]; th
     sudo cp "$BASE_DIR/vis.min.js" "/var/www/html/vis.min.js"
     sudo cp "$BASE_DIR/vis-network.min.css" "/var/www/html/vis-network.min.css"
     sudo cp "$BASE_DIR/map.js" "/var/www/html/map.js"
+    sudo cp "$BASE_DIR/common.css" "/var/www/html/common.css"
 
     sudo cp "$BASE_DIR/cgi-bin.conf" "/etc/nginx/site-path-enabled/cgi-bin.conf"
 
+    # CJDNS peers
     mkdir "$BASE_DIR/tmp"
     git clone https://github.com/hamishcoleman/cjdns_tool.git "$BASE_DIR/tmp/cjdns_tool"
     sudo cp -r "$BASE_DIR/tmp/cjdns_tool/lib" "/var/www/html/cgi-bin/"
     rm -rf "$BASE_DIR/tmp"
     sudo cp "$BASE_DIR/peers" "/var/www/html/cgi-bin/peers"
+
+    # Yggdrasil peers
+    sudo cp "$BASE_DIR/peers-yggdrasil" "/var/www/html/cgi-bin/peers-yggdrasil"
+
     sudo chmod +x "/var/www/html/cgi-bin/peers"
+
     BASE_DIR="$LAST_BASE"
     
 fi
