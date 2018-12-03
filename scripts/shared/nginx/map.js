@@ -1,39 +1,38 @@
 function loadXMLDoc() {
 var xmlhttp = new XMLHttpRequest();
-xmlhttp.onreadystatechange = function() {
-  if (this.readyState == 4 && this.status == 200) {
-    CJDNSMap(this);
-  }
-};
-xmlhttp.open("GET", "/cgi-bin/peers", true);
-xmlhttp.send();
+  xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      CJDNSMap(this);
+    }
+  };
+  xmlhttp.open("GET", "/cgi-bin/peers", true);
+  xmlhttp.send();
 }
 
 function loadXMLDoc_y() {
-var xmlhttp = new XMLHttpRequest();
-xmlhttp.onreadystatechange = function() {
-  if (this.readyState == 4 && this.status == 200) {
-    YggdrasilMap(this);
-  }
-};
-xmlhttp.open("GET", "/cgi-bin/peers-yggdrasil", true);
-xmlhttp.send();
+  var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+     YggdrasilMap(this);
+    }
+  };
+  xmlhttp.open("GET", "/cgi-bin/peers-yggdrasil", true);
+  xmlhttp.send();
 }
 
 // Cleanup the json provided by the CJDNS
 // Otherwise it will not parse properly
 // ToDo - this is really hacking, there should be a better way of doing this
 function ToJson(json) {
-json=json.replace(new RegExp("}", "g"),"\"null\": \"\"}");
-json=json.replace(new RegExp("  ","g")," ");
-json=json.replace(new RegExp("  ","g")," ");
-json=json.replace(new RegExp("\n","g")," ");
-json=json.replace("},  ]","}]");
+  json=json.replace(new RegExp("}", "g"),"\"null\": \"\"}");
+  json=json.replace(new RegExp("  ","g")," ");
+  json=json.replace(new RegExp("  ","g")," ");
+  json=json.replace(new RegExp("\n","g")," ");
+  json=json.replace("},  ]","}]");
 
-// Parse it
-return JSON.parse(json);
+  // Parse it
+  return JSON.parse(json);
 }
-
 
 function CJDNSMap(ajax) {
   var Nodes; 
