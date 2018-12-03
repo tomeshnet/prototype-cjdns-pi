@@ -1,5 +1,5 @@
 function loadXMLDoc() {
-var xmlhttp = new XMLHttpRequest();
+  var xmlhttp = new XMLHttpRequest();
   xmlhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       CJDNSMap(this);
@@ -29,7 +29,6 @@ function ToJson(json) {
   json=json.replace(new RegExp("  ","g")," ");
   json=json.replace(new RegExp("\n","g")," ");
   json=json.replace("},  ]","}]");
-
   // Parse it
   return JSON.parse(json);
 }
@@ -50,7 +49,6 @@ lasttx=[];
 function YggdrasilMap(ajax) {
   var Nodes; 
   str=ajax.response;
-
   Nodes=JSON.parse(str);
   for (var i in Nodes.peers) {
       var addr=i;
@@ -68,7 +66,6 @@ function YggdrasilMap(ajax) {
 
 // Update Map
 // vis.js Initalization
-
 var nodeIDs=[];
 var edgeIDs=[];
 var nodesArray=[];
@@ -85,25 +82,23 @@ function initMap(name) {
   nodes[name] = new vis.DataSet(nodesArray[name]);
   edgesArray[name] = [];
   edges[name] = new vis.DataSet(edgesArray[name]);
-
   var container = document.getElementById('network' + name);
-
   var data = {
       nodes: nodes[name],
       edges: edges[name]
   };
-
   var options = {};
   network[name]= new vis.Network(container, data, options);
 }
+
 initMap("cjdns");
 initMap("yggdrasil");
 
 function UpdateNode(nodeID,name,edgeID,edgeLabel,map) {
-if (!nodeIDs[map][nodeID]) {
+  if (!nodeIDs[map][nodeID]) {
     name=name.substr(name.length-4,4);
     nodeIDs[map][nodeID]=nodes[map].add({id:nodeID, label:name});
-}
+  }
   if (!edgeIDs[map][edgeID]) {
     edgeIDs[map][edgeID] = edges[map].add({id: edgeID, from: nodeID, to: 0});
     console.debug(edgeID + "-" + nodeID);
