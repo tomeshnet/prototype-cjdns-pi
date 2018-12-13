@@ -8,7 +8,7 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 sudo "$BASE_DIR/enable-camera.sh"
 
 # Install ffmpeg and supporting tools
-sudo apt-get -y install ffmpeg lsof inotify-tools nginx
+sudo apt-get -y install ffmpeg lsof inotify-tools
 
 # Add user to be able to modify nginx directories
 sudo usermod -a -G "$USER" www-data
