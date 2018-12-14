@@ -34,33 +34,37 @@ function ToJson(json) {
 }
 
 function CJDNSMap(ajax) {
-  var Nodes; 
+  var Nodes;
+  var NodeExist=Array();
   jsonDisplay=ajax.response.replace(new RegExp("'", "g"),"\"");
   Nodes=ToJson(jsonDisplay);
   for (var a=0; a< Nodes.peers.length; a++) {
       var parts=Nodes.peers[a].addr.split(".");
-        UpdateNode(parts[5],public2IPv6(parts[5]),parts[4], Nodes.peers[a].recvKbps + "kpbs / " + Nodes.peers[a].sendKbps + " kbps","cjdns");
+      UpdateNode(parts[5],public2IPv6(parts[5]),parts[4], Nodes.peers[a].recvKbps + "kpbs / " + Nodes.peers[a].sendKbps + " kbps","cjdns",NodeExist);
   }
+  DeleteNodes("cjdns",NodeExist);
   setTimeout("loadXMLDoc()",1000);
 }
 
 lastrx=[];
 lasttx=[];
 function YggdrasilMap(ajax) {
-  var Nodes; 
+  var Nodes;
+  var NodeExist=Array();
   str=ajax.response;
   Nodes=JSON.parse(str);
   for (var i in Nodes.peers) {
       var addr=i;
       node=Nodes.peers[i];
-      if (node.port>0) { //not self  
+      if (node.port>0) { //not self
           rx=node.bytes_recvd-lastrx[node.port];
           tx=node.bytes_sent-lasttx[node.port];
           lastrx[node.port]=node.bytes_recvd;
           lasttx[node.port]=node.bytes_sent;
-          UpdateNode(addr,addr,node.port,rx + " bps /" + tx + " bps", "yggdrasil");
-    }  
+          UpdateNode(addr,addr,node.port,rx + " bps /" + tx + " bps", "yggdrasil",NodeExist);
+    }
   }
+  DeleteNodes("yggdrasil",NodeExist);
   setTimeout("loadXMLDoc_y()",1000);
 }
 
@@ -94,7 +98,8 @@ function initMap(name) {
 initMap("cjdns");
 initMap("yggdrasil");
 
-function UpdateNode(nodeID,name,edgeID,edgeLabel,map) {
+function UpdateNode(nodeID,name,edgeID,edgeLabel,map,NodeExist) {
+  NodeExist[nodeID]=1;
   if (!nodeIDs[map][nodeID]) {
     name=name.substr(name.length-4,4);
     nodeIDs[map][nodeID]=nodes[map].add({id:nodeID, label:name});
@@ -104,4 +109,13 @@ function UpdateNode(nodeID,name,edgeID,edgeLabel,map) {
     console.debug(edgeID + "-" + nodeID);
   }
   edges[map].update({id: edgeID, label:edgeLabel });
+}
+function DeleteNodes(map,NodeExist) {
+  for (var key in nodeIDs[map]) {
+	if (NodeExist[key]!=1) {
+		nodes[map].remove(key);
+		nodeIDs[map][key]=undefined;
+		console.log("gatta delete " + key);
+	}
+  }
 }
