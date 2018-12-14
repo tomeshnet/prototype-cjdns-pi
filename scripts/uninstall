@@ -39,6 +39,7 @@ source "$BASE_DIR/watchdog/uninstall"
 source "$BASE_DIR/yrd/uninstall"
 source "$BASE_DIR/shared/nodeinfo/uninstall"
 source "$BASE_DIR/shared/nginx/uninstall"
+source "$BASE_DIR/yggdrasil/uninstall"
 
 sudo systemctl daemon-reload
 

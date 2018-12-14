@@ -24,3 +24,25 @@ sudo systemctl enable process-stream
 
 # Add hourly job to clear out old data
 echo "41 * * * * $USER /usr/local/bin/ipfs repo gc" | sudo tee --append /etc/crontab
+
+# Install the ipfs video player
+mkdir "$BASE_DIR/tmp"
+current_dir="$(pwd)"
+
+git clone https://github.com/tomeshnet/ipfs-live-streaming.git "$BASE_DIR/tmp/ipfs-live-streaming"
+cd "$BASE_DIR/tmp/ipfs-live-streaming"
+git checkout b9be352582317e5336ddd7183ecf49042dafb33e
+cd "$current_dir"
+
+VIDEO_PLAYER_PATH="$BASE_DIR/tmp/ipfs-live-streaming/terraform/shared/video-player"
+sed -i s#__IPFS_GATEWAY_SELF__#/ipfs/# "$VIDEO_PLAYER_PATH/js/common.js"
+sed -i s#__IPFS_GATEWAY_ORIGIN__#https://ipfs.io/ipfs/# "$VIDEO_PLAYER_PATH/js/common.js"
+IPFS_ID=$(ipfs id | grep ID | head -n 1 | awk -F\" '{print $4}')
+sed -i "s#live.m3u8#/ipns/$IPFS_ID#" "$VIDEO_PLAYER_PATH/js/common.js"
+sed -i s#__M3U8_HTTP_URLS__#\ # "$VIDEO_PLAYER_PATH/js/common.js"
+cp -r "$VIDEO_PLAYER_PATH" /var/www/html/video-player
+rm -rf "$BASE_DIR/tmp"
+
+# Add entry into nginx home screen
+APP="<div class='app'><h2>IPFS Pi Stream Player</h2>IPFS Video player for Pi Stream. <br />Stream at <a href='/ipns/$IPFS_ID'>/ipns/$IPFS_ID</a> <br/><a href='/video-player/'>Go</a></div>"
+sudo sed -i "s#<\!--APPLIST-->#$APP\n<\!--APPLIST-->#" "/var/www/html/index.html"

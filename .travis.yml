@@ -27,6 +27,7 @@ script:
   #- cp /usr/bin/qemu-arm-static travis/${DISTRO}/
   #- docker build -t tomeshnet/prototype-cjdns-pi:${DISTRO} travis/${DISTRO}/
 
+
   ## Validate install script download and make executable
   #- docker run tomeshnet/prototype-cjdns-pi:${DISTRO} /bin/sh -c "wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install; chmod +x install; UNATTENDED=true ./install"
 
@@ -66,5 +67,6 @@ mk- dir 1
 - mount --bind /sys sys/
 - mount --bind /proc proc/
 - mount --bind /dev/pts dev/pts
+
 
   # TODO Test installation
