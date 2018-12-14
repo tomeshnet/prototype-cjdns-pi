@@ -23,11 +23,48 @@ script:
   - bash -c 'shopt -s globstar; shellcheck -x install install2 */install **/*.sh'
   - cd ../..
 
-  # Build docker for ARM tests
-  - cp /usr/bin/qemu-arm-static travis/${DISTRO}/
-  - docker build -t tomeshnet/prototype-cjdns-pi:${DISTRO} travis/${DISTRO}/
+  ## Build docker for ARM tests
+  #- cp /usr/bin/qemu-arm-static travis/${DISTRO}/
+  #- docker build -t tomeshnet/prototype-cjdns-pi:${DISTRO} travis/${DISTRO}/
 
-  # Validate install script download and make executable
-  - docker run tomeshnet/prototype-cjdns-pi:${DISTRO} /bin/sh -c "wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install; chmod +x install; UNATTENDED=true ./install"
+  ## Validate install script download and make executable
+  #- docker run tomeshnet/prototype-cjdns-pi:${DISTRO} /bin/sh -c "wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install; chmod +x install; UNATTENDED=true ./install"
+
+
+# filename: preheat
+#!/bin/sh
+
+# Prep environment
+ - apt-get update
+- apt-get install -y wget bash zip
+- apt-get install -y qemu qemu-user-static binfmt-support
+- apt-get install -y systemd-container
+
+
+# Download if missing
+- if [ ! -f "raspbian.zip" ]; then \
+   wget https://downloads.raspberrypi.org/raspbian_lite_latest -O raspbian.zip \ 
+fi
+- if [ ! -f "2018-11-13-raspbian-stretch-lite.img" ]; then \
+-    unzip raspbian.zip
+- fi
+
+# Grow image to make it a bit more space
+- dd if=/dev/zero count=1000000 >> 2018-11-13-raspbian-stretch-lite.img
+
+- echo -e "d\n2\nn\np\n2\n98304\n\n\nw\n" | fdisk 2018-11-13-raspbian-stretch-lite.img
+
+- losetup /dev/loop99 2018-11-13-raspbian-stretch-lite.img -o $((512*98304))
+- e2fsck -f -y /dev/loop99
+- resize2fs /dev/loop99
+- losetup -d  /dev/loop99
+
+mk- dir 1
+- mount 2018-11-13-raspbian-stretch-lite.img 1 -o loop,offset=$((512*98304))
+- cd 1
+- mount --bind /dev dev/
+- mount --bind /sys sys/
+- mount --bind /proc proc/
+- mount --bind /dev/pts dev/pts
 
   # TODO Test installation
