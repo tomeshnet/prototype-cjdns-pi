@@ -18,7 +18,7 @@ function startFFmpeg() {
     # Stream Raspberry Pi Camera
     ffmpeg -f video4linux2 -input_format h264 -video_size 1280x720 -framerate 30 -i /dev/video0 -vcodec copy -hls_time "${HLS_TIME}" "${what}.m3u8" > ~/ffmpeg.log 2>&1
     
-    # Stream FM Station from a SDR module (see pi-stream contrib to install drivers)
+    # Stream FM Station from a SDR module (see contrib/pi-stream to install drivers)
     # Frequency ends in M IE 99.9M
     # rtl_fm  -f 99.9M -M fm -s 170k -A std -l0 -E deemp -r 44.1k | ffmpeg  -r 15 -loop 1 -i ../audio.jpg  -f s16le -ac 1 -i pipe:0 -c:v libx264 -tune stillimage -preset ultrafast  -hls_time "${HLS_TIME}" "${what}.m3u8"  > ~/ffmpeg 2>&1
     
