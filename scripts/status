@@ -120,12 +120,12 @@ if [ "$(which cjdroute)" ]; then
 fi
 
 if [ "$(which yggdrasil)" ]; then
-    MYIP=$(ifconfig ygg0 | grep inet6 | grep 202 | awk '{print $2}')    
+    YGGIP=$(ifconfig ygg0 | grep -E 'inet6 2[0-9a-fA-F]{2}:' | awk '{print $2}')
     echo -e '---------------------------------------'
     echo -e 'YGGDRASIL NODE'
-    echo -e $MYIP
+    echo -e $YGGIP
     echo -e '---------------------------------------'
     echo -e 'YGGDRASIL PEERS'
-    yggdrasilctl getPeers | grep -v "$MYIP" | awk '{print $1}' | grep -v "bytes_recvd"
+    yggdrasilctl getPeers | grep -v "$YGGIP" | awk '{print $1}' | grep -v "bytes_recvd"
     echo -e '---------------------------------------'
 fi
