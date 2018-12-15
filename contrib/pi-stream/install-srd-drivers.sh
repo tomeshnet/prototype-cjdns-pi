@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # Install SDR drivers
-apt-get install git cmake libusb-1.0-0-dev
+sudo apt-get install -y cmake git libusb-1.0-0-dev
 git clone git://git.osmocom.org/rtl-sdr.git
-cd rtl-sdr/
+cd rtl-sdr
 mkdir build
 cd build
 cmake ../ -DINSTALL_UDEV_RULES=ON
