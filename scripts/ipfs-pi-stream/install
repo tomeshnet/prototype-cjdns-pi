@@ -8,7 +8,11 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 sudo "$BASE_DIR/enable-camera.sh"
 
 # Install ffmpeg and supporting tools
-sudo apt-get -y install ffmpeg lsof inotify-tools
+
+sudo apt-get install -y ffmpeg lsof inotify-tools nginx
+
+# Copy placeholder for audio-only streams
+cp "$BASE_DIR/audio.jpg" "$HOME/audio.jpg"
 
 # Add user to be able to modify nginx directories
 sudo usermod -a -G "$USER" www-data
