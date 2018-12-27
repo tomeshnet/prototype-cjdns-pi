@@ -44,16 +44,15 @@ var numForAscii = [
     return output;
   };
   
-  // Convert Public Key to IPv6
-  // TODO add :
-  var publicKeyCache = [];
-  function public2IPv6(PubKey) {
-  if (!publicKeyCache[PubKey]) { 
-    var IPv6=Base32_decode(PubKey);
-    IPv6=sha512(sha512.array(IPv6));
-    IPv6=IPv6.substr(0,32);
-    publicKeyCache[PubKey]=IPv6;
-  }
-  return publicKeyCache[PubKey];
-  }
-  
+// Convert Public Key to IPv6
+// TODO add :
+var publicKeyCache = [];
+function public2IPv6(PubKey) {
+    if (!publicKeyCache[PubKey]) {
+        var IPv6=Base32_decode(PubKey);
+        IPv6=sha512(sha512.array(IPv6));
+        IPv6=IPv6.substr(0,32);
+        publicKeyCache[PubKey]=IPv6;
+    }
+    return publicKeyCache[PubKey];
+}

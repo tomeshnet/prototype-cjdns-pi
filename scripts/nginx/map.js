@@ -5,7 +5,7 @@ function loadXMLDoc() {
       CJDNSMap(this);
     }
   };
-  xmlhttp.open("GET", "/cgi-bin/peers", true);
+  xmlhttp.open("GET", "/cgi-bin/peers-cjdns", true);
   xmlhttp.send();
 }
 
@@ -69,7 +69,7 @@ function YggdrasilMap(ajax) {
 }
 
 // Update Map
-// vis.js Initalization
+// vis.js Initialization
 var nodeIDs=[];
 var edgeIDs=[];
 var nodesArray=[];
