@@ -79,7 +79,7 @@ var edges=[];
 var network=[];
 //var nodeIds,edgesIDs,  nodesArray, nodes, edgesArray, edges, network;
 
-function initMap(name) {
+function InitMap(name) {
   nodeIDs[name]=[];
   edgeIDs[name]=[];
   nodesArray[name]=[{id: 0, label: 'Me'}];
@@ -95,8 +95,8 @@ function initMap(name) {
   network[name]= new vis.Network(container, data, options);
 }
 
-initMap("cjdns");
-initMap("yggdrasil");
+InitMap("cjdns");
+InitMap("yggdrasil");
 
 function UpdateNode(nodeID,name,edgeID,edgeLabel,map,NodeExist) {
   NodeExist[nodeID]=1;
