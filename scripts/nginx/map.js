@@ -1,4 +1,4 @@
-function loadXMLDoc() {
+function LoadXMLDoc_cjdns() {
   var xmlhttp = new XMLHttpRequest();
   xmlhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -9,7 +9,7 @@ function loadXMLDoc() {
   xmlhttp.send();
 }
 
-function loadXMLDoc_y() {
+function LoadXMLDoc_ygg() {
   var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
