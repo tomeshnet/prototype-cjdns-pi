@@ -35,7 +35,7 @@ if [ ! -x "$(command -v nginx)" ] || [ ! -d "/etc/nginx/site-path-enabled" ]; th
     # Yggdrasil peers
     sudo cp "$BASE_DIR/peers-yggdrasil" "/var/www/html/cgi-bin/peers-yggdrasil"
 
-    sudo chmod +x "/var/www/html/cgi-bin/peers"
+    sudo chmod +x "/var/www/html/cgi-bin/peers-cjdns"
     sudo chmod +x "/var/www/html/cgi-bin/peers-yggdrasil"
 
     BASE_DIR="$LAST_BASE"
