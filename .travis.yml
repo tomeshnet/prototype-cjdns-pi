@@ -48,6 +48,8 @@ script:
   - sudo chmod a+rwx bake.sh
   - echo #!/bin/bash >> bake.sh 
   - echo apt-get install -y git >> bake.sh
+  - echo sudo mkdir /home >> bake.sh
+  - echo sudo mkdir /home/pi >> bake.sh
   - echo cd /home/pi >> bake.sh
   - echo git clone https://github.com/tomeshnet/prototype-cjdns-pi.git >> bake.sh
   - echo cd prototype-cjdns-pi/scripts >> bake.sh
