@@ -1,0 +1,79 @@
+[payment]
+buffer_period = 3
+node_list = [{% for node in full_nodes %}"{{node}}"{{ "," if not loop.last else "" }}{% endfor %}]
+
+[network]
+mesh_ip = "0.0.0.0"
+bounty_ip = "0.0.0.0"
+babel_port = 6872
+rita_contact_port = 4874
+rita_hello_port = 4876
+rita_dashboard_port = 4877
+rita_tick_interval = 5
+bounty_port = 8888
+wg_private_key_path = "/tmp/priv"
+wg_start_port = 60000
+{% if wan_interface is defined %}
+external_nic = "{{wan_interface}}"
+{% endif %}
+peer_interfaces = [{% for interface in mesh_interfaces %}"{{interface}}"{{ "," if not loop.last else "" }}{% endfor %}]
+manual_peers = ["test.altheamesh.com", "apac.altheamesh.com", "exit.altheamesh.com", "canada-east.altheamesh.com", "aus.altheamesh.com"]
+global_non_mesh_ip = ""
+conf_link_local = true
+default_route = []
+
+[exit_client]
+wg_listen_port = 59999
+lan_nics = ['{{lan_interface}}']
+current_exit = "test"
+
+[exit_client.exits.test]
+registration_port = 4875
+message = "The Althea testing exit. Unstable!"
+[exit_client.exits.test.id]
+mesh_ip = "fd00::1337:0e1f"
+eth_address = "0x0101010101010101010101010101010101010101"
+wg_public_key = "hw2rXXaIOfbcOXbvejB3AyuoSAb3QhPXjC5MwxRqkls="
+
+[exit_client.exits.us_west]
+registration_port = 4875
+message = "The Althea Production US exit"
+[exit_client.exits.us_west.id]
+mesh_ip = "fd00::1337:0e2f"
+eth_address = "0x0101010101010101010101010101010101010101"
+wg_public_key = "jkIodvXKgij/rAEQXFEPJpls6ooxXJEC5XlWA1uUPUg="
+
+[exit_client.exits.canada_east]
+registration_port = 4875
+message = "Althea production Canada Exit"
+[exit_client.exits.canada_east.id]
+mesh_ip = "fd00::1337:0e3f"
+eth_address = "0x0101010101010101010101010101010101010101"
+wg_public_key = "sA76hy4X2nPhccGJeBClVUzZ6bntGrUD0GjBJDjVYBE="
+
+[exit_client.exits.apac]
+registration_port = 4875
+message = "In Singapore"
+[exit_client.exits.apac.id]
+mesh_ip = "fd00::1337:0e4f"
+eth_address = "0x0101010101010101010101010101010101010101"
+wg_public_key = "1kKSpzdhI4kfqeMqch9I1bXqOUXeKN7EQBecVzW60ys="
+
+[exit_client.exits.aus]
+registration_port = 4875
+message = "Althea testing exit in Australia"
+[exit_client.exits.aus.id]
+mesh_ip = "fd00::1337:0e5f"
+eth_address = "0x0101010101010101010101010101010101010101"
+wg_public_key = "z3aS2DNWWrbpMYZra2BuoV4gjcVTHVxinKAi4H8t7m8="
+
+[exit_client.reg_details]
+country_code = "NA"
+zip_code = "1234"
+email = "placeholder@domain.com"
+
+[dao]
+dao_enforcement = false
+cache_timeout_seconds = 600
+node_list = [{% for node in full_nodes %}"{{node}}"{{ "," if not loop.last else "" }}{% endfor %}]
+dao_addresses = []
