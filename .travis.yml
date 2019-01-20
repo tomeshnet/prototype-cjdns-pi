@@ -46,13 +46,15 @@ script:
   
   - sudo touch bake.sh
   - sudo chmod a+rwx bake.sh
-  - echo #!/bin/bash > bake.sh 
+  - echo #!/bin/bash >> bake.sh 
   - echo apt-get install -y git >> bake.sh
   - echo cd /home/pi >> bake.sh
   - echo git clone https://github.com/tomeshnet/prototype-cjdns-pi.git >> bake.sh
   - echo cd prototype-cjdns-pi/scripts >> bake.sh
   - echo git checkout travis >> bake.sh
   - echo TAG_PROTOTYPE_CJDNS_PI=travis UNATTENDED=true ./install >> bake.sh
-  - sudo chroot . bake.sh
+  - pwd
+  - ls -la
+  - sudo chroot . /bake.sh
   - cd ..
   - sudo umount 1
