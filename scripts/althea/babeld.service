@@ -1,0 +1,14 @@
+# This is a systemd service for Babeld
+[Unit]
+Description=babeld
+Requires=network.target
+After=wiregaurd.service
+
+[Service]
+Type=simple
+TimeoutStartSec=10s
+ExecStartPre=-/usr/bin/rm /var/run/babeld.pid
+ExecStart=/usr/bin/babeld -c /etc/babeld.conf lo
+
+[Install]
+WantedBy=default.target
