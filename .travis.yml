@@ -6,8 +6,8 @@ services:
 install: true
 
 before_script:
-  - sudo apt-get --yes --no-install-recommends install binfmt-support qemu-user-static
-  - echo ':arm:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-arm-static:' | sudo tee -a /proc/sys/fs/binfmt_misc/register
+#  - sudo apt-get --yes --no-install-recommends install binfmt-support qemu-user-static
+#  - echo ':arm:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-arm-static:' | sudo tee -a /proc/sys/fs/binfmt_misc/register
 
 env:
   - DISTRO=jessie
@@ -36,7 +36,7 @@ script:
 #!/bin/sh
 
 # Prep environment
- - apt-get update
+- apt-get update
 - apt-get install -y wget bash zip
 - apt-get install -y qemu qemu-user-static binfmt-support
 - apt-get install -y systemd-container
@@ -47,8 +47,8 @@ script:
    wget https://downloads.raspberrypi.org/raspbian_lite_latest -O raspbian.zip \ 
 fi
 - if [ ! -f "2018-11-13-raspbian-stretch-lite.img" ]; then \
--    unzip raspbian.zip
-- fi
+    unzip raspbian.zip \
+ fi
 
 # Grow image to make it a bit more space
 - dd if=/dev/zero count=1000000 >> 2018-11-13-raspbian-stretch-lite.img
@@ -60,13 +60,14 @@ fi
 - resize2fs /dev/loop99
 - losetup -d  /dev/loop99
 
-mk- dir 1
+- mkdir 1
 - mount 2018-11-13-raspbian-stretch-lite.img 1 -o loop,offset=$((512*98304))
 - cd 1
 - mount --bind /dev dev/
 - mount --bind /sys sys/
 - mount --bind /proc proc/
 - mount --bind /dev/pts dev/pts
+- cp /usr/bin/qemu-arm-static usr/bin
 
 
   # TODO Test installation
