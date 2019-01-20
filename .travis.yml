@@ -25,7 +25,8 @@ script:
 
   # Prep environment
   - apt-get update
-  - sudo apt-get install -y wget bash zip qemu qemu-user-static binfmt-support systemd-container
+  - sudo apt-get install -y wget bash zip qemu qemu-user-static binfmt-support 
+  # systemd-container
   - wget https://downloads.raspberrypi.org/raspbian_lite_latest -O raspbian.zip
   - unzip raspbian.zip
 #  - dd if=/dev/zero count=1000000 >> 2018-11-13-raspbian-stretch-lite.img
