@@ -23,4 +23,4 @@ sudo apt-get install libmnl-dev libelf-dev build-essential pkg-config raspberryp
 git clone https://git.zx2c4.com/WireGuard
 cd WireGuard/src
 make
-make install
+sudo make install
