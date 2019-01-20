@@ -45,7 +45,7 @@ script:
   - sudo cp /usr/bin/qemu-arm-static usr/bin
   
   - sudo touch bake.sh
-  - sudo chmod a+rw bake.sh
+  - sudo chmod a+rwx bake.sh
   - echo #!/bin/bash > bake.sh 
   - echo apt-get install -y git >> bake.sh
   - echo cd /home/pi >> bake.sh
@@ -53,7 +53,6 @@ script:
   - echo cd prototype-cjdns-pi/scripts >> bake.sh
   - echo git checkout travis >> bake.sh
   - echo TAG_PROTOTYPE_CJDNS_PI=travis UNATTENDED=true ./install >> bake.sh
-  - chmod +x bake.sh
   - chroot . bake.sh
   - cd ..
   - umount 1
