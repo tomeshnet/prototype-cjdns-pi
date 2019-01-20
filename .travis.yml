@@ -53,6 +53,6 @@ script:
   - echo cd prototype-cjdns-pi/scripts >> bake.sh
   - echo git checkout travis >> bake.sh
   - echo TAG_PROTOTYPE_CJDNS_PI=travis UNATTENDED=true ./install >> bake.sh
-  - chroot . bake.sh
+  - sudo chroot . bake.sh
   - cd ..
-  - umount 1
+  - sudo umount 1
