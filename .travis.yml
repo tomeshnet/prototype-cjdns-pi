@@ -44,7 +44,9 @@ script:
   - sudo mount --bind /dev/pts dev/pts
   - sudo cp /usr/bin/qemu-arm-static usr/bin
   
-  - echo #!/bin/bash > bake.sh
+  - sudo touch bake.sh
+  - sudo chmod a+rw bake.sh
+  - echo #!/bin/bash > bake.sh 
   - echo apt-get install -y git >> bake.sh
   - echo cd /home/pi >> bake.sh
   - echo git clone https://github.com/tomeshnet/prototype-cjdns-pi.git >> bake.sh
