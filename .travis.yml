@@ -22,3 +22,10 @@ script:
   - git checkout ${BRANCH}
   - bash -c 'shopt -s globstar; shellcheck -x install install2 */install **/*.sh'
   - cd ../..
+
+  # Prep environment
+  - apt-get update
+  - apt-get install -y wget bash zip
+  - apt-get install -y qemu qemu-user-static binfmt-support
+  - apt-get install -y systemd-container
+  - wget https://downloads.raspberrypi.org/raspbian_lite_latest -O raspbian.zip
