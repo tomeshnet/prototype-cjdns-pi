@@ -52,11 +52,16 @@ script:
   - echo sudo mkdir /home/pi >> bake.sh
   - echo cd /home/pi >> bake.sh
   - echo git clone https://github.com/tomeshnet/prototype-cjdns-pi.git >> bake.sh
+  - echo echo Completed Git >> bake.sh
+  - echo pwd >> bake.sh
+  - echo ls -la >> bake.sh
   - echo cd prototype-cjdns-pi/scripts >> bake.sh
+  - echo echo Ready for checkout >> bake.sh
+  - echo pwd >> bake.sh
+  - echo ls -la >> bake.sh
   - echo git checkout travis >> bake.sh
+  - echo echo ready for build >> bake.sh
   - echo TAG_PROTOTYPE_CJDNS_PI=travis UNATTENDED=true ./install >> bake.sh
-  - pwd
-  - ls -la
   - sudo chroot . /bake.sh
   - cd ..
   - sudo umount 1
