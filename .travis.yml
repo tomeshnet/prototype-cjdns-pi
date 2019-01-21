@@ -43,16 +43,14 @@ script:
   - sudo mount --bind /proc proc/
   - sudo mount --bind /dev/pts dev/pts
   - sudo cp /usr/bin/qemu-arm-static usr/bin
-  
+  - sudo git clone https://github.com/tomeshnet/prototype-cjdns-pi.git /home/pi/prototype-cjdns-pi
   - sudo touch bake.sh
   - sudo chmod a+rwx bake.sh
   - echo #!/bin/bash >> bake.sh 
   - echo apt-get install -y git >> bake.sh
   - echo sudo mkdir /home >> bake.sh
   - echo sudo mkdir /home/pi >> bake.sh
-  - echo cd /home/pi >> bake.sh
-  - echo git clone https://github.com/tomeshnet/prototype-cjdns-pi.git >> bake.sh
-  - echo echo Completed Git >> bake.sh
+  - echo cd /home/pi >> bake.sh  
   - echo pwd >> bake.sh
   - echo ls -la >> bake.sh
   - echo cd prototype-cjdns-pi/scripts >> bake.sh
