@@ -24,7 +24,7 @@ script:
   - cd ../..
 
   # Prep environment
-  - apt-get update
+  - sudo apt-get update
   - sudo apt-get install -y wget bash zip qemu qemu-user-static binfmt-support 
   # systemd-container
   - wget https://downloads.raspberrypi.org/raspbian_lite_latest -O raspbian.zip
@@ -43,7 +43,7 @@ script:
   - sudo mount --bind /proc proc/
   - sudo mount --bind /dev/pts dev/pts
   - sudo cp /usr/bin/qemu-arm-static usr/bin
-  - sudo git clone https://github.com/tomeshnet/prototype-cjdns-pi.git /home/pi/prototype-cjdns-pi
+  - sudo git clone https://github.com/tomeshnet/prototype-cjdns-pi.git home/pi/prototype-cjdns-pi
   - sudo touch bake.sh
   - sudo chmod a+rwx bake.sh
   - echo #!/bin/bash >> bake.sh 
