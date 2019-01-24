@@ -4,7 +4,7 @@ true
 
 set -e
 
-GO_IPFS_VERSION=v0.4.28
+GO_IPFS_VERSION=v0.4.18
 
 # Hyperborea connected peer used to bootstrap hyperborea only ipfs nodes
 IPFS_PEER="/ip6/fc6e:691e:dfaa:b992:a10a:7b49:5a1a:5e09/tcp/4001/ipfs/QmU6NeD2Uu34WKest1NZGvGmScLhN1zVo66K35GeE6Jft2"
