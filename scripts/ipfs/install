@@ -22,6 +22,9 @@ rm -rf "$BASE_DIR/tmp"
 # Initialize IPFS
 ipfs init || true
 
+# Enable gossipsub routing
+ipfs config Pubsub.Router gossipsub
+
 # Configure HTTP to IPFS gateway
 sudo cp "$BASE_DIR/ipfs-http-gateway.conf" /etc/nginx/site-path-enabled/ipfs-http-gateway.conf
 sudo systemctl restart nginx.service
