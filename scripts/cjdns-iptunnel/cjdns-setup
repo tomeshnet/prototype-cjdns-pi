@@ -1,24 +1,35 @@
 #!/usr/bin/env bash
 
-set -e
+# The service should have started by now and tun interface should be up
+# But if not we can uncomment this sleep line
+# sleep 8
+
+SUBNET4="10.1.0."
+SUBNET6="fe80::"
+
+# Enable forwarding for ipv4 and ipv6
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
 
 # Configure as cjdns iptunnel server if server file is present (this is simply a newline-separated list
 # of cjdns public keys in /etc/cjdns.iptunnel.server, each key indicating an allowed iptunnel client)
 if [ -e /etc/cjdns.iptunnel.server ]; then
-    # Add subnet and route for cjdns tun0 interface    
-    ifconfig tun0 10.1.0.1/24
-    route add -net 10.1.0.0/24 tun0 || true
+
+    # Add subnet and route for cjdns tun0 interface
+    ip add add "${SUBNET4}1/24" dev tun0  || true
+    route add -net "${SUBNET4}0/24" tun0 || true
+    ip addr add "${SUBNET6}1/64" dev tun0 || true
 
     # Define local IP range for assigning to iptunnel clients (10.1.0.2 to 10.1.0.254)
-    SUBNET="10.1.0."
     CLIENT=2
     LAST=254
 
     # Add each client to cjdns iptunnel allowed connections
     while read -r PUBLIC_KEY; do
         if [[ "${PUBLIC_KEY}" =~ ^[0-z]{52}\.k && ${CLIENT} -le ${LAST} ]]; then
-            ASSIGNED_IP="${SUBNET}${CLIENT}"
-            /opt/cjdns/tools/cexec "IpTunnel_allowConnection('${PUBLIC_KEY}',null,null,null,0,null,'${ASSIGNED_IP}')"
+            ASSIGNED_IP4="${SUBNET4}${CLIENT}"
+            ASSIGNED_IP6="${SUBNET6}${CLIENT}"
+            /opt/cjdns/tools/cexec "IpTunnel_allowConnection('${PUBLIC_KEY}',0,null,'${ASSIGNED_IP6}',0,null,'${ASSIGNED_IP4}')"
             ((CLIENT++))
         fi
     done < /etc/cjdns.iptunnel.server
@@ -26,6 +37,7 @@ if [ -e /etc/cjdns.iptunnel.server ]; then
 # Configure as cjdns iptunnel client if client file is present (this is simply a newline-separated list
 # of cjdns public keys in /etc/cjdns.iptunnel.client, each key indicating an iptunnel exit server)
 elif [ -e /etc/cjdns.iptunnel.client ]; then
+
     # Add each server to cjdns iptunnel connect-to's
     while read -r PUBLIC_KEY; do
         if [[ "${PUBLIC_KEY}" =~ ^[0-z]{52}\.k ]]; then
@@ -33,7 +45,12 @@ elif [ -e /etc/cjdns.iptunnel.client ]; then
         fi
     done < /etc/cjdns.iptunnel.client
 
-    # Route NAT traffic through to cjdns tun0 interface to use iptunnel exit server
+    # Remove NAT from eth0 if it exists
     iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE || true
+
+    # Route NAT traffic through to cjdns tun0 interface to use iptunnel exit server
     iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
+
+    # Add default ipv6 router over tun0
+    ip -6 route add default dev tun0
 fi

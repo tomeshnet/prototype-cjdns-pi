@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -e
+
+sudo apt-get remove -y yggdrasil
+
+if [ -f "/etc/yggdrasil.conf " ]; then
+    echo "Found /etc/yggdrasil.conf "
+    read -p "Keep your yggdrasil identity (Y/n)? " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo -e "\e[1;31mRemoving /etc/yggdrasil.conf\e[0m"
+        sudo rm -f /etc/yggdrasil.conf
+    else
+        echo -e "\e[1;32mKeeping /etc/yggdrasil.conf\e[0m"
+    fi
+fi

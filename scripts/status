@@ -15,6 +15,12 @@ if [ "$(systemctl status cjdns.service | grep 'Active: ' | awk '{ print $2 }')" 
 else
     echo -e "cjdns Service .............. $INACTIVE"
 fi
+if [ "$(systemctl status yggdrasil.service | grep 'Active: ' | awk '{ print $2 }')" = 'active' ]; then
+    echo -e "Yggdrasil Service ............ $ACTIVE"
+else
+    echo -e "Yggdrasil Service .......... $INACTIVE"
+fi
+
 if [ "$(which mesh-point)" ]; then
     ints=$(iw dev | grep Interface | awk '{print $2}')
     while read -r line; do
@@ -99,13 +105,27 @@ if [ "$(which yrd)" ]; then
         echo -e "yrd ........................ $INACTIVE"
     fi
 fi
-echo -e '---------------------------------------'
-echo -e 'NODE'
-sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g'
-echo -e '---------------------------------------'
-echo -e 'PEERS'
-read -a peers <<< `sudo nodejs /opt/cjdns/tools/peerStats 2>/dev/null | awk '{ if ($3 == "ESTABLISHED") print $2 }' | awk -F. '{ print $6".k" }' | xargs`
-for peer in "${peers[@]}"; do
-    sudo /opt/cjdns/publictoip6 "$peer"
-done
-echo -e '---------------------------------------'
+
+if [ "$(which cjdroute)" ]; then
+    echo -e '---------------------------------------'
+    echo -e 'CJDNS NODE'
+    sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g'
+    echo -e '---------------------------------------'
+    echo -e 'CJDNS PEERS'
+    read -a peers <<< `sudo nodejs /opt/cjdns/tools/peerStats 2>/dev/null | awk '{ if ($3 == "ESTABLISHED") print $2 }' | awk -F. '{ print $6".k" }' | xargs`
+    for peer in "${peers[@]}"; do
+        sudo /opt/cjdns/publictoip6 "$peer"
+    done
+    echo -e '---------------------------------------'
+fi
+
+if [ "$(which yggdrasil)" ]; then
+    YGGIP=$(ifconfig ygg0 | grep -E 'inet6 2[0-9a-fA-F]{2}:' | awk '{print $2}')
+    echo -e '---------------------------------------'
+    echo -e 'YGGDRASIL NODE'
+    echo -e $YGGIP
+    echo -e '---------------------------------------'
+    echo -e 'YGGDRASIL PEERS'
+    yggdrasilctl getPeers | grep -v "$YGGIP" | awk '{print $1}' | grep -v "bytes_recvd"
+    echo -e '---------------------------------------'
+fi

@@ -39,6 +39,7 @@ cd prototype-cjdns-pi/scripts
 git checkout $TAG_PROTOTYPE_CJDNS_PI
 
 # Export environment variables
+export WITH_YGGDRASIL
 export WITH_MESH_POINT
 export WITH_AD_HOC
 export WITH_WIFI_AP
@@ -52,7 +53,10 @@ export WITH_EXTRA_TOOLS
 export WITH_WATCHDOG
 export WITH_YRD
 export WITH_SSB
-export WITH_SSB_WEB
+export WITH_SSB_PATCHFOO
+export WITH_SSB_WEB_PI
 export WITH_IPFS_PI_STREAM
+
+export UNATTENDED
 # Run the actual installation script
 ./install2
