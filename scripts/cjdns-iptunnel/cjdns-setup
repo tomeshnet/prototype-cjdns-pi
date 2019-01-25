@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-set -e
+# The service should have started by now and tun interface should be up
+# But if not we can uncomment this sleep line
+# sleep 8
 
 SUBNET4="10.1.0."
 SUBNET6="fe80::"
