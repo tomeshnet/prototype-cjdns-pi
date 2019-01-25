@@ -37,6 +37,9 @@ if [ ! -x "$(command -v nginx)" ] || [ ! -d "/etc/nginx/site-path-enabled" ]; th
 
     sudo chmod +x "/var/www/html/cgi-bin/peers-cjdns"
     sudo chmod +x "/var/www/html/cgi-bin/peers-yggdrasil"
+    
+    # Allow nginx access to yggdrasil socket
+    usermod -a -G yggdrasil www-data
 
     BASE_DIR="$LAST_BASE"
     
