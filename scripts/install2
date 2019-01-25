@@ -101,7 +101,7 @@ function askSelection {
         echo "$selection" > /tmp/selectionList
 
         # shellcheck disable=SC2086
-        dialog $dialogGlobalParams --radiolist "$2" 10 55 4  --file /tmp/selectionList 2> /tmp/res
+        dialog $dialogGlobalParams --radiolist "$2" 10 55 8  --file /tmp/selectionList 2> /tmp/res
         rm -f selectionList
         response=$(cat /tmp/res)
         rm -f /tmp/res
@@ -271,12 +271,15 @@ if [ "$(checkModule 'WITH_DIALOG')" ]; then
     sudo apt-get install dialog -y
 fi
 
-askSelection "A Basic node\nB IPSF Node\nC Monitor Node\nD SSB Node\nE Camera Node\nZ Custom" "Select install type" Z
+
+askSelection "A Basic node\nB Basic IPSF Node\nC Monitor Node\nD SSB Node\nE Camera Node\nZ Custom" "Select install type" Z
+
 case "$dialogREPLY" in
     "A")
         echo "Basic node"
-        WITH_MESH_POINT=""
-        WITH_WIFI_AP=""
+	WITH_YGGDRASIL=true
+	WITH_MESH_POINT=""
+	WITH_WIFI_AP=""
         WITH_FIREWALL=true
         WITH_CJDNS_IPTUNNEL=true
         WITH_IPFS=false
@@ -284,7 +287,6 @@ case "$dialogREPLY" in
         WITH_EXTRA_TOOLS=true
         WITH_WATCHDOG=true
         WITH_YRD=true
-
         WITH_PROMETHEUS_SERVER=false
         WITH_GRAFANA=false
         WITH_SSB=false
@@ -292,7 +294,8 @@ case "$dialogREPLY" in
         WITH_IPFS_PI_STREAM=false
     ;;
     "B")
-        echo "Basic node"
+        echo "Basic IPFS node"
+	WITH_YGGDRASIL=true
         WITH_MESH_POINT=""
         WITH_WIFI_AP=""
         WITH_FIREWALL=true
@@ -311,6 +314,7 @@ case "$dialogREPLY" in
     ;;
     "C")
         echo "Monitor Node"
+	WITH_YGGDRASIL=true
         WITH_MESH_POINT=""
         WITH_WIFI_AP=""
         WITH_FIREWALL=true
@@ -329,6 +333,7 @@ case "$dialogREPLY" in
     ;;
     "D")
         echo "SSB Node"
+	WITH_YGGDRASIL=true
         WITH_MESH_POINT=""
         WITH_WIFI_AP=""
         WITH_FIREWALL=true
@@ -347,6 +352,7 @@ case "$dialogREPLY" in
     ;;
     "E")
         echo "IPFS Camera Node"
+	WITH_YGGDRASIL=true
         WITH_MESH_POINT=""
         WITH_WIFI_AP=""
         WITH_FIREWALL=true
