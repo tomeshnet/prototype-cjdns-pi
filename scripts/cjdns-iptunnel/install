@@ -10,11 +10,11 @@ sudo cp "$BASE_DIR/cjdns-setup" /usr/local/sbin/cjdns-setup
 # Update service to start script on cjdns start
 if [ -f /lib/systemd/system/cjdns.service ]; then
     sudo sed -i /ExecStartPost/d /lib/systemd/system/cjdns.service
-    sed -i s#Restart=always#Restart=always\\nExecStartPost=/usr/local/sbin/cjdns-setup# /lib/systemd/system/cjdns.service
+    sudo sed -i s#Restart=always#Restart=always\\nExecStartPost=/usr/local/sbin/cjdns-setup# /lib/systemd/system/cjdns.service
 fi
 if [ -f /etc/systemd/system/cjdns.service ]; then 
     sudo sed -i /ExecStartPost/d /etc/systemd/system/cjdns.service
-    sed -i s#Restart=always#Restart=always\\nExecStartPost=/usr/local/sbin/cjdns-setup# /etc/systemd/system/cjdns.service
+    sudo sed -i s#Restart=always#Restart=always\\nExecStartPost=/usr/local/sbin/cjdns-setup# /etc/systemd/system/cjdns.service
 fi
 
 sudo systemctl daemon-reload
