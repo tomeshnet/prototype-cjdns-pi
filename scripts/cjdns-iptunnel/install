@@ -3,6 +3,7 @@
 set -e
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+sudo cp "$BASE_DIR/cjdns-setup" "/usr/local/sbin/cjdns-setup"
 
 # Update service to start script on cjdns start
 if [ -f /lib/systemd/system/cjdns.service ]; then
