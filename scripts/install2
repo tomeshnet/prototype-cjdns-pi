@@ -29,19 +29,21 @@ function askModule {
     eval "res=\$$1"
 
     if [ "$(checkModule 'WITH_DIALOG')" ]; then
-        # Do not stop exec on non 0 return values
-        set +e
-        # shellcheck disable=SC2086
-        dialog $dialogGlobalParams $dialogParam --title "$2" --yesno "Install $2?" 6 55
-        response=$?
-        # Return to previous setting
-        set -e
+        if [ -z "$res" ] || [ "$res" != "true" ] && [ "$res" != "false" ]; then
+	        # Do not stop exec on non 0 return values
+	        set +e
+	        # shellcheck disable=SC2086
+	        dialog $dialogGlobalParams $dialogParam --title "$2" --yesno "Install $2?" 6 55
+	        response=$?
+	        # Return to previous setting
+	        set -e
 
-        case $response in
-            0) res="true";;
-            1) res="false";;
-            255) exit;;
-        esac
+	        case $response in
+	            0) res="true";;
+	            1) res="false";;
+	            255) exit;;
+        	esac
+	fi
     else
         if [ -z "$res" ] || [ "$res" != "true" ] && [ "$res" != "false" ]; then
             read -p "Install $2 $askPrompt? " -n 1 -r
@@ -269,39 +271,96 @@ if [ "$(checkModule 'WITH_DIALOG')" ]; then
     sudo apt-get install dialog -y
 fi
 
-askSelection "A Basic node\nB Pi Stream\nZ Custom" "Select install type" Z
+askSelection "A Basic node\nB IPSF Node\nC Monitor Node\nD SSB Node\nE Camera Node\nZ Custom" "Select install type" Z
 case "$dialogREPLY" in
     "A")
         echo "Basic node"
-        WITH_MESH_POINT=true
+        WITH_MESH_POINT=""
         WITH_WIFI_AP=""
-        WITH_FIREWALL=""
+        WITH_FIREWALL=true
         WITH_CJDNS_IPTUNNEL=true
         WITH_IPFS=false
         WITH_PROMETHEUS_NODE_EXPORTER=true
+        WITH_EXTRA_TOOLS=true
+        WITH_WATCHDOG=true
+        WITH_YRD=true
+
         WITH_PROMETHEUS_SERVER=false
         WITH_GRAFANA=false
-        WITH_EXTRA_TOOLS=""
-        WITH_WATCHDOG=""
-        WITH_YRD=""
         WITH_SSB=false
         WITH_SSB_WEB=false
         WITH_IPFS_PI_STREAM=false
     ;;
     "B")
-        WITH_MESH_POINT=true
-        WITH_WIFI_AP=true
-        WITH_FIREWALL=""
+        echo "Basic node"
+        WITH_MESH_POINT=""
+        WITH_WIFI_AP=""
+        WITH_FIREWALL=true
         WITH_CJDNS_IPTUNNEL=true
         WITH_IPFS=true
-        WITH_PROMETHEUS_NODE_EXPORTER=""
+        WITH_PROMETHEUS_NODE_EXPORTER=true
+        WITH_EXTRA_TOOLS=true
+        WITH_WATCHDOG=true
+        WITH_YRD=true
+
         WITH_PROMETHEUS_SERVER=false
         WITH_GRAFANA=false
-        WITH_EXTRA_TOOLS=""
-        WITH_WATCHDOG=""
-        WITH_YRD=""
+        WITH_SSB=false
+        WITH_SSB_WEB=false
+        WITH_IPFS_PI_STREAM=false
+    ;;
+    "C")
+        echo "Monitor Node"
+        WITH_MESH_POINT=""
+        WITH_WIFI_AP=""
+        WITH_FIREWALL=true
+        WITH_CJDNS_IPTUNNEL=true
+        WITH_IPFS=false
+        WITH_PROMETHEUS_NODE_EXPORTER=true
+        WITH_EXTRA_TOOLS=true
+        WITH_WATCHDOG=true
+        WITH_YRD=true
+
+        WITH_PROMETHEUS_SERVER=true
+        WITH_GRAFANA=true
+        WITH_SSB=false
+        WITH_SSB_WEB=false
+        WITH_IPFS_PI_STREAM=false
+    ;;
+    "D")
+        echo "SSB Node"
+        WITH_MESH_POINT=""
+        WITH_WIFI_AP=""
+        WITH_FIREWALL=true
+        WITH_CJDNS_IPTUNNEL=true
+        WITH_IPFS=false
+        WITH_PROMETHEUS_NODE_EXPORTER=true
+        WITH_EXTRA_TOOLS=true
+        WITH_WATCHDOG=true
+        WITH_YRD=true
+
+        WITH_PROMETHEUS_SERVER=false
+        WITH_GRAFANA=false
         WITH_SSB=true
-        WITH_SSB_WEB=true
+        WITH_SSB_PATCHFOO=true
+        WITH_IPFS_PI_STREAM=false
+    ;;
+    "E")
+        echo "IPFS Camera Node"
+        WITH_MESH_POINT=""
+        WITH_WIFI_AP=""
+        WITH_FIREWALL=true
+        WITH_CJDNS_IPTUNNEL=true
+        WITH_IPFS=true
+        WITH_PROMETHEUS_NODE_EXPORTER=true
+        WITH_EXTRA_TOOLS=true
+        WITH_WATCHDOG=true
+        WITH_YRD=true
+
+        WITH_PROMETHEUS_SERVER=false
+        WITH_GRAFANA=false
+        WITH_SSB=false
+        WITH_SSB_PATCHFOO=false
         WITH_IPFS_PI_STREAM=true
     ;;
     "Z")
