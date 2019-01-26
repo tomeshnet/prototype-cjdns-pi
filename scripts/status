@@ -126,6 +126,6 @@ if [ "$(which yggdrasil)" ]; then
     echo -e $YGGIP
     echo -e '---------------------------------------'
     echo -e 'YGGDRASIL PEERS'
-    yggdrasilctl getPeers | grep -v "$YGGIP" | awk '{print $1}' | grep -v "bytes_recvd"
+    sudo yggdrasilctl getPeers | grep -v "$YGGIP" | awk '{print $1}' | grep -v "bytes_recvd"
     echo -e '---------------------------------------'
 fi
