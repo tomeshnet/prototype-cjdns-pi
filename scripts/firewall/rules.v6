@@ -18,5 +18,6 @@
 -A INPUT -j ACCEPT -p udp --dport 9001 -d ff02::114
 -A INPUT -j REJECT --reject-with icmp6-port-unreachable
 -A FORWARD -i ygg0 -d 300::/8 -j YGGCLIENT
--A YGGCLIENT -j REJECT --reject-with icmp6-port-unreachable
+-A FORWARD -i ygg0 -d 300::/8 -j REJECT --reject-with icmp6-port-unreachable
+#-A YGGCLIENT -j ACCEPT -p tcp --dport 22
 COMMIT
