@@ -13,10 +13,17 @@ H_DNS_SERVER_2="fc16:b44c:2bf9:467:8098:51c6:5849:7b4f"
 I_DNS_SERVER_0="1.1.1.1"
 I_DNS_SERVER_1="1.0.0.1"
 
+if [ "$(which yggdrasil)" ]; then
+    # Setup Yggdrasil radvd prefix for subnetting
+    YGG_SUBNET=$(yggdrasilctl getSelf | grep "IPv6 subnet" | awk '{print $3}')
+    sed -i "s/fdfc::\/64/$YGG_SUBNET/" "$BASE_DIR/radvd.conf"
+fi
+
 # Create radvd.conf before installing radvd, installation fails without it
 if ! [ -f /etc/radvd.conf ]; then
     sudo cp "$BASE_DIR/radvd.conf" /etc/radvd.conf
 fi
+
 
 # Install packages to run IEEE 802.11 Access Point
 sudo apt-get install hostapd radvd dnsmasq iptables -y
@@ -37,7 +44,13 @@ echo "    netmask 255.255.255.0" | sudo tee --append /etc/network/interfaces > /
 echo "    network 10.0.0.0" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    broadcast 10.0.0.255" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "iface wlan-ap inet6 static" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    address fdfc::2" | sudo tee --append /etc/network/interfaces > /dev/null
+
+if [ "$(which yggdrasil)" ]; then
+    echo "    address $YGG_SUBNET" | sudo tee --append /etc/network/interfaces > /dev/null
+else
+    echo "    address fdfc::2" | sudo tee --append /etc/network/interfaces > /dev/null
+fi
+
 echo "    netmask 64" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "allow-hotplug eth0" | sudo tee --append /etc/network/interfaces > /dev/null
@@ -110,8 +123,7 @@ if [ -f /etc/dhcpcd.conf ]; then
     sudo echo "denyinterfaces wlan-ap" | sudo tee --append /etc/dhcpcd.conf > /dev/null
 fi
 
-# Configure IPv6 router advertisement with radvd
-sudo cp "$BASE_DIR/radvd.conf" /etc/radvd.conf
+# Setup radvd systemd
 sudo systemctl daemon-reload
 sudo systemctl enable radvd.service
 sudo systemctl start radvd.service
