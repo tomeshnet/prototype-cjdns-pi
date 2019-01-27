@@ -16,6 +16,8 @@ I_DNS_SERVER_1="1.0.0.1"
 if [ "$(which yggdrasil)" ]; then
     # Setup Yggdrasil radvd prefix for subnetting
     YGG_SUBNET=$(yggdrasilctl getSelf | grep "IPv6 subnet" | awk '{print $3}')
+    # A 1 needs to be added before the /64 for later operations
+    YGG_SUBNET_1=${YGG_SUBNET:0:-3}1/64
     sed -i "s/fdfc::\/64/$YGG_SUBNET/" "$BASE_DIR/radvd.conf"
 fi
 
@@ -46,7 +48,7 @@ echo "    broadcast 10.0.0.255" | sudo tee --append /etc/network/interfaces > /d
 echo "iface wlan-ap inet6 static" | sudo tee --append /etc/network/interfaces > /dev/null
 
 if [ "$(which yggdrasil)" ]; then
-    echo "    address $YGG_SUBNET" | sudo tee --append /etc/network/interfaces > /dev/null
+    echo "    address $YGG_SUBNET_1" | sudo tee --append /etc/network/interfaces > /dev/null
 else
     echo "    address fdfc::2" | sudo tee --append /etc/network/interfaces > /dev/null
 fi
