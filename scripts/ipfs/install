@@ -7,7 +7,11 @@ set -e
 GO_IPFS_VERSION=v0.4.18
 
 # Hyperborea connected peer used to bootstrap hyperborea only ipfs nodes
-IPFS_PEER="/ip6/fc6e:691e:dfaa:b992:a10a:7b49:5a1a:5e09/tcp/4001/ipfs/QmU6NeD2Uu34WKest1NZGvGmScLhN1zVo66K35GeE6Jft2"
+IPFS_PEER_1="/ip6/fc6e:691e:dfaa:b992:a10a:7b49:5a1a:5e09/tcp/4001/ipfs/QmU6NeD2Uu34WKest1NZGvGmScLhN1zVo66K35GeE6Jft2"
+# Yggdrasil connected peer used to bootstrap hyperborea only ipfs nodes
+IPFS_PEER_2="/ip6/301:4541:2f84:1188:216:3eff:fed5:a2df/tcp/4001/ipfs/QmWZpTdfETtpjJphVE1YbxMkUcL84idkg44Cq1XWSBNm7P"
+IPFS_PEER_3="/ip6/200:98bf:d6df:e49a:f525:40bf:18d:ac45/tcp/4001/ipfs/QmU6NeD2Uu34WKest1NZGvGmScLhN1zVo66K35GeE6Jft2"
+
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -25,6 +29,9 @@ ipfs init || true
 # Enable gossipsub routing
 ipfs config Pubsub.Router gossipsub
 
+# Enable Filestore for --nocopy capability
+ipfs config --bool Experimental.FilestoreEnabled true
+
 # Configure HTTP to IPFS gateway
 sudo cp "$BASE_DIR/ipfs-http-gateway.conf" /etc/nginx/site-path-enabled/ipfs-http-gateway.conf
 sudo systemctl restart nginx.service
@@ -33,13 +40,15 @@ sudo systemctl restart nginx.service
 source "$BASE_DIR/../shared/nodeinfo/install"
 sudo cp "$BASE_DIR/nodeinfo-ipfs" /opt/tomesh/nodeinfo.d/ipfs
 
-# add cjdns bootstrap address
-ipfs bootstrap add "$IPFS_PEER"
+# Add bootstrap addresses
+ipfs bootstrap add "$IPFS_PEER_1"
+ipfs bootstrap add "$IPFS_PEER_2"
+ipfs bootstrap add "$IPFS_PEER_3"
 
 # Download dependencies
 sudo apt-get install -y jq
 
-# Move file
+# Copy file
 sudo cp "$BASE_DIR/ipfs-swarm-cjdns.sh" /usr/local/bin/
 sudo chmod +x /usr/local/bin/ipfs-swarm-cjdns.sh
 
