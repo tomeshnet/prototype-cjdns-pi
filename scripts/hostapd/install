@@ -13,20 +13,6 @@ H_DNS_SERVER_2="fc16:b44c:2bf9:467:8098:51c6:5849:7b4f"
 I_DNS_SERVER_0="1.1.1.1"
 I_DNS_SERVER_1="1.0.0.1"
 
-if [ "$(which yggdrasil)" ]; then
-    # Setup Yggdrasil radvd prefix for subnetting
-    YGG_SUBNET=$(yggdrasilctl getSelf | grep "IPv6 subnet" | awk '{print $3}')
-    # A 1 needs to be added before the /64 for later operations
-    YGG_SUBNET_1=${YGG_SUBNET:0:-3}1/64
-    sed -i "s/fdfc::\/64/$YGG_SUBNET/" "$BASE_DIR/radvd.conf"
-fi
-
-# Create radvd.conf before installing radvd, installation fails without it
-if ! [ -f /etc/radvd.conf ]; then
-    sudo cp "$BASE_DIR/radvd.conf" /etc/radvd.conf
-fi
-
-
 # Install packages to run IEEE 802.11 Access Point
 sudo apt-get install hostapd radvd dnsmasq iptables -y
 
@@ -125,7 +111,16 @@ if [ -f /etc/dhcpcd.conf ]; then
     sudo echo "denyinterfaces wlan-ap" | sudo tee --append /etc/dhcpcd.conf > /dev/null
 fi
 
-# Setup radvd systemd
+# Setup radvd
+sudo cp "$BASE_DIR/radvd.conf" /tmp
+if [ "$(which yggdrasil)" ]; then
+    # Setup Yggdrasil radvd prefix for subnetting
+    YGG_SUBNET=$(sudo yggdrasilctl getSelf | grep "IPv6 subnet" | awk '{print $3}')
+    # A 1 needs to be added before the /64 for later operations
+    YGG_SUBNET_1=${YGG_SUBNET:0:-3}1/64
+    sed -i "s/fdfc::\/64/$YGG_SUBNET/" /tmp/radvd.conf
+fi
+sudo cp /tmp/radvd.conf /etc
 sudo systemctl daemon-reload
 sudo systemctl enable radvd.service
 sudo systemctl start radvd.service
