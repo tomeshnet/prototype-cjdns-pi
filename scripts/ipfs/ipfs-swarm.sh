@@ -29,7 +29,7 @@ function addPeer  {
 # Add cjdns direct peers
 while read -r cjdns_peer; do
     cjdns_addr=$(sudo /opt/cjdns/publictoip6 "$cjdns_peer")
-    addPeer cjdns_addr
+    addPeer "${cjdns_addr}"
 
     # Add all that node's peers to the bottom of the list to check further hop peers
     # XXX: The below command hasn't been working -- so for now only 1-hop peers are checked
@@ -40,7 +40,7 @@ done <<< "$(sudo nodejs /opt/cjdns/tools/peerStats 2>/dev/null | awk '{ if ($3 =
 # Add yggdrasil direct peers
 if [ "$(which yggdrasil)" ]; then
     while read -r ygg_peer; do
-        addPeer $ygg_peer
+        addPeer "${ygg_peer}"
     done <<< "$(sudo yggdrasilctl getPeers | grep -v "(self)" | awk '{print $1}' | grep -v bytes_recvd | xargs)"
 fi
 
