@@ -57,7 +57,7 @@ To modify the ports that are accessable from CJDNS modify the `cjdns` *table* in
 
 ## Yggdrasil subnetting
 
-Yggdrasil is another mesh routing software. It will give each node (like your Pi, for example) an IPv6 address, but it can also give each node a subnet to distribute to its clients. This means that if you connect the WiFi of your Pi, your device can get a unique Yggdrasil address, with all the benefits it provides. These include being able to access your device directly, without being NATed or blocked.
+Yggdrasil is another piece of mesh routing software. It will give each node (like your Pi, for example) an IPv6 address, but it can also give each node a subnet to distribute to its clients. This means that if you connect the WiFi of your Pi, your device can get a unique Yggdrasil address, with all the benefits it provides. These include being able to access your device directly, without being NATed or blocked.
 
 However, the Pi does have a firewall, so various commands need be run to allow access to clients.
 
