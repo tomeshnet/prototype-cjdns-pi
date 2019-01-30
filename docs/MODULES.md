@@ -44,9 +44,8 @@ However, the Pi does have a firewall, so various commands need be run to allow a
 sudo ip6tables -A YGGDRASIL -j ACCEPT -p <PROTOCOL> -d <YGGDRASIL IP> --dport <PORT>
 ```
 Example protocols are `tcp` or `udp`, and you'll have to figure out the port number depending on what you want to expose.
-The Yggdrasil IP address of the client can be deduced by running `ip a` on Linux machines, and you'll see an IPv6 address starting with `30`.
+The Yggdrasil IP address of the client can be deduced by running `ifconfig` on Linux and Mac, and you'll see an IPv6 address starting with `30`. In Windows, type `ipconfig` in command prompt. If you're having issues, read [this article](https://www.groovypost.com/howto/find-windows-10-device-ip-address/).
 Specifying a protocol is not required, but recommended.
-*TODO: What about Windows and Mac?*
 
 ### All clients, one port
 
