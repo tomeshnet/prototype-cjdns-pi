@@ -53,7 +53,7 @@ By default the following ports are open from CJDNS
 | 5201  | TCP     | Accept | IPerf3                    |
 | 4001  | TCP     | Accept | IPFS Swarm port           |
 
-To modify the ports that are accessable from CJDNS simply modify the `cjdns` tables (see the Firewall module for more details)
+To modify the ports that are accessable from CJDNS modify the `cjdns` *table* in the IPv6 firewall config file. (see the Firewall module for more details)
 
 ## Yggdrasil subnetting
 
@@ -114,7 +114,7 @@ IPFS stands for Interplanetary File System and it is an open-source, peer-to-pee
 
 This module will install IPFS under the user which the script is run, allowing you to access IPFS resouces both directly from the command line, and through the gateway available at <Pi Address>/ipfs/
   
-  ## Firewall
+## Firewall
   
 The firewall module installed a basic firewall for your device. It will block all ports thare wre not ment to be open. By default there are no ports blocked from the Wireless Access Point interface.
 
