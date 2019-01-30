@@ -35,7 +35,7 @@ $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scr
 ## CJDNS
 Cjdns (Caleb James DeLisle's Network Suite) is a networking protocol and reference implementation. It is founded on the ideology that networks should be easy to set up, protocols should scale smoothly, and security should be built in by default.
 
-CJDNS uses cryptography to self-assign IPv6 address in the fc00/8 subnet and will automatically peer with other nodes connected via Layer2 ethernet, broadcasts or configured UDP tunnels.
+CJDNS uses cryptography to self-assign IPv6 address in the fc00::/8 subnet and will automatically peer with other nodes connected via Layer2 ethernet, broadcasts or configured UDP tunnels.
 
 For more information please see the [CJDNS FAQ](https://github.com/cjdelisle/cjdns/blob/master/doc/faq/general.md)
 
