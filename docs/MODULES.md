@@ -33,9 +33,9 @@ $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scr
 ```
 
 ## CJDNS
-Cjdns (Caleb James DeLisle's Network Suite) is a networking protocol and reference implementation. It is founded on the ideology that networks should be easy to set up, protocols should scale smoothly, and security should be ubiquitous.
+Cjdns (Caleb James DeLisle's Network Suite) is a networking protocol and reference implementation. It is founded on the ideology that networks should be easy to set up, protocols should scale smoothly, and security should be built in by default.
 
-If uses cryptography to self-assign IPv6 address in the fc00/8 subnet and will automatically peer with other nodes connected via Layer2 ethernet, broadcasts or configured UDP tunnels.
+CJDNS uses cryptography to self-assign IPv6 address in the fc00/8 subnet and will automatically peer with other nodes connected via Layer2 ethernet, broadcasts or configured UDP tunnels.
 
 For more information please see the [CJDNS FAQ](https://github.com/cjdelisle/cjdns/blob/master/doc/faq/general.md)
 
@@ -57,7 +57,7 @@ To modify the ports that are accessable from CJDNS modify the `cjdns` *table* in
 
 ## Yggdrasil subnetting
 
-Yggdrasil is another piece of mesh routing software. It will give each node (like your Pi, for example) an IPv6 address, but it can also give each node a subnet to distribute to its clients. This means that if you connect the WiFi of your Pi, your device can get a unique Yggdrasil address, with all the benefits it provides. These include being able to access your device directly, without being NATed or blocked.
+Yggdrasil is another piece of mesh routing software similar to CJDNS. It will give each node (like your Pi, for example) an IPv6 address, but it can also give each node a subnet to distribute to its clients. This means that if you connect the WiFi of your Pi, your device can get a unique Yggdrasil address, with all the benefits it provides. These include being able to access your device directly, without being NATed or blocked.
 
 However, the Pi does have a firewall, so various commands need be run to allow access to clients.
 
@@ -110,13 +110,13 @@ sudo ip6tables -R YGGDRASIL <number>
 ```
 
 ## IPFS
-IPFS stands for Interplanetary File System and it is an open-source, peer-to-peer distributed hypermedia protocol that aims to function as a ubiquitous file system for all computing devices. 
+IPFS stands for Interplanetary File System. It is an open-source, peer-to-peer distributed hypermedia protocol that aims to function as a ubiquitous file system for all computing devices. 
 
-This module will install IPFS under the user which the script is run, allowing you to access IPFS resouces both directly from the command line, and through the gateway available at <Pi Address>/ipfs/
+This module will install IPFS under the user where the script runs allowing you to access IPFS resouces both directly from the command line, and through the gateway available at <Pi IP Address>/ipfs/
   
 ## Firewall
   
-The firewall module installed a basic firewall for your device. It will block all ports thare wre not ment to be open. By default there are no ports blocked from the Wireless Access Point interface.
+The firewall module installes a basic firewall for your device. It will block all ports thare wre not meant to be open. By default there are no ports blocked from the Wireless Access Point interface.
 
 ## IPv4
 Default open ports to the device
