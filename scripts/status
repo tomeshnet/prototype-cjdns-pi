@@ -106,7 +106,7 @@ if [ "$(which yrd)" ]; then
     fi
 fi
 
-if [ "$(which cjdroute)" ]; then
+if [ "$(which cjdroute)" ] && [ "$(ip addr | grep tun0)" ] ; then
     echo -e '---------------------------------------'
     echo -e 'CJDNS NODE'
     sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g'
