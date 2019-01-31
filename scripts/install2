@@ -126,6 +126,7 @@ elif [[ "$BOARD_HARDWARE" == 'nanopineo2' || "$BOARD_HARDWARE" == 'sun50iw1p1' |
     if [[ "$BOARD_HARDWARE" == "orangepizeroplus2-h5" ]]; then
             SUPPORT_HOSTAP=true
     fi
+    
 else
     BOARD_FAMILY="Raspberry Pi"
     BOARD_REVISION="$(sed -rn 's/Revision\s+\:\s+([0-9a-z_\-\s\,\(\)]+)/\1/p' /proc/cpuinfo)"
@@ -169,6 +170,10 @@ fi
 echo -e "\e[1;32mStarting installation on ${BOARD_FAMILY} ${BOARD_NAME} (${BOARD_REVISION})...\e[0m"
 
 # Normalize OS environment
+
+# Install firmware package for wireless drivers
+# #TODO# detect armbian
+sudo apt-get install -y armbian-firmware-full || true
 
 # Enable password-less sudo on Armbian
 sudo sed -i 's/ALL=(ALL:ALL) ALL/ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
