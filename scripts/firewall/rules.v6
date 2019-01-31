@@ -8,7 +8,7 @@
 -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 -A INPUT -p ipv6-icmp -j ACCEPT
 -A INPUT -i lo -j ACCEPT
--A INPUT -j ACCEPT -p udp --dport 12345
+-A INPUT -j ACCEPT -p tcp --dport 12345
 -A INPUT -j ACCEPT -p udp --dport 9001 -d ff02::114
 -A INPUT -i tun0 -d fc00::/8 -j CJDNS
 -A INPUT -i ygg0 -d 200::/8 -j YGGDRASIL
