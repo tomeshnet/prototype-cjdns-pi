@@ -32,9 +32,32 @@ To install all optional modules (not recommended), run the following command:
 $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install && chmod +x install && WITH_MESH_POINT=true WITH_AD_HOC=false WITH_WIFI_AP=true WITH_FIREWALL=true WITH_CJDNS_IPTUNNEL=true WITH_IPFS=true WITH_SSB=true WITH_SSB_WEB_PI=true WITH_PROMETHEUS_NODE_EXPORTER=true WITH_PROMETHEUS_SERVER=true WITH_GRAFANA=true WITH_H_DNS=true WITH_H_NTP=true WITH_EXTRA_TOOLS=true WITH_WATCHDOG=true WITH_YRD=true ./install
 ```
 
+## CJDNS
+Cjdns (Caleb James DeLisle's Network Suite) is a networking protocol and reference implementation. It is founded on the ideology that networks should be easy to set up, protocols should scale smoothly, and security should be built in by default.
+
+CJDNS uses cryptography to self-assign IPv6 address in the fc00::/8 subnet and will automatically peer with other nodes connected via Layer2 ethernet, broadcasts or configured UDP tunnels.
+
+For more information please see the [CJDNS FAQ](https://github.com/cjdelisle/cjdns/blob/master/doc/faq/general.md)
+
+### CJDNS Firewall
+By default the following ports are open from CJDNS
+
+| Port | Protocol | Policy | Description               |
+| :---- | :------ | :----- | :------------------------ |
+| 67:68 | UDP     | Accept | DHCP Client/Server        |
+| 22    | UDP     | Accept | SSH                       |
+| 53    | TCP/UDP | Accept | DNS Server                |
+| 80    | TCP     | Accept | HTTP                      |
+| 443   | TCP     | Accept | SSH                       |
+| 9100  | TCP     | Accept | NodeExporter              |
+| 5201  | TCP     | Accept | IPerf3                    |
+| 4001  | TCP     | Accept | IPFS Swarm port           |
+
+To modify the ports that are accessable from CJDNS modify the `cjdns` *table* in the IPv6 firewall config file. (see the Firewall module for more details)
+
 ## Yggdrasil subnetting
 
-Yggdrasil is another mesh routing software. It will give each node (like your Pi, for example) an IPv6 address, but it can also give each node a subnet to distribute to its clients. This means that if you connect the WiFi of your Pi, your device can get a unique Yggdrasil address, with all the benefits it provides. These include being able to access your device directly, without being NATed or blocked.
+Yggdrasil is another piece of mesh routing software similar to CJDNS. It will give each node (like your Pi, for example) an IPv6 address, but it can also give each node a subnet to distribute to its clients. This means that if you connect the WiFi of your Pi, your device can get a unique Yggdrasil address, with all the benefits it provides. These include being able to access your device directly, without being NATed or blocked.
 
 However, the Pi does have a firewall, so various commands need be run to allow access to clients.
 
@@ -85,3 +108,71 @@ Then run:
 ```
 sudo ip6tables -R YGGDRASIL <number>
 ```
+
+## IPFS
+IPFS stands for Interplanetary File System. It is an open-source, peer-to-peer distributed hypermedia protocol that aims to function as a ubiquitous file system for all computing devices. 
+
+This module will install IPFS under the user where the script runs allowing you to access IPFS resouces both directly from the command line, and through the gateway available at <Pi IP Address>/ipfs/
+  
+## Firewall
+  
+The firewall module installes a basic firewall for your device. It will block all ports thare wre not meant to be open. By default there are no ports blocked from the Wireless Access Point interface.
+
+## IPv4
+Default open ports to the device
+
+| Port | Protocol | Policy | Description               |
+| :---- | :------ | :----- | :------------------------ |
+| 67:68 | UDP     | Accept | DHCP Client/Server        |
+| 22    | UDP     | Accept | SSH                       |
+| 53    | TCP/UDP | Accept | DNS Server                |
+| 80    | TCP     | Accept | HTTP                      |
+| 443   | TCP     | Accept | SSH                       |
+| 9100  | TCP     | Accept | NodeExporter              |
+| 9090  | TCP     | Accept | Prometheus Server         |
+| 3000  | TCP     | Accept | Grafana                   |
+| 5201  | TCP     | Accept | IPerf3                    |
+| 4001  | TCP     | Accept | IPFS Swarm port           |
+
+### Change open ports
+
+To change the open ports you can edit the IPv4 configuration file located at `/etc/iptables/rules.v4`
+
+Remove or comment out (#) the lines of the ports that you wish to close and add new lines for additional ports you wish to open.
+
+These are standard `iptables` rules. The basic syntax is as follows:
+
+`-A INPUT -p <protocol> -m <protocol> --dport <port> -j ACCEPT`
+
+`protocol` -  either `tcp` or `udp`
+`port` - Port you wish to open between 1-65535
+
+
+## IPv6
+
+Default open ports to the device over IPv6 are
+
+| Port | Protocol | Policy | Description               |
+| :---- | :------ | :----- | :------------------------ |
+| 67:68 | UDP     | Accept | DHCP Client/Server        |
+| 22    | UDP     | Accept | SSH                       |
+| 53    | TCP/UDP | Accept | DNS Server                |
+| 80    | TCP     | Accept | HTTP                      |
+| 443   | TCP     | Accept | SSH                       |
+| 9100  | TCP     | Accept | NodeExporter              |
+| 5201  | TCP     | Accept | IPerf3                    |
+| 4001  | TCP     | Accept | IPFS Swarm port           |
+
+### Change open ports
+
+To change the open ports you can edit the IPv6 configuration file located at `/etc/iptables/rules.v6`
+
+Remove or comment out (#) the lines of the ports that you wish to close and add new lines for additional ports you wish to open.
+
+These are standard `ip6tables` rules. The basic syntax is as follows:
+
+`-A <table> -p <protocol> -m <protocol> --dport <port> -j ACCEPT`
+
+`table` - `INPUT` for general ports or specific tables as defined in the modules
+`protocol` -  either `tcp` or `udp`
+`port` - Port you wish to open between 1-65535
