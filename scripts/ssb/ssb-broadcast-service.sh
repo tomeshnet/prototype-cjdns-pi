@@ -14,7 +14,7 @@ while true; do
     # Manual cjdns peer unicast
     if [ "$(which cjdns)" ]; then
         mycjdnsip=$(grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g')
-        # shellcheck disable=SC2102
+        # shellcheck disable=SC2102,SC2046
         read -ar peers <<< $(sudo nodejs /opt/cjdns/tools/peerStats 2>/dev/null | awk '{ if ($3 == "ESTABLISHED") print $2 }' | awk -F. '{print $6".k"}' | xargs)
         for peer in "${peers[@]}"; do
             ip=$(sudo /opt/cjdns/publictoip6 "$peer")
