@@ -15,19 +15,20 @@ while true; do
     if [ "$(which cjdns)" ]; then
         mycjdnsip=$(grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g')
         # shellcheck disable=SC2102
-        read -ar peers <<< `sudo nodejs /opt/cjdns/tools/peerStats 2>/dev/null | awk '{ if ($3 == "ESTABLISHED") print $2 }' | awk -F. '{ print $6".k" }' | xargs`
+        read -ar peers <<< $(sudo nodejs /opt/cjdns/tools/peerStats 2>/dev/null | awk '{ if ($3 == "ESTABLISHED") print $2 }' | awk -F. '{print $6".k"}' | xargs)
         for peer in "${peers[@]}"; do
-            ip=$(sudo /opt/cjdns/publictoip6 $peer)
+            ip=$(sudo /opt/cjdns/publictoip6 "$peer")
+            # shellcheck disable=SC2102
             echo -n "net:$mycjdnsip:8008~shs:$id" | sudo socat -T 1 - UDP6-DATAGRAM:[$ip]:8008
         done  
     fi
     
     # Add yggdrasil direct peers    
     if [ "$(which yggdrasil)" ]; then       
-        myyggip=$(yggdrasilctl getself | grep address | awk '{print $3}')
-        # shellcheck disable=SC2102
+        myyggip=$(yggdrasilctl getself | grep address | awk '{print $3}')        
         read -ar peers  <<< "$(sudo yggdrasilctl getPeers | grep -v "(self)" | awk '{print $1}' | grep -v bytes_recvd | xargs)"
         for peer in "${peers[@]}"; do
+            # shellcheck disable=SC2102
             echo -n "net:$myyggip:8008~shs:$id" | sudo socat -T 1 - UDP6-DATAGRAM:[$peer]:8008
         done
     fi
