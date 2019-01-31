@@ -30,6 +30,12 @@ YGGDRASIL_PORT=$(sudo cat /etc/yggdrasil.conf | grep \ Listen: | awk  '{print $2
 YGGDRASIL_PORT=$(printf "%q" "$YGGDRASIL_PORT") # Escape for sed
 sudo sed  -i "s/$YGGDRASIL_PORT/\[::\]:12345/" /etc/yggdrasil.conf
 
+# Set node name
+if [ -z "${NEWHOSTNAME}" ]; then 
+    NEWHOSTNAME=$(cat /etc/hostname)
+fi
+sudo sed -i "\$i\ \ NodeInfo:\n  {\n   name: ${NEWHOSTNAME}\n  }\n"  /etc/yggdrasil.conf
+
 sudo systemctl start yggdrasil 
 
 # Allow nginx access to yggdrasil socket when installed
