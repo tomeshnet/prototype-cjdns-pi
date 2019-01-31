@@ -31,5 +31,4 @@
 -A YGGDRASIL -j ACCEPT -p tcp --dport 4001
 -A YGGDRASIL -j ACCEPT -p tcp --dport 9090
 -A YGGDRASIL -j ACCEPT -p tcp --dport 9100
-#-A YGGCLIENT -j ACCEPT -p tcp --dport 22
 COMMIT
