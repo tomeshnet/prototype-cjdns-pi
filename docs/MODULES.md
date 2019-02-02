@@ -91,6 +91,7 @@ These are standard `iptables` rules. The basic syntax is as follows:
 `-A INPUT -j ACCEPT -p <protocol> --dport <port>`
 
 `protocol` -  either `tcp` or `udp`, not required but recommended
+
 `port` - Port you wish to open between 1-65535
 
 
@@ -119,8 +120,10 @@ These are standard `ip6tables` rules. The basic syntax is as follows:
 
 `-A <table> -j ACCEPT -p <protocol> --dport <port>`
 
-`table` - `CJDNS` or `YGGDRASIL` for opening the port to CJDNS or YGGDRASIL, `YGGCLIENT` for opening up access to [**Yggdrasil Clients**](#yggdrasil-clients), and `INPUT` to open the port up to all of IPv6
+`table` - `CJDNS` or `YGGDRASIL` for opening the port to CJDNS or YGGDRASIL, `YGGCLIENT` for opening up access to [**Yggdrasil Clients**](#yggdrasil-clients), and `INPUT` to open the port up to all of IPv6.
+
 `protocol` -  either `tcp` or `udp`, not required but recommended
+
 `port` - Port you wish to open between 1-65535
 
 Make sure to put your rules in the right section of the file, there are different ones depending on the table, with comments defining each section.
@@ -128,17 +131,20 @@ Make sure to put your rules in the right section of the file, there are differen
 #### Yggdrasil Clients
 Below are some different scenarios for opening up Yggdrasil clients. You will need to put these rules in `/etc/iptables/rules.v6`, in the Yggdrasil client rules section indicated by a comment.
 
-**One client, one port**
+ - **One client, one port**
+
 Doing this is not recommended, as Yggdrasil clients IP addresses may change.
 
-**All clients, one port**
+ - **All clients, one port**
+
 `-A YGGCLIENT -j ACCEPT -p <PROTOCOL> --dport <PORT>`
 
 Specifying a protocol is not required, but recommended.
 
-**All clients, all ports**
+- **All clients, all ports**
+
 `-A YGGCLIENT -j ACCEPT`
 
-If you use this rule, there is no point in having any other Yggdrasil client rules.
+If you use this rule, there is no point in having any other Yggdrasil client rules in the file.
 
 You can specify a protocol, but that would limit the ports that are open.
