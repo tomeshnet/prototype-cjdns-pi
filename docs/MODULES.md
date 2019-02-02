@@ -37,77 +37,18 @@ Cjdns (Caleb James DeLisle's Network Suite) is a networking protocol and referen
 
 CJDNS uses cryptography to self-assign IPv6 address in the fc00::/8 subnet and will automatically peer with other nodes connected via Layer2 ethernet, broadcasts or configured UDP tunnels.
 
-For more information please see the [CJDNS FAQ](https://github.com/cjdelisle/cjdns/blob/master/doc/faq/general.md)
+For more information please see the [CJDNS FAQ](https://github.com/cjdelisle/cjdns/blob/master/doc/faq/general.md).
 
-### CJDNS Firewall
-By default the following ports are open from CJDNS
+To modify the ports that are accessable from CJDNS modify the `cjdns` *table* in the IPv6 firewall config file. See the [**Firewall**](#firewall) section for more details.
 
-| Port | Protocol | Policy | Description               |
-| :---- | :------ | :----- | :------------------------ |
-| 67:68 | UDP     | Accept | DHCP Client/Server        |
-| 22    | UDP     | Accept | SSH                       |
-| 53    | TCP/UDP | Accept | DNS Server                |
-| 80    | TCP     | Accept | HTTP                      |
-| 443   | TCP     | Accept | SSH                       |
-| 9100  | TCP     | Accept | NodeExporter              |
-| 5201  | TCP     | Accept | IPerf3                    |
-| 4001  | TCP     | Accept | IPFS Swarm port           |
+## Yggdrasil
+Yggdrasil is another piece of mesh routing software similar to CJDNS, but with potentially better performance and more active development. For more info visit the [website](https://yggdrasil-network.github.io).
 
-To modify the ports that are accessable from CJDNS modify the `cjdns` *table* in the IPv6 firewall config file. (see the Firewall module for more details)
+### Yggdrasil subnetting
 
-## Yggdrasil subnetting
+Yggdrasil will give each node (like your Pi, for example) an IPv6 address, but it can also give each node a subnet to distribute to its clients. This means that if you connect to the WiFi of your Pi, your device can get a unique Yggdrasil address, with all the benefits it provides. These include being able to access your device directly, without being NATed or blocked.
 
-Yggdrasil is another piece of mesh routing software similar to CJDNS. It will give each node (like your Pi, for example) an IPv6 address, but it can also give each node a subnet to distribute to its clients. This means that if you connect the WiFi of your Pi, your device can get a unique Yggdrasil address, with all the benefits it provides. These include being able to access your device directly, without being NATed or blocked.
-
-However, the Pi does have a firewall, so various commands need be run to allow access to clients.
-
-### One client, one port
-
-```
-sudo ip6tables -A YGGDRASIL -j ACCEPT -p <PROTOCOL> -d <YGGDRASIL IP> --dport <PORT>
-```
-Example protocols are `tcp` or `udp`, and you'll have to figure out the port number depending on what you want to expose.
-The Yggdrasil IP address of the client can be deduced by running `ifconfig` on Linux and Mac, and you'll see an IPv6 address starting with `30`. In Windows, type `ipconfig` in command prompt. If you're having issues, read [this article](https://www.groovypost.com/howto/find-windows-10-device-ip-address/).
-Specifying a protocol is not required, but recommended.
-
-### All clients, one port
-
-```
-sudo ip6tables -A YGGDRASIL -j ACCEPT -p <PROTOCOL> --dport <PORT>
-```
-Specifying a protocol is not required, but recommended.
-
-### All clients, all ports
-
-```
-sudo ip6tables -A YGGDRASIL -j ACCEPT
-```
-Specifiying a protocol is possible here, but will limit what is opened.
-
-### Saving so it works after reboots
-
-```
-sudo ip6tables-save > /etc/iptables/rules.v6
-```
-
-### Re-Blocking everything after adding rules
-
-```
-sudo ip6tables -F YGGDRASIL
-```
-
-### Removing a specific rule
-
-This one's a tad more complicated.
-First, run:
-```
-sudo ip6tables -nvL --line-numbers
-```
-Note the line number of the rule you want to remove. It'll be under the heading `Chain YGGDRASIL`.
-Then run:
-```
-sudo ip6tables -R YGGDRASIL <number>
-```
+However, the Pi does have a firewall, so various commands need be run to allow access to clients. By default all Yggdrasil client access is blocked. See [**Firewall/IPv6/Yggdrasil Clients**](#yggdrasil-clients) to learn how to change that.
 
 ## IPFS
 IPFS stands for Interplanetary File System. It is an open-source, peer-to-peer distributed hypermedia protocol that aims to function as a ubiquitous file system for all computing devices. 
@@ -116,10 +57,13 @@ This module will install IPFS under the user where the script runs allowing you 
   
 ## Firewall
   
-The firewall module installes a basic firewall for your device. It will block all ports thare wre not meant to be open. By default there are no ports blocked from the Wireless Access Point interface.
+The firewall module installes a basic firewall for your device. It will block all ports that were not meant to be open. By default there are no ports blocked from the Wireless Access Point interface (`wlan-ap`).
 
-## IPv4
-Default open ports to the device
+### Applying changes
+After making any changes to files as outlined below, run `sudo systemctl restart hostapd` to apply the changes. This will take down the Pi's WiFi for a moment, but it will come back up on it's own. SSH sessions will freeze, but should reconnect on their own as well.
+
+### IPv4
+Default open ports to the device are below. Since both CJDNS and Yggdrasil use IPv6, these ports are open only for LAN or WiFi usage.
 
 | Port | Protocol | Policy | Description               |
 | :---- | :------ | :----- | :------------------------ |
@@ -134,21 +78,23 @@ Default open ports to the device
 | 5201  | TCP     | Accept | IPerf3                    |
 | 4001  | TCP     | Accept | IPFS Swarm port           |
 
-### Change open ports
+#### Change open ports
 
 To change the open ports you can edit the IPv4 configuration file located at `/etc/iptables/rules.v4`
 
-Remove or comment out (#) the lines of the ports that you wish to close and add new lines for additional ports you wish to open.
+Remove or comment out (`#`) the lines of the ports that you wish to close and add new lines for additional ports you wish to open.
+
+Likely you will not need to edit this file as much, if you are interested in opening mesh ports look at the **IPv6** section directly below.
 
 These are standard `iptables` rules. The basic syntax is as follows:
 
-`-A INPUT -p <protocol> -m <protocol> --dport <port> -j ACCEPT`
+`-A INPUT -j ACCEPT -p <protocol> --dport <port>`
 
-`protocol` -  either `tcp` or `udp`
+`protocol` -  either `tcp` or `udp`, not required but recommended
 `port` - Port you wish to open between 1-65535
 
 
-## IPv6
+### IPv6
 
 Default open ports to the device over IPv6 are
 
@@ -163,7 +109,7 @@ Default open ports to the device over IPv6 are
 | 5201  | TCP     | Accept | IPerf3                    |
 | 4001  | TCP     | Accept | IPFS Swarm port           |
 
-### Change open ports
+#### Change open ports
 
 To change the open ports you can edit the IPv6 configuration file located at `/etc/iptables/rules.v6`
 
@@ -171,8 +117,28 @@ Remove or comment out (#) the lines of the ports that you wish to close and add 
 
 These are standard `ip6tables` rules. The basic syntax is as follows:
 
-`-A <table> -p <protocol> -m <protocol> --dport <port> -j ACCEPT`
+`-A <table> -j ACCEPT -p <protocol> --dport <port>`
 
-`table` - `INPUT` for general ports or specific tables as defined in the modules
-`protocol` -  either `tcp` or `udp`
+`table` - `CJDNS` or `YGGDRASIL` for opening the port to CJDNS or YGGDRASIL, `YGGCLIENT` for opening up access to [**Yggdrasil Clients**](#yggdrasil-clients), and `INPUT` to open the port up to all of IPv6
+`protocol` -  either `tcp` or `udp`, not required but recommended
 `port` - Port you wish to open between 1-65535
+
+Make sure to put your rules in the right section of the file, there are different ones depending on the table, with comments defining each section.
+
+#### Yggdrasil Clients
+Below are some different scenarios for opening up Yggdrasil clients. You will need to put these rules in `/etc/iptables/rules.v6`, in the Yggdrasil client rules section indicated by a comment.
+
+**One client, one port**
+Doing this is not recommended, as Yggdrasil clients IP addresses may change.
+
+**All clients, one port**
+`-A YGGCLIENT -j ACCEPT -p <PROTOCOL> --dport <PORT>`
+
+Specifying a protocol is not required, but recommended.
+
+**All clients, all ports**
+`-A YGGCLIENT -j ACCEPT`
+
+If you use this rule, there is no point in having any other Yggdrasil client rules.
+
+You can specify a protocol, but that would limit the ports that are open.
