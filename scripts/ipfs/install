@@ -29,8 +29,13 @@ ipfs init || true
 # Enable gossipsub routing
 ipfs config Pubsub.Router gossipsub
 
+# Enable relay hop to help peers with connecting
+ipfs config Swarm.EnableRelayHop true
+
 # Enable Filestore for --nocopy capability
 ipfs config --bool Experimental.FilestoreEnabled true
+
+# TODO: Setup High and Low Water settings
 
 # Configure HTTP to IPFS gateway
 sudo cp "$BASE_DIR/ipfs-http-gateway.conf" /etc/nginx/site-path-enabled/ipfs-http-gateway.conf
