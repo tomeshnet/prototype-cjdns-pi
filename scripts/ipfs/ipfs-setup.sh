@@ -94,4 +94,8 @@ if ! ping -c 3 2606:4700:4700::1111 &> /dev/null; then  # IPv6 version of 1.1.1.
     echo "Blocked IPv6 internet"
 fi
 
-echo "Done"
+# Update peers data since ipfs just started
+echo "Updating nodeinfo..."
+sudo /usr/local/bin/nodeinfo-update.sh
+
+echo "\n\nScript complete."
