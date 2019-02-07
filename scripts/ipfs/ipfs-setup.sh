@@ -13,6 +13,7 @@ until [[ $(curl http://localhost:5001/api/v0/id -s 2>/dev/null) || ${attempts} -
 done
 
 if [[  ${attempts} -eq 0 ]]; then
+    echo "Error: Failed to connect to local IPFS daemon. Is it running?"
     exit 1
 fi
 

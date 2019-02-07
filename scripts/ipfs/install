@@ -46,7 +46,7 @@ ipfs config Swarm.ConnMgr.HighWater 200
 ipfs config Swarm.ConnMgr.GracePeriod 60s
 
 # Enable QUIC for better connections when possible
-ipfs config Experimental.QUIC true 
+ipfs config --bool Experimental.QUIC true 
 
 # Configure HTTP to IPFS gateway
 sudo cp "$BASE_DIR/ipfs-http-gateway.conf" /etc/nginx/site-path-enabled/ipfs-http-gateway.conf
@@ -65,8 +65,8 @@ ipfs bootstrap add "$IPFS_PEER_3"
 sudo apt-get install -y jq
 
 # Copy file
-sudo cp "$BASE_DIR/ipfs-swarm.sh" /usr/local/bin/
-sudo chmod +x /usr/local/bin/ipfs-swarm.sh
+sudo cp "$BASE_DIR/ipfs-setup.sh" /usr/local/bin/
+sudo chmod +x /usr/local/bin/ipfs-setup.sh
 
 # Configure systemd to start ipfs.service on system boot
 sudo cp "$BASE_DIR/ipfs.service" /etc/systemd/system/ipfs.service
