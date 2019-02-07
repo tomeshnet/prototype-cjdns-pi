@@ -30,7 +30,7 @@ ipfs init || true
 ipfs config Pubsub.Router gossipsub
 
 # Enable relay hop to help peers with connecting
-ipfs config Swarm.EnableRelayHop true
+ipfs config --bool Swarm.EnableRelayHop true
 
 # Enable Filestore for --nocopy capability
 ipfs config --bool Experimental.FilestoreEnabled true
