@@ -58,10 +58,11 @@ fi
 # Setup connection filter rules
 #################################
 
-# Remove previous ones first, just in case
+# Remove previous ones first, just in case the script is run more than once
 ipfs swarm filters rm '/ip6/fc00::/ipcidr/8'
 ipfs swarm filters rm '/ip6/0200::/ipcidr/7'
 ipfs swarm filters rm '/ip4/0.0.0.0/ipcidr/0'
+ipfs swarm filters add '/ip6/2000::/ipcidr/3'
 
 # If CJDNS isn't running...
 if ! [ "$(systemctl status cjdns.service | grep 'Active: ' | awk '{ print $2 }')" = 'active' ]; then
@@ -72,9 +73,13 @@ fi
 if ! [ "$(systemctl status yggdrasil.service | grep 'Active: ' | awk '{ print $2 }')" = 'active' ]; then
     ipfs swarm filters add '/ip6/0200::/ipcidr/7'
 fi
-# Clearnet or regular Internet
+# Clearnet or regular Internet IPv4 access
 if ! ping -c 3 1.1.1.1 &> /dev/null; then
-    # Right now it blocks ALL IPv4
-    # XXX: This is not a permanent solution
+    # Block all IPv4 - it's not used anywhere else
     ipfs swarm filters add '/ip4/0.0.0.0/ipcidr/0'
+fi
+# Clearnet IPv6 access
+if ! ping -c 3 2606:4700:4700::1111 &> /dev/null; then  # IPv6 version of 1.1.1.1 above
+    # Block global unicast for IPv6
+    ipfs swarm filters add '/ip6/2000::/ipcidr/3'
 fi
