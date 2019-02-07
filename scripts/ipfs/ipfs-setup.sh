@@ -19,6 +19,7 @@ fi
 #################################
 # Connect to local mesh peers
 #################################
+
 function addPeer  {
     addr=$1
     # See if they have IPFS enabled
@@ -27,8 +28,13 @@ function addPeer  {
         id=$(echo "${res}" | jq -r -M '.services.ipfs.ID')
         # Value is found
         if [[ ! ${id} == "null" ]] && [[ ! "${id}" == "" ]]; then
-            # Connect to neighbouring ipfs
-            ipfs swarm connect "/ip6/${addr}/tcp/4001/ipfs/${id}"
+            # Connect to neighbouring IPFS nodes
+            # Check for QUIC connections first
+            if [ $(echo "${res}" | jq -r -M '.services.IPFS.quic_enabled') == "true" ]; then
+                ipfs swarm connect "/ip6/${addr}/udp/4001/quic/${id}"
+            else
+                ipfs swarm connect "/ip6/${addr}/tcp/4001/ipfs/${id}"
+            fi
             echo "Connecting to ${addr}"
         fi
     fi
@@ -62,24 +68,30 @@ fi
 ipfs swarm filters rm '/ip6/fc00::/ipcidr/8'
 ipfs swarm filters rm '/ip6/0200::/ipcidr/7'
 ipfs swarm filters rm '/ip4/0.0.0.0/ipcidr/0'
-ipfs swarm filters add '/ip6/2000::/ipcidr/3'
+ipfs swarm filters rm '/ip6/2000::/ipcidr/3'
 
 # If CJDNS isn't running...
 if ! [ "$(systemctl status cjdns.service | grep 'Active: ' | awk '{ print $2 }')" = 'active' ]; then
     # Block connecting to CJDNS nodes
     ipfs swarm filters add '/ip6/fc00::/ipcidr/8'
+    echo "Blocked CJDNS network"
 fi
 # Yggdrasil
 if ! [ "$(systemctl status yggdrasil.service | grep 'Active: ' | awk '{ print $2 }')" = 'active' ]; then
     ipfs swarm filters add '/ip6/0200::/ipcidr/7'
+    echo "Blocked Yggdrasil network"
 fi
 # Clearnet or regular Internet IPv4 access
 if ! ping -c 3 1.1.1.1 &> /dev/null; then
     # Block all IPv4 - it's not used anywhere else
     ipfs swarm filters add '/ip4/0.0.0.0/ipcidr/0'
+    echo "Blocked all of IPv4"
 fi
 # Clearnet IPv6 access
 if ! ping -c 3 2606:4700:4700::1111 &> /dev/null; then  # IPv6 version of 1.1.1.1 above
     # Block global unicast for IPv6
     ipfs swarm filters add '/ip6/2000::/ipcidr/3'
+    echo "Blocked IPv6 internet"
 fi
+
+echo "Done"
