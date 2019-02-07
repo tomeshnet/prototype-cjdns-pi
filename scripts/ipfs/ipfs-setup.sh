@@ -61,11 +61,11 @@ fi
 # Remove previous ones first, just in case
 ipfs swarm filters rm '/ip6/fc00::/ipcidr/8'
 ipfs swarm filters rm '/ip6/0200::/ipcidr/7'
-ipfs swarm filters add '/ip4/0.0.0.0/ipcidr/32'
+ipfs swarm filters rm '/ip4/0.0.0.0/ipcidr/0'
 
 # If CJDNS isn't running...
 if ! [ "$(systemctl status cjdns.service | grep 'Active: ' | awk '{ print $2 }')" = 'active' ]; then
-    # Block from CJDNS connections
+    # Block connecting to CJDNS nodes
     ipfs swarm filters add '/ip6/fc00::/ipcidr/8'
 fi
 # Yggdrasil
@@ -76,5 +76,5 @@ fi
 if ! ping -c 3 1.1.1.1 &> /dev/null; then
     # Right now it blocks ALL IPv4
     # XXX: This is not a permanent solution
-    ipfs swarm filters add '/ip4/0.0.0.0/ipcidr/32'
+    ipfs swarm filters add '/ip4/0.0.0.0/ipcidr/0'
 fi

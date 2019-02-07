@@ -35,7 +35,14 @@ ipfs config --bool Swarm.EnableRelayHop true
 # Enable Filestore for --nocopy capability
 ipfs config --bool Experimental.FilestoreEnabled true
 
-# TODO: Setup High and Low Water settings
+# Disable NAT port mapping used for NAT traversal
+ipfs config --bool DisableNatPortMap true
+
+# Setup connection management - Reduce connections to stress the Pi less
+ipfs config Swarm.ConnMgr.Type basic
+ipfs config Swarm.ConnMgr.LowWater 100
+ipfs config Swarm.ConnMgr.HighWater 200
+ipfs config Swarm.ConnMgr.GracePeriod 60s
 
 # Configure HTTP to IPFS gateway
 sudo cp "$BASE_DIR/ipfs-http-gateway.conf" /etc/nginx/site-path-enabled/ipfs-http-gateway.conf
