@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-
+# shellcheck disable=SC2034
+true
 set -e
 
 TAG_CJDNS=d2e55d58548d83940482fe1bbbe1fd36f7f1b4ef
@@ -28,20 +29,21 @@ function askModule {
     eval "res=\$$1"
 
     if [ "$(checkModule 'WITH_DIALOG')" ]; then
+        if [ -z "$res" ] || [ "$res" != "true" ] && [ "$res" != "false" ]; then
+	        # Do not stop exec on non 0 return values
+	        set +e
+	        # shellcheck disable=SC2086
+	        dialog $dialogGlobalParams $dialogParam --title "$2" --yesno "Install $2?" 6 55
+	        response=$?
+	        # Return to previous setting
+	        set -e
 
-        # Do not stop exec on non 0 return values
-        set +e
-        # shellcheck disable=SC2086
-        dialog $dialogGlobalParams $dialogParam --title "$2" --yesno "Install $2?" 6 55
-        response=$?
-        # Return to previous setting
-        set -e
-
-        case $response in
-            0) res="true";;
-            1) res="false";;
-            255) exit;;
-        esac
+	        case $response in
+	            0) res="true";;
+	            1) res="false";;
+	            255) exit;;
+        	esac
+	fi
     else
         if [ -z "$res" ] || [ "$res" != "true" ] && [ "$res" != "false" ]; then
             read -p "Install $2 $askPrompt? " -n 1 -r
@@ -69,6 +71,71 @@ function checkModule {
         echo "1"
     else
         echo ""
+    fi
+}
+
+# Ask user to choose from a selection of items
+# list is \n delimited. Each line formated as
+#      "x text"
+#       x - single capital character that will be returned
+#       text - description of item
+#
+#    askSelection <list> <message> <default>
+#
+# Result is stored in $dialogREPLY
+dialogREPLY=""
+function askSelection {
+    selection=$1
+    dialogREPLY=""
+    default="$3"
+    if [ "$(checkModule 'WITH_DIALOG')" ]; then
+        selection=$(echo -e "$selection" | while read -r selected; do
+                    selectedItem="${selected:0:1}"
+                    selectedText="${selected:2}"
+                    if [[ "${selected:0:1}" == "$default" ]]; then
+                        echo "$selectedItem \"$selectedText\" on"
+                    else
+                        echo "$selectedItem \"$selectedText\" off"
+                    fi
+            done)
+        echo "$selection" > /tmp/selectionList
+
+        # shellcheck disable=SC2086
+        dialog $dialogGlobalParams --radiolist "$2" 10 55 8  --file /tmp/selectionList 2> /tmp/res
+        rm -f selectionList
+        response=$(cat /tmp/res)
+        rm -f /tmp/res
+
+        # Return if canceled
+        if [[ "$response" == "" ]]; then
+            exit 1
+        fi
+
+        # Set response variable
+        dialogREPLY="$response"
+    else
+        isValid=""
+        while [[ "$isValid" == "" ]]; do
+            echo "$2"
+            echo -------------------
+            echo -e "$1"
+            echo -------------------
+            read -p "Selection:  " -n 1 -r
+            echo ""
+            if [[ "$REPLY" == "" ]] && [[ "$default" != "" ]]; then
+                REPLY="$default"
+                isValid=1
+            else
+                REPLY=$(echo "$REPLY" | awk '{print toupper($0)}')
+
+                isValid=$(echo -e "$selection" | while read -r selected; do
+                    if [[ "${selected:0:1}" == "$REPLY" ]]; then
+                        echo 1
+                    fi
+                done)
+            fi
+        done
+        dialogREPLY="$REPLY"
     fi
 }
 
@@ -203,6 +270,112 @@ askModule "WITH_DIALOG" "Text User Interface?" "n"
 if [ "$(checkModule 'WITH_DIALOG')" ]; then
     sudo apt-get install dialog -y
 fi
+
+
+askSelection "A Basic node\nB Basic IPSF Node\nC Monitor Node\nD SSB Node\nE Camera Node\nZ Custom" "Select install type" Z
+
+case "$dialogREPLY" in
+    "A")
+        echo "Basic node"
+	WITH_YGGDRASIL=true
+	WITH_MESH_POINT=""
+	WITH_WIFI_AP=""
+        WITH_FIREWALL=true
+        WITH_CJDNS_IPTUNNEL=true
+        WITH_IPFS=false
+        WITH_PROMETHEUS_NODE_EXPORTER=true
+        WITH_EXTRA_TOOLS=true
+        WITH_WATCHDOG=true
+        WITH_YRD=true
+        WITH_PROMETHEUS_SERVER=false
+        WITH_GRAFANA=false
+        WITH_SSB=false
+        WITH_SSB_WEB=false
+        WITH_IPFS_PI_STREAM=false
+    ;;
+    "B")
+        echo "Basic IPFS node"
+	WITH_YGGDRASIL=true
+        WITH_MESH_POINT=""
+        WITH_WIFI_AP=""
+        WITH_FIREWALL=true
+        WITH_CJDNS_IPTUNNEL=true
+        WITH_IPFS=true
+        WITH_PROMETHEUS_NODE_EXPORTER=true
+        WITH_EXTRA_TOOLS=true
+        WITH_WATCHDOG=true
+        WITH_YRD=true
+
+        WITH_PROMETHEUS_SERVER=false
+        WITH_GRAFANA=false
+        WITH_SSB=false
+        WITH_SSB_WEB=false
+        WITH_IPFS_PI_STREAM=false
+    ;;
+    "C")
+        echo "Monitor Node"
+	WITH_YGGDRASIL=true
+        WITH_MESH_POINT=""
+        WITH_WIFI_AP=""
+        WITH_FIREWALL=true
+        WITH_CJDNS_IPTUNNEL=true
+        WITH_IPFS=false
+        WITH_PROMETHEUS_NODE_EXPORTER=true
+        WITH_EXTRA_TOOLS=true
+        WITH_WATCHDOG=true
+        WITH_YRD=true
+
+        WITH_PROMETHEUS_SERVER=true
+        WITH_GRAFANA=true
+        WITH_SSB=false
+        WITH_SSB_WEB=false
+        WITH_IPFS_PI_STREAM=false
+    ;;
+    "D")
+        echo "SSB Node"
+	WITH_YGGDRASIL=true
+        WITH_MESH_POINT=""
+        WITH_WIFI_AP=""
+        WITH_FIREWALL=true
+        WITH_CJDNS_IPTUNNEL=true
+        WITH_IPFS=false
+        WITH_PROMETHEUS_NODE_EXPORTER=true
+        WITH_EXTRA_TOOLS=true
+        WITH_WATCHDOG=true
+        WITH_YRD=true
+
+        WITH_PROMETHEUS_SERVER=false
+        WITH_GRAFANA=false
+        WITH_SSB=true
+        WITH_SSB_PATCHFOO=true
+        WITH_IPFS_PI_STREAM=false
+    ;;
+    "E")
+        echo "IPFS Camera Node"
+	WITH_YGGDRASIL=true
+        WITH_MESH_POINT=""
+        WITH_WIFI_AP=""
+        WITH_FIREWALL=true
+        WITH_CJDNS_IPTUNNEL=true
+        WITH_IPFS=true
+        WITH_PROMETHEUS_NODE_EXPORTER=true
+        WITH_EXTRA_TOOLS=true
+        WITH_WATCHDOG=true
+        WITH_YRD=true
+
+        WITH_PROMETHEUS_SERVER=false
+        WITH_GRAFANA=false
+        WITH_SSB=false
+        WITH_SSB_PATCHFOO=false
+        WITH_IPFS_PI_STREAM=true
+    ;;
+    "Z")
+    ;;
+    *)
+        echo "Error unknown response $dialogREPLY"
+        exit
+    ;;
+esac
 
 # Prompt and set missing flags
 
