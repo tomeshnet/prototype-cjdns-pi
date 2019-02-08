@@ -99,4 +99,5 @@ fi
 echo "Updating nodeinfo..."
 sudo /usr/local/bin/nodeinfo-update.sh
 
+# shellcheck disable=SC2028
 echo "\n\nScript complete."
