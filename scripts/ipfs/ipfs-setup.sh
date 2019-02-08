@@ -31,8 +31,7 @@ function addPeer  {
         if [[ ! ${id} == "null" ]] && [[ ! "${id}" == "" ]]; then
             # Connect to neighbouring IPFS nodes
             # Check for QUIC connections first
-            # shellcheck disable=SC2046
-            if [ $(echo "${res}" | jq -r -M '.services.IPFS.quic_enabled') == "true" ]; then
+            if [ "$(echo ${res} | jq -r -M '.services.IPFS.quic_enabled')" == "true" ]; then
                 ipfs swarm connect "/ip6/${addr}/udp/4001/quic"
             else
                 ipfs swarm connect "/ip6/${addr}/tcp/4001/ipfs/${id}"
