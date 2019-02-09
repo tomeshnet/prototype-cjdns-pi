@@ -35,9 +35,6 @@ ipfs config --bool Swarm.EnableRelayHop true
 # Enable Filestore for --nocopy capability
 ipfs config --bool Experimental.FilestoreEnabled true
 
-# Disable NAT port mapping used for NAT traversal
-ipfs config --bool DisableNatPortMap true
-
 # Setup connection management - Reduce connections to stress the Pi less
 # XXX: These values need to be tweaked and tested
 ipfs config Swarm.ConnMgr.Type basic
