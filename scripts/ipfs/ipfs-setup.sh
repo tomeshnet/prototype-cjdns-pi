@@ -83,13 +83,13 @@ if ! [ "$(systemctl status yggdrasil.service | grep 'Active: ' | awk '{ print $2
     echo "Blocked Yggdrasil network"
 fi
 # Clearnet or regular Internet IPv4 access
-if ! [ "$(ping -c 3 1.1.1.1 &> /dev/null)" ]; then
+if ! ping -w 2 1.1.1.1 &>/dev/null; then
     # Block all IPv4 - it's not used anywhere else
     ipfs swarm filters add '/ip4/0.0.0.0/ipcidr/0'
     echo "Blocked all of IPv4"
 fi
 # Clearnet IPv6 access
-if ! [ "$(ping -c 3 2606:4700:4700::1111 &> /dev/null)" ]; then  # IPv6 version of 1.1.1.1 above
+if ! ping -w 2 2606:4700:4700::1111 &>/dev/null; then  # IPv6 version of 1.1.1.1 above
     # Block global unicast for IPv6
     ipfs swarm filters add '/ip6/2000::/ipcidr/3'
     echo "Blocked IPv6 internet"
