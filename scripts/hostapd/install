@@ -122,7 +122,7 @@ if [ "$(which yggdrasil)" ]; then
     # Setup Yggdrasil radvd prefix for subnetting
     sed -i "s/fdfc::\/64/${YGG_SUBNET}\/64/" /tmp/radvd.conf
 fi
-sudo cp /tmp/radvd.conf /etc
+sudo mv /tmp/radvd.conf /etc
 sudo systemctl daemon-reload
 sudo systemctl enable radvd.service
 sudo systemctl start radvd.service
