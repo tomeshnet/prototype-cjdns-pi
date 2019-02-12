@@ -1,5 +1,4 @@
-#!/bin/sh
-
+#!/bin/bash
 
 dialogGlobalParams="--backtitle Installation --ascii-lines"
 # Ask if module is to be enabled if not defined
