@@ -158,7 +158,7 @@ if [ "$(checkModule 'WITH_DIALOG')" ]; then
 fi
 
 
-askSelection "A Basic node\nB Basic IPSF Node\nC Monitor Node\nD SSB Node\nE Camera Node\nZ Custom" "Select install type" Z
+askSelection "A Basic node\nB IPFS Node\nC Monitor Node\nD SSB Node\nE Camera Node\nZ Custom" "Select node install type" Z
 
 case "$dialogREPLY" in
     "A")
@@ -191,7 +191,6 @@ case "$dialogREPLY" in
         WITH_EXTRA_TOOLS=true
         WITH_WATCHDOG=true
         WITH_YRD=true
-
         WITH_PROMETHEUS_SERVER=false
         WITH_GRAFANA=false
         WITH_SSB=false
@@ -210,7 +209,6 @@ case "$dialogREPLY" in
         WITH_EXTRA_TOOLS=true
         WITH_WATCHDOG=true
         WITH_YRD=true
-
         WITH_PROMETHEUS_SERVER=true
         WITH_GRAFANA=true
         WITH_SSB=false
@@ -229,7 +227,6 @@ case "$dialogREPLY" in
         WITH_EXTRA_TOOLS=true
         WITH_WATCHDOG=true
         WITH_YRD=true
-
         WITH_PROMETHEUS_SERVER=false
         WITH_GRAFANA=false
         WITH_SSB=true
@@ -248,7 +245,6 @@ case "$dialogREPLY" in
         WITH_EXTRA_TOOLS=true
         WITH_WATCHDOG=true
         WITH_YRD=true
-
         WITH_PROMETHEUS_SERVER=false
         WITH_GRAFANA=false
         WITH_SSB=false
