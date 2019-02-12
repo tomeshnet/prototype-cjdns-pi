@@ -29,7 +29,7 @@ if [ ! -x "$(command -v nginx)" ] || [ ! -d "/etc/nginx/site-path-enabled" ]; th
     mkdir "$BASE_DIR/tmp"
     git clone https://github.com/hamishcoleman/cjdns_tool.git "$BASE_DIR/tmp/cjdns_tool"
     mkdir -p "/var/www/html/cgi-bin/lib/" || true
-    sudo cp -r "$BASE_DIR/tmp/cjdns_tool/lib/*" "/var/www/html/cgi-bin/lib/"
+    sudo cp -r "$BASE_DIR/tmp/cjdns_tool/lib" "/var/www/html/cgi-bin/"
     rm -rf "$BASE_DIR/tmp"
     sudo cp "$BASE_DIR/peers-cjdns" "/var/www/html/cgi-bin/peers-cjdns"
 
