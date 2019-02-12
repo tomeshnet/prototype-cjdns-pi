@@ -22,7 +22,7 @@ if [[ ! -f "/usr/local/bin/node_exporter" ]]; then
     rm -rf "$BASE_DIR/tmp"
 fi
 
-sudo mkdir /var/lib/node_exporter/
+sudo mkdir /var/lib/node_exporter/ || true
 sudo mkdir /opt/tomesh/ || true
 sudo cp "$BASE_DIR/nodestats-tomesh.py" "/opt/tomesh/nodestats-tomesh.py"
 
