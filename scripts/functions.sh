@@ -1,4 +1,6 @@
 #!/bin/bash
+# shellcheck disable=SC2034	
+true
 
 dialogGlobalParams="--backtitle Installation --ascii-lines"
 # Ask if module is to be enabled if not defined
