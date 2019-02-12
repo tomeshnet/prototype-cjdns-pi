@@ -119,10 +119,9 @@ On board wireless we have seen so far
 To install
 * Install Ad-Hoc mesh module
 * Do NOT install Access Point
-* After install remove `HT40+` from `/usr/bin/mesh-adhoc`
 
 If you have success using ad-hoc with on board cards please let us know your experience.
 
 So far:
-3b+ seemed to have worked but 3b did not
-Got 3b working by killing wpa_supplicant first (reproducable?)
+- 3b+ seemed to have worked but 3b did not
+- 3b working by killing wpa_supplicant first
