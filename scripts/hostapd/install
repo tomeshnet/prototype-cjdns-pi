@@ -142,7 +142,7 @@ for wlan in $(find /sys/class/net -maxdepth 1 -name 'wlan*' | xargs -0 basename)
     driverPath=$(readlink "/sys/class/net/$wlan/device/driver")
     driver=$(basename "$driverPath")
 #    mac="$(cat /sys/class/net/$wlan/address)"
-    if [[ "$driver" == "xradio_wlan" || "$driver" == "brcm80211" || "$driver" == "brcmfmac" ]]; then
+    if [[ "$driver" == "xradio_wlan" || "$driver" == "brcm80211" || "$driver" == "brcmfmac" || "$driver" == "rtl8189fs" ]]; then
         echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"$driver\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan-ap\"" |
                 sudo tee /etc/udev/rules.d/70-persistent-net.rules
     fi
