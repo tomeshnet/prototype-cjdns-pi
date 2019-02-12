@@ -117,7 +117,7 @@ if [ -f /etc/dhcpcd.conf ]; then
 fi
 
 # Setup radvd
-sudo cp "$BASE_DIR/radvd.conf" /tmp
+cp "$BASE_DIR/radvd.conf" /tmp
 if [ "$(which yggdrasil)" ]; then
     # Setup Yggdrasil radvd prefix for subnetting
     sed -i "s/fdfc::\/64/${YGG_SUBNET}\/64/" /tmp/radvd.conf
