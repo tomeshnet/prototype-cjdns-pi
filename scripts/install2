@@ -117,6 +117,7 @@ fi
 echo -e "\e[1;32mStarting installation on ${BOARD_FAMILY} ${BOARD_NAME} (${BOARD_REVISION})...\e[0m"
 
 # Normalize OS environment
+sudo apt-get update -y
 
 # Install firmware package for wireless drivers
 # #TODO# detect armbian
