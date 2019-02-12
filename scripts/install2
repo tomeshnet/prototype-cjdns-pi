@@ -121,7 +121,7 @@ sudo apt-get update -y
 
 # Install firmware package for wireless drivers
 # #TODO# detect armbian
-sudo apt-get install -y armbian-firmware-full || true
+sudo apt-get install -y armbian-firmware-full  2> /dev/null || true
 
 # Enable password-less sudo on Armbian
 sudo sed -i 's/ALL=(ALL:ALL) ALL/ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
