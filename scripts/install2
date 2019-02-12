@@ -1,8 +1,143 @@
 #!/usr/bin/env bash
-
+# shellcheck disable=SC2034
+true
 set -e
 
-TAG_CJDNS=186169f9a8631633795e4e9d70c501519a7800f4
+TAG_CJDNS=d2e55d58548d83940482fe1bbbe1fd36f7f1b4ef
+
+dialogGlobalParams="--backtitle Installation --ascii-lines"
+# Ask if module is to be enabled if not defined
+#    askModule <Variable> <Description> [default answer]
+function askModule {
+    # Define standard behaviour (default yes)
+    askPrompt="[Y/n]"
+    nonDefaultMatch="Nn"
+    defaultValue=true
+    nonDefaultValue=false
+    dialogParam=""
+
+    # Define alternative behaviour (default no)
+    if [ "$3" == "n" ]; then
+        askPrompt="[y/N]"
+        nonDefaultMatch="Yy"
+        nonDefaultValue=true
+        defaultValue=false
+        dialogParam=" --defaultno "
+    fi
+
+    # This reads variable repersented by the string
+    eval "res=\$$1"
+
+    if [ "$(checkModule 'WITH_DIALOG')" ]; then
+        if [ -z "$res" ] || [ "$res" != "true" ] && [ "$res" != "false" ]; then
+	        # Do not stop exec on non 0 return values
+	        set +e
+	        # shellcheck disable=SC2086
+	        dialog $dialogGlobalParams $dialogParam --title "$2" --yesno "Install $2?" 6 55
+	        response=$?
+	        # Return to previous setting
+	        set -e
+
+	        case $response in
+	            0) res="true";;
+	            1) res="false";;
+	            255) exit;;
+        	esac
+	fi
+    else
+        if [ -z "$res" ] || [ "$res" != "true" ] && [ "$res" != "false" ]; then
+            read -p "Install $2 $askPrompt? " -n 1 -r
+            echo ""
+            if [[ $REPLY =~ ^[$nonDefaultMatch]$ ]]; then
+                res=$nonDefaultValue
+            else
+                res=$defaultValue
+            fi
+        fi
+    fi
+    if [ "$res" == "true" ]; then
+        echo -e "\e[1;32m$2 will be enabled\e[0m"
+    else
+        echo -e "\e[1;31m$2 will be skipped\e[0m"
+    fi
+    eval "$1=\$res"
+}
+
+# Check to see if module is enabled
+#    checkModule <Variable>
+function checkModule {
+     eval "res=\$$1"
+     if [ ! -z "$res" ] && [ "$res" == "true" ]; then
+        echo "1"
+    else
+        echo ""
+    fi
+}
+
+# Ask user to choose from a selection of items
+# list is \n delimited. Each line formated as
+#      "x text"
+#       x - single capital character that will be returned
+#       text - description of item
+#
+#    askSelection <list> <message> <default>
+#
+# Result is stored in $dialogREPLY
+dialogREPLY=""
+function askSelection {
+    selection=$1
+    dialogREPLY=""
+    default="$3"
+    if [ "$(checkModule 'WITH_DIALOG')" ]; then
+        selection=$(echo -e "$selection" | while read -r selected; do
+                    selectedItem="${selected:0:1}"
+                    selectedText="${selected:2}"
+                    if [[ "${selected:0:1}" == "$default" ]]; then
+                        echo "$selectedItem \"$selectedText\" on"
+                    else
+                        echo "$selectedItem \"$selectedText\" off"
+                    fi
+            done)
+        echo "$selection" > /tmp/selectionList
+
+        # shellcheck disable=SC2086
+        dialog $dialogGlobalParams --radiolist "$2" 10 55 8  --file /tmp/selectionList 2> /tmp/res
+        rm -f selectionList
+        response=$(cat /tmp/res)
+        rm -f /tmp/res
+
+        # Return if canceled
+        if [[ "$response" == "" ]]; then
+            exit 1
+        fi
+
+        # Set response variable
+        dialogREPLY="$response"
+    else
+        isValid=""
+        while [[ "$isValid" == "" ]]; do
+            echo "$2"
+            echo -------------------
+            echo -e "$1"
+            echo -------------------
+            read -p "Selection:  " -n 1 -r
+            echo ""
+            if [[ "$REPLY" == "" ]] && [[ "$default" != "" ]]; then
+                REPLY="$default"
+                isValid=1
+            else
+                REPLY=$(echo "$REPLY" | awk '{print toupper($0)}')
+
+                isValid=$(echo -e "$selection" | while read -r selected; do
+                    if [[ "${selected:0:1}" == "$REPLY" ]]; then
+                        echo 1
+                    fi
+                done)
+            fi
+        done
+        dialogREPLY="$REPLY"
+    fi
+}
 
 # Get board information and set flags accordingly
 BOARD_FAMILY="Unknown"
@@ -12,17 +147,20 @@ CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 ./do"
 
 ##TODO## Possibly use /sys/firmware/devicetree/base/model
 BOARD_MODEL=$(cat /sys/firmware/devicetree/base/model)
-BOARD_HARDWARE=$(cat /proc/cpuinfo | grep Hardware | awk '{print $3}' | head -n 1)
+BOARD_HARDWARE=$(grep Hardware /proc/cpuinfo | awk '{print $3}' | head -n 1)
 
 
 # Flag to identify if board can support on-board AP. Default to false.
 SUPPORT_HOSTAP=false
+# Flag to identify if board can support on-board hardware watchdog.
 SUPPORT_WATCHDOG=false
+
 CJDNS_PACKAGE=""
+CHANGE_PASSWORD=""
 
 # If board cannot be determined from /proc/cpuinfo its most likely an arbmian board so you can use the armbian generated ID file
 if [[ -z "$BOARD_HARDWARE" ]]; then
-    BOARD_HARDWARE="$(grep "BOARD=" /etc/armbian-image-release | awk -F \= '{print $2}' | tr -d \" | sed 's/Orange Pi //g')"
+    BOARD_HARDWARE="$(grep "BOARD=" /etc/armbian-image-release | awk -F '=' '{print $2}' | tr -d \" | sed 's/Orange Pi //g')"
 fi
 
 if [[ "$BOARD_MODEL" == "MK802ii" ]]; then 
@@ -35,26 +173,28 @@ if [[ "$BOARD_HARDWARE" == 'Allwinner' || "$BOARD_HARDWARE" == 'Generic' ]]; the
     sudo service unattended-upgrades stop || true
     sudo killall unattended-upgrade || true
     BOARD_FAMILY="Orange Pi"
-    BOARD_NAME=$(grep BOARD_NAME /etc/armbian-image-release | awk -F \= '{print $2}' | tr -d \" | sed 's/Orange Pi //g')
+    BOARD_NAME=$(grep BOARD_NAME /etc/armbian-image-release | awk -F '=' '{print $2}' | tr -d \" | sed 's/Orange Pi //g')
     BOARD_REVISION="experimental"
     if [[ "$BOARD_NAME" == "Zero" ]]; then
         # AP is supported if board already supports XRadio
-        if [ "$(lsmod | grep xradio_wlan)" ]; then 
+        if lsmod | grep -q xradio_wlan; then
             SUPPORT_HOSTAP=true
         fi
         SUPPORT_WATCHDOG=true
     fi
-    CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -march=armv7-a -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -fomit-frame-pointer -marm\" ./do"
-    CJDNS_PACKAGE="cjdns-neon.deb"
-elif [[ "$BOARD_HARDWARE" == 'nanopineo2' ||
+    #TODO# -O2 workaround. Needs to be resolved.
+    CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-O2 -s -static -Wall -march=armv7-a -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -fomit-frame-pointer -marm\" ./do"
+    CJDNS_PACKAGE="cjdns-neon-v4.deb"
+elif [[ "$BOARD_HARDWARE" == 'nanopineo2' || "$BOARD_HARDWARE" == 'sun50iw1p1' ||
         "$BOARD_HARDWARE" == 'orangepizeroplus2-h5' ||
         "$BOARD_HARDWARE" == 'rock64' ||
+        "$BOARD_HARDWARE" == 'Pine64+' ||
         "$BOARD_HARDWARE" == 'espressobin' ]]; then
     # Stop unattended upgrade that will block apt-get requests on some armbian boards
     sudo service unattended-upgrades stop || true
     sudo killall unattended-upgrade || true
     BOARD_FAMILY=""
-    BOARD_NAME=$(grep BOARD_NAME /etc/armbian-image-release | awk -F \= '{print $2}' | tr -d \" | sed 's/Orange Pi //g')
+    BOARD_NAME=$(grep BOARD_NAME /etc/armbian-image-release | awk -F '=' '{print $2}' | tr -d \" | sed 's/Orange Pi //g')
     BOARD_REVISION="experimental"
     CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -march=armv8-a+crc+crypto -fomit-frame-pointer\" ./do"
     if [[ "$BOARD_HARDWARE" == "orangepizeroplus2-h5" ]]; then
@@ -62,37 +202,47 @@ elif [[ "$BOARD_HARDWARE" == 'nanopineo2' ||
     fi
 else
     BOARD_FAMILY="Raspberry Pi"
-    BOARD_REVISION=`sed -rn 's/Revision\s+\:\s+([0-9a-z_\-\s\,\(\)]+)/\1/p' /proc/cpuinfo`
+    BOARD_REVISION="$(sed -rn 's/Revision\s+\:\s+([0-9a-z_\-\s\,\(\)]+)/\1/p' /proc/cpuinfo)"
+    
+    # Check for default password is still set for user pi
+    # If it is force password before reboot
+    # shellcheck disable=SC2016
+   
+    # shellcheck disable=SC2143,SC2086
+    CHANGE_PASSWORD="pi"
+
     if [[ $BOARD_REVISION == *"900092"* || $BOARD_REVISION == *"900093"* || $BOARD_REVISION == *"9000c1"* ]]; then
         BOARD_NAME="Zero"
-        CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 CFLAGS=\"-s -static -Wall -mcpu=arm1176jzf-s -mfpu=vfp -mfloat-abi=hard\" ./do"
+        CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 NO_TEST=1 CFLAGS=\"-s -mfpu=vfp -O2\" ./do"
     elif [[ $BOARD_REVISION == *"00"* ]]; then
         BOARD_NAME="1"
         CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 NO_TEST=1 CFLAGS=\"-s -static -Wall\" ./do"
     elif [[ $BOARD_REVISION == *"a01041"* || $BOARD_REVISION == *"a21041"* ]]; then
         BOARD_NAME="2"
         CJDNS_BUILD_CMD="sudo NO_TEST=1 CFLAGS=\"-mfpu=neon-vfpv4 -O2\" ./do"
-        CJDNS_PACKAGE="cjdns-neon.deb"
+        CJDNS_PACKAGE="cjdns-neon-v4.deb"
     elif [[ $BOARD_REVISION == *"a02082"* || $BOARD_REVISION == *"a22082"* ]]; then
         BOARD_NAME="3"
         CJDNS_BUILD_CMD="sudo CFLAGS=\"-march=armv8-a+crc -mtune=cortex-a53 -mfpu=crypto-neon-fp-armv8 -mfloat-abi=hard -O2\" ./do"
-        CJDNS_PACKAGE="cjdns-neon.deb"
-        # Raspberry Pi 3 has on-board WiFi that can be used as an AP        
+        CJDNS_PACKAGE="cjdns-neon-v4.deb"
+        # Raspberry Pi 3 has on-board WiFi that can be used as an AP
         SUPPORT_HOSTAP=true
         # Raspberry Pi 3 has hardware watchdog
         SUPPORT_WATCHDOG=true
     elif [[ $BOARD_REVISION == *"a020d3"* ]]; then
         BOARD_NAME="3b+"
         CJDNS_BUILD_CMD="sudo CFLAGS=\"-march=armv8-a+crc -mtune=cortex-a53 -mfpu=crypto-neon-fp-armv8 -mfloat-abi=hard -O2\" ./do"
-        CJDNS_PACKAGE="cjdns-neon.deb"
+        CJDNS_PACKAGE="cjdns-neon-v4.deb"
         # Raspberry Pi 3 has on-board WiFi that can be used as an AP
         SUPPORT_HOSTAP=true
         # Raspberry Pi 3 has hardware watchdog
-        SUPPORT_WATCHDOG=true        
+        SUPPORT_WATCHDOG=true
     fi
 fi
 
 echo -e "\e[1;32mStarting installation on ${BOARD_FAMILY} ${BOARD_NAME} (${BOARD_REVISION})...\e[0m"
+
+# Normalize OS environment
 
 # Enable password-less sudo on Armbian
 sudo sed -i 's/ALL=(ALL:ALL) ALL/ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
@@ -104,214 +254,186 @@ sudo touch /etc/udev/rules.d/80-net-setup-link.rules
 if [ ! -e "/etc/network/interfaces" ] ; then
   rm /etc/network/interfaces || true
   echo "auto lo" | sudo tee /etc/network/interfaces > /dev/null
-  echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces > /dev/null  
+  echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces > /dev/null
 fi
 
 # Disable NetworkManager management of wlan0 so it doesn't pause it to scan every 60 seconds
 if [[ -e '/etc/NetworkManager/NetworkManager.conf' ]]; then
-    if [[ -z "$(grep "\[keyfile\]" /etc/NetworkManager/NetworkManager.conf)" ]]; then
+    if ! grep -q "\[keyfile\]" /etc/NetworkManager/NetworkManager.conf; then
         echo "[keyfile]" | sudo tee --append /etc/NetworkManager/NetworkManager.conf > /dev/null
         echo "unmanaged-devices=interface-name:wlan0" | sudo tee --append /etc/NetworkManager/NetworkManager.conf > /dev/null
     fi
  fi
 
-# Set configurations specific to the board
-if [[ $BOARD_FAMILY == "Orange Pi" ]]; then
-    ##TODO## This can be removed soon as its no longer relevant with the latest images.
-    # Downgrade kernel to enable XRadio in version 4.10 on Orange Pi Zero
-    if ! [ -z "`uname -a | grep 4.11`" ]; then 
-        if ! [ -z "`cat /sys/bus/mmc/devices/mmc1:0001/mmc1:0001:1/uevent | grep SDIO_ID | grep 0020:2281`" ]; then
-            read -p "Downgrade kernel to enable XRadio on Orange Pi Zero (Y/n)? " -n 1 -r
-            echo ""
-            if ! [[ $REPLY =~ ^[Nn]$ ]]; then
-                echo -e "\e[1;32mDowngrading Kernel...\e[0m"
-                wget https://github.com/darkdrgn2k/OrangePiXRadio/raw/master/linux-image-dev-sun8i_5.26_armhf.deb
-                sudo dpkg -i linux-image-dev-sun8i_5.26_armhf.deb
-                rm -rf linux-image-dev-sun8i_5.26_armhf.deb
-
-                # AP supported on downgraded kernel
-                SUPPORT_HOSTAP=true 
-            else
-                # AP not supported without kernel downgrade
-                SUPPORT_HOSTAP=false 
-            fi
-        fi
-    fi
+# Detect missing /sbin from $PATH variable on Debian distros, and add it
+if ! echo "$PATH" | grep -q "/sbin" ; then
+    # Current environment
+    export PATH="/sbin:/usr/sbin:$PATH"
+    # Next login
+    echo "export PATH=\"/sbin:/usr/sbin:$PATH\"" | sudo tee -a /etc/profile
 fi
+
+askModule "WITH_DIALOG" "Text User Interface?" "n"
+if [ "$(checkModule 'WITH_DIALOG')" ]; then
+    sudo apt-get install dialog -y
+fi
+
+
+askSelection "A Basic node\nB Basic IPSF Node\nC Monitor Node\nD SSB Node\nE Camera Node\nZ Custom" "Select install type" Z
+
+case "$dialogREPLY" in
+    "A")
+        echo "Basic node"
+	WITH_YGGDRASIL=true
+	WITH_MESH_POINT=""
+	WITH_WIFI_AP=""
+        WITH_FIREWALL=true
+        WITH_CJDNS_IPTUNNEL=true
+        WITH_IPFS=false
+        WITH_PROMETHEUS_NODE_EXPORTER=true
+        WITH_EXTRA_TOOLS=true
+        WITH_WATCHDOG=true
+        WITH_YRD=true
+        WITH_PROMETHEUS_SERVER=false
+        WITH_GRAFANA=false
+        WITH_SSB=false
+        WITH_SSB_WEB=false
+        WITH_IPFS_PI_STREAM=false
+    ;;
+    "B")
+        echo "Basic IPFS node"
+	WITH_YGGDRASIL=true
+        WITH_MESH_POINT=""
+        WITH_WIFI_AP=""
+        WITH_FIREWALL=true
+        WITH_CJDNS_IPTUNNEL=true
+        WITH_IPFS=true
+        WITH_PROMETHEUS_NODE_EXPORTER=true
+        WITH_EXTRA_TOOLS=true
+        WITH_WATCHDOG=true
+        WITH_YRD=true
+
+        WITH_PROMETHEUS_SERVER=false
+        WITH_GRAFANA=false
+        WITH_SSB=false
+        WITH_SSB_WEB=false
+        WITH_IPFS_PI_STREAM=false
+    ;;
+    "C")
+        echo "Monitor Node"
+	WITH_YGGDRASIL=true
+        WITH_MESH_POINT=""
+        WITH_WIFI_AP=""
+        WITH_FIREWALL=true
+        WITH_CJDNS_IPTUNNEL=true
+        WITH_IPFS=false
+        WITH_PROMETHEUS_NODE_EXPORTER=true
+        WITH_EXTRA_TOOLS=true
+        WITH_WATCHDOG=true
+        WITH_YRD=true
+
+        WITH_PROMETHEUS_SERVER=true
+        WITH_GRAFANA=true
+        WITH_SSB=false
+        WITH_SSB_WEB=false
+        WITH_IPFS_PI_STREAM=false
+    ;;
+    "D")
+        echo "SSB Node"
+	WITH_YGGDRASIL=true
+        WITH_MESH_POINT=""
+        WITH_WIFI_AP=""
+        WITH_FIREWALL=true
+        WITH_CJDNS_IPTUNNEL=true
+        WITH_IPFS=false
+        WITH_PROMETHEUS_NODE_EXPORTER=true
+        WITH_EXTRA_TOOLS=true
+        WITH_WATCHDOG=true
+        WITH_YRD=true
+
+        WITH_PROMETHEUS_SERVER=false
+        WITH_GRAFANA=false
+        WITH_SSB=true
+        WITH_SSB_PATCHFOO=true
+        WITH_IPFS_PI_STREAM=false
+    ;;
+    "E")
+        echo "IPFS Camera Node"
+	WITH_YGGDRASIL=true
+        WITH_MESH_POINT=""
+        WITH_WIFI_AP=""
+        WITH_FIREWALL=true
+        WITH_CJDNS_IPTUNNEL=true
+        WITH_IPFS=true
+        WITH_PROMETHEUS_NODE_EXPORTER=true
+        WITH_EXTRA_TOOLS=true
+        WITH_WATCHDOG=true
+        WITH_YRD=true
+
+        WITH_PROMETHEUS_SERVER=false
+        WITH_GRAFANA=false
+        WITH_SSB=false
+        WITH_SSB_PATCHFOO=false
+        WITH_IPFS_PI_STREAM=true
+    ;;
+    "Z")
+    ;;
+    *)
+        echo "Error unknown response $dialogREPLY"
+        exit
+    ;;
+esac
 
 # Prompt and set missing flags
-if [ -z "$WITH_MESH_POINT" -o "$WITH_MESH_POINT" != "true" -a "$WITH_MESH_POINT" != "false" ]; then
-    read -p "Configure Mesh Point interface (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mMesh Point interface configuration will be skipped\e[0m"
-        WITH_MESH_POINT=false
-    else
-        echo -e "\e[1;32mMesh Point interface will be configured\e[0m"
-        WITH_MESH_POINT=true
-    fi
-fi
-if [ "$WITH_MESH_POINT" == false ]; then
-    if [ -z "$WITH_AD_HOC" -o "$WITH_AD_HOC" != "true" -a "$WITH_AD_HOC" != "false" ]; then
-        read -p "Configure Ad-hoc interface (Y/n)? " -n 1 -r
-        echo ""
-        if [[ $REPLY =~ ^[Nn]$ ]]; then
-            echo -e "\e[1;31mAd-hoc interface configuration will be skipped\e[0m"
-            WITH_AD_HOC=false
-        else
-            echo -e "\e[1;32mAd-hoc interface will be configured\e[0m"
-            WITH_AD_HOC=true
-        fi
-    fi
-else
-    echo -e "\e[1;31mAd-hoc interface configuration will be skipped\e[0m"
-    WITH_AD_HOC=false
-fi
-
-if [[ "$SUPPORT_HOSTAP" == "true" ]] && [ -z "$WITH_WIFI_AP" -o "$WITH_WIFI_AP" != "true" -a "$WITH_WIFI_AP" != "false" ]; then
-    read -p "Configure WiFi Access Point (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mWiFi Access Point configuration will be skipped\e[0m"
-        WITH_WIFI_AP=false
-    else
-        echo -e "\e[1;32mWiFi Access Point will be configured\e[0m"
-        WITH_WIFI_AP=true
-    fi
-fi
-if [ -z "$WITH_FIREWALL" -o "$WITH_FIREWALL" != "true" -a "$WITH_FIREWALL" != "false" ]; then
-    read -p "Configure Basic Firewall (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mInternet Firewall will be skipped\e[0m"
-        WITH_FIREWALL=false
-    else
-        echo -e "\e[1;32mInternet Firewall will be configured\e[0m"
-        WITH_FIREWALL=true
-    fi
-fi
-if [ -z "$WITH_CJDNS_IPTUNNEL" -o "$WITH_CJDNS_IPTUNNEL" != "true" -a "$WITH_CJDNS_IPTUNNEL" != "false" ]; then
-    read -p "Configure Internet gateway (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mInternet gateway configuration will be skipped\e[0m"
-        WITH_CJDNS_IPTUNNEL=false
-    else
-        echo -e "\e[1;32mInternet gateway will be configured\e[0m"
-        WITH_CJDNS_IPTUNNEL=true
-    fi
-fi
-if [ -z "$WITH_IPFS" -o "$WITH_IPFS" != "true" -a "$WITH_IPFS" != "false" ]; then
-    read -p "Install IPFS (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mIPFS installation will be skipped\e[0m"
-        WITH_IPFS=false
-    else
-        echo -e "\e[1;32mIPFS will be installed\e[0m"
-        WITH_IPFS=true
-    fi
-fi
-if [ -z "$WITH_PROMETHEUS_NODE_EXPORTER" -o "$WITH_PROMETHEUS_NODE_EXPORTER" != "true" -a "$WITH_PROMETHEUS_NODE_EXPORTER" != "false" ]; then
-    read -p "Install Prometheus Node Exporter (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mPrometheus Node Exporter installation will be skipped\e[0m"
-        WITH_PROMETHEUS_NODE_EXPORTER=false
-    else
-        echo -e "\e[1;32mPrometheus Node Exporter will be installed\e[0m"
-        WITH_PROMETHEUS_NODE_EXPORTER=true
-    fi
-fi
-if [ "$WITH_PROMETHEUS_NODE_EXPORTER" == true ]; then
-    if [ -z "$WITH_PROMETHEUS_SERVER" -o "$WITH_PROMETHEUS_SERVER" != "true" -a "$WITH_PROMETHEUS_SERVER" != "false" ]; then
-        read -p "Install Prometheus Server (Y/n)? " -n 1 -r
-        echo ""
-        if [[ $REPLY =~ ^[Nn]$ ]]; then
-            echo -e "\e[1;31mPrometheus installation will be skipped\e[0m"
-            WITH_PROMETHEUS_SERVER=false
-        else
-            echo -e "\e[1;32mPrometheus Server will be installed\e[0m"
-            WITH_PROMETHEUS_SERVER=true
-        fi
-    fi
-else
-    # Skip because Prometheus Node Exporter is not installed
-    WITH_PROMETHEUS_SERVER=false
-fi
-if [ "$WITH_PROMETHEUS_SERVER" == true ]; then
-    if [ -z "$WITH_GRAFANA" -o "$WITH_GRAFANA" != "true" -a "$WITH_GRAFANA" != "false" ]; then
-        read -p "Install Grafana (Y/n)? " -n 1 -r
-        echo ""
-        if [[ $REPLY =~ ^[Nn]$ ]]; then
-            echo -e "\e[1;31mGrafana installation will be skipped\e[0m"
-            WITH_GRAFANA=false
-        else
-            echo -e "\e[1;32mGrafana will be installed\e[0m"
-            WITH_GRAFANA=true
-        fi
-    fi
-else
-    # Skip because Prometheus Server is not installed
-    WITH_GRAFANA=false
-fi
-if [ -z "$WITH_H_DNS" -o "$WITH_H_DNS" != "true" -a "$WITH_H_DNS" != "false" ]; then
-    read -p "Configure Hyperboria-compatible Domain Name Servers (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mDNS settings will be skipped\e[0m"
-        WITH_H_DNS=false
-    else
-        echo -e "\e[1;32mDNS settings will be configured\e[0m"
-        WITH_H_DNS=true
-    fi
-fi
-if [ -z "$WITH_H_NTP" -o "$WITH_H_NTP" != "true" -a "$WITH_H_NTP" != "false" ]; then
-    read -p "Configure Hyperboria-compatible Network Time Protocol server (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mNTP settings will be skipped\e[0m"
-        WITH_H_NTP=false
-    else
-        echo -e "\e[1;32mNTP settings will be configured\e[0m"
-        WITH_H_NTP=true
-    fi
-fi
-if [ -z "$WITH_EXTRA_TOOLS" -o "$WITH_EXTRA_TOOLS" != "true" -a "$WITH_EXTRA_TOOLS" != "false" ]; then
-    read -p "Install non-essential tools useful for network analysis (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mExtra tools will be skipped\e[0m"
-        WITH_EXTRA_TOOLS=false
-    else
-        echo -e "\e[1;32mExtra tools will be installed\e[0m"
-        WITH_EXTRA_TOOLS=true
-    fi
-fi
-if [[ "$SUPPORT_WATCHDOG" == "true" ]] && [ -z "$WITH_WATCHDOG" -o "$WITH_WATCHDOG" != "true" -a "$WITH_WATCHDOG" != "false" ]; then
-    read -p "Configure Hardware Watchdog (Y/n)? " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo -e "\e[1;31mHardware Watchdog configuration will be skipped\e[0m"
-        WITH_WATCHDOG=false
-    else
-        echo -e "\e[1;32mHardware Watchdog will be configured\e[0m"
-        WITH_WATCHDOG=true
-    fi
-fi
 
 # Prompt for name of the mesh network
-##TODO## This should be moved up to to mesh point question
+##TODO## Add dialog option
 read -p "Enter the name of your mesh network (default: tomesh): " -r
-export MESH_NAME=`echo $REPLY | sed 's/ //g'`
+MESH_NAME="${REPLY// }"
 if [ "${#MESH_NAME}" == 0 ]; then
-    export MESH_NAME="tomesh"
+    MESH_NAME="tomesh"
+fi
+export MESH_NAME
+
+askModule "WITH_YGGDRASIL" "Yggdrasil routing engine"
+
+askModule "WITH_MESH_POINT" "Mesh Point Interface"
+if [ "$WITH_MESH_POINT" == false ]; then
+    askModule "WITH_AD_HOC" "Ad-Hoc Interface"
+fi
+if [ "$SUPPORT_HOSTAP" == "true" ]; then
+    askModule "WITH_WIFI_AP" "WiFi Access Point"
+fi
+askModule "WITH_FIREWALL" "Basic Firewall"
+askModule "WITH_CJDNS_IPTUNNEL" "Internet Gateway"
+askModule "WITH_IPFS" "IPFS"
+if [ "$WITH_IPFS" == true ] && [ "$BOARD_FAMILY" == "Raspberry Pi" ]; then
+    askModule "WITH_IPFS_PI_STREAM" "IPFS Pi Stream" "n"
+fi
+askModule "WITH_SSB" "SSB"
+if [ "$WITH_SSB" == "true" ]; then
+    askModule "WITH_SSB_PATCHFOO" "SSB PatchFoo Web Client"
+    askModule "WITH_SSB_WEB_PI" "SSB Web Pi Client (Experimental)" "n"
+fi
+askModule "WITH_YRD" "Yrd (a cjdns command-line tool)"
+askModule "WITH_PROMETHEUS_NODE_EXPORTER" "Prometheus Node Exporter"
+if [ "$WITH_PROMETHEUS_NODE_EXPORTER" == true ]; then
+    askModule "WITH_PROMETHEUS_SERVER" "Prometheus Server"
+fi
+if [ "$WITH_PROMETHEUS_SERVER" == true ]; then
+    askModule "WITH_GRAFANA" "Grafana"
+fi
+askModule "WITH_H_DNS" "Hyperboria Domain Name Servers"
+askModule "WITH_H_NTP" "Hyperboria Network Time Protocol Server"
+askModule "WITH_EXTRA_TOOLS" "Non-Essential Tools Useful for Network Analysis"
+if [ "$SUPPORT_WATCHDOG" == "true" ]; then
+    askModule "WITH_WATCHDOG" "Hardware Watchdog"
 fi
 
 # Get tools
 if ! [ "$(which nodejs)" ]; then
     # Check for armv6 and install nodejs manually instead since it will not install via repo
-    if $(uname -m | grep -Eq ^armv6); then
+    if uname -m | grep -Eq ^armv6; then
         wget -O /tmp/node-v6.11.0-linux-armv6l.tar.gz https://nodejs.org/dist/v6.11.0/node-v6.11.0-linux-armv6l.tar.gz
         sudo tar xfz /tmp/node-v6.11.0-linux-armv6l.tar.gz --strip 1 -C /
         rm -rf /tmp/node-v6.11.0-linux-armv6l.tar.gz
@@ -323,7 +445,7 @@ if ! [ "$(which nodejs)" ]; then
 fi
 
 # Install possibly missing tools
-sudo apt-get install haveged -y
+sudo apt-get install haveged -y || true
 
 # Check if cjdns is to be compiled or downloaded
 if [[ ! -e "/usr/bin/cjdroute" ]]; then
@@ -337,30 +459,33 @@ if [[ ! -e "/usr/bin/cjdroute" ]]; then
 fi
 
 if [ ! -z "$CJDNS_PACKAGE" ]; then
-    echo -e "\e[1;31mInstalling cjdns Debian package\e[0m"
-    wget https://github.com/darkdrgn2k/ToMeshStuff/raw/master/deb/$CJDNS_PACKAGE -O /tmp/cjdns.deb
-    sudo dpkg -i /tmp/cjdns.deb
-    #Link up folder so files are in the same place as compiled
-    if [[ -e "/opt/cjdns" ]]; then 
-        sudo rm -rf /opt/cjdns 
+    if ! [ -x "/opt/cjdns/cjdroute" ]; then
+        echo -e "\e[1;31mInstalling cjdns debian package\e[0m"
+        wget https://github.com/darkdrgn2k/ToMeshPackages/raw/master/CJDNS/$CJDNS_PACKAGE -O /tmp/cjdns.deb
+        sudo dpkg -i /tmp/cjdns.deb
+        #Link up folder so files are in the same place as compiled
+        if [[ -e "/opt/cjdns" ]]; then
+            sudo rm -rf /opt/cjdns
+        fi
+        sudo ln -s /usr/share/cjdns /opt/cjdns
+        sudo ln -s /usr/bin/cjdroute /opt/cjdns/cjdroute || true
     fi
-    sudo ln -s /usr/share/cjdns /opt/cjdns
-    sudo ln -s /usr/bin/cjdroute /opt/cjdns/cjdroute
 else
     # Download cjdns repo and checkout TAG_CJDNS tag
     echo -e "\e[1;31mCompiling cjdns from source\e[0m"
     if ! [ -d "/opt/cjdns" ]; then
-        here=`pwd`
+        sudo apt-get install -y python
+        here="$(pwd)"
         sudo git clone https://github.com/cjdelisle/cjdns.git /opt/cjdns
         cd /opt/cjdns
         sudo git checkout $TAG_CJDNS
-        cd $here
+        cd "$here"
     fi
 
     # Build cjdns
     if ! [ -x "/opt/cjdns/cjdroute" ]; then
-        here=`pwd`
-        cd /opt/cjdns && eval $CJDNS_BUILD_CMD && cd $here
+        here="$(pwd)"
+        cd /opt/cjdns && eval "$CJDNS_BUILD_CMD" && cd "$here"
     fi
 
     # Install cjdns to /usr/bin
@@ -382,68 +507,105 @@ fi
 
 sudo systemctl enable cjdns.service
 
+# Define new hostname
+NEWHOSTNAME=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-/g")
+export NEWHOSTNAME
+
+# Install nginx
+source nginx/install
+
+# Install yggdrasil
+if [ "$(checkModule 'WITH_YGGDRASIL')" ]; then
+    source yggdrasil/install
+fi
+
 # 802.11s Mesh Point interface
-if [ ! -z "$WITH_MESH_POINT" -a "$WITH_MESH_POINT" == "true" ]; then
+if [ "$(checkModule 'WITH_MESH_POINT')" ]; then
     source mesh-point/install
 fi
 
 # IBSS Ad-hoc interface
-if [ ! -z "$WITH_AD_HOC" -a "$WITH_AD_HOC" == "true" ]; then
+if [ "$(checkModule 'WITH_AD_HOC')" ]; then
     source mesh-adhoc/install
 fi
 
 # WiFi Access Point on supported boards
-if [[ "$SUPPORT_HOSTAP" == "true" ]] && [ ! -z "$WITH_WIFI_AP" -a "$WITH_WIFI_AP" == "true" ]; then
+if [ "$SUPPORT_HOSTAP" == "true" ] && [ "$(checkModule 'WITH_WIFI_AP')" ]; then
     source hostapd/install
 fi
 
 # Configure Internet firewall
-if [ ! -z "$WITH_FIREWALL" -a "$WITH_FIREWALL" == "true" ]; then
+if [ "$(checkModule 'WITH_FIREWALL')" ]; then
     source firewall/install
 fi
 
 # Configure Internet gateway using cjdns iptunnel
-if [ ! -z "$WITH_CJDNS_IPTUNNEL" -a "$WITH_CJDNS_IPTUNNEL" == "true" ]; then
+if [ "$(checkModule 'WITH_CJDNS_IPTUNNEL')" ]; then
     source cjdns-iptunnel/install
 fi
 
 # IPFS
-if [ ! -x "$(command -v ipfs)" ] && [ ! -z "$WITH_IPFS" -a "$WITH_IPFS" == "true" ]; then
+if [ ! -x "$(command -v ipfs)" ] && [ "$(checkModule 'WITH_IPFS')" ]; then
     source ipfs/install
 fi
 
+# IPFS Pi Stream
+if [ ! -x "$(command -v process-stream.sh)" ] && [ "$(checkModule 'WITH_IPFS_PI_STREAM')" ]; then
+    source ipfs-pi-stream/install
+fi
+
+# SSB
+if [ ! -x "$(command -v sbot)" ] && [ "$(checkModule 'WITH_SSB')" ]; then
+    source ssb/install
+fi
+
+# SSB patchfoo (only install if sbot exists)
+if [ -x "$(command -v sbot)" ] && [ "$(checkModule 'WITH_SSB_PATCHFOO')" ]; then
+    source ssb-patchfoo/install
+fi
+
+# SSB Web (only install if sbot exists)
+if [ -x "$(command -v sbot)" ] && [ "$(checkModule 'WITH_SSB_WEB_PI')" ]; then
+    source ssb-web-pi/install
+fi
+
+# yrd
+if [ ! -x "$(command -v yrd)" ] && [ "$(checkModule 'WITH_YRD')" ]; then
+    source yrd/install
+fi
+
 # Prometheus Node Exporter
-if [ ! -x "$(command -v node_exporter)" ] && [ ! -z "$WITH_PROMETHEUS_NODE_EXPORTER" -a "$WITH_PROMETHEUS_NODE_EXPORTER" == "true" ]; then
+if [ ! -x "$(command -v node_exporter)" ] && [ "$(checkModule 'WITH_PROMETHEUS_NODE_EXPORTER')" ]; then
     source prometheus-node-exporter/install
 fi
 
 # Prometheus Server
-if [ ! -x "$(command -v /opt/prometheus/prometheus)" ] && [ ! -z "$WITH_PROMETHEUS_SERVER" -a "$WITH_PROMETHEUS_SERVER" == "true" ]; then
+if [ ! -x "$(command -v /opt/prometheus/prometheus)" ] && [ "$(checkModule 'WITH_PROMETHEUS_SERVER')" ]; then
     source prometheus-server/install
 fi
 
 # Grafana
-if [ ! -x "$(command -v /usr/sbin/grafana-server)" ] && [ ! -z "$WITH_GRAFANA" -a "$WITH_GRAFANA" == "true" ]; then
+if [ ! -x "$(command -v /usr/sbin/grafana-server)" ] && [ "$(checkModule 'WITH_GRAFANA')" ]; then
     source grafana/install
 fi
 
 # Configure Hyperboria DNS
-if [ ! -z "$WITH_H_DNS" -a "$WITH_H_DNS" == "true" ]; then
+if [ "$(checkModule 'WITH_H_DNS')" ]; then
     source h-dns/install
 fi
 
 # Configure Hyperboria NTP
-if [ ! -z "$WITH_H_NTP" -a "$WITH_H_NTP" == "true" ]; then
+if [ "$(checkModule 'WITH_H_NTP')" ]; then
     source h-ntp/install
 fi
 
 # Non-essential extra tools
-if [ ! -z "$WITH_EXTRA_TOOLS" -a "$WITH_EXTRA_TOOLS" == "true" ]; then
+if [ "$(checkModule 'WITH_EXTRA_TOOLS')" ]; then
     source extra-tools/install
 fi
 
 # Watchdog on supported boards
-if [[ "$SUPPORT_WATCHDOG" == "true" ]] && [ ! -z "$WITH_WATCHDOG" -a "$WITH_WATCHDOG" == "true" ]; then
+if [ "$SUPPORT_WATCHDOG" == "true" ] && [ "$(checkModule 'WITH_WATCHDOG')" ]; then
     source watchdog/install
 fi
 
@@ -451,23 +613,32 @@ fi
 sudo cp status /usr/local/bin/status
 echo -e "Run \e[1;32mstatus\e[0m anytime to print the status of your node"
 
+# Install nodeinfo
+source shared/nodeinfo/install
+
 # Print node status on login
 cp ~/.profile ~/.bash_profile
-echo "" >> ~/.bash_profile
-echo "# export mesh network name" >> ~/.bash_profile
-echo "export MESH_NAME=$MESH_NAME" >> ~/.bash_profile
-echo "" >> ~/.bash_profile 
-echo "# print mesh node status" >> ~/.bash_profile
-echo "status" >> ~/.bash_profile
-
+{
+    echo ""
+    echo "# export mesh network name"
+    echo "export MESH_NAME=$MESH_NAME"
+    echo ""
+    echo "# print mesh node status"
+    echo "status"
+} >> ~/.bash_profile
 # Rename node based on cjdns address
 oldhostname=$(hostname)
-newhostname=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-/g")
-sudo echo $newhostname | sudo tee /etc/hostname > /dev/null
-sudo sed -i -e "s/$oldhostname/$newhostname/" /etc/hosts
+sudo echo "$NEWHOSTNAME" | sudo tee /etc/hostname > /dev/null
+sudo sed -i -e "s/$oldhostname/$NEWHOSTNAME/" /etc/hosts
 
-echo -e "Your node's new hostname is $newhostname"
+if [[ "$CHANGE_PASSWORD" == "pi" ]]; then
+    sudo passwd -e "$CHANGE_PASSWORD"
+    echo -e "You will need to change the password next login."
+fi
 
+echo -e ""
+echo -e "Your node's new hostname is $NEWHOSTNAME"
+echo -e ""
 read -p "Installation complete. Press any key to reboot your new node. " -n 1 -r
 
 # Reboot device

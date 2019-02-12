@@ -2,17 +2,49 @@
 :INPUT ACCEPT [0:0]
 :FORWARD ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
-:cjdns - [0:0]
+:CJDNS - [0:0]
+:YGGDRASIL - [0:0]
+:YGGCLIENT - [0:0]
 -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 -A INPUT -p ipv6-icmp -j ACCEPT
 -A INPUT -i lo -j ACCEPT
--A INPUT -i tun0 -j cjdns
--A INPUT -p tcp -m multiport --dports 80,443,9100,22,5021
+
+# Raw INPUT rules needed for Yggdrasil - DO NOT EDIT
+-A INPUT -j ACCEPT -p tcp --dport 12345
+-A INPUT -j ACCEPT -p udp --dport 9001 -d ff02::114
+
+# Any new raw INPUT rules go here
+
+
+# DO NOT EDIT - Redirect to named tables
+-A INPUT -i tun0 -d fc00::/8 -j CJDNS
+-A INPUT -i ygg0 -d 200::/8 -j YGGDRASIL
 -A INPUT -j REJECT --reject-with icmp6-port-unreachable
--A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
--A INPUT -p ipv6-icmp -j ACCEPT
--A INPUT -i lo -j ACCEPT
--A INPUT -i tun0 -j cjdns
--A cjdns -p tcp -m multiport --dports 80,443,9100,22,5021 -j ACCEPT
--A cjdns -j REJECT --reject-with icmp6-port-unreachable
+-A FORWARD -i ygg0 -d 300::/8 -j YGGCLIENT
+-A FORWARD -j REJECT --reject-with icmp6-port-unreachable
+
+# CJDNS rules
+-A CJDNS -j ACCEPT -p tcp --dport 22
+-A CJDNS -j ACCEPT -p tcp --dport 80
+-A CJDNS -j ACCEPT -p tcp --dport 443
+-A CJDNS -j ACCEPT -p tcp --dport 3000
+-A CJDNS -j ACCEPT -p tcp --dport 5201
+-A CJDNS -j ACCEPT -p tcp --dport 4001
+-A CJDNS -j ACCEPT -p tcp --dport 9090
+-A CJDNS -j ACCEPT -p tcp --dport 9100
+
+# Yggdrasil rules
+-A YGGDRASIL -j ACCEPT -p tcp --dport 22
+-A YGGDRASIL -j ACCEPT -p tcp --dport 80
+-A YGGDRASIL -j ACCEPT -p tcp --dport 443
+-A YGGDRASIL -j ACCEPT -p tcp --dport 3000
+-A YGGDRASIL -j ACCEPT -p tcp --dport 5201
+-A YGGDRASIL -j ACCEPT -p tcp --dport 4001
+-A YGGDRASIL -j ACCEPT -p tcp --dport 9090
+-A YGGDRASIL -j ACCEPT -p tcp --dport 9100
+
+# Yggdrasil client (YGGCLIENT) rules go here
+
+
+# End, put nothing below this
 COMMIT

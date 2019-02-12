@@ -1,0 +1,16 @@
+[Unit]
+Description=Scuttlebot (SSB) Service
+Wants=network.target
+After=ssb.service
+
+[Service]
+User=__USER__
+Group=__USER__
+Type=simple
+ExecStart=/usr/local/bin/ssb-broadcast-service.sh
+ExecStop=/bin/kill -s QUIT $MAINPID
+Restart=on-failure
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target

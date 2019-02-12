@@ -6,8 +6,9 @@ After=network.target
 [Service]
 WorkingDirectory=/opt/prometheus
 Type=simple
+ExecStartPre=/bin/rm -rf /opt/prometheus/data/lock || true
 ExecStart=/opt/prometheus/prometheus
-ExecStop=/usr/bin/pkill -f prometheus
+ExecStop=/bin/kill -s QUIT $MAINPID
 Restart=on-failure
 RestartSec=10s
 

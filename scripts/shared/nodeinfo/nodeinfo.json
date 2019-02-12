@@ -1,0 +1,22 @@
+{
+    "version": 0,
+    "location": {
+        "continent": "NA",
+        "country": "Canada",
+        "region": "Ontario",
+        "municipality": "Toronto",
+        "uri": "https://tomesh.net"
+    },
+    "software": {
+        "repo": "__REPO__",
+        "branch": "__BRANCH__",
+        "commit": "__COMMIT__",
+        "installed": "__INSTALLED__",
+        "uri": "https://github.com/tomeshnet/prototype-cjdns-pi/"
+    },
+    "key": "__KEY__",
+    "org": "__ORG__",
+    "services": {
+    __SERVICES__
+    }
+}

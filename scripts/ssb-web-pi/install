@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC1091
+true
+
+set -e
+
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Install php
+sudo apt-get install -y php-fpm socat
+
+# Install required parts of ssb from npm
+# sudo sudo is a hack to allow post-install scripts that drop one level of sudo and still be sudoed
+# otherwise you get permissions errors when it tries to write to root owned folders
+sudo sudo npm install -g --unsafe-perm \
+                 ssb-keys \
+                 ssb-client \
+                 ssb-feed \
+                 pull-stream
+
+# Define location of SSB installation
+ssbPath="$HOME/.ssb"
+
+# Install broadcast service for users of sbot
+currentUser=$USER
+sudo cp "$BASE_DIR/ssb-web-pi-broadcast-service.sh" "/usr/local/bin/ssb-web-pi-broadcast-service.sh"
+sudo cp "$BASE_DIR/ssb-web-pi-broadcast.service" /etc/systemd/system/ssb-web-pi-broadcast.service
+sudo sed -i "s|__USER__|${currentUser}|g" /etc/systemd/system/ssb-web-pi-broadcast.service
+
+sudo systemctl daemon-reload
+sudo systemctl enable ssb-web-pi-broadcast.service
+sudo systemctl start ssb-web-pi-broadcast.service
+
+# Set permissions to let nginx access it
+# TODO find a better solution, maybe add user to nginx group?
+chmod a+rwX "$ssbPath"
+chmod -R a+rwX "$ssbPath"
+
+# Link .ssb to nginx's home directory becuse that is where sbot looks for it
+if [ -e "/var/www/.ssb" ]; then
+    sudo rm -rf /var/www/.ssb
+fi
+sudo ln -s "$ssbPath" /var/www/
+
+# Create nginx site at /sbot
+sudo cp "$BASE_DIR/ssb-web-pi.conf" "/etc/nginx/site-path-enabled/ssb-web-pi.conf"
+
+# Pull and install client
+if [ -e "$BASE_DIR/tmp" ]; then
+    sudo rm -rf "$BASE_DIR/tmp"
+fi
+mkdir "$BASE_DIR/tmp"
+git clone https://github.com/darkdrgn2k/ssb-web-pi.git "$BASE_DIR/tmp/ssb-web-pi"
+sudo mkdir /var/www/sbot
+sudo cp -r "$BASE_DIR/tmp/ssb-web-pi/html/." "/var/www/sbot/"
+
+sudo mkdir /var/www/backend
+sudo cp -r "$BASE_DIR/tmp/ssb-web-pi/backend/." "/var/www/backend"
+
+sudo mkdir /var/www/backend/keys
+
+# Some reason if the modules are not local it doesn't work
+sudo ln -s /usr/lib/node_modules /var/www/backend
+sudo ln -s /usr/bin/sbot /usr/local/bin/sbot
+
+# Set permissions
+sudo chmod a+rwX /var/www/backend
+sudo chmod -R a+rwX /var/www/backend
+sudo chown www-data.www-data /var/www/sbot
+sudo chown -R www-data.www-data /var/www/sbot
+
+# Add entry into nginx home screen
+APP="<div class='app'><h2>SSB Web Pi</h2>Very experimental interface for SSB. <br/><a href='/ssb-web-pi'>Go</a></div>"
+sudo sed -i "s#<\!--APPLIST-->#$APP\n<\!--APPLIST-->#" "/var/www/html/index.html"

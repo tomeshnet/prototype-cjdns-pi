@@ -12,7 +12,7 @@ if [ -z "$TAG_PROTOTYPE_CJDNS_PI" ]; then
     TAG_PROTOTYPE_CJDNS_PI=master
 fi
 
-if ! [ -z "`ps xa | awk '{print $5}' | grep dpkg | grep -v grep`" ]; then 
+if ps xa | awk '{print $5}' | grep -q dpkg; then
     echo -e "\e[1;31mDPKG is running in the background.\e[0m"
     read -p "Would you like to KILL it to continue (Y/n)? " -n 1 -r
     echo ""
@@ -22,7 +22,7 @@ if ! [ -z "`ps xa | awk '{print $5}' | grep dpkg | grep -v grep`" ]; then
     else
         echo -e "\e[1;32mKilling DPKG and continuing\e[0m"
         sudo killall dpkg
-    fi	 
+    fi
 fi
 
 # Get git
@@ -39,6 +39,7 @@ cd prototype-cjdns-pi/scripts
 git checkout $TAG_PROTOTYPE_CJDNS_PI
 
 # Export environment variables
+export WITH_YGGDRASIL
 export WITH_MESH_POINT
 export WITH_AD_HOC
 export WITH_WIFI_AP
@@ -50,6 +51,12 @@ export WITH_PROMETHEUS_SERVER
 export WITH_GRAFANA
 export WITH_EXTRA_TOOLS
 export WITH_WATCHDOG
+export WITH_YRD
+export WITH_SSB
+export WITH_SSB_PATCHFOO
+export WITH_SSB_WEB_PI
+export WITH_IPFS_PI_STREAM
 
+export UNATTENDED
 # Run the actual installation script
 ./install2

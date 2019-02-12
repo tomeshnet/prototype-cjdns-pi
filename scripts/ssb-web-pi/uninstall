@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+sudo systemctl stop ssb-web-broadcast.service || true
+sudo systemctl disable ssb-web-broadcast.service || true
+sudo systemctl daemon-reload
+
+sudo rm -rf /var/www/backend
+sudo rm -rf /var/www/sbot
+sudo rm -rf /usr/lib/node_modules
+sudo rm -rf /var/www/.ssb
+sudo rm -f /usr/local/bin/ssb-web-broadcast-service.sh
+
+sudo rm -rf /etc/nginx/site-path-enabled/ssb-web.conf
+
+sudo npm uninstall -g --unsafe-perm \
+                 ssb-keys \
+                 ssb-client \
+                 ssb-feed \
+                 pull-stream
+
+sudo apt-get remove -y php-fpm socat

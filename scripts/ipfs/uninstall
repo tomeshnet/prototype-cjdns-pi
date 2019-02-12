@@ -2,6 +2,12 @@
 
 set -e
 
+# Remove script and service for ipfs bootstrap
+sudo rm -r /usr/local/bin/ipfs-swarm-cjdns.sh || true
+
+# Uninstall dependencies
+sudo apt-get remove -y jq
+
 # Uninstall IPFS
 sudo systemctl disable ipfs.service 2>/dev/null || true
 sudo systemctl stop ipfs.service 2>/dev/null || true
@@ -9,13 +15,13 @@ sudo systemctl daemon-reload
 sudo rm -f /usr/local/bin/ipfs
 sudo rm -f /etc/systemd/system/ipfs.service
 
-if [ -d "~/.ipfs" ]; then
+if [ -d "$HOME/.ipfs" ]; then
     echo "Found ~/.ipfs"
     read -p "Keep your IPFS data (Y/n)? " -n 1 -r
     echo ""
     if [[ $REPLY =~ ^[Nn]$ ]]; then
         echo -e "\e[1;31mRemoving ~/.ipfs\e[0m"
-        rm -rf ~/.ipfs
+        sudo rm -rf ~/.ipfs
     else
         echo -e "\e[1;32mKeeping ~/.ipfs\e[0m"
     fi

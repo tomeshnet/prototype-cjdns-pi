@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -e
+
+LAST_BASE="$BASE_DIR"
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+sudo apt-get install -y jq
+
+sudo mkdir -p /opt/tomesh/nodeinfo.d
+
+sudo cp "$BASE_DIR/nodeinfo.json" /opt/tomesh/nodeinfo.json
+sudo cp "$BASE_DIR/nodeinfo-update.sh" /usr/local/bin/nodeinfo-update.sh
+
+sudo sed -i -e "s/__REPO__/$(git remote get-url origin | awk -F / '{print $5}'| cut -d '.' -f1)/g" /opt/tomesh/nodeinfo.json
+sudo sed -i -e "s/__BRANCH__/$(git rev-parse --abbrev-ref HEAD)/g" /opt/tomesh/nodeinfo.json
+sudo sed -i -e "s/__COMMIT__/$(git rev-parse HEAD)/g" /opt/tomesh/nodeinfo.json
+sudo sed -i -e "s/__INSTALLED__/$(date)/g" /opt/tomesh/nodeinfo.json
+sudo sed -i -e "s/__ORG__/$MESH_NAME/g" /opt/tomesh/nodeinfo.json
+
+sudo sed -i 's#^exit 0#/usr/local/bin/nodeinfo-update.sh\nexit 0#' /etc/rc.local
+
+BASE_DIR="$LAST_BASE"

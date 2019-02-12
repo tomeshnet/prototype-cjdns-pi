@@ -1,0 +1,16 @@
+[Unit]
+Description=Scuttlebot Broadcast Service for ssb-web-pi
+Wants=network.target
+After=ssb.service
+
+[Service]
+User=__USER__
+Group=__USER__
+Type=simple
+ExecStart=/usr/local/bin/ssb-web-broadcast-pi-service.sh
+ExecStop=/bin/kill -s QUIT $MAINPID
+Restart=on-failure
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target

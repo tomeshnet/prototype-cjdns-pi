@@ -1,0 +1,16 @@
+[Unit]
+Description=Service to process RTMP stream
+Wants=network.target
+After=ipfs.service
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+ExecStart=/usr/bin/process-stream.sh
+ExecStop=/bin/kill -s QUIT $MAINPID
+Restart=on-failure
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target
