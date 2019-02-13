@@ -26,7 +26,8 @@ if ps xa | awk '{print $5}' | grep -q dpkg; then
 fi
 
 # Get git
-sudo apt-get update
+# True required to avoid odd armbian bug.  Update does work but reports missing file.
+sudo apt-get update -y || true
 if ! [ "$(which git)" ]; then
     sudo apt-get install git -y
 fi
