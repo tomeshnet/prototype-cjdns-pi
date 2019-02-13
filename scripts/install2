@@ -15,7 +15,8 @@ BOARD_REVISION="?"
 CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 ./do"
 
 ##TODO## Possibly use /sys/firmware/devicetree/base/model
-BOARD_MODEL=$(cat /sys/firmware/devicetree/base/model)
+# Use tr to remove null byte generating warning
+BOARD_MODEL=$(tr -d '\0' < /sys/firmware/devicetree/base/model)
 BOARD_HARDWARE=$(grep Hardware /proc/cpuinfo | awk '{print $3}' | head -n 1)
 
 
