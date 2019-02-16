@@ -14,7 +14,8 @@
 -A INPUT -j ACCEPT -p udp --dport 9001 -d ff02::114
 
 # Any new raw INPUT rules go here
-
+-A INPUT -j ACCEPT -p tcp --dport 8008
+-A INPUT -j ACCEPT -p udp --dport 8008
 
 # DO NOT EDIT - Redirect to named tables
 -A INPUT -i tun0 -d fc00::/8 -j CJDNS
@@ -30,8 +31,6 @@
 -A CJDNS -j ACCEPT -p tcp --dport 3000
 -A CJDNS -j ACCEPT -p tcp --dport 5201
 -A CJDNS -j ACCEPT -p tcp --dport 4001
--A CJDNS -j ACCEPT -p tcp --dport 8008
--A CJDNS -j ACCEPT -p udp --dport 8008
 -A CJDNS -j ACCEPT -p tcp --dport 9090
 -A CJDNS -j ACCEPT -p tcp --dport 9100
 
@@ -42,12 +41,12 @@
 -A YGGDRASIL -j ACCEPT -p tcp --dport 3000
 -A YGGDRASIL -j ACCEPT -p tcp --dport 5201
 -A YGGDRASIL -j ACCEPT -p tcp --dport 4001
--A YGGDRASIL -j ACCEPT -p tcp --dport 8008
--A YGGDRASIL -j ACCEPT -p udp --dport 8008
 -A YGGDRASIL -j ACCEPT -p tcp --dport 9090
 -A YGGDRASIL -j ACCEPT -p tcp --dport 9100
 
 # Yggdrasil client (YGGCLIENT) rules go here
+-A YGGCLIENT -j ACCEPT -p tcp --dport 8008
+-A YGGCLIENT -j ACCEPT -p udp --dport 8008
 
 
 # End, put nothing below this
