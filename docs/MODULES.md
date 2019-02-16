@@ -72,6 +72,7 @@ Default open ports to the device are below. Since both CJDNS and Yggdrasil use I
 | 53    | TCP/UDP | Accept | DNS Server                |
 | 80    | TCP     | Accept | HTTP                      |
 | 443   | TCP     | Accept | SSH                       |
+| 8008  | TCP/UDP | Accept | SSB                       |
 | 9100  | TCP     | Accept | NodeExporter              |
 | 9090  | TCP     | Accept | Prometheus Server         |
 | 3000  | TCP     | Accept | Grafana                   |
@@ -106,10 +107,10 @@ Default open ports to the device over IPv6 are
 | 53    | TCP/UDP | Accept | DNS Server                |
 | 80    | TCP     | Accept | HTTP                      |
 | 443   | TCP     | Accept | SSH                       |
-| 9100  | TCP     | Accept | NodeExporter              |
 | 5201  | TCP     | Accept | IPerf3                    |
 | 4001  | TCP     | Accept | IPFS Swarm port           |
-
+| 8008  | TCP/UDP | Accept | SSB                       |
+| 9100  | TCP     | Accept | NodeExporter              |
 #### Change open ports
 
 To change the open ports you can edit the IPv6 configuration file located at `/etc/iptables/rules.v6`
