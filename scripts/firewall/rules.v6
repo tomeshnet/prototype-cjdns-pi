@@ -30,6 +30,8 @@
 -A CJDNS -j ACCEPT -p tcp --dport 3000
 -A CJDNS -j ACCEPT -p tcp --dport 5201
 -A CJDNS -j ACCEPT -p tcp --dport 4001
+-A CJDNS -j ACCEPT -p tcp --dport 8008
+-A CJDNS -j ACCEPT -p udp --dport 8008
 -A CJDNS -j ACCEPT -p tcp --dport 9090
 -A CJDNS -j ACCEPT -p tcp --dport 9100
 
@@ -40,6 +42,8 @@
 -A YGGDRASIL -j ACCEPT -p tcp --dport 3000
 -A YGGDRASIL -j ACCEPT -p tcp --dport 5201
 -A YGGDRASIL -j ACCEPT -p tcp --dport 4001
+-A YGGDRASIL -j ACCEPT -p tcp --dport 8008
+-A YGGDRASIL -j ACCEPT -p udp --dport 8008
 -A YGGDRASIL -j ACCEPT -p tcp --dport 9090
 -A YGGDRASIL -j ACCEPT -p tcp --dport 9100
 
