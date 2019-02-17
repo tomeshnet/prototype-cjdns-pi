@@ -7,6 +7,7 @@
 :YGGCLIENT - [0:0]
 -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 -A INPUT -p ipv6-icmp -j ACCEPT
+-A FORWARD -p ipv6-icmp -j ACCEPT
 -A INPUT -i lo -j ACCEPT
 
 # Raw INPUT rules needed for Yggdrasil - DO NOT EDIT
