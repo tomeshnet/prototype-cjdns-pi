@@ -24,6 +24,7 @@
 
 -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 -A FORWARD -p ipv6-icmp -j ACCEPT
+-A FORWARD -o tun0 -j ACCEPT
 -A FORWARD -o ygg0 -j ACCEPT
 -A FORWARD -i ygg0 -d 300::/8 -j YGGCLIENT
 -A FORWARD -j REJECT --reject-with icmp6-port-unreachable
