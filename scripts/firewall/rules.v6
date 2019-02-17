@@ -7,14 +7,13 @@
 :YGGCLIENT - [0:0]
 -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 -A INPUT -p ipv6-icmp -j ACCEPT
--A FORWARD -p ipv6-icmp -j ACCEPT
 -A INPUT -i lo -j ACCEPT
 
-# Raw INPUT rules needed for Yggdrasil - DO NOT EDIT
+# INPUT rules needed for Yggdrasil peering
 -A INPUT -j ACCEPT -p tcp --dport 12345
 -A INPUT -j ACCEPT -p udp --dport 9001 -d ff02::114
 
-# Any new raw INPUT rules go here
+# INPUT rules needed for SSB peering
 -A INPUT -j ACCEPT -p tcp --dport 8008
 -A INPUT -j ACCEPT -p udp --dport 8008
 
@@ -22,6 +21,10 @@
 -A INPUT -i tun0 -d fc00::/8 -j CJDNS
 -A INPUT -i ygg0 -d 200::/8 -j YGGDRASIL
 -A INPUT -j REJECT --reject-with icmp6-port-unreachable
+
+-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -p ipv6-icmp -j ACCEPT
+-A FORWARD -o ygg0 -j ACCEPT
 -A FORWARD -i ygg0 -d 300::/8 -j YGGCLIENT
 -A FORWARD -j REJECT --reject-with icmp6-port-unreachable
 
