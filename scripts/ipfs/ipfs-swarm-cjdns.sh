@@ -1,4 +1,6 @@
 #!/bin/bash
+# shellcheck disable=SC2162
+true
 
 # Wait for ipfs to initalize
 attempts=15
