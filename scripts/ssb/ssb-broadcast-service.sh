@@ -1,4 +1,6 @@
 #!/bin/bash
+# shellcheck disable=SC2162
+true
 
 while true; do
     if ! [ -z "$id" ]; then
