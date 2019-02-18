@@ -1,0 +1,54 @@
+#!/usr/bin/env perl
+use warnings;
+use strict;
+#
+# Copyright (C) 2018 Hamish Coleman <hamish@zot.org>
+#
+# The simplest tool was the raw rpc tool
+#
+
+# The default options - should be set from commandline or rc file eventually
+my $option = {
+    addr     => "127.0.0.1",
+    port     => "11234",
+    password => "NONE",
+    trace    => 1,
+};
+
+BEGIN {
+    use File::Spec;
+    # allow the libs to be in the bin dir
+    unshift @INC, File::Spec->catdir((File::Spec->splitpath($0))[1],'lib');
+     print "Content-type: text/html\n\n";
+}
+
+use mini::Data;
+use mini::Digest::SHA;
+use Bencode_bork;
+use Cjdns::RPC;
+
+sub main() {
+    my $rpc = Cjdns::RPC->new(
+        $option->{addr},
+        $option->{port},
+        $option->{password},
+    ) or die "cannot start rpc";
+#    $rpc->trace($option->{trace});
+
+#    print(mini::Data::Dumper($rpc->ping()));
+     mini::Data::Dumper($rpc->cookie());
+     mini::Data::Dumper($rpc->ping_auth());
+
+    #print(mini::Data::Dumper($rpc->Admin_availableFunctions()));
+
+    my $packet;
+#    $packet = $rpc->_build_query_auth('ETHInterface_listDevices');
+#    print(mini::Data::Dumper($rpc->_sync_call($packet)));
+
+    $packet = $rpc->_build_query_unauth('InterfaceController_peerStats');
+    print(mini::Data::Dumper($rpc->_sync_call($packet)));
+}
+unless (caller) {
+    # only run main if we are called as a CLI tool
+    main();
+}

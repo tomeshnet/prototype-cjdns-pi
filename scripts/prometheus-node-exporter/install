@@ -8,9 +8,9 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Download and install Prometheus Node Exporter
 ARM_VERSION=v7
-if $(uname -m | grep -Eq ^armv6); then
+if uname -m | grep -Eq ^armv6; then
     ARM_VERSION=v6
-elif ! [ -z $(uname -m | grep aarch64)]; then
+elif uname -m | grep -q aarch64; then
     ARM_VERSION=64
 fi
 if [[ ! -f "/usr/local/bin/node_exporter" ]]; then
@@ -22,7 +22,7 @@ if [[ ! -f "/usr/local/bin/node_exporter" ]]; then
     rm -rf "$BASE_DIR/tmp"
 fi
 
-sudo mkdir /var/lib/node_exporter/ 
+sudo mkdir /var/lib/node_exporter/ || true
 sudo mkdir /opt/tomesh/ || true
 sudo cp "$BASE_DIR/nodestats-tomesh.py" "/opt/tomesh/nodestats-tomesh.py"
 

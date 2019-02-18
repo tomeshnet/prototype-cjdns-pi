@@ -6,30 +6,36 @@ function isMeshable {
     # Check to see if driver reports missing mesh point support
     if  [ -z "$(iw phy phy$1 info | grep 'mesh point')" ]; then
         result='' # Indicate interface is not meshable
-    # XRADIO driver reports Mesh Point support incorrectly (there is no support for it)
-    elif [ "$(basename $(readlink /sys/class/net/$interface/device/driver))" == 'xradio_wlan' ]; then	    
+    # XRADIO driver reports Mesh Point but does not actually work
+    elif [ "$(basename $(readlink /sys/class/net/$interface/device/driver))" == 'xradio_wlan' ]; then
         result='' # Indicate interface is actually not meshable
     else
-        result='1' # Indicate interface is  meshable
+        result='1' # Indicate interface is meshable
     fi
 
     echo $result
 }
-
 
 set -e
 
 # Set wireless regulatory domain
 sudo iw reg set CA
 
-# Select physical device that supports 802.11s Mesh Point
-if ! [ -z $(isMeshable 0) ]; then
-    mesh_phy=phy0
-    mesh_dev=$(iw dev | grep phy#0 -A 1 | grep Interface | awk '{print $2}')
-elif ! [ -z $(isMeshable 1) ]; then
-    mesh_phy=phy1
-    mesh_dev=$(iw dev | grep phy#1 -A 1 | grep Interface | awk '{print $2}')
-else
+# Find first 802.11s Mesh Point capable device
+for wlanfile in /sys/class/net/*; do
+    int="$(basename "$wlanfile")"
+    if [ -d "/sys/class/net/$int/wireless" ]; then
+        phy=$(iw dev "$int" info | grep wiphy | awk '{print $2}')
+        if [ ! -z "$phy" ]; then
+            if ! [ -z $(isMeshable "$phy") ]; then
+                mesh_dev="$int"
+            fi
+        fi
+    fi
+done
+
+# If no device found exit with error
+if [ -z "$mesh_dev" ]; then
     exit 1
 fi
 
@@ -45,8 +51,9 @@ sudo ifconfig $mesh_dev up
 # Optionally assign IPv4 address to the mesh_dev interface
 # sudo ifconfig $mesh_dev 192.168.X.Y
 
-# Join the mesh network with radio in HT40+ htmode to enable 802.11n rates
-sudo iw dev $mesh_dev mesh join MESH_NAME freq 2412 HT40+
+# Join the mesh network
+# To join radio in HT40+ htmode (enable 802.11n rates) add  HT40+ to end of this line
+sudo iw dev $mesh_dev mesh join MESH_NAME freq 2412
 
 # Disable forwarding since we rely on cjdns to do routing and only uses Mesh Point as a point-to-point link
 sudo iw dev $mesh_dev set mesh_param mesh_fwding=0

@@ -4,4 +4,6 @@ sudo rm -rf /etc/nginx/sites-available/main.conf || true
 sudo rm -rf /etc/nginx/sites-enabled/main.conf || true
 sudo rm /etc/nginx/sites-enabled/default || true
 sudo rm -rf /etc/nginx/site-path-enabled || true
-sudo apt-get remove nginx -y
+sudo apt-get purge nginx -y
+sudo apt-get purge nginx-* libnginx-*  -y
+sudo rm -rf /var/www/html
