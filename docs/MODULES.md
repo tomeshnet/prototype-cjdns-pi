@@ -150,11 +150,11 @@ If you use this rule, there is no point in having any other Yggdrasil client rul
 
 You can specify a protocol, but that would limit the ports that are open.
 
-## Adding deprciated systems peer info into CJDNS and Yggdrasil (Optional)
+## Adding depreciated systems peer info into CJDNS and Yggdrasil (Optional)
 
 #### CJDNS
 
-Goto [Deprecated Systems](https://deprecated.systems/) website. You will see the following information:
+Goto [Depreciated Systems](https://deprecated.systems/) website. You will see the following information:
 
 `cjdns peering
 
@@ -172,7 +172,7 @@ Goto [Deprecated Systems](https://deprecated.systems/) website. You will see the
       "publicKey": "2scyvybg4qqms1c5c9nyt50b1cdscxnr6ycpwsxf6pccbmwuynk0.k"
     }`
 
-This is the peering information that will give you the address (ipv4 or ipv6) and credntials to connect to 
+This is the peering information that will give you the address (ipv4 or ipv6) and credentials to connect to 
 the node. You must either select to use just the ipv4 config, or you could use both. Now that we have this info, 
 connect to your mesh device, and edit the following config file:
 `$ sudo nano /etc/cjdroute.conf`
@@ -186,7 +186,7 @@ This is where you input the ipv4 address. There is also a ipv6 field:
 `// Nodes to connect to (IPv6 only).
                 "connectTo": 
 		{`
-Insert the respective code, and the save (ctrl+X to save, then ctrl+S to confirm file name, then ENTER to confrim changes).
+Insert the respective code, and the save (ctrl+X to save, then ctrl+S to confirm file name, then ENTER to confirm changes).
 Your code should look somwhat like this:
 `// Nodes to connect to (IPv4 only). 
 
@@ -199,9 +199,9 @@ Your code should look somwhat like this:
                                  "publicKey": "2scyvybg4qqms1c5c9nyt50b1cdscxnr6ycpwsxf6pccbmwuynk0.k"
                                }
                  }`
-Next you should restart cjdns with a `sudo systemctl restart cjnds` command. This will reload cjdns
+Next, you should restart cjdns with a `sudo systemctl restart cjnds` command. This will reload cjdns
 with the new config file. Run a `status` command on your node, and make sure when it prints out
-the text, that cjdns is green with the text `[ACTIVE]`. Ff so, you have succesfully connected to the remote peer.
+the text, that cjdns is green with the text `[ACTIVE]`. If so, you have succesfully connected to the remote peer.
 If it says `[INACTIVE]`, then there might be a typo in your config file. Make sure its formatted correctly (the
 config file is written using JSON).
 
@@ -228,7 +228,7 @@ This is where we are going to enter in the info to connect to the peer node. You
 
 `Peers: ["tcp://104.248.104.141:59168"]`
 
-Exit out of nano and save the changes. Restart Yggdrasil with a `sudo killall yggdrasil` command. pass a `status`
+Exit out of nano and save the changes. Restart Yggdrasil with a `sudo killall yggdrasil` command. Pass a `status`
 command to terminal and you should see green text where Yggdraisl is printed with the words `[ACTIVE]` present.
 You are now connected to the remote peer with Yggdrasil. If you see`[INACTIVE]`, then you need to check your code
 for typos, make sure there are "" around the whole entire string.  
