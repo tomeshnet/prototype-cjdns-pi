@@ -152,7 +152,7 @@ You can specify a protocol, but that would limit the ports that are open.
 
 ## Adding deprciated systems peer info into CJDNS and Yggdrasil (Optional)
 
-####CJDNS
+#### CJDNS
 
 goto [Deprecated Systems](https://deprecated.systems/) website. You will see the following information:
 
@@ -188,7 +188,8 @@ this is where you input the ipv4 address. there is also a ipv6 field:
 		{`
 Insert the respective code, and the save (ctrl+X to save, then ctrl+S to confirm file name, then ENTER to confrim changes).
 your code should look somwhat like this:
-`// Nodes to connect to (IPv4 only).
+`// Nodes to connect to (IPv4 only). 
+
                 "connectTo":
                  {
                                "159.203.5.91:30664": {
@@ -197,30 +198,36 @@ your code should look somwhat like this:
                                  "password": "iuw4nklm3j89qno876ef2jabpvlg1j0",
                                  "publicKey": "2scyvybg4qqms1c5c9nyt50b1cdscxnr6ycpwsxf6pccbmwuynk0.k"
                                }
-                 }
-
-`
+                 }`
 Next you should restart cjdns with a `sudo systemctl restart cjnds` command. this will reload cjdns
 with the new config file. run a `status` command on your node, and make sure when it prints out
 the text, that cjdns is green with the text `[ACTIVE]`. if so, you have succesfully connected to the remote peer,
 if it says `[INACTIVE]`, then there might be a typo in your config file. make sure its formatted correctly (the
 config file is written using JSON).
 
-###Yggdrasil
+### Yggdrasil
 
 to connect to the "depreciated Systems" node via Yggdrasil, you must do the similar as above, but with qutie a few less steps.
 
 on the [Deprecitated systems](https://deprecated.systems/) website, there is a section outlining the info for Yggdrasil:
+
 `"104.248.104.141:59168"
  "[2604:a880:cad:d0::45:d001]:59168"`
+
 One is ipv4, the other ipv6. Head over to your mesh node yet again, and enter the following in your terminal:
+
 `$ sudo nano /etc/yggdrasil.conf`
+
 We are interested in this section of the config file:
-` # List of connection strings for static peers in URI format, e.g.
-  # tcp://a.b.c.d:e or socks://a.b.c.d:e/f.g.h.i:j.
+
+`  List of connection strings for static peers in URI format, e.g.
+   tcp://a.b.c.d:e or socks://a.b.c.d:e/f.g.h.i:j.
   Peers: []`
+
 This is where we are going to enter in the info to connect to the peer node. your code should look similar to this:
+
 `Peers: ["tcp://104.248.104.141:59168"]`
+
 exit out of nano and save the changes. restart Yggdrasil with a `sudo killall yggdrasil` command. pass a `status`
 command to terminal and you should see green text where Yggdraisl is printed with the words `[ACTIVE]` present.
 you are now connected to the remote peer with Yggdrasil.if you see`[INACTIVE]`, then you need to check your code
