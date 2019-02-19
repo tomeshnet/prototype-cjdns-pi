@@ -83,7 +83,6 @@ then
 		cp armbian-armbian.list /etc/apt/sources.list.d/armbian.list
 		sed -i "s/__CODENAME__/$codename/g" /etc/apt/sources.list.d/armbian.list
 		sed -i "s/__PREFIX__/$prefix/g" /etc/apt/sources.list.d/armbian.list
-		
 	fi
 
 	sed -i "s/__CODENAME__/$codename/g" /etc/apt/sources.list
