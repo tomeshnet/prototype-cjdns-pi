@@ -156,7 +156,7 @@ You can specify a protocol, but that would limit the ports that are open.
 
 #### CJDNS
 
-goto [Deprecated Systems](https://deprecated.systems/) website. You will see the following information:
+Go to [Deprecated Systems](https://deprecated.systems/) website. You will see the following information:
 
 ```
 cjdns peering
@@ -176,7 +176,7 @@ cjdns peering
     }
 ```
 
-this is the peering information that will give you the address (ipv4 or ipv6) and credntials to connect to 
+This is the peering information that will give you the address (ipv4 or ipv6) and credntials to connect to 
 the node. You must either select to use just the ipv4 config, or you could use both. Now that we have this info, 
 connect to your mesh device, and edit the following config file:
 
@@ -193,7 +193,7 @@ you know what you are doing. you need to head down to this line:
 {
 ```
 
-this is where you input the ipv4 address. there is also a ipv6 field:
+This is where you input the ipv4 address. there is also a ipv6 field:
 
 ```
 // Nodes to connect to (IPv6 only).
@@ -252,7 +252,7 @@ This is where we are going to enter in the info to connect to the peer node. you
 Peers: ["tcp://104.248.104.141:59168"]
 ```
 
-exit out of nano and save the changes. restart Yggdrasil with a `sudo killall yggdrasil` command. pass a `status`
+Exit out of nano and save the changes. restart Yggdrasil with a `sudo killall yggdrasil` command. pass a `status`
 command to terminal and you should see green text where Yggdrasil is printed with the words `[ACTIVE]` present.
 you are now connected to the remote peer with Yggdrasil. If you see`[INACTIVE]`, then you need to check your code
 for typos, make sure there are "" around the whole entire string.  
