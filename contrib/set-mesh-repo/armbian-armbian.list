@@ -1,0 +1,1 @@
+deb http://__PREFIX__.mirror.tomesh.net/armbian/apt/ __CODENAME__ main __CODENAME__-utils __CODENAME__-desktop
