@@ -246,7 +246,7 @@ List of connection strings for static peers in URI format, e.g. tcp://a.b.c.d:e 
 Peers: []
 ```
 
-This is where we are going to enter in the info to connect to the peer node. your code should look similar to this:
+This is where we are going to enter in the info to connect to the peer node. Your code should look similar to this:
 
 ```
 Peers: ["tcp://104.248.104.141:59168"]
