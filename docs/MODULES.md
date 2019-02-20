@@ -176,7 +176,7 @@ cjdns peering
     }
 ```
 
-This is the peering information that will give you the address (ipv4 or ipv6) and credntials to connect to 
+This is the peering information that will give you the address (ipv4 or ipv6) and credentials to connect to 
 the node. You must either select to use just the ipv4 config, or you could use both. Now that we have this info, 
 connect to your mesh device, and edit the following config file:
 
@@ -185,7 +185,7 @@ $ sudo nano /etc/cjdroute.conf
 ```
 
 This file contains everything that is required for cjdns to run, so be careful not to remove anything else, unless
-you know what you are doing. you need to head down to this line:
+you know what you are doing. You need to head down to this line:
 
 ```
 // Nodes to connect to (IPv4 only).
@@ -193,7 +193,7 @@ you know what you are doing. you need to head down to this line:
 {
 ```
 
-This is where you input the ipv4 address. there is also a ipv6 field:
+This is where you input the ipv4 address. There is also a ipv6 field:
 
 ```
 // Nodes to connect to (IPv6 only).
@@ -201,8 +201,8 @@ This is where you input the ipv4 address. there is also a ipv6 field:
 {
 ```
 
-Insert the respective code, and the save (ctrl+X to save, then ctrl+S to confirm file name, then ENTER to confrim changes).
-your code should look somwhat like this:
+Insert the respective code, and the save (ctrl+X to save, then ctrl+S to confirm file name, then ENTER to confirm changes).
+your code should look somewhat like this:
 ```
                 // Nodes to connect to (IPv4 only). 
                 "connectTo":
@@ -216,15 +216,15 @@ your code should look somwhat like this:
                  }
 ```
 
-Next you should restart cjdns with a `sudo systemctl restart cjnds` command. this will reload cjdns
-with the new config file. run a `status` command on your node, and make sure when it prints out
-the text, that cjdns is green with the text `[ACTIVE]`. if so, you have succesfully connected to the remote peer,
-if it says `[INACTIVE]`, then there might be a typo in your config file. make sure its formatted correctly (the
+Next you should restart cjdns with a `sudo systemctl restart cjnds` command. This will reload cjdns
+with the new config file. Run a `status` command on your node, and make sure when it prints out
+the text, that cjdns is green with the text `[ACTIVE]`. if so, you have successfully connected to the remote peer,
+if it says `[INACTIVE]`, then there might be a typo in your config file. Make sure its formatted correctly (the
 config file is written using JSON).
 
 ### Yggdrasil
 
-To connect to the "Deprecated Systems" node via Yggdrasil, you must do the similar as above, but with qutie a few less steps.
+To connect to the "Deprecated Systems" node via Yggdrasil, you must do the similar as above, but with quite a few less steps.
 
 On the [deprecated.systems](https://deprecated.systems/) website, there is a section outlining the info for Yggdrasil:
 
@@ -246,13 +246,13 @@ List of connection strings for static peers in URI format, e.g. tcp://a.b.c.d:e 
 Peers: []
 ```
 
-This is where we are going to enter in the info to connect to the peer node. Your code should look similar to this:
+This is where we are going to insert the code to connect to the peer node. Your code should look similar to this:
 
 ```
 Peers: ["tcp://104.248.104.141:59168"]
 ```
 
-Exit out of nano and save the changes. restart Yggdrasil with a `sudo killall yggdrasil` command. pass a `status`
+Exit out of nano and save the changes. Restart Yggdrasil with a `sudo killall yggdrasil` command. Pass a `status`
 command to terminal and you should see green text where Yggdrasil is printed with the words `[ACTIVE]` present.
-you are now connected to the remote peer with Yggdrasil. If you see`[INACTIVE]`, then you need to check your code
-for typos, make sure there are "" around the whole entire string.  
+You are now connected to the remote peer with Yggdrasil. If you see`[INACTIVE]`, then you need to check your code
+for typos, make sure there are "" around the whole entire string.
