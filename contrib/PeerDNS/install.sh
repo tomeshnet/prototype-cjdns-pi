@@ -19,7 +19,6 @@ sudo dpkg -i "esl-erlang_$ERLANG_VERSION-1~raspbian~stretch_armhf.deb"
 echo "\033[1;36mErlang installed."
 
 echo "\033[1;36mInstalling Elixir $ELIXIR_VERSION ..."
-sudo rm -rf /opt/elixir || true  # Remove it for updates
 sudo mkdir /opt/elixir || true
 sudo chmod -R 755 /opt/elixir  # Everyone can read and execute - only root can write
 sudo wget -P /opt/elixir "https://github.com/elixir-lang/elixir/releases/download/v$ELIXIR_VERSION/Precompiled.zip"
@@ -35,13 +34,14 @@ sudo dpkg -i /tmp/debian-archive-keyring_2017.5_all.deb
 echo "deb http://ftp.ca.debian.org/debian stretch-backports main" | sudo tee -a /etc/apt/sources.list
 sudo apt update -y
 sudo apt install -y -t stretch-backports libsodium23 libsodium-dev
-echo "\033[1;36mlibsodium installed."
+echo "\033[1;36mlibsodium from stretch-backports installed."
 
 echo "\033[1;36mInstalling PeerDNS in /home/$(whoami) ..."
 cd "/home/$(whoami)"
 git clone https://github.com/p2pstuff/PeerDNS.git
 cd PeerDNS
-# XXX: Do automatic installs that come up
+# TODO: Do installs that come up
+# TODO: Do installs that come up for mix run --no-halt as well
 mix deps.get
 # Setup serving the webUI locally
 cd ui
@@ -58,6 +58,7 @@ echo "address=/hype/127.0.0.1#5454" | sudo tee -a /etc/dnsmasq.conf
 echo "address=/y/127.0.0.1#5454" | sudo tee -a /etc/dnsmasq.conf
 echo "address=/ygg/127.0.0.1#5454" | sudo tee -a /etc/dnsmasq.conf
 echo "address=/tomesh/127.0.0.1#5454" | sudo tee -a /etc/dnsmasq.conf
+sudo systemctl restart dnsmasq
 
 sudo iptables -A INPUT -j ACCEPT -p tcp --dport 14123
 sudo iptables -A INPUT -j ACCEPT -p udp --dport 14123
@@ -65,7 +66,8 @@ sudo ip6tables -A INPUT -j ACCEPT -p tcp --dport 14123
 sudo ip6tables -A INPUT -j ACCEPT -p udp --dport 14123
 
 echo "\033[1;36mPeerDNS installed and set up."
-echo "\033[1;36mThe firewall has been opened temporarily. To keep the required ports open, add these lines to /etc/iptables/rules.v4 and /etc/iptables/rules.v6, in the raw INPUT rules section."
+
+echo "\033[1;36mThe firewall has been opened temporarily. To keep the required ports open after a reboot, add these lines to /etc/iptables/rules.v4 and /etc/iptables/rules.v6, in the raw INPUT rules section."
 echo "\033[0;36m    -A INPUT -j ACCEPT -p tcp --dport 14123"
 echo "\033[0;36m    -A INPUT -j ACCEPT -p udp --dport 14123"
 echo ""
