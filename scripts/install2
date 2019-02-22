@@ -162,7 +162,7 @@ if [ "$(checkModule 'WITH_DIALOG')" ]; then
 fi
 
 
-askSelection "A Basic node\nB IPFS Node\nC Monitor Node\nD SSB Node\nE Camera Node\nZ Custom" "Select node install type" Z
+askSelection "A Basic node\nB IPFS Node\nC Monitor Node\nD SSB Node\nE Camera Node\nF Raspberry Pi Adhoc (Experimental) \nZ Custom" "Select node install type" Z
 
 case "$dialogREPLY" in
     "A")
@@ -254,6 +254,25 @@ case "$dialogREPLY" in
         WITH_SSB=false
         WITH_SSB_PATCHFOO=false
         WITH_IPFS_PI_STREAM=true
+    ;;
+    "F")
+        echo "Raspberry Pi Ad-Hoc"
+	WITH_YGGDRASIL=true
+        WITH_MESH_POINT=false
+	WITH_AD_HOC=true
+        WITH_WIFI_AP=false
+        WITH_FIREWALL=true
+        WITH_CJDNS_IPTUNNEL=true
+        WITH_IPFS=false
+        WITH_PROMETHEUS_NODE_EXPORTER=true
+        WITH_EXTRA_TOOLS=true
+        WITH_WATCHDOG=true
+        WITH_YRD=true
+        WITH_PROMETHEUS_SERVER=false
+        WITH_GRAFANA=false
+        WITH_SSB=false
+        WITH_SSB_PATCHFOO=false
+        WITH_IPFS_PI_STREAM=false
     ;;
     "Z")
     ;;
