@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-SUBNET4="10.10.0."
-
 # Convert existing yggdrasil config to json from hjson
 
 # Detect if there is a # as a first character of the file. 
@@ -14,15 +12,15 @@ fi
 if [ -e /etc/yggdrasil.iptunnel.server ]; then
 
     # Add each client to yggdrasil iptunnel allowed connections
-    while read -r PUBLIC_KEY INDEX; do
+    while read -r PUBLIC_KEY IP_ADDR; do
         if [[ "${PUBLIC_KEY}" =~ ^[0-z]{64} && ${CLIENT} -le ${LAST} ]]; then
             ASSIGNED_IP4="${SUBNET4}${CLIENT}"
-            IPv4Destinations=""\${ASSIGNED_IP4}/32\": \"${PUBLIC_KEY}\","
+            IPv4Destinations="\"${IP_ADDR}/32\": \"${PUBLIC_KEY}\","
             ((CLIENT++))
         fi
     done < /etc/yggdrasil.iptunnel.server
     
-    # Trim last ,... why is it adding an =
+    # Trim last ,
     IPv4Destinations="${IPv4Destinations%?}"
     IPv4Sources="0.0.0.0/0"
         
