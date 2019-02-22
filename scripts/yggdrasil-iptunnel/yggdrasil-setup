@@ -4,9 +4,9 @@
 echo 1 > /proc/sys/net/ipv4/ip_forward
 echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
 
-SUBNET4="10.2.0."
+SUBNET4="10.10.0."
 
-if [ -e /etc/cjdns.iptunnel.server ]; then
+if [ -e /etc/yggdrasil.iptunnel.server ]; then
 
     # Add subnet and route for cjdns tun0 interface
     ip addr add "${SUBNET4}1/24" dev ygg0  || true
@@ -21,7 +21,7 @@ elif [ -e /etc/yggdrasil.iptunnel.client ]; then
         if [[ "${PUBLIC_KEY}" =~ ^[0-z]{64} ]]; then    
             ip addr add dev ygg0 ${ASSIGNED_IP}/32
         fi
-    done < /etc/cjdns.iptunnel.client
+    done < /etc/yggdrasil.iptunnel.client
 
     # Remove NAT from eth0 if it exists
     iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE || true
