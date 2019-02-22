@@ -14,12 +14,14 @@ fi
 
 cd /tmp
 echo -e "\033[1;36mInstalling Erlang $ERLANG_VERSION ..."
+echo -e "\033[0;36m"
 wget "https://packages.erlang-solutions.com/erlang/esl-erlang/FLAVOUR_1_general/esl-erlang_$ERLANG_VERSION-1~raspbian~stretch_armhf.deb"
 sudo dpkg -i "esl-erlang_$ERLANG_VERSION-1~raspbian~stretch_armhf.deb" || true
 sudo apt install -f -y  # Fix required deps
 echo -e "\033[1;36mErlang installed."
 
 echo -e "\033[1;36mInstalling Elixir $ELIXIR_VERSION ..."
+echo -e "\033[0;36m"
 sudo mkdir /opt/elixir || true
 sudo chmod -R 755 /opt/elixir  # Everyone can read and execute - only root can write
 sudo wget -P /opt/elixir "https://github.com/elixir-lang/elixir/releases/download/v$ELIXIR_VERSION/Precompiled.zip"
@@ -30,6 +32,7 @@ export PATH="/opt/elixir/bin:$PATH"
 echo -e "\033[1;36mElixir installed."
 
 echo -e "\033[1;36mInstalling libsodium from stretch-backports..."
+echo -e "\033[0;36m"
 # Debian keys needed for stretch-backports to be enabled, but Raspbian won't let you download them through apt
 wget -P /tmp http://ftp.ca.debian.org/debian/pool/main/d/debian-archive-keyring/debian-archive-keyring_2017.5_all.deb
 sudo dpkg -i /tmp/debian-archive-keyring_2017.5_all.deb
@@ -39,6 +42,7 @@ sudo apt install -y -t stretch-backports libsodium23 libsodium-dev
 echo -e "\033[1;36mlibsodium from stretch-backports installed."
 
 echo -e "\033[1;36mInstalling PeerDNS in /opt ..."
+echo -e "\033[0;36m"
 cd /opt
 sudo git clone https://github.com/p2pstuff/PeerDNS.git
 sudo chmod -R 777 PeerDNS  # XXX: Maybe having everyone be able to write is bad?
