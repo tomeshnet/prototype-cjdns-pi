@@ -6,6 +6,9 @@ echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
 
 SUBNET4="10.10.0."
 
+# Give yggdrasil enough time to create an ygg0 interface before we start adding routes
+sleep 5
+
 if [ -e /etc/yggdrasil.iptunnel.server ]; then
 
     # Add route for cjdns ygg0 interface
