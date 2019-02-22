@@ -9,8 +9,7 @@ SUBNET4="10.10.0."
 
 if [ -e /etc/yggdrasil.iptunnel.server ]; then
 
-    # Add subnet and route for cjdns ygg0 interface
-    ip addr add "${SUBNET4}1/24" dev ygg0  || true
+    # Add route for cjdns ygg0 interface
     route add -net "${SUBNET4}0/24" ygg0 || true
 
 # Configure as yggdrasil iptunnel client if client file is present (this is simply a newline-separated list
