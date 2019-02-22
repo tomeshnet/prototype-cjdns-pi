@@ -166,9 +166,10 @@ askSelection "A Basic node\nB IPFS Node\nC Monitor Node\nD SSB Node\nE Camera No
 case "$dialogREPLY" in
     "A")
         echo "Basic node"
-	WITH_YGGDRASIL=true
-	WITH_MESH_POINT=""
-	WITH_WIFI_AP=""
+        WITH_YGGDRASIL=true
+        WITH_YGGDRASIL_IPTUNNEL=true
+        WITH_MESH_POINT=""
+        WITH_WIFI_AP=""
         WITH_FIREWALL=true
         WITH_CJDNS_IPTUNNEL=true
         WITH_IPFS=false
@@ -184,7 +185,8 @@ case "$dialogREPLY" in
     ;;
     "B")
         echo "Basic IPFS node"
-	WITH_YGGDRASIL=true
+        WITH_YGGDRASIL=true
+        WITH_YGGDRASIL_IPTUNNEL=true
         WITH_MESH_POINT=""
         WITH_WIFI_AP=""
         WITH_FIREWALL=true
@@ -202,7 +204,8 @@ case "$dialogREPLY" in
     ;;
     "C")
         echo "Monitor Node"
-	WITH_YGGDRASIL=true
+        WITH_YGGDRASIL=true
+        WITH_YGGDRASIL_IPTUNNEL=true
         WITH_MESH_POINT=""
         WITH_WIFI_AP=""
         WITH_FIREWALL=true
@@ -220,7 +223,8 @@ case "$dialogREPLY" in
     ;;
     "D")
         echo "SSB Node"
-	WITH_YGGDRASIL=true
+        WITH_YGGDRASIL=true
+        WITH_YGGDRASIL_IPTUNNEL=true
         WITH_MESH_POINT=""
         WITH_WIFI_AP=""
         WITH_FIREWALL=true
@@ -238,7 +242,8 @@ case "$dialogREPLY" in
     ;;
     "E")
         echo "IPFS Camera Node"
-	WITH_YGGDRASIL=true
+        WITH_YGGDRASIL=true
+        WITH_YGGDRASIL_IPTUNNEL=true
         WITH_MESH_POINT=""
         WITH_WIFI_AP=""
         WITH_FIREWALL=true
@@ -274,7 +279,9 @@ fi
 export MESH_NAME
 
 askModule "WITH_YGGDRASIL" "Yggdrasil routing engine"
-
+if [ "$WITH_YGGDRASIL" == "true" ]; then
+    askModule "WITH_YGGDRASIL_IPTUNNEL" "Internet Gateway over yggdrasil"
+fi
 askModule "WITH_MESH_POINT" "Mesh Point Interface"
 if [ "$WITH_MESH_POINT" == false ]; then
     askModule "WITH_AD_HOC" "Ad-Hoc Interface"
@@ -283,7 +290,9 @@ if [ "$SUPPORT_HOSTAP" == "true" ]; then
     askModule "WITH_WIFI_AP" "WiFi Access Point"
 fi
 askModule "WITH_FIREWALL" "Basic Firewall"
-askModule "WITH_CJDNS_IPTUNNEL" "Internet Gateway"
+if [ ! "$WITH_YGGDRASIL_IPTUNNEL" == "true" ]; then
+    askModule "WITH_CJDNS_IPTUNNEL" "Internet Gateway over CJDNS"
+fi
 askModule "WITH_IPFS" "IPFS"
 if [ "$WITH_IPFS" == true ] && [ "$BOARD_FAMILY" == "Raspberry Pi" ]; then
     askModule "WITH_IPFS_PI_STREAM" "IPFS Pi Stream" "n"

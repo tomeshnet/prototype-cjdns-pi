@@ -25,6 +25,8 @@ A short summary of each module is directly below. Documentation for specific abi
 | `WITH_WATCHDOG`                 | None                                           | Set to `true` if you want to enable hardware watchdog that will reset the device when the operating system becomes unresponsive. |
 | `WITH_YRD`                      | None                                           | Set to `true` if you want to enable [yrd](https://github.com/kpcyrd/yrd), a helpful command-line tool for cjdns. |
 | `WITH_YGGDRASIL`                | None                                           | Set to `true` if you want to install [Yggdrasil](https://yggdrasil-network.github.io/), an alternate and possibly more efficient mesh routing software than CJDNS. |
+| `WITH_YGGDRASIL_IPTUNNEL`       | None                                           | Set to `true` if you want to use the yggdrasil iptunnel feature to set up an Internet gateway for your node. To configure as a server (exit Internet traffic for other nodes), create **/etc/yggdrasil.iptunnel.server** containing a newline-separated list of cjdns public keys of allowed clients and an ipaddress for that client. To configure as a client (use an exit server to access the Internet), create **/etc/yggdrasil.iptunnel.client** containing a newline-separated list of cjdns public keys of the gateway servers followed by the IP address set on the server. You can only configure as one or the other, not both and you can only have one entry on the client. |
+
 
 To install all optional modules (not recommended), run the following command:
 
@@ -49,6 +51,38 @@ Yggdrasil is another piece of mesh routing software similar to CJDNS, but with p
 Yggdrasil will give each node (like your Pi, for example) an IPv6 address, but it can also give each node a subnet to distribute to its clients. This means that if you connect to the WiFi of your Pi, your device can get a unique Yggdrasil address, with all the benefits it provides. These include being able to access your device directly, without being NATed or blocked.
 
 However, the Pi does have a firewall, so various commands need be run to allow access to clients. By default all Yggdrasil client access is blocked. See [**Firewall/IPv6/Yggdrasil Clients**](#yggdrasil-clients) to learn how to change that.
+
+### Yggdrasil IPTunnel
+
+This module will allow you to tunnel internet from an EXIT node (server) that has Internet to another node that does not. To do this you must exchange public keys.  The public key can be found in /etc/yggdrasil.conf
+
+#### Server
+ To configure as a server (exit Internet traffic for other nodes), 
+ 1. create **/etc/yggdrasil.iptunnel.server**
+ 1. fill it with newline-separated list of:
+   - public key of the clients
+   - single white space
+   - IP Address in the 10.10.0.0/24 range that will be assigned to the client
+
+Example
+```
+1234567890123456789012345678901234567890123456789012345678901234 10.10.0.1
+2345678901234567890123456789012345678901234567890123456789012345 10.10.0.2
+3456789012345678901234567890123456789012345678901234567890123467 10.10.0.3
+```
+
+#### Client
+To configure as a client (use an exit server to access the Internet), 
+1. create **/etc/yggdrasil.iptunnel.client** 
+1. place a single line containing
+   - public key of the server
+   - single space
+   - IP Address assigned to you by the server
+
+Example
+```
+4567890123456789012345678901234567890123456789012345678901234567 10.10.0.4
+```
 
 ## IPFS
 IPFS stands for Interplanetary File System. It is an open-source, peer-to-peer distributed hypermedia protocol that aims to function as a ubiquitous file system for all computing devices. 
