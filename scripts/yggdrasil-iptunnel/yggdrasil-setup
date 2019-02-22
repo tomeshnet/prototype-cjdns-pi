@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-sleep 5
 # Enable forwarding for ipv4 and ipv6
 echo 1 > /proc/sys/net/ipv4/ip_forward
 echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
