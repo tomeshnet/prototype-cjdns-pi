@@ -290,9 +290,7 @@ if [ "$SUPPORT_HOSTAP" == "true" ]; then
     askModule "WITH_WIFI_AP" "WiFi Access Point"
 fi
 askModule "WITH_FIREWALL" "Basic Firewall"
-if [ ! "$WITH_YGGDRASIL_IPTUNNEL" == "true" ]; then
-    askModule "WITH_CJDNS_IPTUNNEL" "Internet Gateway over CJDNS"
-fi
+askModule "WITH_CJDNS_IPTUNNEL" "Internet Gateway over CJDNS"
 askModule "WITH_IPFS" "IPFS"
 if [ "$WITH_IPFS" == true ] && [ "$BOARD_FAMILY" == "Raspberry Pi" ]; then
     askModule "WITH_IPFS_PI_STREAM" "IPFS Pi Stream" "n"
