@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-SUBNET4="10.2.0."
+SUBNET4="10.10.0."
 
-if [ -e /etc/cjdns.iptunnel.server ]; then
+if [ -e /etc/yggdrasil.iptunnel.server ]; then
 
     # Add each client to yggdrasil iptunnel allowed connections
     while read -r PUBLIC_KEY INDEX; do
@@ -20,7 +20,7 @@ if [ -e /etc/cjdns.iptunnel.server ]; then
 # IPv4Sources: ["0.0.0.0/0"]
             ((CLIENT++))
         fi
-    done < /etc/cjdns.iptunnel.server
+    done < /etc/yggdrasil.iptunnel.server
 
 elif [ -e /etc/yggdrasil.iptunnel.client ]; then
 
@@ -39,7 +39,6 @@ elif [ -e /etc/yggdrasil.iptunnel.client ]; then
 # IPv4Sources: ["${SUBNET4}.0/24"]
 
 
-            ip addr add dev ygg0 ${ASSIGNED_IP}/32
         fi
-    done < /etc/cjdns.iptunnel.client
+    done < /etc/yggdrasil.iptunnel.client
  fi
