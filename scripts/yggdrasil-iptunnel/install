@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
 set -e
+
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+sudo apt-get -y install jq
+
 sudo cp "$BASE_DIR/yggdrasil-setup" "/usr/local/sbin/yggdrasil-setup"
 sudo cp "$BASE_DIR/yggdrasil-pre-setup" "/usr/local/sbin/yggdrasil-pre-setup"
 
