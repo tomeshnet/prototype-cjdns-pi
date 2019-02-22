@@ -28,7 +28,7 @@ elif [ -e /etc/yggdrasil.iptunnel.client ]; then
     while read -r PUBLIC_KEY; do
         if [[ "${PUBLIC_KEY}" =~ ^[0-z]{64} ]]; then
 
-
+echo "noop"
 ############TODO#####################
 # Modify config file here
 # Modify  IPv4Destinations to read
