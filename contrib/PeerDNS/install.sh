@@ -36,9 +36,10 @@ sudo apt update -y
 sudo apt install -y -t stretch-backports libsodium23 libsodium-dev
 echo "\033[1;36mlibsodium from stretch-backports installed."
 
-echo "\033[1;36mInstalling PeerDNS in /home/$(whoami) ..."
-cd "/home/$(whoami)"
-git clone https://github.com/p2pstuff/PeerDNS.git
+echo "\033[1;36mInstalling PeerDNS in /opt ..."
+cd /opt
+sudo git clone https://github.com/p2pstuff/PeerDNS.git
+sudo chmod -R 777 PeerDNS  # XXX: Maybe having everyone be able to write is bad?
 cd PeerDNS
 # TODO: Do installs that come up
 # TODO: Do installs that come up for mix run --no-halt as well
@@ -65,14 +66,17 @@ sudo iptables -A INPUT -j ACCEPT -p udp --dport 14123
 sudo ip6tables -A INPUT -j ACCEPT -p tcp --dport 14123
 sudo ip6tables -A INPUT -j ACCEPT -p udp --dport 14123
 
-echo "\033[1;36mPeerDNS installed and set up."
+cp "$BASE_DIR/peerdns.service" /usr/local/lib/systemd/system
+sudo systemctl daemon-reload
 
+echo "\033[1;36mPeerDNS installed and set up, in /opt."
+echo ""
 echo "\033[1;36mThe firewall has been opened temporarily. To keep the required ports open after a reboot, add these lines to /etc/iptables/rules.v4 and /etc/iptables/rules.v6, in the raw INPUT rules section."
 echo "\033[0;36m    -A INPUT -j ACCEPT -p tcp --dport 14123"
 echo "\033[0;36m    -A INPUT -j ACCEPT -p udp --dport 14123"
 echo ""
-echo "\033[1;36mGo to ~/PeerDNS and run \033[0;36mmix run --no-halt\033[1;36m to start PeerDNS."
-echo "\033[1;36mRun \033[0;36mmix run --no-halt 2>&1 /dev/null\033[1;36m to start it without any output."
+echo "\033[1;36mRun \033[0;36msudo systemctl start peerdns.service\033[1;36m to start PeerDNS."
+echo "\033[1;36mRun \033[0;36msudo systemctl enable peerdns.service\033[1;36m to start it at boot everytime."
 echo "\033[1;36m CJDNS peers will automatically be peered with."
-echo "\033[1;36mAdd Yggdrasil peers by running the ygg-peer.sh script in this folder."
+echo "\033[1;36mAdd Yggdrasil peers permanently (for now) by running the ygg-peer.sh script in this folder."
 echo "\033[1;36mNavigate to this device at port 14123 in your browser for a web UI to add domain records."
