@@ -15,7 +15,8 @@ fi
 cd /tmp
 echo "\033[1;36mInstalling Erlang $ERLANG_VERSION ..."
 wget "https://packages.erlang-solutions.com/erlang/esl-erlang/FLAVOUR_1_general/esl-erlang_$ERLANG_VERSION-1~raspbian~stretch_armhf.deb"
-sudo dpkg -i "esl-erlang_$ERLANG_VERSION-1~raspbian~stretch_armhf.deb"
+sudo dpkg -i "esl-erlang_$ERLANG_VERSION-1~raspbian~stretch_armhf.deb" || true
+sudo apt install -f -y  # Fix required deps
 echo "\033[1;36mErlang installed."
 
 echo "\033[1;36mInstalling Elixir $ELIXIR_VERSION ..."
