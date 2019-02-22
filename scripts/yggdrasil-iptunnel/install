@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -e
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+sudo cp "$BASE_DIR/yggdrasil-setup" "/usr/local/sbin/yggdrasil-setup"
+
+# Update service to start script on cjdns start
+if [ -f /etc/systemd/system/yggdrasil.service ]; then
+    sudo sed -i /ExecStartPost/d /etc/systemd/system/yggdrasil.service
+    sudo sed -i s#Restart=always#Restart=always\\nExecStartPost=/usr/local/sbin/yggdrasil-setup# /etc/systemd/system/yggdrasil.service
+fi
+
+sudo systemctl daemon-reload
