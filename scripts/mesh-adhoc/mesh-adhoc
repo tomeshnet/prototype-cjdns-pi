@@ -6,7 +6,7 @@ set -e
 sudo iw reg set CA
 
 # Is it safe to stop wpa_supplicant. Is AP running
-if [ ! -d /sys/class/net/wlan-ap ]; 
+if [ ! -d /sys/class/net/wlan-ap ]; then
   # Kill wpa_supplicant with sometimes conflicts with IBSS Ad-Hoc
   sudo killall wpa_supplicant || true
 fi
