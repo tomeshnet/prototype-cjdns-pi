@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # Convert existing yggdrasil config to json from hjson
-
-# Detect if there is a # as a first character of the file. 
+   
+# Detect if there is a # as a first character of the file.
 # If it is then its proably a hjson and needs to be converted into json
 if [ ! -z "$(tr -d ' \t\r\f' < /etc/yggdrasil.conf   | grep -i "^[#]")"  ]; then
     sudo mv /etc/yggdrasil.conf /etc/yggdrasil.conf.orig
@@ -19,11 +19,11 @@ if [ -e /etc/yggdrasil.iptunnel.server ]; then
             ((CLIENT++))
         fi
     done < /etc/yggdrasil.iptunnel.server
-    
+
     # Trim last ,
     IPv4Destinations="${IPv4Destinations%?}"
     IPv4Sources="0.0.0.0/0"
-        
+
 elif [ -e /etc/yggdrasil.iptunnel.client ]; then
 
     # Add each server to yggdrasil iptunnel connect-to's
@@ -33,7 +33,7 @@ elif [ -e /etc/yggdrasil.iptunnel.client ]; then
             IPv4Sources="${IP_ADDR}/32"
         fi
     done < /etc/yggdrasil.iptunnel.client
-    
+
  fi
 
 # Check if there are values to set in the new config file
