@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+SUBNET4="10.2.0."
+
+if [ -e /etc/cjdns.iptunnel.server ]; then
+
+    # Add each client to yggdrasil iptunnel allowed connections
+    while read -r PUBLIC_KEY INDEX; do
+        if [[ "${PUBLIC_KEY}" =~ ^[0-z]{64} && ${CLIENT} -le ${LAST} ]]; then
+            ASSIGNED_IP4="${SUBNET4}${CLIENT}"
+
+############TODO#####################
+# Modify config file here
+# Modify  IPv4Destinations to read
+# IPv4Destinations: {
+# " ${ASSIGNED_IP4}/32": "${PUBLIC_KEY}",
+# "10.10.0.2/32": "752d120e17b0032412c438c014a7a73c4c90ff181ede587d0a1d386a594c8f23",
+# }
+# modify  IPv4Sourcesto read
+# IPv4Sources: ["0.0.0.0/0"]
+            ((CLIENT++))
+        fi
+    done < /etc/cjdns.iptunnel.server
+
+elif [ -e /etc/yggdrasil.iptunnel.client ]; then
+
+    # Add each server to yggdrasil iptunnel connect-to's
+    while read -r PUBLIC_KEY; do
+        if [[ "${PUBLIC_KEY}" =~ ^[0-z]{64} ]]; then
+
+
+############TODO#####################
+# Modify config file here
+# Modify  IPv4Destinations to read
+# IPv4Destinations: {
+# "0.0.0.0/0": ${PUBLIC_KEY}
+# }
+# modify  IPv4Sourcesto read
+# IPv4Sources: ["${SUBNET4}.0/24"]
+
+
+            ip addr add dev ygg0 ${ASSIGNED_IP}/32
+        fi
+    done < /etc/cjdns.iptunnel.client
+ fi
