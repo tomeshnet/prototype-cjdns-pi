@@ -4,7 +4,6 @@ set -e
 
 ERLANG_VERSION=20.1.7
 ELIXIR_VERSION=1.8.1
-
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 if [ "$(whoami)" == root ]; then
@@ -67,13 +66,22 @@ echo "address=/ygg/127.0.0.1#5454" | sudo tee -a /etc/dnsmasq.conf
 echo "address=/tomesh/127.0.0.1#5454" | sudo tee -a /etc/dnsmasq.conf
 sudo systemctl restart dnsmasq
 
-sudo iptables -A INPUT -j ACCEPT -p tcp --dport 14123
-sudo iptables -A INPUT -j ACCEPT -p udp --dport 14123
-sudo ip6tables -A INPUT -j ACCEPT -p tcp --dport 14123
-sudo ip6tables -A INPUT -j ACCEPT -p udp --dport 14123
+sudo iptables -I INPUT -j ACCEPT -p tcp --dport 14123
+sudo iptables -I INPUT -j ACCEPT -p udp --dport 14123
+sudo ip6tables -I INPUT -j ACCEPT -p tcp --dport 14123
+sudo ip6tables -I INPUT -j ACCEPT -p udp --dport 14123
 
-cp "$BASE_DIR/peerdns.service" /etc/systemd/system
+# systemd
+cp "$BASE_DIR/peerdns.service" /tmp  # Edit file in a safe space
+sed -i 's/__USER__/'"$(whoami)"'//g' /tmp/peerdns.service
+sudo cp /tmp/peerdns.service /etc/systemd/system
 sudo systemctl daemon-reload
+cp "$BASE_DIR/systemd-*" /opt/PeerDNS
+sudo chmod -R 777 /opt/PeerDNS  # Just in case it didn't work
+
+# Logging
+sudo touch /var/log/PeerDNS.log
+sudo chmod 777 /var/log/PeerDNS.log
 
 echo -e "\033[1;36mPeerDNS installed and set up, in /opt."
 echo -e ""
@@ -83,6 +91,7 @@ echo -e "\033[0;36m    -A INPUT -j ACCEPT -p udp --dport 14123"
 echo -e ""
 echo -e "\033[1;36mRun \033[0;36msudo systemctl start peerdns.service\033[1;36m to start PeerDNS."
 echo -e "\033[1;36mRun \033[0;36msudo systemctl enable peerdns.service\033[1;36m to start it at boot everytime."
+echo -e "\033[1;36mAll output should be logged to \033[0;36m/var/log/PeerDNS.log\033[1;36m and wiped on each restart."
 echo -e "\033[1;36m CJDNS peers will automatically be peered with."
 echo -e "\033[1;36mAdd Yggdrasil peers permanently (for now) by running the ygg-peer.sh script in this folder."
 echo -e "\033[1;36mNavigate to this device at port 14123 in your browser for a web UI to add domain records."

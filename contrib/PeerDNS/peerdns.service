@@ -5,6 +5,8 @@ After=network.target
 
 [Service]
 User=__USER__
+Group=__USER__
+Environment="PATH=/opt/elixir/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 Type=simple
 ExecStart=/opt/PeerDNS/systemd-start.sh
 ExecStop=/opt/PeerDNS/systemd-stop.sh
