@@ -27,7 +27,7 @@ sudo chmod -R 755 /opt/elixir  # Everyone can read and execute - only root can w
 sudo wget -P /opt/elixir "https://github.com/elixir-lang/elixir/releases/download/v$ELIXIR_VERSION/Precompiled.zip"
 sudo unzip /opt/elixir/Precompiled.zip -d /opt/elixir
 sudo rm /opt/elixir/Precompiled.zip
-echo -e 'export PATH="/opt/elixir/bin:$PATH"' | sudo tee -a /etc/profile  # Add to elixir binaries to PATH
+echo 'export PATH="/opt/elixir/bin:$PATH"' | sudo tee -a /etc/profile  # Add to elixir binaries to PATH
 export PATH="/opt/elixir/bin:$PATH"
 echo -e "\033[1;36mElixir installed."
 
@@ -36,7 +36,7 @@ echo -e "\033[0m"
 # Debian keys needed for stretch-backports to be enabled, but Raspbian won't let you download them through apt
 wget -P /tmp http://ftp.ca.debian.org/debian/pool/main/d/debian-archive-keyring/debian-archive-keyring_2017.5_all.deb
 sudo dpkg -i /tmp/debian-archive-keyring_2017.5_all.deb
-echo -e "deb http://ftp.ca.debian.org/debian stretch-backports main" | sudo tee -a /etc/apt/sources.list
+echo "deb http://ftp.ca.debian.org/debian stretch-backports main" | sudo tee -a /etc/apt/sources.list
 sudo apt update -y
 sudo apt install -y -t stretch-backports libsodium23 libsodium-dev
 echo -e "\033[1;36mlibsodium from stretch-backports installed."
@@ -58,13 +58,13 @@ cd ..
 # Copy over config file
 cp "$BASE_DIR/config.exs" config/
 # Setup dnsmasq to resolve those tlds
-echo -e "address=/p2p/127.0.0.1#5454" | sudo tee -a /etc/dnsmasq.conf
-echo -e "address=/mesh/127.0.0.1#5454" | sudo tee -a /etc/dnsmasq.conf
-echo -e "address=/h/127.0.0.1#5454" | sudo tee -a /etc/dnsmasq.conf
-echo -e "address=/hype/127.0.0.1#5454" | sudo tee -a /etc/dnsmasq.conf
-echo -e "address=/y/127.0.0.1#5454" | sudo tee -a /etc/dnsmasq.conf
-echo -e "address=/ygg/127.0.0.1#5454" | sudo tee -a /etc/dnsmasq.conf
-echo -e "address=/tomesh/127.0.0.1#5454" | sudo tee -a /etc/dnsmasq.conf
+echo "address=/p2p/127.0.0.1#5454" | sudo tee -a /etc/dnsmasq.conf
+echo "address=/mesh/127.0.0.1#5454" | sudo tee -a /etc/dnsmasq.conf
+echo "address=/h/127.0.0.1#5454" | sudo tee -a /etc/dnsmasq.conf
+echo "address=/hype/127.0.0.1#5454" | sudo tee -a /etc/dnsmasq.conf
+echo "address=/y/127.0.0.1#5454" | sudo tee -a /etc/dnsmasq.conf
+echo "address=/ygg/127.0.0.1#5454" | sudo tee -a /etc/dnsmasq.conf
+echo "address=/tomesh/127.0.0.1#5454" | sudo tee -a /etc/dnsmasq.conf
 sudo systemctl restart dnsmasq
 
 sudo iptables -A INPUT -j ACCEPT -p tcp --dport 14123
@@ -72,7 +72,7 @@ sudo iptables -A INPUT -j ACCEPT -p udp --dport 14123
 sudo ip6tables -A INPUT -j ACCEPT -p tcp --dport 14123
 sudo ip6tables -A INPUT -j ACCEPT -p udp --dport 14123
 
-cp "$BASE_DIR/peerdns.service" /usr/local/lib/systemd/system
+cp "$BASE_DIR/peerdns.service" /etc/systemd/system
 sudo systemctl daemon-reload
 
 echo -e "\033[1;36mPeerDNS installed and set up, in /opt."
