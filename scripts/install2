@@ -90,6 +90,7 @@ else
     if [[ $BOARD_REVISION == *"900092"* || $BOARD_REVISION == *"900093"* || $BOARD_REVISION == *"9000c1"* ]]; then
         BOARD_NAME="Zero"
         CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 NO_TEST=1 CFLAGS=\"-s -mfpu=vfp -O2\" ./do"
+	SUPPORT_HOSTAP=true
     elif [[ $BOARD_REVISION == *"00"* ]]; then
         BOARD_NAME="1"
         CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 NO_TEST=1 CFLAGS=\"-s -static -Wall\" ./do"
@@ -161,7 +162,7 @@ if [ "$(checkModule 'WITH_DIALOG')" ]; then
 fi
 
 
-askSelection "A Basic node\nB IPFS Node\nC Monitor Node\nD SSB Node\nE Camera Node\nZ Custom" "Select node install type" Z
+askSelection "A Basic node\nB IPFS Node\nC Monitor Node\nD SSB Node\nE Camera Node\nF Raspberry Pi Adhoc (Experimental) \nZ Custom" "Select node install type" Z
 
 case "$dialogREPLY" in
     "A")
@@ -258,6 +259,25 @@ case "$dialogREPLY" in
         WITH_SSB=false
         WITH_SSB_PATCHFOO=false
         WITH_IPFS_PI_STREAM=true
+    ;;
+    "F")
+        echo "Raspberry Pi Ad-Hoc"
+	WITH_YGGDRASIL=true
+        WITH_MESH_POINT=false
+	WITH_AD_HOC=true
+        WITH_WIFI_AP=false
+        WITH_FIREWALL=true
+        WITH_CJDNS_IPTUNNEL=true
+        WITH_IPFS=false
+        WITH_PROMETHEUS_NODE_EXPORTER=true
+        WITH_EXTRA_TOOLS=true
+        WITH_WATCHDOG=true
+        WITH_YRD=true
+        WITH_PROMETHEUS_SERVER=false
+        WITH_GRAFANA=false
+        WITH_SSB=false
+        WITH_SSB_PATCHFOO=false
+        WITH_IPFS_PI_STREAM=false
     ;;
     "Z")
     ;;
