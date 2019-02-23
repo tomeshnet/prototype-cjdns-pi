@@ -34,6 +34,11 @@ if [ -e /etc/cjdns.iptunnel.server ]; then
         fi
     done < /etc/cjdns.iptunnel.server
 
+    # If no NAT (masquarading) being done, start doing it
+    if [ -z "$(sudo iptables -L POSTROUTING -v -n -t nat  | grep MASQUERADE)" ]; then
+        sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+    fi
+    
 # Configure as cjdns iptunnel client if client file is present (this is simply a newline-separated list
 # of cjdns public keys in /etc/cjdns.iptunnel.client, each key indicating an iptunnel exit server)
 elif [ -e /etc/cjdns.iptunnel.client ]; then
