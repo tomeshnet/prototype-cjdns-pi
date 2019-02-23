@@ -25,3 +25,4 @@ sudo rm -f /etc/hostapd/ca.pem
 sudo rm -f /etc/hostapd/server.pem
 sudo rm -f /etc/hostapd/nat.sh
 sudo rm -f /etc/systemd/system/hostapd.service
+sudo rm -rf /etc/udev/rules.d/70-persistent-net.rules || true
