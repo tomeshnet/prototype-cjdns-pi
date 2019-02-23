@@ -5,7 +5,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=cd /home/__USER__/PeerDNS && mix run --no-halt
+ExecStart=cd /opt/PeerDNS && mix run --no-halt
 ExecStop=/bin/kill -9 $MAINPID
 
 [Install]

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# TODO: Remove old peers
+# TODO: Switch to using temporary list once it gets developed
 
 if [ "$(which yggdrasil)" ]; then
     read -a peers  <<< "$(sudo yggdrasilctl getPeers | grep -v "(self)" | awk '{print $1}' | grep -v bytes_recvd | xargs)"
