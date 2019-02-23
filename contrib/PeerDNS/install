@@ -73,7 +73,7 @@ sudo ip6tables -I INPUT -j ACCEPT -p udp --dport 14123
 
 # systemd
 cp "$BASE_DIR/peerdns.service" /tmp  # Edit file in a safe space
-sed -i 's/__USER__/'"$(whoami)"'//g' /tmp/peerdns.service
+sed -i 's/__USER__/'"$(whoami)"'/g' /tmp/peerdns.service
 sudo cp /tmp/peerdns.service /etc/systemd/system
 sudo systemctl daemon-reload
 cp "$BASE_DIR/systemd-*" /opt/PeerDNS
@@ -95,3 +95,5 @@ echo -e "\033[1;36mAll output should be logged to \033[0;36m/var/log/PeerDNS.log
 echo -e "\033[1;36m CJDNS peers will automatically be peered with."
 echo -e "\033[1;36mAdd Yggdrasil peers permanently (for now) by running the ygg-peer.sh script in this folder."
 echo -e "\033[1;36mNavigate to this device at port 14123 in your browser for a web UI to add domain records."
+echo ""
+echo -e "\033[1;36mPeerDNS will take a long time to start the first time. Watch the log to see when it has fully started."

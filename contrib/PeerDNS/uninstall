@@ -19,7 +19,7 @@ echo -e "\033[1;36mElixir uninstalled."
 echo -e "\033[1;36mUninstalling libsodium..."
 echo -e "\033[0m"
 sudo dpkg -r debian-archive-keyring
-sudo apt remove libsodium23 libsodium-dev
+sudo apt remove -y libsodium23 libsodium-dev
 sudo sed -i 's/deb http:\/\/ftp.ca.debian.org\/debian stretch-backports main//g' /etc/apt/sources.list
 sudo apt update
 echo -e "\033[1;36mlibsodium from stretch-backports uninstalled."
@@ -28,10 +28,10 @@ echo -e "\033[1;36mUninstalling PeerDNS..."
 echo -e "\033[0m"
 # Remove all dnsmasq redirecting lines
 sudo sed -i 's/address=\/.*\/127.0.0.1#5454//g' /etc/dnsmasq.conf
-rm -rf "/opt/PeerDNS"
+sudo rm -rf "/opt/PeerDNS"
 sudo rm /etc/systemd/system/peerdns.service
 sudo systemctl daemon-reload
-rm /var/log/PeerDNS.log
+sudo rm /var/log/PeerDNS.log
 echo -e "\033[1;36mPeerDNS uninstalled."
 echo -e "\033[1;36mRemember to remove any rules in /etc/iptables mentioning port 14123."
 echo -e "\033[1;36mI would suggest running \033[0;36msudo apt autoremove\033[1;36m to remove dependencies."
