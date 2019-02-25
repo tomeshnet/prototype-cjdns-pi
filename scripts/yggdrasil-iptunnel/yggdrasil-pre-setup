@@ -10,7 +10,6 @@ if [ ! -z "$(tr -d ' \t\r\f' < /etc/yggdrasil.conf   | grep -i "^[#]")"  ]; then
 fi
 
 if [ -e /etc/yggdrasil.iptunnel.server ]; then
-
     # Add each client to yggdrasil iptunnel allowed connections
     while read -r PUBLIC_KEY IP_ADDR; do
         if [[ "${PUBLIC_KEY}" =~ ^[0-z]{64}]]; then
@@ -21,9 +20,7 @@ if [ -e /etc/yggdrasil.iptunnel.server ]; then
     # Trim last ,
     IPv4Destinations="${IPv4Destinations%?}"
     IPv4Sources="0.0.0.0/0"
-
 elif [ -e /etc/yggdrasil.iptunnel.client ]; then
-
     # Add each server to yggdrasil iptunnel connect-to's
     while read -r PUBLIC_KEY IP_ADDR; do
         if [[ "${PUBLIC_KEY}" =~ ^[0-z]{64} ]]; then
@@ -31,7 +28,6 @@ elif [ -e /etc/yggdrasil.iptunnel.client ]; then
             IPv4Sources="${IP_ADDR}/32"
         fi
     done < /etc/yggdrasil.iptunnel.client
-
  fi
 
 # Check if there are values to set in the new config file

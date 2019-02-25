@@ -10,15 +10,13 @@ SUBNET4="10.10.0."
 sleep 5
 
 if [ -e /etc/yggdrasil.iptunnel.server ]; then
-
     # Add route for cjdns ygg0 interface
     sudo route add -net "${SUBNET4}0/24" ygg0 || true
-    
+
     # If no NAT (masquarading) being done, start doing it
     if [ -z "$(sudo iptables -L POSTROUTING -v -n -t nat  | grep MASQUERADE)" ]; then
         sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
     fi
-
 # Configure as yggdrasil iptunnel client if client file is present (this is simply a newline-separated list
 # of cjdns public keys in /etc/yggdrasil.iptunnel.client, each key indicating an iptunnel exit server)
 elif [ -e /etc/yggdrasil.iptunnel.client ]; then
@@ -39,5 +37,4 @@ elif [ -e /etc/yggdrasil.iptunnel.client ]; then
     # Special hack to change default route without removing original one
     sudo route add  -net 0.0.0.0/1 ygg0
     sudo route add  -net 128.0.0.0/1 ygg0
-
 fi
