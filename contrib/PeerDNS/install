@@ -45,6 +45,7 @@ echo -e "\033[0m"
 cd /opt
 sudo git clone https://github.com/p2pstuff/PeerDNS.git
 sudo chmod -R 777 PeerDNS  # XXX: Maybe having everyone be able to write is bad?
+git checkout ff8ffac1aaaaee46a7a125ab09773ae146970d1c  # Stay with a specific "version" that is known to work
 cd PeerDNS
 # TODO: Do installs that come up
 # TODO: Do installs that come up for mix run --no-halt as well

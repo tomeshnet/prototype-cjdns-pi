@@ -62,11 +62,20 @@ config :peerdns, sources: [
   [
     id: :my_domains,
     name: "My domains",
+    description: "Use this list to enter domains you own.",
     file: "data/name_list.json",
     editable: true,
     weight: 1,
     ping_to: [{peer_fly11, 14123}],
     ping_interval: 3600*12,   # 12 hours
+  ],
+  [
+    id: :my_modlist,
+    name: "My modlist",
+    description: "Use this list to propagate or block domains of other users.",
+    file: "data/name_mod_list.json",
+    editable: true,
+    weight: 0.8,
   ],
 ]
 
@@ -78,12 +87,31 @@ config :peerdns, ping: [
   weight: 0.6
 ]
 
-# Where to store our list of neighbors
-config :peerdns, trust_list_file: "data/trust_list.json"
-
-# Default list of neighbors
-config :peerdns, default_trust_list: [
-    [name: "fly11", ip: peer_fly11, api_port: 14123, weight: 0.9]
+# Lists of trusted neighbors
+config :peerdns, peer_lists: [
+  [
+    id: :trust_list,
+    name: "Trust list",
+    description: "Use this list to enter peers you trust personnally. This list is saved to disk at each change and will be reloaded when PeerDNS restarts.",
+    file: "data/trust_list.json",
+    editable: true,
+    default: [
+      [name: "fly11", ip: peer_fly11, api_port: 14123, weight: 0.9]
+    ]
+  ],
+  [
+    id: :temporary_peers,
+    name: "Temporary peers",
+    description: "Use this list to add temporary peers. This list will be cleared whenever PeerDNS restarts.",
+    editable: true
+    # no file name means it is not saved
+  ],
+  [
+    id: :yggdrasil,
+    name: "Yggdrasil peers",
+    description: "A temporary list of direct Yggdrasil mesh peers. Added by script.",
+    editable: true
+  ]
 ]
 
 # Look up our CJDNS neighbors by connecting to local cjdroute and try to
