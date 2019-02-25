@@ -33,8 +33,8 @@ sudo iw dev $mesh_dev ibss join MESH_NAME 2412
 # Make a local-link ip out of yggdrasil ip if $mesh_dev does not have a local-link ip
 if [ ! -z "$(which yggdrasilctl)" ]; then
   if [ -z "$(ip addr show dev $mesh_dev | grep inet6\ fe)" ]; then
-	  ip=$(yggdrasilctl  getSelf | grep "IPv6 address" | awk '{print $3}')
-	  ip address add dev $mesh_dev scope link fe80::${ip:20}/64
+	  ip="$(sudo yggdrasilctl getSelf | grep "IPv6 address" | awk '{print $3}' | cut -d ":" -f5-8)"
+	  ip address add dev $mesh_dev scope link fe80::${ip}/64
   fi
 fi
 
