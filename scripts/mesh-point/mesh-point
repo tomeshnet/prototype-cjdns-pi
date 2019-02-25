@@ -61,5 +61,13 @@ sudo iw dev $mesh_dev set mesh_param mesh_fwding=0
 # Prevent trying to establish connections with nodes under -65 dBm
 sudo iw dev $mesh_dev set mesh_param mesh_rssi_threshold -65
 
+# Make a local-link ip out of yggdrasil ip if $mesh_dev does not have a local-link ip
+if [ ! -z "$(which yggdrasilctl)" ]; then
+  if [ -z "$(ip addr show dev $mesh_dev | grep inet6\ fe)" ]; then
+	  ip=$(yggdrasilctl  getSelf | grep "IPv6 address" | awk '{print $3}')
+	  ip address add dev $mesh_dev scope link fe80::${ip:20}/64
+  fi
+fi
+
 # Restart cjdns
 sudo killall cjdroute
