@@ -60,7 +60,7 @@ This module will allow you to tunnel internet from an EXIT node (server) that ha
  To configure as a server (exit Internet traffic for other nodes), 
  1. create **/etc/yggdrasil.iptunnel.server**
  1. fill it with newline-separated list of:
-   - public key of the clients
+   - EncryptionPublicKey key of the clients
    - single white space
    - IP Address in the 10.10.0.0/24 range that will be assigned to the client
 
@@ -75,7 +75,7 @@ Example
 To configure as a client (use an exit server to access the Internet), 
 1. create **/etc/yggdrasil.iptunnel.client** 
 1. place a single line containing
-   - public key of the server
+   - EncryptionPublicKey of the server
    - single space
    - IP Address assigned to you by the server
 
