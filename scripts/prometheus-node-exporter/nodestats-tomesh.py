@@ -85,5 +85,17 @@ while 1:
                                                        fifo.write('mesh_node_rx{sourcemac="' + mac + '",mac="' + station + '"} ' + rx + "\n")
                                                        fifo.write('mesh_node_tx{sourcemac="' + mac + '",mac="' + station + '"} ' + tx + "\n")
 
+        if os.path.isfile("/usr/bin/yggdrasilctl"):
+            args = shlex.split("sudo /usr/bin/yggdrasilctl -json getPeers")
+            interfaces = subprocess.Popen(args,stdout=subprocess.PIPE)
+            interfaces.wait()
+            raw_json = interfaces.stdout.read();
+            peers = json.loads(raw_json.decode())
+
+            for peer,data in peers["peers"].items():
+                fifo.write('mesh_node_ygg_peer_rx{peer="'+peer+'",endpoint="'+str(data["endpoint"])+'"}'+" "+str(data["bytes_recvd"])+"\n")
+                fifo.write('mesh_node_ygg_peer_tx{peer="'+peer+'",endpoint="'+str(data["endpoint"])+'"}'+" "+str(data["bytes_sent"])+"\n")
+
+
         fifo.close()
         time.sleep(1)
