@@ -114,14 +114,9 @@ while 1:
                                                 if words3[1].find("tx") > -1 and words3[2].find("bytes") > -1:
                                                        tx=words3[3]
                                                 if words3[1].find("TDLS") > -1:
-                                                       cjdnsValue=""
-                                                       if station in cjdnsPeer.keys():
-                                                           fifo.write('mesh_node_peer_cjdns{sourcemac="' + mac + '",mac="' + station + '", peer="' + cjdnsPeer[station] + '"} ' + "0" + "\n")
-
-                                                       fifo.write('mesh_node_signal{sourcemac="' + mac + '",mac="' + station + '",link="' + linkstatus + '"} ' + signal + "\n")
+                                                       fifo.write('mesh_node_signal{sourcemac="' + mac + '",mac="' + station + '",link="' + linkstatus + '"' + cjdnsdata + '} ' + signal + "\n")
                                                        fifo.write('mesh_node_rx{sourcemac="' + mac + '",mac="' + station + '"} ' + rx + "\n")
                                                        fifo.write('mesh_node_tx{sourcemac="' + mac + '",mac="' + station + '"} ' + tx + "\n")
-
 
 
         if os.path.isfile("/usr/bin/yggdrasilctl"):
