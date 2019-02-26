@@ -12,7 +12,7 @@ fi
 if [ -e /etc/yggdrasil.iptunnel.server ]; then
     # Add each client to yggdrasil iptunnel allowed connections
     while read -r PUBLIC_KEY IP_ADDR; do
-        if [[ "${PUBLIC_KEY}" =~ ^[0-z]{64}]]; then
+        if [[ "${PUBLIC_KEY}" =~ ^[0-z]{64} ]]; then
             IPv4Destinations="${IPv4Destinations} \"${IP_ADDR}/32\": \"${PUBLIC_KEY}\","
         fi
     done < /etc/yggdrasil.iptunnel.server
