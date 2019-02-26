@@ -68,16 +68,15 @@ echo "address=/tomesh/127.0.0.1#5454" | sudo tee -a /etc/dnsmasq.conf
 sudo systemctl restart dnsmasq
 
 sudo iptables -I INPUT -j ACCEPT -p tcp --dport 14123
-sudo iptables -I INPUT -j ACCEPT -p udp --dport 14123
 sudo ip6tables -I INPUT -j ACCEPT -p tcp --dport 14123
-sudo ip6tables -I INPUT -j ACCEPT -p udp --dport 14123
 
 # systemd
 cp "$BASE_DIR/peerdns.service" /tmp  # Edit file in a safe space
 sed -i 's/__USER__/'"$(whoami)"'/g' /tmp/peerdns.service
 sudo cp /tmp/peerdns.service /etc/systemd/system
 sudo systemctl daemon-reload
-cp "$BASE_DIR/systemd-*" /opt/PeerDNS
+cp "$BASE_DIR/systemd-start.sh" /opt/PeerDNS
+cp "$BASE_DIR/systemd-stop.sh" /opt/PeerDNS
 
 # Logging
 sudo touch /var/log/PeerDNS.log
@@ -85,9 +84,8 @@ sudo chmod 777 /var/log/PeerDNS.log
 
 echo -e "\033[1;36mPeerDNS installed and set up, in /opt."
 echo -e ""
-echo -e "\033[1;36mThe firewall has been opened temporarily. To keep the required ports open after a reboot, add these lines to /etc/iptables/rules.v4 and /etc/iptables/rules.v6, in the raw INPUT rules section."
+echo -e "\033[1;36mThe firewall has been opened temporarily. To keep the required ports open after a reboot, add this lines to /etc/iptables/rules.v4 and /etc/iptables/rules.v6, in the raw INPUT rules section."
 echo -e "\033[0;36m    -A INPUT -j ACCEPT -p tcp --dport 14123"
-echo -e "\033[0;36m    -A INPUT -j ACCEPT -p udp --dport 14123"
 echo -e ""
 echo -e "\033[1;36mRun \033[0;36msudo systemctl start peerdns.service\033[1;36m to start PeerDNS."
 echo -e "\033[1;36mRun \033[0;36msudo systemctl enable peerdns.service\033[1;36m to start it at boot everytime."

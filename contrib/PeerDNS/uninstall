@@ -27,6 +27,7 @@ echo -e "\033[1;36mlibsodium from stretch-backports uninstalled."
 echo -e "\033[1;36mUninstalling PeerDNS..."
 echo -e "\033[0m"
 # Remove all dnsmasq redirecting lines
+# TODO: Remove empty lines too, but not all of them - just ones from the bottom
 sudo sed -i 's/address=\/.*\/127.0.0.1#5454//g' /etc/dnsmasq.conf
 sudo rm -rf "/opt/PeerDNS"
 sudo rm /etc/systemd/system/peerdns.service
