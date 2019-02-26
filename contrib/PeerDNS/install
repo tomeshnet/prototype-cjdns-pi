@@ -44,7 +44,7 @@ echo -e "\033[1;36mInstalling PeerDNS in /opt ..."
 echo -e "\033[0m"
 cd /opt
 sudo git clone https://github.com/p2pstuff/PeerDNS.git
-sudo chmod -R 777 PeerDNS  # XXX: Maybe having everyone be able to write is bad?
+sudo chown -R pi PeerDNS
 git checkout ff8ffac1aaaaee46a7a125ab09773ae146970d1c  # Stay with a specific "version" that is known to work
 cd PeerDNS
 # TODO: Do installs that come up
@@ -78,7 +78,6 @@ sed -i 's/__USER__/'"$(whoami)"'/g' /tmp/peerdns.service
 sudo cp /tmp/peerdns.service /etc/systemd/system
 sudo systemctl daemon-reload
 cp "$BASE_DIR/systemd-*" /opt/PeerDNS
-sudo chmod -R 777 /opt/PeerDNS  # Just in case it didn't work
 
 # Logging
 sudo touch /var/log/PeerDNS.log
