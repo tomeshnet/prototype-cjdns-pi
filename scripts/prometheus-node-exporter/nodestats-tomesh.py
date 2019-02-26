@@ -87,7 +87,7 @@ while 1:
                                                        fifo.write('mesh_node_tx{sourcemac="' + mac + '",mac="' + station + '"} ' + tx + "\n")
 
         if os.path.isfile("/usr/bin/yggdrasilctl"):
-            args = shlex.split("sudo /usr/bin/yggdrasilctl -json getPeers")
+            args = shlex.split("/usr/bin/yggdrasilctl -json getPeers")
             interfaces = subprocess.Popen(args,stdout=subprocess.PIPE)
             interfaces.wait()
             raw_json = interfaces.stdout.read();
