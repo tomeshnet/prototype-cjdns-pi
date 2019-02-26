@@ -15,7 +15,7 @@ os.mkfifo(path)
 while 1:
         fifo = open(path, "w")
 
-        fifo.write("tomeshV 1.1\n")
+        fifo.write("tomeshV 1.2\n")
 
         s=""
         if os.path.isfile("/sys/devices/virtual/thermal/thermal_zone0/temp"):
@@ -23,6 +23,24 @@ while 1:
                     s = f.read()
                 fifo.write("hw_temp ")
                 fifo.write(s)
+
+
+        # Pull CJDNS Stats for use later
+        cjdnsPeer={};
+        if os.path.isfile("/opt/cjdns/tools/peerStats"):
+            args = shlex.split("sudo /opt/cjdns/tools/peerStats")
+            interfaces = subprocess.Popen(args,stdout=subprocess.PIPE)
+            interfaces.wait()
+            output = interfaces.stdout.read();
+            peers = output.split("\n")
+            for peer in peers:
+                if peer.find("ESTABLISHED") > -1:
+                    words = peer.split(" ");
+                    src=words[0];
+                    peerPath=words[1];
+                    peerSplit=peerPath.split(".");
+                    p=peerSplit[5] + ".k";
+                    cjdnsPeer[src]=p;
 
         # Look through wireless interfaces
         command_line = "iw dev"
@@ -82,12 +100,18 @@ while 1:
                                                 if words3[1].find("tx") > -1 and words3[2].find("bytes") > -1:
                                                        tx=words3[3]
                                                 if words3[1].find("TDLS") > -1:
+                                                       cjdnsValue=""
+                                                       if station in cjdnsPeer.keys():
+                                                           fifo.write('mesh_node_peer_cjdns{sourcemac="' + mac + '",mac="' + station + '", peer="' + cjdnsPeer[station] + '"} ' + "0" + "\n")
+
                                                        fifo.write('mesh_node_signal{sourcemac="' + mac + '",mac="' + station + '",link="' + linkstatus + '"} ' + signal + "\n")
                                                        fifo.write('mesh_node_rx{sourcemac="' + mac + '",mac="' + station + '"} ' + rx + "\n")
                                                        fifo.write('mesh_node_tx{sourcemac="' + mac + '",mac="' + station + '"} ' + tx + "\n")
 
+
+
         if os.path.isfile("/usr/bin/yggdrasilctl"):
-            args = shlex.split("/usr/bin/yggdrasilctl -json getPeers")
+            args = shlex.split("sudo /usr/bin/yggdrasilctl -json getPeers")
             interfaces = subprocess.Popen(args,stdout=subprocess.PIPE)
             interfaces.wait()
             raw_json = interfaces.stdout.read();
@@ -96,7 +120,6 @@ while 1:
             for peer,data in peers["peers"].items():
                 fifo.write('mesh_node_ygg_peer_rx{peer="'+peer+'",endpoint="'+str(data["endpoint"])+'"}'+" "+str(data["bytes_recvd"])+"\n")
                 fifo.write('mesh_node_ygg_peer_tx{peer="'+peer+'",endpoint="'+str(data["endpoint"])+'"}'+" "+str(data["bytes_sent"])+"\n")
-
 
         fifo.close()
         time.sleep(1)
