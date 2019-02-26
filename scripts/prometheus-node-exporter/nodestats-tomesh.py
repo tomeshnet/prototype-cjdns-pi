@@ -25,22 +25,33 @@ while 1:
                 fifo.write(s)
 
 
-        # Pull CJDNS Stats for use later
-        cjdnsPeer={};
-        if os.path.isfile("/opt/cjdns/tools/peerStats"):
-            args = shlex.split("sudo /opt/cjdns/tools/peerStats")
+        #Wireless Link Dump
+
+        # Get cjdns peer information
+        remotePeers = {}
+        myaddress=""
+        if os.path.isfile("/opt/cjdns/tools/cexec"):
+            command_line = "/opt/cjdns/tools/cexec \"Core_nodeInfo()\""
+            args = shlex.split(command_line)
             interfaces = subprocess.Popen(args,stdout=subprocess.PIPE)
             interfaces.wait()
             output = interfaces.stdout.read();
+            data = json.loads(output)
+            tmp=data["myAddr"].split(".")
+            myaddress=tmp[5] + ".k"
+            myaddress=myaddress.splitlines()[0]
+            command_line = "/opt/cjdns/tools/peerStats"
+            args = shlex.split(command_line)
+            interface = subprocess.Popen(args,stdout=subprocess.PIPE)
+            interface.wait()
+            output = interface.stdout.read()
             peers = output.split("\n")
             for peer in peers:
-                if peer.find("ESTABLISHED") > -1:
-                    words = peer.split(" ");
-                    src=words[0];
-                    peerPath=words[1];
-                    peerSplit=peerPath.split(".");
-                    p=peerSplit[5] + ".k";
-                    cjdnsPeer[src]=p;
+                words2= peer.split(" ")
+                if len(words2) > 1:
+                        tmp=words2[1].split(".")
+                        remotePubKey=tmp[5] + ".k"
+                        remotePeers[words2[0]]=remotePubKey
 
         # Look through wireless interfaces
         command_line = "iw dev"
@@ -91,6 +102,9 @@ while 1:
                                                     rx=-1
                                                     tx=-1
                                                     signal=-100
+                                                    cjdnsdata=""
+                                                    if station in remotePeers:
+                                                        cjdnsdata=',sourcekey="' + myaddress + '", key="' + remotePeers[station] + '"'
                                                 if words3[1].find("signal") > -1:
                                                     signal=words3[3]
                                                 if words3[1].find("mesh") > -1 and words3[2].find("plink") > -1:
