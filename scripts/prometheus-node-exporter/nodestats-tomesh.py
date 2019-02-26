@@ -4,6 +4,7 @@ import time
 import shlex
 import subprocess
 import json
+
 path = "/var/lib/node_exporter/ne-stats.prom"
 
 if os.path.exists(path):
@@ -22,6 +23,7 @@ while 1:
                     s = f.read()
                 fifo.write("hw_temp ")
                 fifo.write(s)
+
 
         #Wireless Link Dump
 
@@ -112,8 +114,26 @@ while 1:
                                                 if words3[1].find("tx") > -1 and words3[2].find("bytes") > -1:
                                                        tx=words3[3]
                                                 if words3[1].find("TDLS") > -1:
-                                                       fifo.write('mesh_node_signal{sourcemac="' + mac + '",mac="' + station + '",link="' + linkstatus + '"' + cjdnsdata + '} ' + signal + "\n")
+                                                       cjdnsValue=""
+                                                       if station in cjdnsPeer.keys():
+                                                           fifo.write('mesh_node_peer_cjdns{sourcemac="' + mac + '",mac="' + station + '", peer="' + cjdnsPeer[station] + '"} ' + "0" + "\n")
+
+                                                       fifo.write('mesh_node_signal{sourcemac="' + mac + '",mac="' + station + '",link="' + linkstatus + '"} ' + signal + "\n")
                                                        fifo.write('mesh_node_rx{sourcemac="' + mac + '",mac="' + station + '"} ' + rx + "\n")
                                                        fifo.write('mesh_node_tx{sourcemac="' + mac + '",mac="' + station + '"} ' + tx + "\n")
+
+
+
+        if os.path.isfile("/usr/bin/yggdrasilctl"):
+            args = shlex.split("sudo /usr/bin/yggdrasilctl -json getPeers")
+            interfaces = subprocess.Popen(args,stdout=subprocess.PIPE)
+            interfaces.wait()
+            raw_json = interfaces.stdout.read();
+            peers = json.loads(raw_json.decode())
+
+            for peer,data in peers["peers"].items():
+                fifo.write('mesh_node_ygg_peer_rx{peer="'+peer+'",endpoint="'+str(data["endpoint"])+'"}'+" "+str(data["bytes_recvd"])+"\n")
+                fifo.write('mesh_node_ygg_peer_tx{peer="'+peer+'",endpoint="'+str(data["endpoint"])+'"}'+" "+str(data["bytes_sent"])+"\n")
+
         fifo.close()
         time.sleep(1)

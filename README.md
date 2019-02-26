@@ -39,43 +39,16 @@ Many board that run [Armbian](https://www.armbian.com/) such as many models of O
     ```
     $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install && chmod +x install && ./install
     ```
-    
-    The installation script can also install many optional features such as distributed applications and network analysis tools that are useful but non-essential to run a node. You can use flags to selectively enable them, or use the following command to install all optional features:
 
-    ```
-    $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install && chmod +x install && WITH_MESH_POINT=true WITH_AD_HOC=false WITH_WIFI_AP=true WITH_FIREWALL=true WITH_CJDNS_IPTUNNEL=true WITH_IPFS=true WITH_SSB=true WITH_SSB_WEB=true WITH_PROMETHEUS_NODE_EXPORTER=true WITH_PROMETHEUS_SERVER=true WITH_GRAFANA=true WITH_H_DNS=true WITH_H_NTP=true WITH_EXTRA_TOOLS=true WITH_YRD=true ./install
-    ```
+## Modules
 
-## Optional Features
-
-| Feature Flag                    | HTTP Service Port                              | Description |
-| :------------------------------ | :--------------------------------------------- | :---------- |
-| `WITH_MESH_POINT`               | None                                           | Set to `true` if you have a suitable USB WiFi adapter and want to configure it as a 802.11s Mesh Point interface. |
-| `WITH_AD_HOC`                   | None                                           | Set to `true` if you have a suitable USB WiFi adapter and want to configure it as a IBSS Ad-hoc interface. |
-| `WITH_WIFI_AP`                  | None                                           | Set to `true` if you have a Raspberry Pi 3 and want to configure the on-board WiFi as an Access Point. The default configuration routes all traffic to the Ethernet port `eth0`. |
-| `WITH_FIREWALL`                 | None                                           | Set to `true` if you want to enable a basic firewall on your node.|
-| `WITH_CJDNS_IPTUNNEL`           | None                                           | Set to `true` if you want to use the cjdns iptunnel feature to set up an Internet gateway for your node. To configure as a server (exit Internet traffic for other nodes), create **/etc/cjdns.iptunnel.server** containing a newline-separated list of cjdns public keys of allowed clients. To configure as a client (use an exit server to access the Internet), create **/etc/cjdns.iptunnel.client** containing a newline-separated list of cjdns public keys of the gateway servers. You can only configure as one or the other, not both. |
-| `WITH_IPFS`                     | **80**: HTTP-to-IPFS gateway at `/ipfs/HASH`   | Set to `true` if you want to install [IPFS](https://ipfs.io). |
-| `WITH_IPFS_PI_STREAM`           | None                                           | Set to `true` if you want to install Pi stream service to live stream your camera over IPFS. Requires a Raspberry Pi with camera module. *Will automatically start recording on boot by default.* |
-| `WITH_SSB`                      |                                                | Set to `true` if you want to install [Scuttlebot (SSB)](https://github.com/ssbc/scuttlebot) a secure scuttlebutt daemon.  |
-| `WITH_SSB_WEB`                  | **80**: SSB web interface at `/sbot`           | Set to `true` if you want to install [SSB Web Pi](https://github.com/darkdrgn2k/ssb-web-pi),which allows you to interact with the scuttlebot backend with a web interface.  |
-| `WITH_PROMETHEUS_NODE_EXPORTER` | **9100**: Node Exporter UI                     | Set to `true` if you want to install [Prometheus Node Exporter](https://github.com/prometheus/node_exporter) to report network metrics. |
-| `WITH_PROMETHEUS_SERVER`        | **9090**: Prometheus Server UI                 | Set to `true` if you want to install [Prometheus Server](https://github.com/prometheus/prometheus) to collect network metrics. *Requires Prometheus Node Exporter.* |
-| `WITH_GRAFANA`                  | **3000**: Grafana UI (login: admin/admin)      | Set to `true` if you want to install [Grafana](https://grafana.com) to display network metrics. *Requires Prometheus Server.* |
-| `WITH_H_DNS`                    | None                                           | Set to `true` if you want to use Hyperboria-compatible DNS servers: `fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc`, `fc6e:691e:dfaa:b992:a10a:7b49:5a1a:5e09`, and `fc16:b44c:2bf9:467:8098:51c6:5849:7b4f` |
-| `WITH_H_NTP`                    | None                                           | Set to `true` if you want to use a Hyperboria-compatible NTP server: `fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc` |
-| `WITH_EXTRA_TOOLS`              | None                                           | Set to `true` if you want to install non-essential tools useful for network analysis: vim socat oping bmon iperf3 |
-| `WITH_WATCHDOG`                 | None                                           | Set to `true` if you want to enable hardware watchdog that will reset the device when the operating system becomes unresponsive. |
-| `WITH_YRD`                      | None                                           | Set to `true` if you want to enable [yrd](https://github.com/kpcyrd/yrd), a helpful command-line tool for cjdns. |
-
-
-If you are connected to the WiFi Access Point, all HTTP services are available via `http://10.0.0.1:PORT` as well as the cjdns IPv6. To connect with the cjdns address, first note your node's fc00::/8 address from `status`, then navigate to `http://[fcaa:bbbb:cccc:dddd:eeee:0000:1111:2222]:PORT` from your browser.
+During the installation, you may be able to pick a profile, or choose between many modules. To learn what each module is for, look at [MODULES.md](./docs/MODULES.md). This is important for the installation.
 
 ## Check Status
 
 1. Give the Pi about 15 seconds to reboot and SSH back into it. You should find the status of your mesh node automatically printed. You can also print this anytime by running `status`.
 
-1. Verify that **cjdns Service** is active, and **Mesh Interface** (if applicable). The **NODE** section should display a single IPv6 address, that's the identity of your Pi in the cjdns mesh. The **PEERS** section should indicate a list of IPv6 addresses that are active peers to your node. This list will be empty, until you have another nearby node with the same set up.
+2. Verify that **cjdns Service** is active, and **Mesh Interface** (if applicable). The **NODE** section should display a single IPv6 address, that's the identity of your Pi in the cjdns mesh. The **PEERS** section should indicate a list of IPv6 addresses that are active peers to your node. This list will be empty, until you have another nearby node with the same set up.
 
 ## Network Benchmark
 
@@ -117,7 +90,7 @@ List of tested hardware:
 | Rock64                    | [Armbian](https://dl.armbian.com/rock64/)                        | 255k, 168K | 94 Mbps | 3       | 10/100/1000   | 1 USB 3.0, Gigabit Eth |
 | Pine64                    | [Armbian](https://dl.armbian.com/pine/nightly/)                  | 227k, 151k | 78 Mbps | 2       | 10/100/1000   |  Gigabit Eth |
 | EspressoBin               | [Armbian](https://dl.armbian.com/espressobin/)                   | 186k, 128K | 73 Mbps | 2       | 10/100/1000   | 1 USB 3.0, 3x Gigabit Eth, Sata, mPCIE. Use stable and apt-get upgrade after boot |
-
+| MK802ii       | Debian | 30k, 40k | 25Mbps | | | Android box. Single Core. Onboard wifi does Meshpoint |
 ## Development
 
 You can install from a specific tag or branch, such as `develop`, with:
@@ -140,8 +113,8 @@ To add a new module, use **scripts/ipfs/** as an example to:
 
 ## Notes
 
-* We keep a list of [Frequently Asked Questions](./FAQ.md). Feel free to add to this list with the issues you experienced on your boards.
+* We keep a list of [Frequently Asked Questions](./docs/FAQ.md). Feel free to add to this list with the issues you experienced on your boards.
 
 * Your computer can be a node too! It will mesh with the Pi's over your router. See the [cjdns repository](https://github.com/cjdelisle/cjdns) on how to set this up.
 
-* Original plan for this repository and early benchmark results are available in [the doc folder](https://github.com/tomeshnet/prototype-cjdns-pi/blob/master/docs/).
+* Original plan for this repository and early benchmark results are available in [the doc folder](./docs).

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-HLS_TIME=15
-M3U8_SIZE=10
+HLS_TIME=40
+M3U8_SIZE=3
 IPFS_GATEWAY="https://ipfs.io"
 
 # Load settings
@@ -14,7 +14,14 @@ function startFFmpeg() {
   while true; do
     mv ~/ffmpeg.log ~/ffmpeg.1
     echo 1 > ~/stream-reset
-    ffmpeg -f video4linux2 -input_format h264 -video_size 1280x720 -framerate 30 -i /dev/video0 -vcodec copy -hls_time "${HLS_TIME}" "${what}.m3u8"   > ~/ffmpeg 2>&1
+    
+    # Stream Raspberry Pi Camera
+    ffmpeg -f video4linux2 -input_format h264 -video_size 1280x720 -framerate 30 -i /dev/video0 -vcodec copy -hls_time "${HLS_TIME}" "${what}.m3u8" > ~/ffmpeg.log 2>&1
+
+    # Stream FM Station from a SDR module (see contrib/pi-stream to install drivers)
+    # Frequency ends in M IE 99.9M
+    # rtl_fm  -f 99.9M -M fm -s 170k -A std -l0 -E deemp -r 44.1k | ffmpeg  -r 15 -loop 1 -i ../audio.jpg  -f s16le -ac 1 -i pipe:0 -c:v libx264 -tune stillimage -preset ultrafast  -hls_time "${HLS_TIME}" "${what}.m3u8"  > ~/ffmpeg 2>&1
+    
     sleep 0.5
   done
 }
@@ -37,14 +44,14 @@ startFFmpeg &
 while true; do
 #TODO# Fix this one
 # shellcheck disable=SC2086,SC2012
-  nextfile=$(ls -tr ${what}*.ts 2>/dev/null | tail -n 1)
+  nextfile=$(ls -tr ${what}*.ts 2>/dev/null | head -n 1)
 
   if ! [ -z "${nextfile}" ]; then
     # Check if the next file on the list is still being written to by ffmpeg
     if lsof "${nextfile}" | grep -1 ffmpeg; then
       # Wait for file to finish writing
       # If not finished in 45 seconds something is wrong, timeout
-      inotifywait -e close_write "${nextfile}" -t 45
+      inotifywait -e close_write "${nextfile}" -t ${HLS_TIME}
     fi
 
     # Grab the timecode from the m3u8 file so we can add it to the log
@@ -73,12 +80,12 @@ while true; do
     time=$(date "+%F-%H-%M-%S")
 
     # Add ts file to IPFS
-    ret=$(ipfs add "${nextfile}" 2>/dev/null > ~/tmp.txt; echo $?)
+    ret=$(ipfs add --pin=false "${nextfile}" 2>/dev/null > ~/tmp.txt; echo $?)
     attempts=5
     until [[ ${ret} -eq 0 || ${attempts} -eq 0 ]]; do
       # Wait and retry
-      sleep 1
-      ret=$(ipfs add "${nextfile}" 2>/dev/null > ~/tmp.txt; echo $?)
+      sleep 0.5
+      ret=$(ipfs add --pin=false "${nextfile}" 2>/dev/null > ~/tmp.txt; echo $?)
       attempts=$((attempts-1))
     done
     if [[ ${ret} -eq 0 ]]; then

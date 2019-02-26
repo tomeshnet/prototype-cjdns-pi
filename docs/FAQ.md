@@ -105,6 +105,12 @@ saveenv
 ```
 ## Wireless
 
+**Q:** Why do my Meshpoint/AdHoc nodes Release v0.3 or lower no longer mesh with V0.4 or higher?
+
+**A:** We dropped the band width of MeshPoint and AdHoc to 20MHz from 40MHz. This should provider a bit better responsivness in urban environments.  Unfortunatlry the 20MHz and 40MHz bands do not work together.
+
+You can update your v0.3 or lower nodes to use 20MHz by editing the `/usr/bin/mesh-adhoc` or `/usr/bin/mesh-point` file and removing the HT40+ paramater from the iw line near the bottom of the file, then simply reboot.
+
 **Q:** Can I use the on board wireless of my RaspberryPi/OrangePi/etc to mesh?
 
 **A:** Maybe. 
@@ -119,6 +125,9 @@ On board wireless we have seen so far
 To install
 * Install Ad-Hoc mesh module
 * Do NOT install Access Point
-* After install remove `HT40+` from `/usr/bin/mesh-adhoc`
 
 If you have success using ad-hoc with on board cards please let us know your experience.
+
+So far:
+- 3b+ seemed to have worked but 3b did not
+- 3b working by killing wpa_supplicant first
