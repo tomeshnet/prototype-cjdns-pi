@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Uninstall scripts that configure yggdrasil iptunnel
+sudo rm /usr/local/sbin/yggdrasil-setup
+sudo rm /usr/local/sbin/yggdrasil-pre-setup
+if [ -f /lib/systemd/system/yggdrasil.service ]; then
+    sudo sed -i /ExecStartPost/d /lib/systemd/system/yggdrasil.service
+fi
+if [ -f /etc/systemd/system/yggdrasil.service ]; then
+    sudo sed -i /ExecStartPost/d /etc/systemd/system/yggdrasil.service
+fi

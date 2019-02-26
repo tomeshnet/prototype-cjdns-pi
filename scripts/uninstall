@@ -25,6 +25,7 @@ if [ -f "/etc/cjdroute.conf" ]; then
 fi
 
 # Uninstall optional modules
+source "$BASE_DIR/cjdns-iptunnel/uninstall"
 source "$BASE_DIR/ssb/uninstall"
 source "$BASE_DIR/mesh-point/uninstall"
 source "$BASE_DIR/mesh-adhoc/uninstall"
@@ -40,10 +41,11 @@ source "$BASE_DIR/yrd/uninstall"
 source "$BASE_DIR/shared/nodeinfo/uninstall"
 source "$BASE_DIR/nginx/uninstall"
 source "$BASE_DIR/yggdrasil/uninstall"
+source "$BASE_DIR/yggdrasil-iptunnel/uninstall"
 
 sudo systemctl daemon-reload
 
-sudo sed -i 's/service dnsmasq restart//' /etc/rc.local 
+sudo sed -i 's/service dnsmasq restart//' /etc/rc.local
 
 # Uninstall status script
 sudo rm -f /usr/local/bin/status
