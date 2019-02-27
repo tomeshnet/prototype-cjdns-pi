@@ -15,9 +15,14 @@ npm install --unsafe-perm asyncmemo hashlru pull-stream pull-cat multicb hypersc
 
 # Install patchfoo and enable plugin
 git clone https://github.com/ssbc/patchfoo.git patchfoo
-sbot plugins.install ssb-private
-sbot plugins.install ssb-backlinks
-sbot plugins.enable patchfoo
+
+# Replace ssb-server plugins.install with a static config file
+# This will prevent the installation of these modules a second time
+# and compiling downlevel for a 3rd time
+cp $BASE_DIR/config ~/.ssb
+#ssb-server plugins.install ssb-private
+#ssb-server plugins.install ssb-backlinks
+#ssb-server plugins.enable patchfoo
 
 # Stop ssb service to process plugin
 sudo systemctl stop ssb
