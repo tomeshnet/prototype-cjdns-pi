@@ -48,5 +48,5 @@ cp -r "$VIDEO_PLAYER_PATH" /var/www/html/video-player
 rm -rf "$BASE_DIR/tmp"
 
 # Add entry into nginx home screen
-APP="<div class='app'><h2>IPFS Pi Stream Player</h2>IPFS Video player for Pi Stream. <br />Stream at <a href='/ipns/$IPFS_ID'>/ipns/$IPFS_ID</a> <br/><a href='/video-player/'>Go</a></div>"
+APP="<div class='app'><h2>IPFS Pi Stream Player</h2>IPFS Video player for Pi Stream. <br />M3U8 Stream located <a href='/ipns/$IPFS_ID'>over ipns</a> <br/><a href='/video-player/'>Go </a> and play with built in video player</div>"
 sudo sed -i "s#<\!--APPLIST-->#$APP\n<\!--APPLIST-->#" "/var/www/html/index.html"

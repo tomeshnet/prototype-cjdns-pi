@@ -1,0 +1,11 @@
+deb http://httpredir.debian.org/debian __CODENAME__ main contrib non-free
+#deb-src http://httpredir.debian.org/debian __CODENAME__ main contrib non-free
+
+deb http://httpredir.debian.org/debian __CODENAME__-updates main contrib non-free
+#deb-src http://httpredir.debian.org/debian __CODENAME__-updates main contrib non-free
+
+deb http://httpredir.debian.org/debian __CODENAME__-backports main contrib non-free
+#deb-src http://httpredir.debian.org/debian __CODENAME__-backports main contrib non-free
+
+deb http://security.debian.org/ __CODENAME__/updates main contrib non-free
+#deb-src http://security.debian.org/ __CODENAME__/updates main contrib non-free

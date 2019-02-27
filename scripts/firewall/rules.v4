@@ -14,7 +14,8 @@
 -A INPUT -p tcp -m tcp --dport 3000 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 4001 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 5201 -j ACCEPT
--A INPUT -p tcp -m udp --dport 8008 -j ACCEPT
+-A INPUT -p udp -m udp --dport 8008 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 8008 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 9090 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 9100 -j ACCEPT
 -A INPUT -i wlan+ -j ACCEPT

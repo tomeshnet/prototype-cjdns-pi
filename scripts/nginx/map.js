@@ -43,7 +43,7 @@ function CJDNSMap(ajax) {
       UpdateNode(parts[5],public2IPv6(parts[5]),parts[4], Nodes.peers[a].recvKbps + "kpbs / " + Nodes.peers[a].sendKbps + " kbps","cjdns",NodeExist);
   }
   DeleteNodes("cjdns",NodeExist);
-  setTimeout("loadXMLDoc()",1000);
+  setTimeout("LoadXMLDoc_cjdns()",1000);
 }
 
 lastrx=[];
@@ -65,7 +65,7 @@ function YggdrasilMap(ajax) {
     }
   }
   DeleteNodes("yggdrasil",NodeExist);
-  setTimeout("loadXMLDoc_y()",1000);
+  setTimeout("LoadXMLDoc_ygg()",1000);
 }
 
 // Update Map

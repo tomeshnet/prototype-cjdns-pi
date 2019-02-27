@@ -43,5 +43,5 @@ else
 fi
 
 # Add entry into nginx home screen
-APP="<div class='app'><h2>Grafana</h2>The open platform for beautiful analytics and monitoring. <br/><a href='#' onclick='javascript:event.target.port=8080'>Go</a></div>"
-sudo sed -i "s#<\!--APPLIST-->#$APP\n<\!--APPLIST-->#" "/var/www/html/index.html"
+APP="<div class='app'><h2>Grafana</h2>The open platform for beautiful analytics and monitoring. <br/><a href='#' onclick='javascript:event.target.port=3000'>Go</a> explore Grafana.</div>"
+sudo sed -i "s|<\!--APPLIST-->|$APP\n<\!--APPLIST-->|" "/var/www/html/index.html"

@@ -2,18 +2,63 @@
 :INPUT ACCEPT [0:0]
 :FORWARD ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
+:CJDNS - [0:0]
+:YGGDRASIL - [0:0]
+:YGGCLIENT - [0:0]
+
+# Add your own raw INPUT rules below - they will apply to everything
+# Do not block everything here, that is handled below
+
+#######################
+# DO NOT EDIT - Raw INPUT rules
+#######################
 -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 -A INPUT -p ipv6-icmp -j ACCEPT
 -A INPUT -i lo -j ACCEPT
--A INPUT -j ACCEPT -p tcp --dport 22
--A INPUT -j ACCEPT -p tcp --dport 80
--A INPUT -j ACCEPT -p tcp --dport 443
--A INPUT -j ACCEPT -p tcp --dport 3000
--A INPUT -j ACCEPT -p tcp --dport 5201
--A INPUT -j ACCEPT -p tcp --dport 4001
--A INPUT -j ACCEPT -p tcp --dport 9090
--A INPUT -j ACCEPT -p tcp --dport 9100
--A INPUT -j ACCEPT -p udp --dport 12345
+# INPUT rules needed for Yggdrasil peering
+-A INPUT -j ACCEPT -p tcp --dport 12345
 -A INPUT -j ACCEPT -p udp --dport 9001 -d ff02::114
+# INPUT rules needed for SSB peering
+-A INPUT -j ACCEPT -p tcp --dport 8008
+-A INPUT -j ACCEPT -p udp --dport 8008
+# Redirect to named tables
+-A INPUT -i tun0 -d fc00::/8 -j CJDNS
+-A INPUT -i ygg0 -d 200::/8 -j YGGDRASIL
 -A INPUT -j REJECT --reject-with icmp6-port-unreachable
+# Allow clients to have outbound requests and receive their response
+-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -p ipv6-icmp -j ACCEPT
+-A FORWARD -o tun0 -j ACCEPT
+-A FORWARD -o ygg0 -j ACCEPT
+# Redirect to YGGCLIENT table
+-A FORWARD -i ygg0 -d 300::/8 -j YGGCLIENT
+-A FORWARD -j REJECT --reject-with icmp6-port-unreachable
+#######################
+
+# CJDNS rules
+-A CJDNS -j ACCEPT -p tcp --dport 22
+-A CJDNS -j ACCEPT -p tcp --dport 80
+-A CJDNS -j ACCEPT -p tcp --dport 443
+-A CJDNS -j ACCEPT -p tcp --dport 3000
+-A CJDNS -j ACCEPT -p tcp --dport 5201
+-A CJDNS -j ACCEPT -p tcp --dport 4001
+-A CJDNS -j ACCEPT -p tcp --dport 9090
+-A CJDNS -j ACCEPT -p tcp --dport 9100
+
+# Yggdrasil rules
+-A YGGDRASIL -j ACCEPT -p tcp --dport 22
+-A YGGDRASIL -j ACCEPT -p tcp --dport 80
+-A YGGDRASIL -j ACCEPT -p tcp --dport 443
+-A YGGDRASIL -j ACCEPT -p tcp --dport 3000
+-A YGGDRASIL -j ACCEPT -p tcp --dport 5201
+-A YGGDRASIL -j ACCEPT -p tcp --dport 4001
+-A YGGDRASIL -j ACCEPT -p tcp --dport 9090
+-A YGGDRASIL -j ACCEPT -p tcp --dport 9100
+
+# Yggdrasil client (YGGCLIENT) rules go here
+-A YGGCLIENT -j ACCEPT -p tcp --dport 8008
+-A YGGCLIENT -j ACCEPT -p udp --dport 8008
+
+
+# End, put nothing below this
 COMMIT

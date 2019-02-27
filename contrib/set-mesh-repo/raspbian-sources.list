@@ -1,0 +1,3 @@
+deb http://__PREFIX__.mirror.tomesh.net/raspbian/raspbian __CODENAME__ main contrib non-free rpi
+# Uncomment line below then 'apt-get update' to enable 'apt-get source'
+#deb-src http://__PREFIX__.mirror.tomesh.net/raspbian/raspbian __CODENAME__ main contrib non-free rpi
