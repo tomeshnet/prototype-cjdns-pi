@@ -250,7 +250,7 @@ your code should look somewhat like this:
                  }
 ```
 
-Next you should restart cjdns with a `sudo systemctl restart cjnds` command. This will reload cjdns
+Next you should restart cjdns with a `sudo systemctl restart cjdns` command. This will reload cjdns
 with the new config file. Run a `status` command on your node, and make sure when it prints out
 the text, that cjdns is green with the text `[ACTIVE]`. if so, you have successfully connected to the remote peer,
 if it says `[INACTIVE]`, then there might be a typo in your config file. Make sure its formatted correctly (the
