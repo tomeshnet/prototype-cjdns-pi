@@ -6,7 +6,8 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 CURRENT_DIR="$(pwd)"
 
-sleep 5
+# Make folder if service did not
+mkdir -p ~/.ssb/node_modules || true
 # shellcheck disable=SC2164
 cd ~/.ssb/node_modules
 
