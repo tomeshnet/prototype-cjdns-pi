@@ -62,14 +62,18 @@ This module will allow you to tunnel internet from an EXIT node (server) that ha
  1. fill it with newline-separated list of:
    - EncryptionPublicKey key of the clients
    - single white space
-   - IP Address in the 10.10.0.0/24 range that will be assigned to the client
+   - IPv4 Address in the 10.10.0.0/24 range that will be assigned to the client
+   - *optional* Single white space
+   - *optional* IPv6 Address in the fd00::/64 range that will be assigned to the client
 
 Example
 ```
-1234567890123456789012345678901234567890123456789012345678901234 10.10.0.1
+1234567890123456789012345678901234567890123456789012345678901234 10.10.0.1 fd00::1
 2345678901234567890123456789012345678901234567890123456789012345 10.10.0.2
-3456789012345678901234567890123456789012345678901234567890123467 10.10.0.3
+3456789012345678901234567890123456789012345678901234567890123467 10.10.0.3 fd00::3
 ```
+
+*note* You do not have to assign an ipv6 address to all nodes, ones without ipv6 address will simply not be issued one.
 
 #### Client
 To configure as a client (use an exit server to access the Internet), 
@@ -77,9 +81,16 @@ To configure as a client (use an exit server to access the Internet),
 1. place a single line containing
    - EncryptionPublicKey of the server
    - single space
-   - IP Address assigned to you by the server
-
+   - IPv4 Address assigned to you by the server
+   - *optional* single white space
+   - *optional* IPv6 Address assigned to you by the server
+   
 Example
+```
+4567890123456789012345678901234567890123456789012345678901234567 10.10.0.4 fd00::4
+```
+or without IPv6
+
 ```
 4567890123456789012345678901234567890123456789012345678901234567 10.10.0.4
 ```
