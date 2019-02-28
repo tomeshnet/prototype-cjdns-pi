@@ -250,7 +250,7 @@ your code should look somewhat like this:
                  }
 ```
 
-Next you should restart cjdns with a `sudo systemctl restart cjnds` command. This will reload cjdns
+Next you should restart cjdns with a `sudo systemctl restart cjdns` command. This will reload cjdns
 with the new config file. Run a `status` command on your node, and make sure when it prints out
 the text, that cjdns is green with the text `[ACTIVE]`. if so, you have successfully connected to the remote peer,
 if it says `[INACTIVE]`, then there might be a typo in your config file. Make sure its formatted correctly (the
@@ -290,3 +290,18 @@ Exit out of nano and save the changes. Restart Yggdrasil with a `sudo killall yg
 command to terminal and you should see green text where Yggdrasil is printed with the words `[ACTIVE]` present.
 You are now connected to the remote peer with Yggdrasil. If you see`[INACTIVE]`, then you need to check your code
 for typos, make sure there are "" around the whole entire string.
+
+
+# Grafana
+
+[Grafana](https://grafana.com/) is a dashboard used to display Prometheus collected data.  Once installed you can visit `http://<yournodeip>:3000`.  Default login is `admin`/`admin`. You can skip the welcome screen/wizard by clicking on the Grafana logo at the top left corner.
+
+## Known install bugs
+
+At times Grafana will not start up properly during install and the dashboards will not install.  To install them manually run the following commands from the `prototype-cjdns/pi/scripts/grafana` folder
+
+```
+BASE_DIR=`pwd`
+curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary "@$BASE_DIR/datasource.json" http://localhost:3000/api/datasources
+curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary "@$BASE_DIR/dashboard.json" http://localhost:3000/api/dashboards/db
+```
