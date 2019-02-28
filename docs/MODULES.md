@@ -294,11 +294,11 @@ for typos, make sure there are "" around the whole entire string.
 
 # Grafana
 
-[Grafana](https://grafana.com/) is a dashboard used to display prometheus collected data.  Once installed you can visit `http://<yournodeip>:3000`.  Default login is `admin`/`admin`. You can skip the welcome by simply clicking on the Grafana logo.
+[Grafana](https://grafana.com/) is a dashboard used to display Prometheus collected data.  Once installed you can visit `http://<yournodeip>:3000`.  Default login is `admin`/`admin`. You can skip the welcome screen/wizard by clicking on the Grafana logo at the top left corner.
 
-## Known install bugs 
+## Known install bugs
 
-At times grafana will not start up properlly during install and the dashboards will not install.  To install them manually run the following commands from the `prototype-cjdns/pi/scripts/grafana` folder
+At times Grafana will not start up properly during install and the dashboards will not install.  To install them manually run the following commands from the `prototype-cjdns/pi/scripts/grafana` folder
 
 ```
 BASE_DIR=`pwd`
