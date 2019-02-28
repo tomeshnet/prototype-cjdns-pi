@@ -25,9 +25,8 @@ if [ -e /etc/yggdrasil.iptunnel.server ]; then
     IPv6Destinations="${IPv6Destinations%?}"
 
     IPv4Sources="0.0.0.0/0"
-
     if [[ ! -z "${IPv6Destinations}" ]]; then
-        IPv6Sources="0.0.0.0/0"
+        IPv6Sources="::/0"
     fi
 elif [ -e /etc/yggdrasil.iptunnel.client ]; then
     # Add each server to yggdrasil iptunnel connect-to's
@@ -58,7 +57,7 @@ if [ ! -z "$IPv4Sources" ];then
       sudo sed -i "s#\"__IPv6Sources__\"#[\"$IPv6Sources\"]#" /tmp/yggdrasil.conf
       sudo sed -i "s#\"__IPv6Destinations__\"#\{$IPv6Destinations\}#" /tmp/yggdrasil.conf
    fi
-      sudo jq '.TunnelRouting.Enable = true' /tmp/yggdrasil.conf > /tmp/yggdrasil-edit.conf && sudo mv /tmp/yggdrasil-edit.conf /tmp/yggdrasil.conf
-      sudo mv /tmp/yggdrasil.conf /etc/yggdrasil.conf
+   sudo jq '.TunnelRouting.Enable = true' /tmp/yggdrasil.conf > /tmp/yggdrasil-edit.conf && sudo mv /tmp/yggdrasil-edit.conf /tmp/yggdrasil.conf
+   sudo mv /tmp/yggdrasil.conf /etc/yggdrasil.conf
 fi
 
