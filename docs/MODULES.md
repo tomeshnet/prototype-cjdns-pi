@@ -294,7 +294,7 @@ for typos, make sure there are "" around the whole entire string.
 
 # Grafana
 
-[Grafana](https://grafana.com/) is a dashboard used to display prometheus collected data.
+[Grafana](https://grafana.com/) is a dashboard used to display prometheus collected data.  Once installed you can visit `http://<yournodeip>:3000`.  Default login is `admin`/`admin`. You can skip the welcome by simply clicking on the Grafana logo.
 
 ## Known install bugs 
 
