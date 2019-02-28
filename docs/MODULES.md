@@ -290,3 +290,18 @@ Exit out of nano and save the changes. Restart Yggdrasil with a `sudo killall yg
 command to terminal and you should see green text where Yggdrasil is printed with the words `[ACTIVE]` present.
 You are now connected to the remote peer with Yggdrasil. If you see`[INACTIVE]`, then you need to check your code
 for typos, make sure there are "" around the whole entire string.
+
+
+# Grafana
+
+[Grafana](https://grafana.com/) is a dashboard used to display prometheus collected data.
+
+## Known install bugs 
+
+At times grafana will not start up properlly during install and the dashboards will not install.  To install them manually run the following commands from the `prototype-cjdns/pi/scripts/grafana` folder
+
+```
+BASE_DIR=`pwd`
+curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary "@$BASE_DIR/datasource.json" http://localhost:3000/api/datasources
+curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary "@$BASE_DIR/dashboard.json" http://localhost:3000/api/dashboards/db
+```
