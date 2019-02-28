@@ -105,19 +105,22 @@ config :peerdns, peer_lists: [
     description: "Use this list to add temporary peers. This list will be cleared whenever PeerDNS restarts.",
     editable: true
     # no file name means it is not saved
-  ],
-  [
-    id: :yggdrasil,
-    name: "Yggdrasil peers",
-    description: "A temporary list of direct Yggdrasil mesh peers. Added by script.",
-    editable: true
   ]
 ]
 
 # Look up our CJDNS neighbors by connecting to local cjdroute and try to
 # use them as neighbors
 config :peerdns, cjdns_neighbors: [
-  enable: true,
+  enable: __CJDNS_ENABLE__,
+  cjdns_admin: {:udp, "127.0.0.1", 11234},
+  update_interval: 3600,
+  api_port: 14123, weight: 0.5,
+]
+
+# Same for Yggdrasil
+config :peerdns, yggdrasil_neighbors: [
+  enable: __YGG_ENABLE__,
+  yggdrasil_admin: {:local, "/var/run/yggdrasil.sock"},
   update_interval: 3600,
   api_port: 14123, weight: 0.5,
 ]

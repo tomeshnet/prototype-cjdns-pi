@@ -46,7 +46,8 @@ cd /opt
 sudo git clone https://github.com/p2pstuff/PeerDNS.git
 sudo chown -R pi PeerDNS
 cd PeerDNS
-git checkout ff8ffac1aaaaee46a7a125ab09773ae146970d1c  # Stay with a specific "version" that is known to work
+# Stay with a specific "version" that is known to work
+git checkout 2da3979879f89edf7f35d4091ed185c139766ffe
 mix deps.get
 # Setup serving the webUI locally
 cd ui
@@ -54,7 +55,20 @@ npm install
 npm run build
 cd ..
 # Copy over config file
-cp "$BASE_DIR/config.exs" config/
+# Modify first
+cp "$BASE_DIR/config.exs" /tmp
+if [ "$(which cjdroute)" ] && [ "$(ip addr | grep tun0)" ]; then
+    sed -i 's/__CJDNS_ENABLE__/true/' /tmp/config.exs
+else
+    sed -i 's/__CJDNS_ENABLE__/false/' /tmp/config.exs
+fi
+if [ "$(which yggdrasil)" ]  && [ "$(ip addr | grep ygg0)" ]; then
+    sed -i 's/__YGG_ENABLE__/true/' /tmp/config.exs
+else
+    sed -i 's/__YGG_ENABLE__/false/' /tmp/config.exs
+fi
+cp /tmp/config.exs /opt/PeerDNS/config/
+
 # Setup dnsmasq to resolve those tlds
 echo "address=/p2p/127.0.0.1#5454" | sudo tee -a /etc/dnsmasq.conf
 echo "address=/mesh/127.0.0.1#5454" | sudo tee -a /etc/dnsmasq.conf
@@ -81,8 +95,10 @@ echo -e "\033[0;36m    -A INPUT -j ACCEPT -p tcp --dport 14123"
 echo -e ""
 echo -e "\033[1;36mRun \033[0;36msudo systemctl start peerdns.service\033[1;36m to start PeerDNS."
 echo -e "\033[1;36mRun \033[0;36msudo systemctl enable peerdns.service\033[1;36m to start it at boot everytime."
-echo -e "\033[1;36m CJDNS peers will automatically be peered with."
+echo -e "\033[1;36m CJDNS and Yggdrasil peers will automatically be peered with, with a trust of 0.5."
 echo -e "\033[1;36mAdd Yggdrasil peers permanently (for now) by running the ygg-peer.sh script in this folder."
 echo -e "\033[1;36mNavigate to this device at port 14123 in your browser for a web UI to add domain records."
 echo ""
 echo -e "\033[1;36mPeerDNS will take a long time to start the first time. Watch the log to see when it has fully started."
+echo ""
+echo -e "\033[1;36mYou may find the command \033[0;36mcurl localhost:14123/api/privileged/pull -X POST\033[1;36m useful, as it forces a pull of data from neighbours."
