@@ -73,12 +73,6 @@ cp "$BASE_DIR/peerdns.service" /tmp  # Edit file in a safe space
 sed -i 's/__USER__/'"$(whoami)"'/g' /tmp/peerdns.service
 sudo cp /tmp/peerdns.service /etc/systemd/system
 sudo systemctl daemon-reload
-cp "$BASE_DIR/systemd-start.sh" /opt/PeerDNS
-cp "$BASE_DIR/systemd-stop.sh" /opt/PeerDNS
-
-# Logging
-sudo touch /var/log/PeerDNS.log
-sudo chmod 777 /var/log/PeerDNS.log
 
 echo -e "\033[1;36mPeerDNS installed and set up, in /opt."
 echo -e ""
@@ -87,7 +81,6 @@ echo -e "\033[0;36m    -A INPUT -j ACCEPT -p tcp --dport 14123"
 echo -e ""
 echo -e "\033[1;36mRun \033[0;36msudo systemctl start peerdns.service\033[1;36m to start PeerDNS."
 echo -e "\033[1;36mRun \033[0;36msudo systemctl enable peerdns.service\033[1;36m to start it at boot everytime."
-echo -e "\033[1;36mAll output should be logged to \033[0;36m/var/log/PeerDNS.log\033[1;36m and wiped on each restart."
 echo -e "\033[1;36m CJDNS peers will automatically be peered with."
 echo -e "\033[1;36mAdd Yggdrasil peers permanently (for now) by running the ygg-peer.sh script in this folder."
 echo -e "\033[1;36mNavigate to this device at port 14123 in your browser for a web UI to add domain records."

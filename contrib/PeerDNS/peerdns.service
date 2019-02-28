@@ -7,9 +7,12 @@ After=network.target
 User=__USER__
 Group=__USER__
 Environment="PATH=/opt/elixir/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-Type=simple
-ExecStart=/opt/PeerDNS/systemd-start.sh
-ExecStop=/opt/PeerDNS/systemd-stop.sh
+Environment="MIX_ENV=prod"
+WorkingDirectory=/opt/PeerDNS
+ExecStart=/opt/elixir/bin/mix run --no-halt
+ExecStop=/bin/kill $MAINPID
+KillMode=process
+Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target

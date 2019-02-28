@@ -32,7 +32,7 @@ sudo sed -i 's/address=\/.*\/127.0.0.1#5454//g' /etc/dnsmasq.conf
 sudo rm -rf "/opt/PeerDNS"
 sudo rm /etc/systemd/system/peerdns.service
 sudo systemctl daemon-reload
-sudo rm /var/log/PeerDNS.log
+
 echo -e "\033[1;36mPeerDNS uninstalled."
 echo -e "\033[1;36mRemember to remove any rules in /etc/iptables mentioning port 14123."
 echo -e "\033[1;36mI would suggest running \033[0;36msudo apt autoremove\033[1;36m to remove dependencies."

@@ -41,3 +41,5 @@ sudo systemctl start yggdrasil.service
 
 # Allow nginx access to yggdrasil socket when installed
 sudo usermod -a -G yggdrasil www-data || true
+# Allow current user access to the socket
+sudo gpasswd -a "$(whoami)" yggdrasil || true
