@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+# Convert existing yggdrasil config to json from hjson
+   
+# Detect if there is a # as a first character of the file.
+# If it is then its proably a hjson and needs to be converted into json
+if [ ! -z "$(tr -d ' \t\r\f' < /etc/yggdrasil.conf   | grep -i "^[#]")"  ]; then
+    sudo mv /etc/yggdrasil.conf /etc/yggdrasil.conf.orig
+    sudo yggdrasil -useconffile /etc/yggdrasil.conf.orig -normaliseconf -json | sudo tee /etc/yggdrasil.conf > /dev/null
+fi
+
+if [ -e /etc/yggdrasil.iptunnel.server ]; then
+    # Add each client to yggdrasil iptunnel allowed connections
+    while read -r PUBLIC_KEY IP_ADDR; do
+        if [[ "${PUBLIC_KEY}" =~ ^[0-z]{64} ]]; then
+            IPv4Destinations="${IPv4Destinations} \"${IP_ADDR}/32\": \"${PUBLIC_KEY}\","
+        fi
+    done < /etc/yggdrasil.iptunnel.server
+
+    # Trim last ,
+    IPv4Destinations="${IPv4Destinations%?}"
+    IPv4Sources="0.0.0.0/0"
+elif [ -e /etc/yggdrasil.iptunnel.client ]; then
+    # Add each server to yggdrasil iptunnel connect-to's
+    while read -r PUBLIC_KEY IP_ADDR; do
+        if [[ "${PUBLIC_KEY}" =~ ^[0-z]{64} ]]; then
+            IPv4Destinations="\"0.0.0.0/0\": \"${PUBLIC_KEY}\""
+            IPv4Sources="${IP_ADDR}/32"
+        fi
+    done < /etc/yggdrasil.iptunnel.client
+ fi
+
+# Check if there are values to set in the new config file
+if [ ! -z "$IPv4Sources" ];then
+    # Re-write tunnel routing
+    sudo jq 'del(.TunnelRouting)' /etc/yggdrasil.conf > /tmp/yggdrasil.conf
+    sudo jq '.TunnelRouting.Enable = true' /tmp/yggdrasil.conf > /tmp/yggdrasil-edit.conf && sudo mv /tmp/yggdrasil-edit.conf /tmp/yggdrasil.conf
+    sudo jq '.TunnelRouting.IPv4Sources = "__IPv4Sources__"' /tmp/yggdrasil.conf > /tmp/yggdrasil-edit.conf && sudo mv /tmp/yggdrasil-edit.conf /tmp/yggdrasil.conf
+    sudo jq '.TunnelRouting.IPv4Destinations = "__IPv4Destinations__"' /tmp/yggdrasil.conf > /tmp/yggdrasil-edit.conf && sudo mv /tmp/yggdrasil-edit.conf /tmp/yggdrasil.conf
+    sudo sed -i "s#\"__IPv4Sources__\"#[\"$IPv4Sources\"]#" /tmp/yggdrasil.conf
+    sudo sed -i "s#\"__IPv4Destinations__\"#\{$IPv4Destinations\}#" /tmp/yggdrasil.conf
+    sudo mv /tmp/yggdrasil.conf /etc/yggdrasil.conf
+fi

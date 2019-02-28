@@ -25,6 +25,8 @@ A short summary of each module is directly below. Documentation for specific abi
 | `WITH_WATCHDOG`                 | None                                           | Set to `true` if you want to enable hardware watchdog that will reset the device when the operating system becomes unresponsive. |
 | `WITH_YRD`                      | None                                           | Set to `true` if you want to enable [yrd](https://github.com/kpcyrd/yrd), a helpful command-line tool for cjdns. |
 | `WITH_YGGDRASIL`                | None                                           | Set to `true` if you want to install [Yggdrasil](https://yggdrasil-network.github.io/), an alternate and possibly more efficient mesh routing software than CJDNS. |
+| `WITH_YGGDRASIL_IPTUNNEL`       | None                                           | Set to `true` if you want to use the yggdrasil iptunnel feature to set up an Internet gateway for your node. To configure as a server (exit Internet traffic for other nodes), create **/etc/yggdrasil.iptunnel.server** containing a newline-separated list of yggdrasil public keys of allowed clients and an ipaddress for that client. To configure as a client (use an exit server to access the Internet), create **/etc/yggdrasil.iptunnel.client** containing a newline-separated list of yggdrasil public keys of the gateway servers followed by the IP address set on the server. You can only configure as one or the other, not both and you can only have one entry on the client. |
+
 
 To install all optional modules (not recommended), run the following command:
 
@@ -49,6 +51,38 @@ Yggdrasil is another piece of mesh routing software similar to CJDNS, but with p
 Yggdrasil will give each node (like your Pi, for example) an IPv6 address, but it can also give each node a subnet to distribute to its clients. This means that if you connect to the WiFi of your Pi, your device can get a unique Yggdrasil address, with all the benefits it provides. These include being able to access your device directly, without being NATed or blocked.
 
 However, the Pi does have a firewall, so various commands need be run to allow access to clients. By default all Yggdrasil client access is blocked. See [**Firewall/IPv6/Yggdrasil Clients**](#yggdrasil-clients) to learn how to change that.
+
+### Yggdrasil IPTunnel
+
+This module will allow you to tunnel internet from an EXIT node (server) that has Internet to another node that does not. To do this you must exchange public keys.  The public key can be found in /etc/yggdrasil.conf
+
+#### Server
+ To configure as a server (exit Internet traffic for other nodes), 
+ 1. create **/etc/yggdrasil.iptunnel.server**
+ 1. fill it with newline-separated list of:
+   - EncryptionPublicKey key of the clients
+   - single white space
+   - IP Address in the 10.10.0.0/24 range that will be assigned to the client
+
+Example
+```
+1234567890123456789012345678901234567890123456789012345678901234 10.10.0.1
+2345678901234567890123456789012345678901234567890123456789012345 10.10.0.2
+3456789012345678901234567890123456789012345678901234567890123467 10.10.0.3
+```
+
+#### Client
+To configure as a client (use an exit server to access the Internet), 
+1. create **/etc/yggdrasil.iptunnel.client** 
+1. place a single line containing
+   - EncryptionPublicKey of the server
+   - single space
+   - IP Address assigned to you by the server
+
+Example
+```
+4567890123456789012345678901234567890123456789012345678901234567 10.10.0.4
+```
 
 ## IPFS
 IPFS stands for Interplanetary File System. It is an open-source, peer-to-peer distributed hypermedia protocol that aims to function as a ubiquitous file system for all computing devices. 
@@ -111,6 +145,7 @@ Default open ports to the device over IPv6 are
 | 4001  | TCP     | Accept | IPFS Swarm port           |
 | 8008  | TCP/UDP | Accept | SSB                       |
 | 9100  | TCP     | Accept | NodeExporter              |
+
 #### Change open ports
 
 To change the open ports you can edit the IPv6 configuration file located at `/etc/iptables/rules.v6`
@@ -130,6 +165,7 @@ These are standard `ip6tables` rules. The basic syntax is as follows:
 Make sure to put your rules in the right section of the file, there are different ones depending on the table, with comments defining each section.
 
 #### Yggdrasil Clients
+
 Below are some different scenarios for opening up Yggdrasil clients. You will need to put these rules in `/etc/iptables/rules.v6`, in the Yggdrasil client rules section indicated by a comment.
 
  - **One client, one port**
@@ -149,3 +185,123 @@ Specifying a protocol is not required, but recommended.
 If you use this rule, there is no point in having any other Yggdrasil client rules in the file.
 
 You can specify a protocol, but that would limit the ports that are open.
+
+## Adding deprecated.systems peer info into CJDNS and Yggdrasil (Optional)
+
+#### CJDNS
+
+Go to [Deprecated Systems](https://deprecated.systems/) website. You will see the following information:
+
+```
+cjdns peering
+
+    "159.203.5.91:30664": {
+      "peerName": "deprecated.systems",
+      "login": "tomesh-public",
+      "password": "iuw4nklm3j89qno876ef2jabpvlg1j0",
+      "publicKey": "2scyvybg4qqms1c5c9nyt50b1cdscxnr6ycpwsxf6pccbmwuynk0.k"
+    }
+
+    "[2604:a880:cad:d0::45:d001]:30664": {
+      "peerName": "deprecated.systems",
+      "login": "tomesh-public",
+      "password": "iuw4nklm3j89qno876ef2jabpvlg1j0",
+      "publicKey": "2scyvybg4qqms1c5c9nyt50b1cdscxnr6ycpwsxf6pccbmwuynk0.k"
+    }
+```
+
+This is the peering information that will give you the address (ipv4 or ipv6) and credentials to connect to 
+the node. You must either select to use just the ipv4 config, or you could use both. Now that we have this info, 
+connect to your mesh device, and edit the following config file:
+
+```
+$ sudo nano /etc/cjdroute.conf
+```
+
+This file contains everything that is required for cjdns to run, so be careful not to remove anything else, unless
+you know what you are doing. You need to head down to this line:
+
+```
+// Nodes to connect to (IPv4 only).
+"connectTo":
+{
+```
+
+This is where you input the ipv4 address. There is also a ipv6 field:
+
+```
+// Nodes to connect to (IPv6 only).
+"connectTo": 
+{
+```
+
+Insert the respective code, and the save (ctrl+X to save, then ctrl+S to confirm file name, then ENTER to confirm changes).
+your code should look somewhat like this:
+```
+                // Nodes to connect to (IPv4 only). 
+                "connectTo":
+                 {
+                               "159.203.5.91:30664": {
+                                 "peerName": "deprecated.systems",
+                                 "login": "tomesh-public",
+                                 "password": "iuw4nklm3j89qno876ef2jabpvlg1j0",
+                                 "publicKey": "2scyvybg4qqms1c5c9nyt50b1cdscxnr6ycpwsxf6pccbmwuynk0.k"
+                               }
+                 }
+```
+
+Next you should restart cjdns with a `sudo systemctl restart cjdns` command. This will reload cjdns
+with the new config file. Run a `status` command on your node, and make sure when it prints out
+the text, that cjdns is green with the text `[ACTIVE]`. if so, you have successfully connected to the remote peer,
+if it says `[INACTIVE]`, then there might be a typo in your config file. Make sure its formatted correctly (the
+config file is written using JSON).
+
+### Yggdrasil
+
+To connect to the "Deprecated Systems" node via Yggdrasil, you must do the similar as above, but with quite a few less steps.
+
+On the [deprecated.systems](https://deprecated.systems/) website, there is a section outlining the info for Yggdrasil:
+
+```
+"104.248.104.141:59168"
+"[2604:a880:cad:d0::45:d001]:59168"
+```
+
+One is ipv4, the other ipv6. Head over to your mesh node yet again, and enter the following in your terminal:
+
+```
+$ sudo nano /etc/yggdrasil.conf
+```
+
+We are interested in this section of the config file:
+
+```
+List of connection strings for static peers in URI format, e.g. tcp://a.b.c.d:e or socks://a.b.c.d:e/f.g.h.i:j.
+Peers: []
+```
+
+This is where we are going to insert the code to connect to the peer node. Your code should look similar to this:
+
+```
+Peers: ["tcp://104.248.104.141:59168"]
+```
+
+Exit out of nano and save the changes. Restart Yggdrasil with a `sudo killall yggdrasil` command. Pass a `status`
+command to terminal and you should see green text where Yggdrasil is printed with the words `[ACTIVE]` present.
+You are now connected to the remote peer with Yggdrasil. If you see`[INACTIVE]`, then you need to check your code
+for typos, make sure there are "" around the whole entire string.
+
+
+# Grafana
+
+[Grafana](https://grafana.com/) is a dashboard used to display Prometheus collected data.  Once installed you can visit `http://<yournodeip>:3000`.  Default login is `admin`/`admin`. You can skip the welcome screen/wizard by clicking on the Grafana logo at the top left corner.
+
+## Known install bugs
+
+At times Grafana will not start up properly during install and the dashboards will not install.  To install them manually run the following commands from the `prototype-cjdns/pi/scripts/grafana` folder
+
+```
+BASE_DIR=`pwd`
+curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary "@$BASE_DIR/datasource.json" http://localhost:3000/api/datasources
+curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary "@$BASE_DIR/dashboard.json" http://localhost:3000/api/dashboards/db
+```
