@@ -1,0 +1,18 @@
+#!/bin/bash
+
+sudo dpkg -r esl-erlang
+
+sudo rm -rf /opt/elixir
+sudo sed -i 's/export PATH="\/opt\/elixir\/bin:$PATH"//' /etc/profile
+
+sudo dpkg -r debian-archive-keyring
+sudo apt remove -y libsodium23 libsodium-dev
+sudo sed -i 's/deb http:\/\/ftp.ca.debian.org\/debian stretch-backports main//g' /etc/apt/sources.list
+sudo apt update
+
+# Remove all dnsmasq redirecting lines
+sudo sed -i 's/address=\/.*\/127.0.0.1#5454//g' /etc/dnsmasq.conf
+sudo awk 'NF' /etc/dnsmasq.conf  # Remove empty lines
+sudo rm -rf "/opt/PeerDNS"
+sudo rm /etc/systemd/system/peerdns.service
+sudo systemctl daemon-reload

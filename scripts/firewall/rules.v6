@@ -9,12 +9,15 @@
 # Add your own raw INPUT rules below - they will apply to everything
 # Do not block everything here, that is handled below
 
+
 #######################
 # DO NOT EDIT - Raw INPUT rules
 #######################
 -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 -A INPUT -p ipv6-icmp -j ACCEPT
 -A INPUT -i lo -j ACCEPT
+# PeerDNS
+-A INPUT -p tcp --dport 14123 -j ACCEPT
 # INPUT rules needed for Yggdrasil peering
 -A INPUT -j ACCEPT -p tcp --dport 12345
 -A INPUT -j ACCEPT -p udp --dport 9001 -d ff02::114

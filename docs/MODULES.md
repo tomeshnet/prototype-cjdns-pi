@@ -26,12 +26,13 @@ A short summary of each module is directly below. Documentation for specific abi
 | `WITH_YRD`                      | None                                           | Set to `true` if you want to enable [yrd](https://github.com/kpcyrd/yrd), a helpful command-line tool for cjdns. |
 | `WITH_YGGDRASIL`                | None                                           | Set to `true` if you want to install [Yggdrasil](https://yggdrasil-network.github.io/), an alternate and possibly more efficient mesh routing software than CJDNS. |
 | `WITH_YGGDRASIL_IPTUNNEL`       | None                                           | Set to `true` if you want to use the yggdrasil iptunnel feature to set up an Internet gateway for your node. To configure as a server (exit Internet traffic for other nodes), create **/etc/yggdrasil.iptunnel.server** containing a newline-separated list of yggdrasil public keys of allowed clients and an ipaddress for that client. To configure as a client (use an exit server to access the Internet), create **/etc/yggdrasil.iptunnel.client** containing a newline-separated list of yggdrasil public keys of the gateway servers followed by the IP address set on the server. You can only configure as one or the other, not both and you can only have one entry on the client. |
+| `WITH_PEERDNS`                  | **14123**: UI and peering, both over TCP. | Set to `true` if you want to install [PeerDNS](https://github.com/p2pstuff/PeerDNS/), a P2P based DNS system that uses trust to determine domains. |
 
 
 To install all optional modules (not recommended), run the following command:
 
 ```
-$ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install && chmod +x install && WITH_MESH_POINT=true WITH_AD_HOC=false WITH_WIFI_AP=true WITH_FIREWALL=true WITH_CJDNS_IPTUNNEL=true WITH_IPFS=true WITH_SSB=true WITH_SSB_WEB_PI=true WITH_PROMETHEUS_NODE_EXPORTER=true WITH_PROMETHEUS_SERVER=true WITH_GRAFANA=true WITH_H_DNS=true WITH_H_NTP=true WITH_EXTRA_TOOLS=true WITH_WATCHDOG=true WITH_YRD=true ./install
+$ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install && chmod +x install && WITH_MESH_POINT=true WITH_AD_HOC=false WITH_WIFI_AP=true WITH_FIREWALL=true WITH_CJDNS_IPTUNNEL=true WITH_IPFS=true WITH_SSB=true WITH_SSB_WEB_PI=true WITH_PROMETHEUS_NODE_EXPORTER=true WITH_PROMETHEUS_SERVER=true WITH_GRAFANA=true WITH_H_DNS=true WITH_H_NTP=true WITH_EXTRA_TOOLS=true WITH_WATCHDOG=true WITH_YRD=true WITH_PEERDNS=true ./install
 ```
 
 ## CJDNS
@@ -59,7 +60,7 @@ This module will allow you to tunnel internet from an EXIT node (server) that ha
 #### Server
  To configure as a server (exit Internet traffic for other nodes), 
  1. create **/etc/yggdrasil.iptunnel.server**
- 1. fill it with newline-separated list of:
+ 2. fill it with newline-separated list of:
    - EncryptionPublicKey key of the clients
    - single white space
    - IP Address in the 10.10.0.0/24 range that will be assigned to the client
@@ -292,11 +293,11 @@ You are now connected to the remote peer with Yggdrasil. If you see`[INACTIVE]`,
 for typos, make sure there are "" around the whole entire string.
 
 
-# Grafana
+## Grafana
 
 [Grafana](https://grafana.com/) is a dashboard used to display Prometheus collected data.  Once installed you can visit `http://<yournodeip>:3000`.  Default login is `admin`/`admin`. You can skip the welcome screen/wizard by clicking on the Grafana logo at the top left corner.
 
-## Known install bugs
+### Known install bugs
 
 At times Grafana will not start up properly during install and the dashboards will not install.  To install them manually run the following commands from the `prototype-cjdns/pi/scripts/grafana` folder
 
@@ -305,3 +306,10 @@ BASE_DIR=`pwd`
 curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary "@$BASE_DIR/datasource.json" http://localhost:3000/api/datasources
 curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary "@$BASE_DIR/dashboard.json" http://localhost:3000/api/dashboards/db
 ```
+
+## PeerDNS
+For more info on PeerDNS and how it works, consult the [README](https://github.com/p2pstuff/PeerDNS/blob/master/README.md). Visit http://localhost/peerdns/ to access the UI. At the moment, you can't add names through this UI without being localhost, so just use it for looking at names for now. Consult the [API docs](https://github.com/p2pstuff/PeerDNS/blob/master/doc/api.md) on how to use curl when in an SSH session on the node to add names and the like. This will be fixed soon, and you will be able to add names through the web UI by entering a password online.
+
+PeerDNS is installed at `/opt/PeerDNS`. Yggdrasil and CJDNS direct peers will automatically be connected, with a trust level of 0.5. To change many settings, alter the config file at `/opt/PeerDNS/config/config.exs`, then run `sudo systemctl restart peerdns.service`.
+
+You may also find the command `curl localhost:14123/api/privileged/pull -X POST` useful, as it will force a pull of data from neighbors. It can be used to update the records on your node, for example.
