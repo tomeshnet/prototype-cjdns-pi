@@ -20,7 +20,6 @@ if [ -e /etc/yggdrasil.iptunnel.server ]; then
 # Configure as yggdrasil iptunnel client if client file is present (this is simply a newline-separated list
 # of cjdns public keys in /etc/yggdrasil.iptunnel.client, each key indicating an iptunnel exit server)
 elif [ -e /etc/yggdrasil.iptunnel.client ]; then
-
     # Add each server to yggdrasil iptunnel connect-to's
     while read -r PUBLIC_KEY ASSIGNED_IP; do
         if [[ "${PUBLIC_KEY}" =~ ^[0-z]{64} ]]; then
