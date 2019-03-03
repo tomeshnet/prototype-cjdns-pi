@@ -25,7 +25,7 @@ while 1:
                         fifo.write(s)
 
 
-                #Wireless Link Dump
+                # Wireless Link Dump
 
                 # Get cjdns peer information
                 remotePeers = {}
