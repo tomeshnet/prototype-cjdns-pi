@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+set -e
+
+YGGDRASIL_VERSION=0.3.3
+YGGDRASIL_HOST=494-115685026
+
+
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Download and install yggdrasil routing engine
+ARM_VERSION=armhf
+if uname -m | grep -q aarch64; then
+    ARM_VERSION=arm64
+fi
+
+if [[ ! -f "/usr/bin/yggdrasil" ]]; then
+    mkdir "$BASE_DIR/tmp"
+    wget "https://${YGGDRASIL_HOST}-gh.circle-artifacts.com/0/yggdrasil-${YGGDRASIL_VERSION}-${ARM_VERSION}.deb" -O "$BASE_DIR/tmp/yggdrasil.deb"
+    sudo dpkg -i "$BASE_DIR/tmp/yggdrasil.deb"
+    rm -rf "$BASE_DIR/tmp"
+fi
+
+# Change configuration to have yggdrasil's tun interface called ygg0
+sudo sed -i "s/IfName: auto/IfName: ygg0/" /etc/yggdrasil.conf 
+
+# Change port to 12345 for firewall
+YGGDRASIL_PORT=$(sudo cat /etc/yggdrasil.conf | grep \ Listen: | awk  '{print $2}' | tr -d \")
+YGGDRASIL_PORT=$(printf "%q" "$YGGDRASIL_PORT") # Escape for sed
+sudo sed  -i "s/$YGGDRASIL_PORT/\[::\]:12345/" /etc/yggdrasil.conf
+
+
+# Set node name
+if [ -z "${NEWHOSTNAME}" ]; then 
+    NEWHOSTNAME=$(cat /etc/hostname)
+fi
+sudo sed -i "\$i\ \ NodeInfo:\n  {\n   name: ${NEWHOSTNAME}\n  }\n"  /etc/yggdrasil.conf
+
+sudo systemctl enable yggdrasil.service
+sudo systemctl start yggdrasil.service 
+
+# Allow nginx access to yggdrasil socket when installed
+sudo usermod -a -G yggdrasil www-data || true

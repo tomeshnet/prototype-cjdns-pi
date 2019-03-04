@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+set -e
+
+if [ ! -x "$(command -v nginx)" ] || [ ! -d "/etc/nginx/site-path-enabled" ]; then
+    LAST_BASE="$BASE_DIR"
+    BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+    sudo apt-get install nginx fcgiwrap -y
+
+    sudo cp -f "$BASE_DIR/main.conf" /etc/nginx/sites-available/main.conf
+    sudo ln -s /etc/nginx/sites-available/main.conf /etc/nginx/sites-enabled/main.conf || true
+    sudo rm /etc/nginx/sites-enabled/default || true
+    sudo mkdir /etc/nginx/site-path-enabled || true
+
+    # Install welcome page
+    sudo cp "$BASE_DIR/index.html" "/var/www/html/index.html"
+    sudo sed -i "s/__NODENAME__/$NEWHOSTNAME/" "/var/www/html/index.html"
+    sudo cp "$BASE_DIR/sha512.js" "/var/www/html/sha512.js"
+    sudo cp "$BASE_DIR/vis.min.js" "/var/www/html/vis.min.js"
+    sudo cp "$BASE_DIR/vis-network.min.css" "/var/www/html/vis-network.min.css"
+    sudo cp "$BASE_DIR/map.js" "/var/www/html/map.js"
+    sudo cp "$BASE_DIR/common.css" "/var/www/html/common.css"
+    sudo cp "$BASE_DIR/common.js" "/var/www/html/common.js"
+
+    sudo cp "$BASE_DIR/cgi-bin.conf" "/etc/nginx/site-path-enabled/cgi-bin.conf"
+
+    # CJDNS peers
+    mkdir "$BASE_DIR/tmp"
+    
+    git clone https://github.com/hamishcoleman/cjdns_tool.git "$BASE_DIR/tmp/cjdns_tool"
+    sudo mkdir -p "/var/www/html/cgi-bin/lib/" || true
+    sudo cp -r "$BASE_DIR/tmp/cjdns_tool/lib" "/var/www/html/cgi-bin/"
+    rm -rf "$BASE_DIR/tmp"
+    sudo cp "$BASE_DIR/peers-cjdns" "/var/www/html/cgi-bin/peers-cjdns"
+
+    # Yggdrasil peers
+    sudo cp "$BASE_DIR/peers-yggdrasil" "/var/www/html/cgi-bin/peers-yggdrasil"
+
+    sudo chmod +x "/var/www/html/cgi-bin/peers-cjdns"
+    sudo chmod +x "/var/www/html/cgi-bin/peers-yggdrasil"
+    sudo chown -R www-data.www-data /var/www/html
+    
+    BASE_DIR="$LAST_BASE"
+
+fi

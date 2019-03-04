@@ -10,7 +10,7 @@ sudo apt-get install -y socat python-dev libtool python-setuptools autoconf auto
 # Install scuttlebot
 # sudo sudo is a hack to allow post-install scripts that drop one level of sudo and still be sudoed
 # otherwise you get permissions errors when it tries to write to root owned folders
-sudo sudo npm install scuttlebot -g --unsafe-perm
+sudo sudo npm install ssb-server -g --unsafe-perm
 
 # Store current user as sudo will change it
 currentUser=$USER

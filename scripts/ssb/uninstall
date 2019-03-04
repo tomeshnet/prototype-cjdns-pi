@@ -16,6 +16,7 @@ sudo rm -f /usr/bin/sbot || true
 sudo rm -f /etc/systemd/system/ssb.service
 sudo rm -f /etc/systemd/system/ssb-broadcast.service
 sudo rm -f /usr/local/bin/ssb-broadcast-service.sh
+sudo rm -rf /usr/lib/node_modules/ssb-server || true
 
 if [ -d "$HOME/.ssb" ]; then
     echo "Found ~/.ssb"

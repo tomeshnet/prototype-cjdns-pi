@@ -3,5 +3,10 @@
 set -e
 
 # Uninstall scripts that configure cjdns iptunnel
-sudo rm /etc/udev/rules.d/50-cjdns.rules
 sudo rm /usr/local/sbin/cjdns-setup
+if [ -f /lib/systemd/system/cjdns.service ]; then
+    sudo sed -i /ExecStartPost/d /lib/systemd/system/cjdns.service
+fi
+if [ -f /etc/systemd/system/cjdns.service ]; then
+    sudo sed -i /ExecStartPost/d /etc/systemd/system/cjdns.service
+fi
