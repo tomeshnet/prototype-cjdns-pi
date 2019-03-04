@@ -105,9 +105,9 @@ saveenv
 ```
 ## Wireless
 
-**Q:** Why do my Meshpoint/AdHoc nodes Release v0.3 or lower no longer mesh with V0.4 or higher?
+**Q:** Why do my MeshPoint/AdHoc nodes on v0.3 or lower no longer mesh with v0.4 or higher?
 
-**A:** We dropped the band width of MeshPoint and AdHoc to 20MHz from 40MHz. This should provider a bit better responsivness in urban environments.  Unfortunatlry the 20MHz and 40MHz bands do not work together.
+**A:** We dropped the band width of MeshPoint and AdHoc to 20MHz from 40MHz in v0.4. This should provide a bit better responsiveness in urban environments.  Unfortunately the 20MHz and 40MHz bands do not work together.
 
 You can update your v0.3 or lower nodes to use 20MHz by editing the `/usr/bin/mesh-adhoc` or `/usr/bin/mesh-point` file and removing the HT40+ paramater from the iw line near the bottom of the file, then simply reboot.
 
