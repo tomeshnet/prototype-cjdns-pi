@@ -32,11 +32,13 @@ function addPeer  {
             # Connect to neighbouring IPFS nodes
             # Check for QUIC connections first
             if [ "$(echo "${res}" | jq -r -M '.services.IPFS.quic_enabled')" == 'true' ]; then
+                # ID is not needed for QUIC connections
                 ipfs swarm connect "/ip6/${addr}/udp/4001/quic"
+                echo "Connecting to ${addr} with QUIC"
             else
                 ipfs swarm connect "/ip6/${addr}/tcp/4001/ipfs/${id}"
+                echo "Connecting to ${addr} regularly"
             fi
-            echo "Connecting to ${addr}"
         fi
     fi
 }
@@ -58,6 +60,7 @@ while true; do
 
         # Remove a filter if there was one
         ipfs swarm filters rm '/ip6/fc00::/ipcidr/8'
+        echo "Enabled access to CJDNS network"
     else
         ipfs swarm filters add '/ip6/fc00::/ipcidr/8'
         echo "Blocked CJDNS network"
@@ -68,9 +71,10 @@ while true; do
             addPeer "${ygg_peer}"
         done <<< "$(sudo yggdrasilctl getPeers | grep -v "(self)" | awk '{print $1}' | grep -v bytes_recvd | xargs)"
 
-        ipfs swarm filters rm '/ip6/0200::/ipcidr/7'
+        ipfs swarm filters rm '/ip6/200::/ipcidr/7'
+        echo "Enabled access to Yggdrasil network"
     else
-        ipfs swarm filters add '/ip6/0200::/ipcidr/7'
+        ipfs swarm filters add '/ip6/200::/ipcidr/7'
         echo "Blocked Yggdrasil network"
     fi
 
@@ -81,6 +85,7 @@ while true; do
         echo "Blocked all of IPv4"
     else
         ipfs swarm filters rm '/ip4/0.0.0.0/ipcidr/0'
+        echo "Enabled access to all of IPv4"
     fi
 
     # Clearnet IPv6 access
@@ -90,6 +95,6 @@ while true; do
         echo "Blocked IPv6 internet"
     else
         ipfs swarm filters rm '/ip6/2000::/ipcidr/3'
+        echo "Enabled access to IPv6 internet"
     fi
-
 done
