@@ -14,7 +14,7 @@ elif uname -m | grep -q aarch64; then
     ARM_VERSION=64
 fi
 if [[ ! -f "/usr/local/bin/node_exporter" ]]; then
-    mkdir "$BASE_DIR/tmp"
+    mkdir "$BASE_DIR/tmp" || true
     wget "https://github.com/prometheus/node_exporter/releases/download/v${NODE_EXPORTER_VERSION}/node_exporter-${NODE_EXPORTER_VERSION}.linux-arm${ARM_VERSION}.tar.gz" -O "$BASE_DIR/tmp/node_exporter.tar.gz"
     tar xvfz "$BASE_DIR/tmp/node_exporter.tar.gz" -C "$BASE_DIR/tmp" --strip 1
     sudo cp "$BASE_DIR/tmp/node_exporter" /usr/local/bin/node_exporter
@@ -22,7 +22,7 @@ if [[ ! -f "/usr/local/bin/node_exporter" ]]; then
     rm -rf "$BASE_DIR/tmp"
 fi
 
-sudo mkdir /var/lib/node_exporter/
+sudo mkdir /var/lib/node_exporter/ || true
 sudo mkdir /opt/tomesh/ || true
 sudo cp "$BASE_DIR/nodestats-tomesh.py" "/opt/tomesh/nodestats-tomesh.py"
 

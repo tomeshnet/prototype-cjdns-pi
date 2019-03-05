@@ -10,6 +10,7 @@ h1 {
     background:black;
     color:white;
     padding:5px;
+    margin-bottom:5px;
 }
 .app {
     display:inline-block;

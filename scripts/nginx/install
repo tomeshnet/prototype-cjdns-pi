@@ -27,16 +27,20 @@ if [ ! -x "$(command -v nginx)" ] || [ ! -d "/etc/nginx/site-path-enabled" ]; th
 
     # CJDNS peers
     mkdir "$BASE_DIR/tmp"
+    
     git clone https://github.com/hamishcoleman/cjdns_tool.git "$BASE_DIR/tmp/cjdns_tool"
-    sudo cp -r "$BASE_DIR/tmp/cjdns_tool/lib/" "/var/www/html/cgi-bin/"
+    sudo mkdir -p "/var/www/html/cgi-bin/lib/" || true
+    sudo cp -r "$BASE_DIR/tmp/cjdns_tool/lib" "/var/www/html/cgi-bin/"
     rm -rf "$BASE_DIR/tmp"
     sudo cp "$BASE_DIR/peers-cjdns" "/var/www/html/cgi-bin/peers-cjdns"
 
     # Yggdrasil peers
     sudo cp "$BASE_DIR/peers-yggdrasil" "/var/www/html/cgi-bin/peers-yggdrasil"
+
     sudo chmod +x "/var/www/html/cgi-bin/peers-cjdns"
     sudo chmod +x "/var/www/html/cgi-bin/peers-yggdrasil"
-       
-    BASE_DIR="$LAST_BASE"
+    sudo chown -R www-data.www-data /var/www/html
     
+    BASE_DIR="$LAST_BASE"
+
 fi

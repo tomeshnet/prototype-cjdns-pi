@@ -1,0 +1,11 @@
+deb http://__PREFIX__.mirror.tomesh.net/debian __CODENAME__ main contrib non-free
+#deb-src http://__PREFIX__.mirror.tomesh.net/debian __CODENAME__ main contrib non-free
+
+deb http://__PREFIX__.mirror.tomesh.net/debian __CODENAME__-updates main contrib non-free
+#deb-src http://__PREFIX__.mirror.tomesh.net/debian __CODENAME__-updates main contrib non-free
+
+deb http://__PREFIX__.mirror.tomesh.net/debian __CODENAME__-backports main contrib non-free
+#deb-src http:/__PREFIX__.mirror.tomesh.net/debian __CODENAME__-backports main contrib non-free
+
+deb http://__PREFIX__.mirror.tomesh.net/debian-security __CODENAME__/updates main contrib non-free
+#deb-src http://__PREFIX__.mirror.tomesh.net/debian-security __CODENAME__/updates main contrib non-free

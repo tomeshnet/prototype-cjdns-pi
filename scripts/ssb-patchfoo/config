@@ -1,0 +1,7 @@
+{
+  "plugins": {
+    "ssb-private": true,
+    "ssb-backlinks": true,
+    "patchfoo": true
+  }
+}
