@@ -52,9 +52,36 @@ Yggdrasil will give each node (like your Pi, for example) an IPv6 address, but i
 
 However, the Pi does have a firewall, so various commands need be run to allow access to clients. By default all Yggdrasil client access is blocked. See [**Firewall/IPv6/Yggdrasil Clients**](#yggdrasil-clients) to learn how to change that.
 
-### Yggdrasil IPTunnel
+## Yggdrasil IPTunnel
 
 This module will allow you to tunnel internet from an EXIT node (server) that has Internet to another node that does not. To do this you must exchange public keys.  The public key can be found in /etc/yggdrasil.conf
+
+### Additional configuration
+Additional configurations can be made in the file `/etc/yggdrasil.iptunnel.conf`
+
+Section `[iptunnel]`
+
+**IPv6nat**  
+Disables masquarading of IPv6 tunneles. Set to false when routeable addresses are being used across the tunnel. Usually when passing an additional subnet.
+
+Default: *true*  
+Values: *true false*
+
+**SUBNET4**  
+*Server only*
+
+Defines ip addresses to add to route table that will be routed over through yggdrasil. Must match ips in `yggdrasil.iptunnel.server` 
+
+Default: 10.10.0.  
+Value: /24 ip address without the last octet
+
+**SUBNET6**  
+*Server only*
+
+Defines ipv6 addresses to add to route table that will be routed over through yggdrasil. Must match ips in `yggdrasil.iptunnel.server` 
+
+Default: fd00::
+Value: ./24 ipv6 address without the last octet
 
 #### Server
  To configure as a server (exit Internet traffic for other nodes), 
