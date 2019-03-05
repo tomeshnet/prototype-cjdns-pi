@@ -5,8 +5,8 @@ set -e
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 sudo cp "$BASE_DIR/yggdrasil-setup" "/usr/local/sbin/yggdrasil-setup"
-sudo mkdir /etc/systemd/system/unit.d || true
-sudo cp "$BASE_DIR/yggdrasil-iptunnel.service" /etc/systemd/system/unit.d/yggdrasil.service
+sudo mkdir /etc/systemd/system/yggdrasil.service.d || true
+sudo cp "$BASE_DIR/yggdrasil-iptunnel.service" /etc/systemd/system/yggdrasil.service.d/iptunnel.conf
 
 sudo chmod a+x /usr/local/sbin/yggdrasil-setup
 
