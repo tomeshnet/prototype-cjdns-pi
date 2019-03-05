@@ -4,19 +4,11 @@ set -e
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-sudo apt-get -y install jq
-
 sudo cp "$BASE_DIR/yggdrasil-setup" "/usr/local/sbin/yggdrasil-setup"
-sudo cp "$BASE_DIR/yggdrasil-pre-setup" "/usr/local/sbin/yggdrasil-pre-setup"
-
-sudo chmod a+x /usr/local/sbin/yggdrasil-pre-setup
-sudo chmod a+x /usr/local/sbin/yggdrasil-setup
-
 sudo cp "$BASE_DIR/yggdrasil-iptunnel.service" /etc/systemd/system/yggdrasil-iptunnel.service
-sudo cp "$BASE_DIR/yggdrasil-pre-iptunnel.service" /etc/systemd/system/yggdrasil-pre-iptunnel
+
+sudo chmod a+x /usr/local/sbin/yggdrasil-setup
 
 sudo systemctl daemon-reload
 sudo systemctl enable yggdrasil-iptunnel.service
-sudo systemctl enable yggdrasil-pre-iptunnel.service
-
 sudo systemctl daemon-reload

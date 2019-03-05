@@ -1,12 +1,12 @@
 [Unit]
 Description=Yggdrasil IPTunnel service for exit nodes
 Wants=network.target
-Requires=yggdrasil
-After=network.target
+Requires=yggdrasil.service
+After=network.target yggdrasil.service
 
 [Service]
 Type=idle
-ExecStart=/usr/local/sbin/iptunnel-setup
+ExecStart=/usr/local/sbin/yggdrasil-setup
 
 [Install]
-RequiredBy=yggdrasil.target
+WantedBy=multi-user.target
