@@ -65,12 +65,14 @@ This module will allow you to tunnel internet from an EXIT node (server) that ha
    - IPv4 Address in the 10.10.0.0/24 range that will be assigned to the client
    - *optional* Single white space
    - *optional* IPv6 Address in the fd00::/64 range that will be assigned to the client
+   - *optional* Single white space
+   - *optional* IPv6 Subnet that will be routed through the client
 
 Example
 ```
 1234567890123456789012345678901234567890123456789012345678901234 10.10.0.1 fd00::1
 2345678901234567890123456789012345678901234567890123456789012345 10.10.0.2
-3456789012345678901234567890123456789012345678901234567890123467 10.10.0.3 fd00::3
+3456789012345678901234567890123456789012345678901234567890123467 10.10.0.3 fd00::3 fd00:1::/64
 ```
 
 *note* You do not have to assign an ipv6 address to all nodes, ones without ipv6 address will simply not be issued one.
@@ -84,7 +86,9 @@ To configure as a client (use an exit server to access the Internet),
    - IPv4 Address assigned to you by the server
    - *optional* single white space
    - *optional* IPv6 Address assigned to you by the server
-   
+   - *optional* Single white space
+   - *optional* IPv6 Subnet that will be routed through the client
+
 Example
 ```
 4567890123456789012345678901234567890123456789012345678901234567 10.10.0.4 fd00::4
@@ -95,13 +99,19 @@ or without IPv6
 4567890123456789012345678901234567890123456789012345678901234567 10.10.0.4
 ```
 
+or with IPv6 and subnet
+
+```
+4567890123456789012345678901234567890123456789012345678901234567 10.10.0.4 fd00::3 fd00:1::/64
+```
+
 ## IPFS
-IPFS stands for Interplanetary File System. It is an open-source, peer-to-peer distributed hypermedia protocol that aims to function as a ubiquitous file system for all computing devices. 
+IPFS stands for Interplanetary File System. It is an open-source, peer-to-peer distributed hypermedia protocol that aims to function as a ubiquitous file system for all computing devices.
 
 This module will install IPFS under the user where the script runs allowing you to access IPFS resouces both directly from the command line, and through the gateway available at <Pi IP Address>/ipfs/
-  
+
 ## Firewall
-  
+
 The firewall module installes a basic firewall for your device. It will block all ports that were not meant to be open. By default there are no ports blocked from the Wireless Access Point interface (`wlan-ap`).
 
 ### Applying changes
