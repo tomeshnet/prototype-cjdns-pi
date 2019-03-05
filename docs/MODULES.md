@@ -72,16 +72,33 @@ Values: *true false*
 
 Defines ip addresses to add to route table that will be routed over through yggdrasil. Must match ips in `yggdrasil.iptunnel.server` 
 
-Default: 10.10.0.  
-Value: /24 ip address without the last octet
+Default: 10.10.0.0/24 
+Value: /Any ipv4 address range
 
 **SUBNET6**  
 *Server only*
 
 Defines ipv6 addresses to add to route table that will be routed over through yggdrasil. Must match ips in `yggdrasil.iptunnel.server` 
 
-Default: fd00::
-Value: ./24 ipv6 address without the last octet
+Default: fd00::/64  
+Value: Any ipv6 address range
+
+**outint**
+*Server Only*
+
+Defines the intrface connected to the internet.
+
+Default: eth0  
+Value: Any interface on the system
+
+**yggint**
+*Server Only*
+
+Defines the yggdrasil interface.
+
+Default: ygg0  
+Value: Any interface on the system
+
 
 #### Server
  To configure as a server (exit Internet traffic for other nodes), 
