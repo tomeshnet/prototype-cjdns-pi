@@ -10,7 +10,7 @@ function isMeshable {
     elif [ "$(basename $(readlink /sys/class/net/$interface/device/driver))" == 'xradio_wlan' ]; then
         result='' # Indicate interface is actually not meshable
     else
-        result='1' # Indicate interface is meshable
+        result='1' # Indicate interface supports mesh point
     fi
 
     echo $result
