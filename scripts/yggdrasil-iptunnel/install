@@ -12,11 +12,11 @@ sudo cp "$BASE_DIR/yggdrasil-pre-setup" "/usr/local/sbin/yggdrasil-pre-setup"
 sudo chmod a+x /usr/local/sbin/yggdrasil-pre-setup
 sudo chmod a+x /usr/local/sbin/yggdrasil-setup
 
-# Update service to start script on cjdns start
-if [ -f /etc/systemd/system/yggdrasil.service ]; then
-    sudo sed -i /ExecStartPost/d /etc/systemd/system/yggdrasil.service
-    sudo sed -i s#Restart=always#Restart=always\\nExecStartPost=/usr/local/sbin/yggdrasil-setup# /etc/systemd/system/yggdrasil.service
-    sudo sed -i "s#fi\"#fi; /usr/local/sbin/yggdrasil-pre-setup\"#" /etc/systemd/system/yggdrasil.service
-fi
+sudo cp "$BASE_DIR/yggdrasil-iptunnel.service" /etc/systemd/system/yggdrasil-iptunnel.service
+sudo cp "$BASE_DIR/yggdrasil-pre-iptunnel.service" /etc/systemd/system/yggdrasil-pre-iptunnel
+
+sudo systemctl daemon-reload
+sudo systemctl enable yggdrasil-iptunnel.service
+sudo systemctl enable yggdrasil-pre-iptunnel.service
 
 sudo systemctl daemon-reload
