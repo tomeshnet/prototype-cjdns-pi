@@ -14,11 +14,21 @@ BOARD_NAME="Generic"
 BOARD_REVISION="?"
 CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 ./do"
 
+ARCH="$(uname -m)" 
+case "$ARCH" in
+  x86_64)
+    BOARD_HARDWARE="amd64"
+  ;;
+  i386)
+    BOARD_HARDWARE="386"
+esac
+
 ##TODO## Possibly use /sys/firmware/devicetree/base/model
 # Use tr to remove null byte generating warning
-BOARD_MODEL=$(tr -d '\0' < /sys/firmware/devicetree/base/model)
-BOARD_HARDWARE=$(grep Hardware /proc/cpuinfo | awk '{print $3}' | head -n 1)
-
+if [ -f "/sys/firmware/devicetree/base/model" ]; then 
+    BOARD_MODEL=$(tr -d '\0' < /sys/firmware/devicetree/base/model)
+    BOARD_HARDWARE=$(grep Hardware /proc/cpuinfo | awk '{print $3}' | head -n 1)
+fi
 
 # Flag to identify if board can support on-board AP. Default to false.
 SUPPORT_HOSTAP=false
