@@ -12,8 +12,10 @@ case "$ARCH" in
   ;;
   i386)
     ARCH="386"
+  ;;  armv7l)
+    ARCH="arm";
   ;;
-  arm)
+  armv6l)
     ARCH="arm";
   ;;
   aarch64)
