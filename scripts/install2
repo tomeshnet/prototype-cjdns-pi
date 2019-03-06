@@ -8,6 +8,9 @@ TAG_CJDNS=d2e55d58548d83940482fe1bbbe1fd36f7f1b4ef
 # Common functions
 source functions.sh
 
+# Dependencies
+sudo apt-get install -y gcc
+
 # Get board information and set flags accordingly
 BOARD_FAMILY="Unknown"
 BOARD_NAME="Generic"
