@@ -9,13 +9,31 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Install Grafana dependencies
 sudo apt-get install libfontconfig1 fontconfig-config fonts-dejavu-core ttf-bitstream-vera fonts-liberation sqlite3 -y
 
+ARCH="$(uname -m)" 
+case "$ARCH" in
+  x86_64)
+    URL="https://dl.grafana.com/oss/release/grafana_6.0.0_amd64.deb"
+  ;;
+  i386)
+   echo "Cannot install grafana on i386"
+   exit 0
+  ;;
+  armv7l)
+    URL="https://dl.grafana.com/oss/release/grafana_6.0.0_armel.deb";
+  ;;
+  armv6l)
+    URL="https://dl.grafana.com/oss/release/grafana_6.0.0_armel.deb";
+  ;;
+  aarch64)
+    URL="https://dl.grafana.com/oss/release/grafana_6.0.0_arm64.deb";
+  ;;
+  *)
+esac
+
 # Download and install unofficial build of Grafana for ARM
-URL="https://bintray.com/fg2it/deb/download_file?file_path=main%2Fg%2Fgrafana_${GRAFANA_VERSION}_armhf.deb"
 if uname -m | grep -Eq ^armv6; then
     # Raspberry Pi 1
-    URL="https://bintray.com/fg2it/deb-rpi-1b/download_file?file_path=main%2Fg%2Fgrafana_${GRAFANA_VERSION}_armhf.deb"
-elif uname -m | grep -Eq ^aarch64; then
-    URL="https://bintray.com/fg2it/deb-arm64/download_file?file_path=main%2Fg%2Fgrafana_${GRAFANA_VERSION}_arm64.deb"
+    URL="https://bintray.com/fg2it/deb-rpi-1b/download_file?file_path=main%2Fg%2Fgrafana_5.1.4_armhf.deb"
 fi
 
 mkdir "$BASE_DIR/tmp" || true
