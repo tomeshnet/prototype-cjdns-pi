@@ -5,6 +5,22 @@ true
 set -e
 
 GO_IPFS_VERSION=v0.4.18
+ARCH="$(uname -m)" 
+case "$ARCH" in
+  x86_64)
+    ARCH="amd64"
+  ;;
+  i386)
+    ARCH="386"
+  ;;
+  arm)
+    ARCH="arm";
+  ;;
+  aarch64)
+    ARCH="arm64";
+  ;;
+  *)
+esac
 
 # Hyperborea connected peer used to bootstrap hyperborea only ipfs nodes
 # DarkDrgn2k's peer
@@ -23,7 +39,7 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Download and install IPFS
 mkdir "$BASE_DIR/tmp"
-wget "https://dist.ipfs.io/go-ipfs/${GO_IPFS_VERSION}/go-ipfs_${GO_IPFS_VERSION}_linux-arm.tar.gz" -O "$BASE_DIR/tmp/go-ipfs.tar.gz"
+wget "https://dist.ipfs.io/go-ipfs/${GO_IPFS_VERSION}/go-ipfs_${GO_IPFS_VERSION}_linux-${ARCH}.tar.gz" -O "$BASE_DIR/tmp/go-ipfs.tar.gz"
 tar xvfz "$BASE_DIR/tmp/go-ipfs.tar.gz" -C "$BASE_DIR/tmp"
 sudo cp "$BASE_DIR/tmp/go-ipfs/ipfs" /usr/local/bin/ipfs
 sudo chown root:staff /usr/local/bin/ipfs
