@@ -1,0 +1,12 @@
+[Unit]
+Description=BMX7
+Wants=network.target
+After=network.target
+
+[Service]
+SyslogIdentifier=BMX7
+ExecStart=/usr/sbin/bmx7 dev=wlan0,wlan1,eth0
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
