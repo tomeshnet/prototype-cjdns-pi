@@ -171,6 +171,7 @@ case "$dialogREPLY" in
         echo "Basic node"
         WITH_YGGDRASIL=true
         WITH_YGGDRASIL_IPTUNNEL=true
+	WITH_BMX7=""
         WITH_MESH_POINT=""
         WITH_WIFI_AP=""
         WITH_FIREWALL=true
@@ -190,6 +191,7 @@ case "$dialogREPLY" in
         echo "Basic IPFS node"
         WITH_YGGDRASIL=true
         WITH_YGGDRASIL_IPTUNNEL=true
+	WITH_BMX7=""
         WITH_MESH_POINT=""
         WITH_WIFI_AP=""
         WITH_FIREWALL=true
@@ -209,6 +211,7 @@ case "$dialogREPLY" in
         echo "Monitor Node"
         WITH_YGGDRASIL=true
         WITH_YGGDRASIL_IPTUNNEL=true
+	WITH_BMX7=""
         WITH_MESH_POINT=""
         WITH_WIFI_AP=""
         WITH_FIREWALL=true
@@ -228,6 +231,7 @@ case "$dialogREPLY" in
         echo "SSB Node"
         WITH_YGGDRASIL=true
         WITH_YGGDRASIL_IPTUNNEL=true
+	WITH_BMX7=""
         WITH_MESH_POINT=""
         WITH_WIFI_AP=""
         WITH_FIREWALL=true
@@ -247,6 +251,7 @@ case "$dialogREPLY" in
         echo "IPFS Camera Node"
         WITH_YGGDRASIL=true
         WITH_YGGDRASIL_IPTUNNEL=true
+	WITH_BMX7=""
         WITH_MESH_POINT=""
         WITH_WIFI_AP=""
         WITH_FIREWALL=true
@@ -265,6 +270,7 @@ case "$dialogREPLY" in
     "F")
         echo "Raspberry Pi Ad-Hoc"
 	WITH_YGGDRASIL=true
+	WITH_BMX7=""
         WITH_MESH_POINT=false
 	WITH_AD_HOC=true
         WITH_WIFI_AP=false
@@ -304,6 +310,7 @@ askModule "WITH_YGGDRASIL" "Yggdrasil routing engine"
 if [ "$WITH_YGGDRASIL" == "true" ]; then
     askModule "WITH_YGGDRASIL_IPTUNNEL" "Internet Gateway over Yggdrasil"
 fi
+askModule "WITH_BMX7" "BMX7 routing engine"
 askModule "WITH_MESH_POINT" "Mesh Point Interface"
 if [ "$WITH_MESH_POINT" == false ]; then
     askModule "WITH_AD_HOC" "Ad-Hoc Interface"
@@ -434,6 +441,11 @@ fi
 # IBSS Ad-hoc interface
 if [ "$(checkModule 'WITH_AD_HOC')" ]; then
     source mesh-adhoc/install
+fi
+
+# Install bmx7
+if [ "$(checkModule 'WITH_BMX7')" ]; then
+    source bmx7/install
 fi
 
 # WiFi Access Point on supported boards
