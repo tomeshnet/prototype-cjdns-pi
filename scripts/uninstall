@@ -42,6 +42,7 @@ source "$BASE_DIR/shared/nodeinfo/uninstall"
 source "$BASE_DIR/nginx/uninstall"
 source "$BASE_DIR/yggdrasil/uninstall"
 source "$BASE_DIR/yggdrasil-iptunnel/uninstall"
+source "$BASE_DIR/bmx7"
 
 sudo systemctl daemon-reload
 
