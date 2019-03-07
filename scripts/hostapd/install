@@ -133,6 +133,9 @@ if [ -f /etc/default/hostapd ]; then
     sudo echo DAEMON_CONF="/etc/hostapd.conf" | sudo tee --append /etc/default/hostapd > /dev/null
 fi
 
+# remove existing file that may be masking the service
+sudo rm -rf /etc/systemd/system/hostapd.service
+
 sudo cp "$BASE_DIR/hostapd.service" /etc/systemd/system/hostapd.service
 sudo systemctl daemon-reload
 sudo systemctl enable hostapd.service
