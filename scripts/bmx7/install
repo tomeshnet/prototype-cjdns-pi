@@ -26,3 +26,9 @@ mkdir $BASE_DIR/tmp
 )
 
 rm -rf "$BASE_DIR/tmp"
+
+sudo cp "$BASE_DIR/bmx.service" /etc/systemd/system/bmx.service
+
+sudo systemctl daemon-reload
+sudo systemctl enable bmx.service
+sudo systemctl start bmx.service
