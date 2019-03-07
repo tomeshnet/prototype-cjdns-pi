@@ -5,7 +5,7 @@ After=network.target
 
 [Service]
 SyslogIdentifier=BMX7
-ExecStart=/usr/sbin/bmx7 dev=wlan0,wlan1,eth0
+ExecStart=/usr/sbin/bmx7 dev=wlan0 dev=wlan1 dev=eth0
 Restart=always
 
 [Install]
