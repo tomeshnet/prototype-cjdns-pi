@@ -2,8 +2,9 @@
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Copied from https://github.com/bmx-routing/bmx7#bmx7
+sudo apt-get install libiw-dev
 
+# Copied from https://github.com/bmx-routing/bmx7#bmx7
 mkdir $BASE_DIR/tmp
 
 (
