@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Copied from https://github.com/bmx-routing/bmx7#bmx7
+
+mkdir $BASE_DIR/tmp
+wget https://tls.mbed.org/download/mbedtls-2.4.0-gpl.tgz -O "$BASE_DIR/tmp/mbedtls-2.4.0-gpl.tgz"
+cd tmp
+tar xzvf mbedtls-2.4.0-gpl.tgz
+cd mbedtls-2.4.0
+make
+sudo make install
+cd ..
+
+# compile bmx7 with: make EXTRA_CFLAGS="-DCRYPTLIB=MBEDTLS_2_4_0"
+git clone https://github.com/bmx-routing/bmx7.git
+cd bmx7
+make EXTRA_CFLAGS="-DCRYPTLIB=MBEDTLS_2_4_0"
+sudo make install 
+cd ..
