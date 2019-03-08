@@ -8,6 +8,7 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 H_DNS_SERVER_0="fc4d:c8e5:9efe:9ac2:8e72:fcf7:6ce8:39dc"
 H_DNS_SERVER_1="fc6e:691e:dfaa:b992:a10a:7b49:5a1a:5e09"
 H_DNS_SERVER_2="fc16:b44c:2bf9:467:8098:51c6:5849:7b4f"
+H_DNS_SERVER_3="fc41:47b9:dd78:ff21:1b24:dab8:3f81:168e"
 
 # Internet DNS servers
 I_DNS_SERVER_0="1.1.1.1"
@@ -105,6 +106,7 @@ if [ ! -z "$WITH_H_DNS" ] && [ "$WITH_H_DNS" == "true" ]; then
    echo "server=$H_DNS_SERVER_0" | sudo tee --append /etc/dnsmasq.conf
    echo "server=$H_DNS_SERVER_1" | sudo tee --append /etc/dnsmasq.conf
    echo "server=$H_DNS_SERVER_2" | sudo tee --append /etc/dnsmasq.conf
+   echo "server=$H_DNS_SERVER_3" | sudo tee --append /etc/dnsmasq.conf   
 elif [ ! -z "$WITH_CJDNS_IPTUNNEL" ] && [ "$WITH_CJDNS_IPTUNNEL" ]; then
    echo "server=$I_DNS_SERVER_0" | sudo tee --append /etc/dnsmasq.conf
    echo "server=$I_DNS_SERVER_1" | sudo tee --append /etc/dnsmasq.conf
