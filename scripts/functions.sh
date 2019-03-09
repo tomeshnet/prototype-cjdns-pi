@@ -77,23 +77,18 @@ function checkModule {
 #       x - single capital character that will be returned
 #       text - description of item
 #
-#    askSelection <list> <message> <default>
+#    askSelection <list> <message>
 #
 # Result is stored in $dialogREPLY
 dialogREPLY=""
 function askSelection {
     selection=$1
     dialogREPLY=""
-    default="$3"
     if [ "$(checkModule 'WITH_DIALOG')" ]; then
         selection=$(echo -e "$selection" | while read -r selected; do
                     selectedItem="${selected:0:1}"
                     selectedText="${selected:2}"
-                    if [[ "${selected:0:1}" == "$default" ]]; then
-                        echo "$selectedItem \"$selectedText\""
-                    else
-                        echo "$selectedItem \"$selectedText\""
-                    fi
+                    echo "$selectedItem \"$selectedText\""
             done)
         echo "$selection" > /tmp/selectionList
 
