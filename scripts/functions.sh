@@ -114,10 +114,7 @@ function askSelection {
             echo -------------------
             read -p "Selection:  " -n 1 -r
             echo ""
-            if [[ "$REPLY" == "" ]] && [[ "$default" != "" ]]; then
-                REPLY="$default"
-                isValid=1
-            else
+            if [[ ! "$REPLY" == "" ]]; then
                 REPLY=$(echo "$REPLY" | awk '{print toupper($0)}')
 
                 isValid=$(echo -e "$selection" | while read -r selected; do
