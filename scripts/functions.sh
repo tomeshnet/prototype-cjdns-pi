@@ -90,15 +90,15 @@ function askSelection {
                     selectedItem="${selected:0:1}"
                     selectedText="${selected:2}"
                     if [[ "${selected:0:1}" == "$default" ]]; then
-                        echo "$selectedItem \"$selectedText\" on"
+                        echo "$selectedItem \"$selectedText\""
                     else
-                        echo "$selectedItem \"$selectedText\" off"
+                        echo "$selectedItem \"$selectedText\""
                     fi
             done)
         echo "$selection" > /tmp/selectionList
 
         # shellcheck disable=SC2086
-        dialog $dialogGlobalParams --radiolist "$2" 15 55 8  --file /tmp/selectionList 2> /tmp/res
+        dialog $dialogGlobalParams --menu "$2" 15 55 8  --file /tmp/selectionList 2> /tmp/res
         rm -f selectionList
         response=$(cat /tmp/res)
         rm -f /tmp/res
