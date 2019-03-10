@@ -60,7 +60,7 @@ case "$BOARD_MODEL" in
     orangepizeroplus2-h5)
         SUPPORT_HOSTAP=true
     ;;
-    "Raspberry Pi 3")
+    "raspberrypi3")
         CJDNS_BUILD_CMD="sudo CFLAGS=\"-march=armv8-a+crc -mtune=cortex-a53 -mfpu=crypto-neon-fp-armv8 -mfloat-abi=hard -O2\" ./do"
         CJDNS_PACKAGE="cjdns-neon-v4.deb"
         # Raspberry Pi 3 has on-board WiFi that can be used as an AP
@@ -68,15 +68,15 @@ case "$BOARD_MODEL" in
         # Raspberry Pi 3 has hardware watchdog
         SUPPORT_WATCHDOG=true
     ;;
-    "Raspberry Pi 2")
+    "raspberrypi2")
         CJDNS_BUILD_CMD="sudo NO_TEST=1 CFLAGS=\"-mfpu=neon-vfpv4 -O2\" ./do"
         CJDNS_PACKAGE="cjdns-neon-v4.deb"
     ;;
-    "Raspberry Pi 1")
+    "raspberrypi1")
         CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 NO_TEST=1 CFLAGS=\"-s -static -Wall\" ./do"
         CJDNS_PACKAGE="cjdns-no-neon-v4.deb"
     ;;
-    "Raspberry Pi Zero")
+    "raspberrypizero")
         CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 NO_TEST=1 CFLAGS=\"-s -static -Wall\" ./do"
         CJDNS_PACKAGE="cjdns-no-neon-v4.deb"
     ;;
@@ -91,7 +91,7 @@ case "$BOARD_OS" in
         CHANGE_PASSWORD="pi"
     ;;
 esac
-echo -e "\e[1;32mStarting installation on ${BOARD_FAMILY} ${BOARD_MODEL}...\e[0m"
+echo -e "\e[1;32mStarting installation on ${BOARD_FAMILY} ${BOARD_NAME} (${BOARD_MODEL})...\e[0m"
 
 # Enable password-less sudo on Armbian
 sudo sed -i 's/ALL=(ALL:ALL) ALL/ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers

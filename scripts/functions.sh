@@ -139,7 +139,7 @@ function askSelection {
 function detectBoard {
 
     BOARD_MODEL="Unknown"
-    BOARD_FAMILY="Unknown"
+    BOARD_NAME="Unknown"
     BOARD_OS="Unknown"
 
     # Check for x86
@@ -147,11 +147,11 @@ function detectBoard {
     case "$ARCH" in
     x86_64)
         BOARD_MODEL="amd64"
-        BOARD_FAMILY="AMD64"
+        BOARD_Name="AMD 64 Board"
     ;;
     i386)
         BOARD_MODEL="i386"
-        BOARD_FAMILY="i386"
+        BOARD_FAMILY="i386 Board"
     esac
 
     if [[ -z "${BOARD_MODEL}" ]]; then
@@ -178,20 +178,20 @@ function detectBoard {
         # If it is force password before reboot
         # shellcheck disable=SC2016
         if [[ "$BOARD_MODEL" == "Raspberry Pi 3"* ]]; then
-            BOARD_MODEL="Raspberry Pi 3"
+            BOARD_NAME="raspberrypi3"
             BOARD_NEON=true
         fi
         if [[ "$BOARD_MODEL" == "Raspberry Pi 2"* ]]; then
-            BOARD_MODEL="Raspberry Pi 2"
+            BOARD_MODEL="raspberrypi2"
             BOARD_NEON=true
         fi
         if [[ "$BOARD_MODEL" == "Raspberry Pi A"* || "$BOARD_MODEL" == "Raspberry Pi B"* ]]; then
-            BOARD_MODEL="Raspberry Pi 1"
+            BOARD_MODEL="raspberrypi1"
             BOARD_NEON=false
         fi
 
         if [[ "$BOARD_MODEL" == "Zero"* ]]; then
-            BOARD_MODEL="Raspberry Pi Zero"
+            BOARD_MODEL="raspberrypizero"
             BOARD_NEON=false
         fi
     fi
