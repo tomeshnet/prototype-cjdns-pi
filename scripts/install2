@@ -8,76 +8,23 @@ TAG_CJDNS=d2e55d58548d83940482fe1bbbe1fd36f7f1b4ef
 # Common functions
 source functions.sh
 
+# Normalize OS environment
+# True required to avoid odd armbian bug.  Update does work but reports missing file.
+sudo apt-get update -y || true
+
 # Dependencies
-sudo apt-get install -y gcc
+sudo apt-get install -y gcc make
 
 # Get board information and set flags accordingly
-BOARD_FAMILY="Unknown"
-BOARD_NAME="Generic"
-BOARD_REVISION="?"
 CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 ./do"
 
-# Flag to identify if board can support on-board AP. Default to false.
-SUPPORT_HOSTAP=false
-# Flag to identify if board can support on-board hardware watchdog.
-SUPPORT_WATCHDOG=false
+detectBoard;
 
-# New board detection
 
-# Check for x86
-ARCH="$(uname -m)"
-case "$ARCH" in
-  x86_64)
-    BOARD_HARDWARE="amd64"
-    BOARD_FAMILY="AMD64"
-    CJDNS_BUILD_CMD="sudo ./do"
-  ;;
-  i386)
-    BOARD_HARDWARE="i386"
-    BOARD_FAMILY="i386"
-    CJDNS_BUILD_CMD="sudo ./do"
-esac
-
-if [[ -z "${BOARD_HARDWARE}" ]]; then
-    ##TODO## Possibly use /sys/firmware/devicetree/base/model
-    # Use tr to remove null byte generating warning
-    if [ -f "/sys/firmware/devicetree/base/model" ]; then
-        BOARD_MODEL=$(tr -d '\0' < /sys/firmware/devicetree/base/model)
-    else
-        BOARD_HARDWARE=$(grep Hardware /proc/cpuinfo | awk '{print $3}' | head -n 1)
-    fi
-fi
-
-# Check for armbian identification
-if [ -f "/etc/armbian-image-release " ]; then
-    # Stop unattended upgrade that will block apt-get requests on some armbian boards
-    sudo service unattended-upgrades stop || true
-    sudo killall unattended-upgrade || true
-    BOARD_FAMILY="Armbian"
-    BOARD_HARDWARE="$(grep "BOARD=" /etc/armbian-image-release | awk -F '=' '{print $2}' | tr -d \")"
-    BOARD_NAME="$(grep BOARD_NAME /etc/armbian-image-release | awk -F '=' '{print $2}' | tr -d \" )"
-fi
-
-if [[ "$BOARD_HARDWARE" == "orangepizero" ]]; then
-    # AP is supported if board already supports XRadio
-    if lsmod | grep -q xradio_wlan; then
-        SUPPORT_HOSTAP=true
-    fi
-    SUPPORT_WATCHDOG=true
-fi
-if [[ "$BOARD_HARDWARE" == "orangepilite" ]]; then
-    SUPPORT_HOSTAP=true
-    SUPPORT_WATCHDOG=true
-fi
-if [[ "$BOARD_HARDWARE" == "orangepizeroplus2-h5" ]]; then
-    SUPPORT_HOSTAP=true
-fi
-
+# Set some defaults
 if [[ "$ARCH" == "armv7l" ]]; then
-    BOARD_REVISION="experimental"
     #TODO# -O2 workaround. Needs to be resolved.
     CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-O2 -s -static -Wall -march=armv7-a -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -fomit-frame-pointer -marm\" ./do"
-    CJDNS_PACKAGE="cjdns-neon-v4.deb"
 fi
 
 if [[ "$ARCH" == "aarch64" ]]; then
@@ -85,44 +32,66 @@ if [[ "$ARCH" == "aarch64" ]]; then
     CJDNS_PACKAGE="cjdns-neon-arm64-v4.deb"
 fi
 
+# Flag to identify if board can support on-board AP. Default to false.
+SUPPORT_HOSTAP=false
+# Flag to identify if board can support on-board hardware watchdog.
+SUPPORT_WATCHDOG=false
 CJDNS_PACKAGE=""
 CHANGE_PASSWORD=""
 
-if [[ "$BOARD_MODEL" == "Raspberry Pi"* ]]; then
-    BOARD_FAMILY="Raspberry Pi"
-    # Check for default password is still set for user pi
-    # If it is force password before reboot
-    # shellcheck disable=SC2016
-    CHANGE_PASSWORD="pi"
-    if [[ "$BOARD_MODEL" == "Raspberry Pi 3"* ]]; then
+case "$BOARD_MODEL" in
+    amd64)
+        CJDNS_BUILD_CMD="sudo ./do"
+    ;;
+    i386)
+        CJDNS_BUILD_CMD="sudo ./do"
+    ;;
+    orangepizero)
+        # AP is supported if board already supports XRadio
+        if lsmod | grep -q xradio_wlan; then
+            SUPPORT_HOSTAP=true
+        fi
+        SUPPORT_WATCHDOG=true
+    ;;
+    orangepilite)
+        SUPPORT_HOSTAP=true
+        SUPPORT_WATCHDOG=true
+    ;;
+    orangepizeroplus2-h5)
+        SUPPORT_HOSTAP=true
+    ;;
+    "Raspberry Pi 3")
         CJDNS_BUILD_CMD="sudo CFLAGS=\"-march=armv8-a+crc -mtune=cortex-a53 -mfpu=crypto-neon-fp-armv8 -mfloat-abi=hard -O2\" ./do"
         CJDNS_PACKAGE="cjdns-neon-v4.deb"
         # Raspberry Pi 3 has on-board WiFi that can be used as an AP
         SUPPORT_HOSTAP=true
         # Raspberry Pi 3 has hardware watchdog
         SUPPORT_WATCHDOG=true
-    fi
-    if [[ "$BOARD_MODEL" == "Raspberry Pi 2"* ]]; then
-        BOARD_NAME="2"
+    ;;
+    "Raspberry Pi 2")
         CJDNS_BUILD_CMD="sudo NO_TEST=1 CFLAGS=\"-mfpu=neon-vfpv4 -O2\" ./do"
         CJDNS_PACKAGE="cjdns-neon-v4.deb"
-    fi
-    if [[ "$BOARD_MODEL" == "Zero"* ]]; then
-        BOARD_NAME="1"
+    ;;
+    "Raspberry Pi 1")
         CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 NO_TEST=1 CFLAGS=\"-s -static -Wall\" ./do"
-	    CJDNS_PACKAGE="cjdns-no-neon-v4.deb"
-    fi
-fi
+        CJDNS_PACKAGE="cjdns-no-neon-v4.deb"
+    ;;
+    "Raspberry Pi Zero")
+        CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 NO_TEST=1 CFLAGS=\"-s -static -Wall\" ./do"
+        CJDNS_PACKAGE="cjdns-no-neon-v4.deb"
+    ;;
+esac
 
+case "$BOARD_OS" in
+    Armbian)
+        # Install Armbian WIFI Drivers
+        sudo apt-get install -y armbian-firmware-full  2> /dev/null || true
+    ;;
+    Raspbian)
+        CHANGE_PASSWORD="pi"
+    ;;
+esac
 echo -e "\e[1;32mStarting installation on ${BOARD_FAMILY} ${BOARD_MODEL}...\e[0m"
-
-# Normalize OS environment
-# True required to avoid odd armbian bug.  Update does work but reports missing file.
-sudo apt-get update -y || true
-
-# Install firmware package for wireless drivers
-# #TODO# detect armbian
-sudo apt-get install -y armbian-firmware-full  2> /dev/null || true
 
 # Enable password-less sudo on Armbian
 sudo sed -i 's/ALL=(ALL:ALL) ALL/ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
