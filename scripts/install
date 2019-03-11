@@ -6,6 +6,7 @@ apt-get install -y sudo || (
    echo Sudo is not installed and cannot be installed.
    echo Please run 
    echo "    apt-get install sudo "
+   echo "    usermod -aG sudo $USER"
    echo as root!
    exit 1
 )
