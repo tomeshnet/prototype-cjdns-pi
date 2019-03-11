@@ -7,7 +7,7 @@ apt-get install -y sudo || (
    echo Please run 
    echo "    apt-get install sudo "
    echo as root!
-   exit 0
+   exit 1
 )
 fi
 
