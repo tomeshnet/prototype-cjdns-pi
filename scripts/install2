@@ -3,6 +3,9 @@
 true
 set -e
 
+# Enable password-less sudo on Armbian
+sudo sed -i 's/ALL=(ALL:ALL) ALL/ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
+
 TAG_CJDNS=d2e55d58548d83940482fe1bbbe1fd36f7f1b4ef
 
 # Common functions
@@ -92,9 +95,6 @@ case "$BOARD_OS" in
     ;;
 esac
 echo -e "\e[1;32mStarting installation on ${BOARD_FAMILY} ${BOARD_NAME} (${BOARD_MODEL})...\e[0m"
-
-# Enable password-less sudo on Armbian
-sudo sed -i 's/ALL=(ALL:ALL) ALL/ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
 
 # Disable predictable network interface naming
 sudo touch /etc/udev/rules.d/80-net-setup-link.rules
