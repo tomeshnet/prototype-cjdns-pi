@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 
 set -e
+if [[ -z "$(which sudo)" ]]; then
+apt-get install -y sudo || (
+   echo Sudo is not installed and cannot be installed.
+   echo Please run 
+   echo "    apt-get install sudo "
+   echo as root!
+   exit 0
+)
+fi
 
 # Use provided repository or default to tomeshnet/prototype-cjdns-pi
 if [ -z "$GIT_PROTOTYPE_CJDNS_PI" ]; then
