@@ -7,7 +7,8 @@ apt-get install -y sudo || (
    echo Please run 
    echo "    apt-get install sudo "
    echo "    usermod -aG sudo $USER"
-   echo as root!
+   echo as root.
+   echo You may need to log in again for changes to take effect.
    exit 1
 )
 fi
@@ -36,7 +37,7 @@ if ps xa | awk '{print $5}' | grep -q dpkg; then
 fi
 
 # Get git
-# True required to avoid odd armbian bug.  Update does work but reports missing file.
+# True required to avoid odd armbian bug. Update does work but reports missing file.
 sudo apt-get update -y || true
 if ! [ "$(which git)" ]; then
     sudo apt-get install git -y
