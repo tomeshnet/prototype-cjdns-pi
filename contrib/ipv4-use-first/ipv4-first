@@ -1,0 +1,7 @@
+#!/bin/sh
+
+
+# gai stands for getaddrinfo, the standard system call for resolving host names
+# Change will use ipv4 over ipv6 when possible
+
+sudo sed -i "s/#precedence ::ffff:0:0/96  100/precedence ::ffff:0:0/96  100/" /etc/gai.conf
