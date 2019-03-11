@@ -10,7 +10,7 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ARCH="$(uname -m)" 
 case "$ARCH" in
   x86_64)
-    ARCH_VERSION="x86_64"
+    ARCH_VERSION="amd64"
   ;;
   i386)
    ARCH_VERSION="i386"
