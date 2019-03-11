@@ -305,3 +305,39 @@ BASE_DIR=`pwd`
 curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary "@$BASE_DIR/datasource.json" http://localhost:3000/api/datasources
 curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary "@$BASE_DIR/dashboard.json" http://localhost:3000/api/dashboards/db
 ```
+
+# Prometheus
+
+To make prometheus dynamically change the nodes it will monitor during runtim, you can tell it to read from a file and update it's targets every time the file is changed.  Make the following change in `/opt/prometheus/prometheus.yml`
+
+Change
+```
+    static_configs:
+    - targets: ['[fc0e:741f:1953:b0be:8958:2265:14cf:1e94]:9100']
+```
+to
+
+```
+    file_sd_configs:
+        - files:
+            - "/etc/prometheus.json"
+```
+
+Then create a /etc/prometheus.json file
+
+```
+[
+ {
+  "targets": [
+   "[fc0e:741f:1953:b0be:8958:2265:14cf:1e94]:9100'",
+   "[fc00:0000:0000:0000:0000:0000:0000:0000]:9100'"
+  ]
+ }
+]
+
+```
+Finally restart the prometheus service
+
+```sudo systemctl restart prometheus-server```
+
+If you wish to monitor multiple nodes simply add additioanl nodes to the json. Remember the last entry does not have a ,
