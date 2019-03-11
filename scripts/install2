@@ -16,7 +16,7 @@ source functions.sh
 sudo apt-get update -y || true
 
 # Dependencies
-sudo apt-get install -y gcc make
+sudo apt-get install -y gcc make curl wget
 
 # Get board information and set flags accordingly
 CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 ./do"
