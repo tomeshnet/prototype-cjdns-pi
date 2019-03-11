@@ -164,7 +164,7 @@ function detectBoard {
     fi
 
     # Check for armbian identification
-    if [ -f "/etc/armbian-image-release " ]; then
+    if [ -f "/etc/armbian-image-release" ]; then
         BOARD_OS="Armbian"
         BOARD_MODEL="$(grep "BOARD=" /etc/armbian-image-release | awk -F '=' '{print $2}' | tr -d \")"
         BOARD_NAME="$(grep BOARD_NAME /etc/armbian-image-release | awk -F '=' '{print $2}' | tr -d \" )"
