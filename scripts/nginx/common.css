@@ -1,0 +1,24 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+h1 {
+    text-align:center;
+}
+.app h2 {
+    margin:0;
+    padding:0;
+    background:black;
+    color:white;
+    padding:5px;
+    margin-bottom:5px;
+}
+.app {
+    display:inline-block;
+    float:left;
+    width:calc( 33% - 20px );
+    vertical-align: top;
+    border:1px solid #cccccc;
+    margin:5px;
+    padding:5px;
+    min-width:400px;
+}

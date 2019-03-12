@@ -2,21 +2,34 @@
 
 set -e
 
-GRAFANA_VERSION=5.1.4
+GRAFANA_VERSION=6.0.0
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Install Grafana dependencies
 sudo apt-get install libfontconfig1 fontconfig-config fonts-dejavu-core ttf-bitstream-vera fonts-liberation sqlite3 -y
 
-# Download and install unofficial build of Grafana for ARM
-URL="https://bintray.com/fg2it/deb/download_file?file_path=main%2Fg%2Fgrafana_${GRAFANA_VERSION}_armhf.deb"
-if uname -m | grep -Eq ^armv6; then
-    # Raspberry Pi 1
-    URL="https://bintray.com/fg2it/deb-rpi-1b/download_file?file_path=main%2Fg%2Fgrafana_${GRAFANA_VERSION}_armhf.deb"
-elif uname -m | grep -Eq ^aarch64; then
-    URL="https://bintray.com/fg2it/deb-arm64/download_file?file_path=main%2Fg%2Fgrafana_${GRAFANA_VERSION}_arm64.deb"
-fi
+ARCH="$(uname -m)" 
+case "$ARCH" in
+  x86_64)
+    URL="https://dl.grafana.com/oss/release/grafana_${GRAFANA_VERSION}_amd64.deb"
+  ;;
+  i386)
+   echo "Cannot install grafana on i386"
+   exit 0
+  ;;
+  armv7l)
+    URL="https://dl.grafana.com/oss/release/grafana_${GRAFANA_VERSION}_armel.deb";
+  ;;
+  armv6l)
+    # Use old grafana - no new one available
+    URL="https://bintray.com/fg2it/deb-rpi-1b/download_file?file_path=main%2Fg%2Fgrafana_5.1.4_armhf.deb"
+  ;;
+  aarch64)
+    URL="https://dl.grafana.com/oss/release/grafana_${GRAFANA_VERSION}_arm64.deb";
+  ;;
+  *)
+esac
 
 mkdir "$BASE_DIR/tmp" || true
 wget "${URL}" -O "$BASE_DIR/tmp/go-grafana.tar.gz"
@@ -43,5 +56,5 @@ else
 fi
 
 # Add entry into nginx home screen
-APP="<div class='app'><h2>Grafana</h2>The open platform for beautiful analytics and monitoring. <br/><a href='#' onclick='javascript:event.target.port=8080'>Go</a></div>"
-sudo sed -i "s#<\!--APPLIST-->#$APP\n<\!--APPLIST-->#" "/var/www/html/index.html"
+APP="<div class='app'><h2>Grafana</h2>The open platform for beautiful analytics and monitoring. <br/><a href='#' onclick='javascript:event.target.port=3000'>Go</a> explore Grafana.</div>"
+sudo sed -i "s|<\!--APPLIST-->|$APP\n<\!--APPLIST-->|" "/var/www/html/index.html"

@@ -15,16 +15,18 @@ if [ "$(systemctl status cjdns.service | grep 'Active: ' | awk '{ print $2 }')" 
 else
     echo -e "cjdns Service .............. $INACTIVE"
 fi
-if [ "$(systemctl status yggdrasil.service | grep 'Active: ' | awk '{ print $2 }')" = 'active' ]; then
-    echo -e "Yggdrasil Service ............ $ACTIVE"
-else
-    echo -e "Yggdrasil Service .......... $INACTIVE"
+if [ "$(which yggdrasilctl)" ]; then
+    if [ "$(systemctl status yggdrasil.service | grep 'Active: ' | awk '{ print $2 }')" = 'active' ]; then
+        echo -e "Yggdrasil Service ............ $ACTIVE"
+    else
+        echo -e "Yggdrasil Service .......... $INACTIVE"
+    fi
 fi
 
 if [ "$(which mesh-point)" ]; then
-    ints=$(iw dev | grep Interface | awk '{print $2}')
+    ints=$(sudo iw dev | grep Interface | awk '{print $2}')
     while read -r line; do
-        mp=$(iw dev $line info | grep "type mesh point")
+        mp=$(sudo iw dev $line info | grep "type mesh point")
         if [ "$mp" ]; then
             mpint=$line
         fi
@@ -36,9 +38,9 @@ if [ "$(which mesh-point)" ]; then
     fi
 fi
 if [ "$(which mesh-adhoc)" ]; then
-    ints=$(iw dev | grep Interface | awk '{print $2}')
+    ints=$(sudo iw dev | grep Interface | awk '{print $2}')
     while read -r line; do
-        mp=$(iw dev $line info | grep "type IBSS")
+        mp=$(sudo iw dev $line info | grep "type IBSS")
         if [ "$mp" ]; then
             mpint=$line
         fi
@@ -106,7 +108,7 @@ if [ "$(which yrd)" ]; then
     fi
 fi
 
-if [ "$(which cjdroute)" ]; then
+if [ "$(which cjdroute)" ] && [ "$(ip addr | grep tun0)" ] ; then
     echo -e '---------------------------------------'
     echo -e 'CJDNS NODE'
     sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g'
@@ -119,13 +121,13 @@ if [ "$(which cjdroute)" ]; then
     echo -e '---------------------------------------'
 fi
 
-if [ "$(which yggdrasil)" ]; then
-    MYIP=$(ifconfig ygg0 | grep inet6 | grep 202 | awk '{print $2}')    
+if [ "$(which yggdrasil)" ]  && [ "$(ip addr | grep ygg0)" ]; then
+    YGGIP=$(sudo ifconfig ygg0 | grep -E 'inet6 2[0-9a-fA-F]{2}:' | awk '{print $2}')
     echo -e '---------------------------------------'
     echo -e 'YGGDRASIL NODE'
-    echo -e $MYIP
+    echo -e $YGGIP
     echo -e '---------------------------------------'
     echo -e 'YGGDRASIL PEERS'
-    yggdrasilctl getPeers | grep -v "$MYIP" | awk '{print $1}' | grep -v "bytes_recvd"
+    sudo yggdrasilctl getPeers | grep -v "$YGGIP" | awk '{print $1}' | grep -v "bytes_recvd"
     echo -e '---------------------------------------'
 fi

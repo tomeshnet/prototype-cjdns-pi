@@ -8,7 +8,11 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 sudo "$BASE_DIR/enable-camera.sh"
 
 # Install ffmpeg and supporting tools
-sudo apt-get -y install ffmpeg lsof inotify-tools nginx
+
+sudo apt-get install -y ffmpeg lsof inotify-tools nginx
+
+# Copy placeholder for audio-only streams
+cp "$BASE_DIR/audio.jpg" "$HOME/audio.jpg"
 
 # Add user to be able to modify nginx directories
 sudo usermod -a -G "$USER" www-data
@@ -44,5 +48,5 @@ cp -r "$VIDEO_PLAYER_PATH" /var/www/html/video-player
 rm -rf "$BASE_DIR/tmp"
 
 # Add entry into nginx home screen
-APP="<div class='app'><h2>IPFS Pi Stream Player</h2>IPFS Video player for Pi Stream. <br />Stream at <a href='/ipns/$IPFS_ID'>/ipns/$IPFS_ID</a> <br/><a href='/video-player/'>Go</a></div>"
+APP="<div class='app'><h2>IPFS Pi Stream Player</h2>IPFS Video player for Pi Stream. <br />M3U8 Stream located <a href='/ipns/$IPFS_ID'>over ipns</a> <br/><a href='/video-player/'>Go </a> and play with built in video player</div>"
 sudo sed -i "s#<\!--APPLIST-->#$APP\n<\!--APPLIST-->#" "/var/www/html/index.html"

@@ -13,10 +13,10 @@ H_DNS_SERVER_2="fc16:b44c:2bf9:467:8098:51c6:5849:7b4f"
 I_DNS_SERVER_0="1.1.1.1"
 I_DNS_SERVER_1="1.0.0.1"
 
-# Create radvd.conf before installing radvd, installation fails without it
-if ! [ -f /etc/radvd.conf ]; then
-    sudo cp "$BASE_DIR/radvd.conf" /etc/radvd.conf
-fi
+# Yggdrasil subnetting
+YGG_SUBNET=$(sudo yggdrasilctl getSelf | grep "IPv6 subnet" | awk '{print $3}')
+# End subnet with ::, so either 1/64 or /64 can be added to end later as needed
+YGG_SUBNET=${YGG_SUBNET:0:-3}
 
 # Install packages to run IEEE 802.11 Access Point
 sudo apt-get install hostapd radvd dnsmasq iptables -y
@@ -37,7 +37,13 @@ echo "    netmask 255.255.255.0" | sudo tee --append /etc/network/interfaces > /
 echo "    network 10.0.0.0" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "    broadcast 10.0.0.255" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "iface wlan-ap inet6 static" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    address fdfc::2" | sudo tee --append /etc/network/interfaces > /dev/null
+
+if [ "$(which yggdrasil)" ]; then
+    echo "    address ${YGG_SUBNET}1/64" | sudo tee --append /etc/network/interfaces > /dev/null
+else
+    echo "    address fdfc::2" | sudo tee --append /etc/network/interfaces > /dev/null
+fi
+
 echo "    netmask 64" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "" | sudo tee --append /etc/network/interfaces > /dev/null
 echo "allow-hotplug eth0" | sudo tee --append /etc/network/interfaces > /dev/null
@@ -115,8 +121,13 @@ if [ -f /etc/dhcpcd.conf ]; then
     sudo echo "denyinterfaces wlan-ap" | sudo tee --append /etc/dhcpcd.conf > /dev/null
 fi
 
-# Configure IPv6 router advertisement with radvd
-sudo cp "$BASE_DIR/radvd.conf" /etc/radvd.conf
+# Setup radvd
+cp "$BASE_DIR/radvd.conf" /tmp
+if [ "$(which yggdrasil)" ]; then
+    # Setup Yggdrasil radvd prefix for subnetting
+    sed -i "s/fdfc::\/64/${YGG_SUBNET}\/64/" /tmp/radvd.conf
+fi
+sudo mv /tmp/radvd.conf /etc
 sudo systemctl daemon-reload
 sudo systemctl enable radvd.service
 sudo systemctl start radvd.service
@@ -132,11 +143,12 @@ sudo systemctl daemon-reload
 sudo systemctl enable hostapd.service
 
 # Find onboard adapter by driver and lock to wlan-ap
-for wlan in $(find /sys/class/net -maxdepth 1 -name 'wlan*' | xargs -0 basename); do
+for wlanfile in /sys/class/net/wlan*; do
+    wlan="$(basename "$wlanfile")"
     driverPath=$(readlink "/sys/class/net/$wlan/device/driver")
     driver=$(basename "$driverPath")
 #    mac="$(cat /sys/class/net/$wlan/address)"
-    if [[ "$driver" == "xradio_wlan" || "$driver" == "brcm80211" || "$driver" == "brcmfmac" ]]; then
+    if [[ "$driver" == "xradio_wlan" || "$driver" == "brcm80211" || "$driver" == "brcmfmac" || "$driver" == "rtl8189fs" ]]; then
         echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"$driver\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan-ap\"" |
                 sudo tee /etc/udev/rules.d/70-persistent-net.rules
     fi

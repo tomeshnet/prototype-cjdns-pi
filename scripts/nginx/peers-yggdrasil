@@ -1,0 +1,15 @@
+#!/bin/bash
+echo -e "Content-type: text/html\n\n";
+
+if [ -z "$(which yggdrasilctl)" ]; then
+  echo "{}"
+  exit 0
+fi
+
+res=$(yggdrasilctl --json getPeers  2>/dev/null)
+
+if [[ $res == *"Fatal error"* ]]; then
+    echo "{}"
+else
+    echo $res
+fi

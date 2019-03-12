@@ -9,4 +9,3 @@ iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
 # Allow all IPv6 traffic routed out tun0 and ygg0 to be masked with their respective external IP address
 ip6tables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
-ip6tables -t nat -A POSTROUTING -o ygg0 -j MASQUERADE
