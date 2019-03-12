@@ -11,7 +11,7 @@ case "$ARCH" in
   x86_64)
     ARCH="amd64"
   ;;
-  i386)
+  i386 | i586 | i686 )
     ARCH="386"
   ;;  armv7l)
     ARCH="armv7";
@@ -23,6 +23,9 @@ case "$ARCH" in
     ARCH="arm64";
   ;;
   *)
+    echo "Unknown Arch"
+    exit 1
+  ;;
 esac
 
 

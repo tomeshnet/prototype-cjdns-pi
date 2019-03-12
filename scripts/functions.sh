@@ -149,7 +149,7 @@ function detectBoard {
         BOARD_MODEL="amd64"
         BOARD_Name="AMD 64 Board"
     ;;
-    i386)
+    i386 | i586 | i686 )
         BOARD_MODEL="i386"
         BOARD_FAMILY="i386 Board"
     esac

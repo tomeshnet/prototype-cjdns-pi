@@ -14,7 +14,7 @@ case "$ARCH" in
   x86_64)
     URL="https://dl.grafana.com/oss/release/grafana_${GRAFANA_VERSION}_amd64.deb"
   ;;
-  i386)
+  i386 | i586 | i686 )
    echo "Cannot install grafana on i386"
    exit 0
   ;;
@@ -29,6 +29,9 @@ case "$ARCH" in
     URL="https://dl.grafana.com/oss/release/grafana_${GRAFANA_VERSION}_arm64.deb";
   ;;
   *)
+    echo "Unknown Arch"
+    exit 1
+  ;;
 esac
 
 mkdir "$BASE_DIR/tmp" || true

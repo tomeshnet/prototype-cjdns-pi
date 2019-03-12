@@ -12,7 +12,7 @@ case "$ARCH" in
   x86_64)
     ARCH_VERSION="amd64"
   ;;
-  i386)
+  i386 | i586 | i686 )
    ARCH_VERSION="i386"
    exit 0
   ;;
@@ -27,6 +27,9 @@ case "$ARCH" in
     ARCH_VERSION="arm64"
   ;;
   *)
+    echo "Unknown Arch"
+    exit 1
+  ;;
 esac
 
 # Download and install yggdrasil routing engine
