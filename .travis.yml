@@ -23,43 +23,9 @@ script:
   - bash -c 'shopt -s globstar; shellcheck -x install install2 */install **/*.sh'
   - cd ../..
 
-  # Prep environment
-  - sudo apt-get update
-  - sudo apt-get install -y wget bash zip qemu qemu-user-static binfmt-support 
-  # systemd-container
-  - wget https://downloads.raspberrypi.org/raspbian_lite_latest -O raspbian.zip
-  - unzip raspbian.zip
-#  - dd if=/dev/zero count=1000000 >> 2018-11-13-raspbian-stretch-lite.img
-#  - echo -e "d\n2\nn\np\n2\n98304\n\n\nw\n" | fdisk 2018-11-13-raspbian-stretch-lite.img
-#  - losetup /dev/loop99 2018-11-13-raspbian-stretch-lite.img -o $((512*98304))
-#  - e2fsck -f -y /dev/loop99
-#  - resize2fs /dev/loop99
-#  - losetup -d  /dev/loop99
-  - mkdir 1
-  - sudo mount 2018-11-13-raspbian-stretch-lite.img 1 -o loop,offset=$((512*98304))
-  - cd 1
-  - sudo mount --bind /dev dev/
-  - sudo mount --bind /sys sys/
-  - sudo mount --bind /proc proc/
-  - sudo mount --bind /dev/pts dev/pts
-  - sudo cp /usr/bin/qemu-arm-static usr/bin
+  # i386
   - sudo git clone https://github.com/tomeshnet/prototype-cjdns-pi.git home/pi/prototype-cjdns-pi
-  - sudo touch bake.sh
-  - sudo chmod a+rwx bake.sh
-  - echo #!/bin/bash >> bake.sh 
-  - echo apt-get install -y git >> bake.sh
-  - echo sudo mkdir /home >> bake.sh
-  - echo sudo mkdir /home/pi >> bake.sh
-  - echo cd /home/pi >> bake.sh  
-  - echo pwd >> bake.sh
-  - echo ls -la >> bake.sh
-  - echo cd prototype-cjdns-pi/scripts >> bake.sh
-  - echo echo Ready for checkout >> bake.sh
-  - echo pwd >> bake.sh
-  - echo ls -la >> bake.sh
-  - echo git checkout travis >> bake.sh
-  - echo echo ready for build >> bake.sh
-  - echo TAG_PROTOTYPE_CJDNS_PI=travis UNATTENDED=true ./install >> bake.sh
-  - sudo chroot . /bake.sh
-  - cd ..
-  - sudo umount 1
+  - cd prototype-cjdns-pi/scripts
+  - git checkout travis
+  - TAG_PROTOTYPE_CJDNS_PI=travis UNATTENDED=true ./install >> bake.sh
+
