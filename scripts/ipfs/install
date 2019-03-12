@@ -67,8 +67,8 @@ ipfs bootstrap add "$IPFS_PEER_5"
 sudo apt-get install -y jq
 
 # Copy file
-sudo cp "$BASE_DIR/ipfs-setup.sh" /usr/local/bin/
-sudo chmod +x /usr/local/bin/ipfs-setup.sh
+sudo cp "$BASE_DIR/ipfs-swarm.sh" /usr/local/bin/
+sudo chmod +x /usr/local/bin/ipfs-swarm.sh
 
 # Configure systemd to start ipfs.service on system boot
 sudo cp "$BASE_DIR/ipfs.service" /etc/systemd/system/ipfs.service
