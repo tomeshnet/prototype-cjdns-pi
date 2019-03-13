@@ -14,6 +14,12 @@ fi
 echo '"ipfs":{'
 echo '"version":'${version}','
 
+if [ quic_enabled = "$(ipfs config Experimental.QUIC)" ]; then
+    echo '"quic_enabled":"'${quic_enabled}'",'
+else
+    echo '"quic_enabled":"false",'
+fi
+
 echo '"ID":'${id}
 
 echo "},"
