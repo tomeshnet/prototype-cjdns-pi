@@ -21,11 +21,12 @@ script:
   - cd prototype-cjdns-pi/scripts
   - git checkout ${BRANCH}
   - bash -c 'shopt -s globstar; shellcheck -x install install2 */install **/*.sh'
+  - ./install2
   - cd ../..
 
   # Build docker for ARM tests
-  - cp /usr/bin/qemu-arm-static travis/${DISTRO}/
-  - docker build -t tomeshnet/prototype-cjdns-pi:${DISTRO} travis/${DISTRO}/
+  # - cp /usr/bin/qemu-arm-static travis/${DISTRO}/
+  # - docker build -t tomeshnet/prototype-cjdns-pi:${DISTRO} travis/${DISTRO}/
 
   # Validate install script download and make executable
   # - docker run tomeshnet/prototype-cjdns-pi:${DISTRO} /bin/sh -c "wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install; chmod +x install; ./install"
