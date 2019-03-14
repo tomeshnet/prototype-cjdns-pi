@@ -21,7 +21,8 @@ script:
   - cd prototype-cjdns-pi/scripts
   - git checkout ${BRANCH}
   - bash -c 'shopt -s globstar; shellcheck -x install install2 */install **/*.sh'
-  - sudo  apt-get install -y systemd
+  - sudo  apt-get install -y  systemd
+  - sudo mkdir -p /var/www/html/cgi-bin
   - UNATTENDED="true" ./install2
   - cd ../..
 
