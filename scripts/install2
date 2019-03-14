@@ -270,6 +270,8 @@ case "$dialogREPLY" in
         WITH_SSB_WEB_PI=false
         WITH_SSB_PATCHFOO=true
         WITH_IPFS_PI_STREAM=false
+        WITH_H_DNS=true
+        WITH_H_NTP=true
         MESH_NAME="testing"
     ;;
     *)
