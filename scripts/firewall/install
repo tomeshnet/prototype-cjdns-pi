@@ -14,7 +14,7 @@ sudo apt-get install -y iptables iptables-persistent
 
 # Bringing up the firewall on RaspberryPi before network breaks things
 # so patch the service to start the firewall after the cjdns service starts
-sudo sed -i -e "s/Before=network-pre.target/After=cjdns.service/" /lib/systemd/system/netfilter-persistent.service
+sudo sed -i -e "s/Before=network-pre.target/After=cjdns.service/" /lib/systemd/system/netfilter-persistent.service || true 
 
 sudo cp "$BASE_DIR/rules.v4" /etc/iptables/rules.v4
 sudo cp "$BASE_DIR/rules.v6" /etc/iptables/rules.v6
