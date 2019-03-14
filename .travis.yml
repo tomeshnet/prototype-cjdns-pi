@@ -21,7 +21,7 @@ script:
   - cd prototype-cjdns-pi/scripts
   - git checkout ${BRANCH}
   - bash -c 'shopt -s globstar; shellcheck -x install install2 */install **/*.sh'
-  - mkdir -p /etc/systemd/system
+  - sudo mkdir -p /etc/systemd/system
   - UNATTENDED="true" ./install2
   - cd ../..
 
