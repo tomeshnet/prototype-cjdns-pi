@@ -21,7 +21,7 @@ script:
   - cd prototype-cjdns-pi/scripts
   - git checkout ${BRANCH}
   - bash -c 'shopt -s globstar; shellcheck -x install install2 */install **/*.sh'
-  - ./install2
+  - UNATTENDED="true" ./install2
   - cd ../..
 
   # Build docker for ARM tests
