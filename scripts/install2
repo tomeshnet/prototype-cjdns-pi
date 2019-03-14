@@ -123,13 +123,16 @@ if ! echo "$PATH" | grep -q "/sbin" ; then
     echo "export PATH=\"/sbin:/usr/sbin:$PATH\"" | sudo tee -a /etc/profile
 fi
 
-askModule "WITH_DIALOG" "Text User Interface?" "n"
-if [ "$(checkModule 'WITH_DIALOG')" ]; then
-    sudo apt-get install dialog -y
+if [ ! "$UNATTENDED" == "true" ]; then
+    askModule "WITH_DIALOG" "Text User Interface?" "n"
+    if [ "$(checkModule 'WITH_DIALOG')" ]; then
+        sudo apt-get install dialog -y
+    fi
+
+    askSelection "A Basic node\nB IPFS Node\nC Monitor Node\nD SSB Node\nE Camera Node\nF Raspberry Pi Adhoc (Experimental)\nZ Custom" "Select node install type" Z
+else 
+    dialogREPLY="UN"
 fi
-
-
-askSelection "A Basic node\nB IPFS Node\nC Monitor Node\nD SSB Node\nE Camera Node\nF Raspberry Pi Adhoc (Experimental)\nZ Custom" "Select node install type" Z
 
 case "$dialogREPLY" in
     "A")
@@ -229,9 +232,9 @@ case "$dialogREPLY" in
     ;;
     "F")
         echo "Raspberry Pi Ad-Hoc"
-	WITH_YGGDRASIL=true
+        WITH_YGGDRASIL=true
         WITH_MESH_POINT=false
-	WITH_AD_HOC=true
+        WITH_AD_HOC=true
         WITH_WIFI_AP=false
         WITH_FIREWALL=true
         WITH_CJDNS_IPTUNNEL=true
@@ -248,6 +251,24 @@ case "$dialogREPLY" in
     ;;
     "Z")
     ;;
+    "UN")
+        WITH_YGGDRASIL=true
+        WITH_MESH_POINT=true
+        WITH_AD_HOC=true
+        WITH_WIFI_AP=true
+        WITH_FIREWALL=true
+        WITH_CJDNS_IPTUNNEL=true
+        WITH_IPFS=true
+        WITH_PROMETHEUS_NODE_EXPORTER=true
+        WITH_EXTRA_TOOLS=true
+        WITH_WATCHDOG=true
+        WITH_YRD=true
+        WITH_PROMETHEUS_SERVER=true
+        WITH_GRAFANA=true
+        WITH_SSB=true
+        WITH_SSB_PATCHFOO=true
+        WITH_IPFS_PI_STREAM=false
+    ;;
     *)
         echo "Error unknown response $dialogREPLY"
         exit
@@ -258,10 +279,12 @@ esac
 
 # Prompt for name of the mesh network
 ##TODO## Add dialog option
-read -p "Enter the name of your mesh network (default: tomesh): " -r
-MESH_NAME="${REPLY// }"
-if [ "${#MESH_NAME}" == 0 ]; then
-    MESH_NAME="tomesh"
+if [ -z "$MESH_NAME" ]; then
+    read -p "Enter the name of your mesh network (default: tomesh): " -r
+    MESH_NAME="${REPLY// }"
+    if [ "${#MESH_NAME}" == 0 ]; then
+        MESH_NAME="tomesh"
+    fi
 fi
 export MESH_NAME
 
