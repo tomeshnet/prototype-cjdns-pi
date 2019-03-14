@@ -253,6 +253,7 @@ case "$dialogREPLY" in
     ;;
     "UN")
         WITH_YGGDRASIL=true
+        WITH_YGGDRASIL_IPTUNNEL=true
         WITH_MESH_POINT=true
         WITH_AD_HOC=true
         WITH_WIFI_AP=true
