@@ -267,6 +267,7 @@ case "$dialogREPLY" in
         WITH_PROMETHEUS_SERVER=true
         WITH_GRAFANA=true
         WITH_SSB=true
+        WITH_SSB_WEB_PI=false
         WITH_SSB_PATCHFOO=true
         WITH_IPFS_PI_STREAM=false
         MESH_NAME="testing"
