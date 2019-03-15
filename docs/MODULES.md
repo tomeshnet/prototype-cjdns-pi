@@ -306,6 +306,24 @@ curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binar
 curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary "@$BASE_DIR/dashboard.json" http://localhost:3000/api/dashboards/db
 ```
 
+## Anonymous access 
+
+To allow read-one guest access without a password edit `/etc/grafana/grafana.ini`
+
+Uncomment/Change settings as follows
+
+```
+[auth.anonymous]
+# enable anonymous access
+enabled = true
+
+# specify organization name that should be used for unauthenticated users
+org_name = Main Org.
+
+# specify role for unauthenticated users
+org_role = Viewer
+```
+
 # Prometheus
 
 To make prometheus dynamically change the nodes it will monitor during runtim, you can tell it to read from a file and update it's targets every time the file is changed.  Make the following change in `/opt/prometheus/prometheus.yml`
