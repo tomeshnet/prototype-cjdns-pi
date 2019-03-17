@@ -2,6 +2,31 @@
 
 A short summary of each module is directly below. Documentation for specific abilities of modules, or reference commands are further below.
 
+## Table of Contents
+- [Modules Documentation](#modules-documentation)
+  - [Table of Contents](#table-of-contents)
+  - [Command-line flags](#command-line-flags)
+  - [CJDNS](#cjdns)
+  - [Yggdrasil](#yggdrasil)
+    - [Yggdrasil subnetting](#yggdrasil-subnetting)
+    - [Yggdrasil IPTunnel](#yggdrasil-iptunnel)
+      - [Server](#server)
+      - [Client](#client)
+  - [IPFS](#ipfs)
+  - [Firewall](#firewall)
+    - [Applying changes](#applying-changes)
+    - [IPv4](#ipv4)
+      - [Change open ports](#change-open-ports)
+    - [IPv6](#ipv6)
+      - [Change open ports](#change-open-ports-1)
+      - [Yggdrasil Clients](#yggdrasil-clients)
+  - [CJDNS and Yggdrasil public peering (Optional)](#cjdns-and-yggdrasil-public-peering-optional)
+      - [CJDNS](#cjdns-1)
+    - [Yggdrasil](#yggdrasil-1)
+  - [Grafana](#grafana)
+    - [Known install bugs](#known-install-bugs)
+  - [SSB pub peering](#ssb-pub-peering)
+
 ## Command-line flags
 
 | Feature Flag                    | HTTP Service Port                              | Description |
@@ -59,7 +84,7 @@ This module will allow you to tunnel internet from an EXIT node (server) that ha
 #### Server
  To configure as a server (exit Internet traffic for other nodes), 
  1. create **/etc/yggdrasil.iptunnel.server**
- 1. fill it with newline-separated list of:
+ 2. fill it with newline-separated list of:
    - EncryptionPublicKey key of the clients
    - single white space
    - IP Address in the 10.10.0.0/24 range that will be assigned to the client
@@ -186,9 +211,11 @@ If you use this rule, there is no point in having any other Yggdrasil client rul
 
 You can specify a protocol, but that would limit the ports that are open.
 
-## Adding deprecated.systems peer info into CJDNS and Yggdrasil (Optional)
+## CJDNS and Yggdrasil public peering (Optional)
 
 #### CJDNS
+
+Other peers can be found in the [this](https://github.com/hyperboria/peers) repo of peers. Try to connect to only a few peers, and ones that are close to where you live. One peer is already shown below for you.
 
 Go to [Deprecated Systems](https://deprecated.systems/) website. You will see the following information:
 
@@ -258,6 +285,8 @@ config file is written using JSON).
 
 ### Yggdrasil
 
+Other peers can be found in the [public-peers](https://github.com/yggdrasil-network/public-peers) repo. Try to connect to only a few peers, and ones that are close to where you live. One peer is already shown below for you.
+
 To connect to the "Deprecated Systems" node via Yggdrasil, you must do the similar as above, but with quite a few less steps.
 
 On the [deprecated.systems](https://deprecated.systems/) website, there is a section outlining the info for Yggdrasil:
@@ -292,11 +321,11 @@ You are now connected to the remote peer with Yggdrasil. If you see`[INACTIVE]`,
 for typos, make sure there are "" around the whole entire string.
 
 
-# Grafana
+## Grafana
 
 [Grafana](https://grafana.com/) is a dashboard used to display Prometheus collected data.  Once installed you can visit `http://<yournodeip>:3000`.  Default login is `admin`/`admin`. You can skip the welcome screen/wizard by clicking on the Grafana logo at the top left corner.
 
-## Known install bugs
+### Known install bugs
 
 At times Grafana will not start up properly during install and the dashboards will not install.  To install them manually run the following commands from the `prototype-cjdns/pi/scripts/grafana` folder
 
@@ -305,3 +334,7 @@ BASE_DIR=`pwd`
 curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary "@$BASE_DIR/datasource.json" http://localhost:3000/api/datasources
 curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary "@$BASE_DIR/dashboard.json" http://localhost:3000/api/dashboards/db
 ```
+
+## SSB pub peering
+
+Beyond connecting over with mesh peers, or peers on the LAN, you will need to connect to a "pub" to get your Scuttlebutt feed across the internet. You can find a list of public pubs [here](https://github.com/ssbc/ssb-server/wiki/Pub-Servers), but you can also go to [deprecated.systems](https://deprecated.systems/) and scroll down to the section labeled "ssb pub invite". There are three invites to use, for clearnet, CJDNS, or Yggdrasil. They will all give you access to a pub used by Tomesh.
