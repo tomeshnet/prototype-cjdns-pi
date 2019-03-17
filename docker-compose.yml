@@ -1,0 +1,11 @@
+version: "3.6"
+
+services:
+  yggdrasil:
+    image: yangm97/yggdrasil-go
+    network_mode: "host"
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - /var/run:/var/run
+      - /dev/net/tun:/dev/net/tun
