@@ -3,9 +3,11 @@ version: "3.6"
 services:
   yggdrasil:
     image: yangm97/yggdrasil-go
+    command: -useconffile /yggdrasil.conf
     network_mode: "host"
     cap_add:
       - NET_ADMIN
     volumes:
+      - ./config/yggdrasil.conf:/yggdrasil.conf
       - /var/run:/var/run
       - /dev/net/tun:/dev/net/tun
