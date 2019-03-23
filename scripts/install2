@@ -6,8 +6,6 @@ set -e
 # Enable password-less sudo on Armbian
 sudo sed -i 's/ALL=(ALL:ALL) ALL/ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
 
-TAG_CJDNS=d2e55d58548d83940482fe1bbbe1fd36f7f1b4ef
-
 # Common functions
 source functions.sh
 
@@ -20,36 +18,14 @@ sudo apt-get install -y gcc make curl wget
 sudo apt-get install -y net-tools || true
 
 # Get board information and set flags accordingly
-CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 ./do"
-
 detectBoard;
-
-
-# Set some defaults
-if [[ "$ARCH" == "armv7l" ]]; then
-    #TODO# -O2 workaround. Needs to be resolved.
-    CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-O2 -s -static -Wall -march=armv7-a -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -fomit-frame-pointer -marm\" ./do"
-fi
-
-if [[ "$ARCH" == "aarch64" ]]; then
-    CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -march=armv8-a+crc+crypto -fomit-frame-pointer\" ./do"
-    CJDNS_PACKAGE="cjdns-neon-arm64-v4.deb"
-fi
 
 # Flag to identify if board can support on-board AP. Default to false.
 SUPPORT_HOSTAP=false
 # Flag to identify if board can support on-board hardware watchdog.
 SUPPORT_WATCHDOG=false
-CJDNS_PACKAGE=""
-CHANGE_PASSWORD=""
 
 case "$BOARD_MODEL" in
-    amd64)
-        CJDNS_BUILD_CMD="sudo ./do"
-    ;;
-    i386)
-        CJDNS_BUILD_CMD="sudo ./do"
-    ;;
     orangepizero)
         # AP is supported if board already supports XRadio
         if lsmod | grep -q xradio_wlan; then
@@ -65,24 +41,16 @@ case "$BOARD_MODEL" in
         SUPPORT_HOSTAP=true
     ;;
     "raspberrypi3")
-        CJDNS_BUILD_CMD="sudo CFLAGS=\"-march=armv8-a+crc -mtune=cortex-a53 -mfpu=crypto-neon-fp-armv8 -mfloat-abi=hard -O2\" ./do"
-        CJDNS_PACKAGE="cjdns-neon-v4.deb"
         # Raspberry Pi 3 has on-board WiFi that can be used as an AP
         SUPPORT_HOSTAP=true
         # Raspberry Pi 3 has hardware watchdog
         SUPPORT_WATCHDOG=true
     ;;
     "raspberrypi2")
-        CJDNS_BUILD_CMD="sudo NO_TEST=1 CFLAGS=\"-mfpu=neon-vfpv4 -O2\" ./do"
-        CJDNS_PACKAGE="cjdns-neon-v4.deb"
     ;;
     "raspberrypi1")
-        CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 NO_TEST=1 CFLAGS=\"-s -static -Wall\" ./do"
-        CJDNS_PACKAGE="cjdns-no-neon-v4.deb"
     ;;
     "raspberrypizero")
-        CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 NO_TEST=1 CFLAGS=\"-s -static -Wall\" ./do"
-        CJDNS_PACKAGE="cjdns-no-neon-v4.deb"
     ;;
 esac
 
