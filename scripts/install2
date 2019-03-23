@@ -241,6 +241,9 @@ export MESH_NAME
 askModule "WITH_CJDNS" "CJDNS routing engine"
 if [ "$WITH_CJDNS" == "true" ]; then
     askModule "WITH_CJDNS_IPTUNNEL" "Internet Gateway over CJDNS"
+    askModule "WITH_H_DNS" "Hyperboria Domain Name Servers"
+    askModule "WITH_H_NTP" "Hyperboria Network Time Protocol Server"   
+    askModule "WITH_YRD" "Yrd (a cjdns command-line tool)"
 fi
 askModule "WITH_YGGDRASIL" "Yggdrasil routing engine"
 if [ "$WITH_YGGDRASIL" == "true" ]; then
@@ -263,7 +266,6 @@ if [ "$WITH_SSB" == "true" ]; then
     askModule "WITH_SSB_PATCHFOO" "SSB PatchFoo Web Client"
     askModule "WITH_SSB_WEB_PI" "SSB Web Pi Client (Experimental)" "n"
 fi
-askModule "WITH_YRD" "Yrd (a cjdns command-line tool)"
 askModule "WITH_PROMETHEUS_NODE_EXPORTER" "Prometheus Node Exporter"
 if [ "$WITH_PROMETHEUS_NODE_EXPORTER" == true ]; then
     askModule "WITH_PROMETHEUS_SERVER" "Prometheus Server"
@@ -271,8 +273,6 @@ fi
 if [ "$WITH_PROMETHEUS_SERVER" == true ]; then
     askModule "WITH_GRAFANA" "Grafana"
 fi
-askModule "WITH_H_DNS" "Hyperboria Domain Name Servers"
-askModule "WITH_H_NTP" "Hyperboria Network Time Protocol Server"
 askModule "WITH_EXTRA_TOOLS" "Non-Essential Tools Useful for Network Analysis"
 if [ "$SUPPORT_WATCHDOG" == "true" ]; then
     askModule "WITH_WATCHDOG" "Hardware Watchdog"
