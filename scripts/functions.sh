@@ -108,7 +108,7 @@ function askSelection {
     else
         isValid=""
         while [[ "$isValid" == "" ]]; do
-            echo "$2"
+            echo -e "$2"
             echo -------------------
             echo -e "$1"
             echo -------------------
