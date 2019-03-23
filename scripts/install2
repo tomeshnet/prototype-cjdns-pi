@@ -164,7 +164,7 @@ if [ "$(checkModule 'WITH_DIALOG')" ]; then
 fi
 
 
-askSelection "Z Custom" "Select node install type" "A Basic node\nB IPFS Node\nC Monitor Node\nD SSB Node\nE Camera Node\nF Raspberry Pi Adhoc (Experimental)"
+askSelection "Select node install type" "A Basic node\nB IPFS Node\nC Monitor Node\nD SSB Node\nE Camera Node\nF Raspberry Pi Adhoc (Experimental)"
 
 case "$dialogREPLY" in
     "A")
