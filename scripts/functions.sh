@@ -139,7 +139,7 @@ function detectBoard {
     case "$ARCH" in
     x86_64)
         BOARD_MODEL="amd64"
-        BOARD_Name="AMD 64 Board"
+        BOARD_NAME="AMD 64 Board"
     ;;
     i386 | i586 | i686 )
         BOARD_MODEL="i386"
