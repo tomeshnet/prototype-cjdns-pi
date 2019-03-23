@@ -143,7 +143,7 @@ function detectBoard {
     ;;
     i386 | i586 | i686 )
         BOARD_MODEL="i386"
-        BOARD_FAMILY="i386 Board"
+        BOARD_NAME="i386 Board"
     esac
 
     if [[ "${BOARD_MODEL}" == "Unknown" ]]; then
