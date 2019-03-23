@@ -65,4 +65,5 @@ if [ -z "${NEWHOSTNAME}" ]; then
     NEWHOSTNAME=$(cat /etc/hostname)
 fi
 
+sudo sed -i "/NodeInfo: {}/d" /etc/yggdrasil.conf
 sudo sed -i "\$i\ \ NodeInfo:\n  {\n   name: ${NEWHOSTNAME}\n  }\n"  /etc/yggdrasil.conf
