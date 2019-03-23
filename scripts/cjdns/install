@@ -24,7 +24,7 @@ if [[ "$ARCH" == "aarch64" ]]; then
 fi
 
 
-case "$BOARD_MODEL" in
+case "$BOARD_NAME" in
     amd64)
         CJDNS_BUILD_CMD="sudo ./do"
     ;;
