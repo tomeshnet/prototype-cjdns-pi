@@ -4,7 +4,28 @@ true
 
 set -e
 
-GO_IPFS_VERSION=v0.4.18
+GO_IPFS_VERSION=v0.4.19
+ARCH="$(uname -m)" 
+case "$ARCH" in
+  x86_64)
+    ARCH="amd64"
+  ;;
+  i386 | i586 | i686 )
+    ARCH="386"
+  ;;  armv7l)
+    ARCH="arm";
+  ;;
+  armv6l)
+    ARCH="arm";
+  ;;
+  aarch64)
+    ARCH="arm64";
+  ;;
+  *)
+    echo "Unknown Arch"
+    exit 1
+  ;;
+esac
 
 # Hyperborea connected peer used to bootstrap hyperborea only ipfs nodes
 # DarkDrgn2k's peer
@@ -23,7 +44,7 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Download and install IPFS
 mkdir "$BASE_DIR/tmp"
-wget "https://dist.ipfs.io/go-ipfs/${GO_IPFS_VERSION}/go-ipfs_${GO_IPFS_VERSION}_linux-arm.tar.gz" -O "$BASE_DIR/tmp/go-ipfs.tar.gz"
+wget "https://dist.ipfs.io/go-ipfs/${GO_IPFS_VERSION}/go-ipfs_${GO_IPFS_VERSION}_linux-${ARCH}.tar.gz" -O "$BASE_DIR/tmp/go-ipfs.tar.gz"
 tar xvfz "$BASE_DIR/tmp/go-ipfs.tar.gz" -C "$BASE_DIR/tmp"
 sudo cp "$BASE_DIR/tmp/go-ipfs/ipfs" /usr/local/bin/ipfs
 sudo chown root:staff /usr/local/bin/ipfs
@@ -37,6 +58,16 @@ ipfs config Pubsub.Router gossipsub
 
 # Enable Filestore for --nocopy capability
 ipfs config --bool Experimental.FilestoreEnabled true
+
+# Setup connection management - Reduce connections to stress the Pi less
+# XXX: These values need to be tweaked and tested
+ipfs config Swarm.ConnMgr.Type basic
+ipfs config Swarm.ConnMgr.LowWater 100
+ipfs config Swarm.ConnMgr.HighWater 200
+ipfs config Swarm.ConnMgr.GracePeriod 60s
+
+# Enable QUIC for better connections when possible
+ipfs config --bool Experimental.QUIC true 
 
 # Configure HTTP to IPFS gateway
 sudo cp "$BASE_DIR/ipfs-http-gateway.conf" /etc/nginx/site-path-enabled/ipfs-http-gateway.conf

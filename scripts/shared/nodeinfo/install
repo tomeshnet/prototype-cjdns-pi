@@ -18,6 +18,7 @@ sudo sed -i -e "s/__COMMIT__/$(git rev-parse HEAD)/g" /opt/tomesh/nodeinfo.json
 sudo sed -i -e "s/__INSTALLED__/$(date)/g" /opt/tomesh/nodeinfo.json
 sudo sed -i -e "s/__ORG__/$MESH_NAME/g" /opt/tomesh/nodeinfo.json
 
-sudo sed -i 's#^exit 0#/usr/local/bin/nodeinfo-update.sh\nexit 0#' /etc/rc.local
+##TODO## Fix rc.local issue
+sudo sed -i 's#^exit 0#/usr/local/bin/nodeinfo-update.sh\nexit 0#' /etc/rc.local || true
 
 BASE_DIR="$LAST_BASE"

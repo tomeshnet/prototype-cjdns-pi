@@ -1,5 +1,5 @@
 #!/bin/bash
-# shellcheck disable=SC2034	
+# shellcheck disable=SC2034
 true
 
 dialogGlobalParams="--backtitle Installation --ascii-lines"
@@ -77,28 +77,23 @@ function checkModule {
 #       x - single capital character that will be returned
 #       text - description of item
 #
-#    askSelection <list> <message> <default>
+#    askSelection <list> <message>
 #
 # Result is stored in $dialogREPLY
 dialogREPLY=""
 function askSelection {
     selection=$1
     dialogREPLY=""
-    default="$3"
     if [ "$(checkModule 'WITH_DIALOG')" ]; then
         selection=$(echo -e "$selection" | while read -r selected; do
                     selectedItem="${selected:0:1}"
                     selectedText="${selected:2}"
-                    if [[ "${selected:0:1}" == "$default" ]]; then
-                        echo "$selectedItem \"$selectedText\" on"
-                    else
-                        echo "$selectedItem \"$selectedText\" off"
-                    fi
+                    echo "$selectedItem \"$selectedText\""
             done)
         echo "$selection" > /tmp/selectionList
 
         # shellcheck disable=SC2086
-        dialog $dialogGlobalParams --radiolist "$2" 15 55 8  --file /tmp/selectionList 2> /tmp/res
+        dialog $dialogGlobalParams --menu "$2" 15 55 8  --file /tmp/selectionList 2> /tmp/res
         rm -f selectionList
         response=$(cat /tmp/res)
         rm -f /tmp/res
@@ -119,10 +114,7 @@ function askSelection {
             echo -------------------
             read -p "Selection:  " -n 1 -r
             echo ""
-            if [[ "$REPLY" == "" ]] && [[ "$default" != "" ]]; then
-                REPLY="$default"
-                isValid=1
-            else
+            if [[ ! "$REPLY" == "" ]]; then
                 REPLY=$(echo "$REPLY" | awk '{print toupper($0)}')
 
                 isValid=$(echo -e "$selection" | while read -r selected; do
@@ -134,4 +126,66 @@ function askSelection {
         done
         dialogREPLY="$REPLY"
     fi
+}
+
+function detectBoard {
+
+    BOARD_MODEL="Unknown"
+    BOARD_NAME="Unknown"
+    BOARD_OS="Unknown"
+
+    # Check for x86
+    ARCH="$(uname -m)"
+    case "$ARCH" in
+    x86_64)
+        BOARD_MODEL="amd64"
+        BOARD_NAME="AMD 64 Board"
+    ;;
+    i386 | i586 | i686 )
+        BOARD_MODEL="i386"
+        BOARD_FAMILY="i386 Board"
+    esac
+
+    if [[ -z "${BOARD_MODEL}" ]]; then
+        # Use tr to remove null byte generating warning
+        if [ -f "/sys/firmware/devicetree/base/model" ]; then
+            BOARD_MODEL=$(tr -d '\0' < /sys/firmware/devicetree/base/model)
+        else
+            BOARD_MODEL=$(grep Hardware /proc/cpuinfo | awk '{print $3}' | head -n 1)
+        fi
+    fi
+
+    # Check for armbian identification
+    if [ -f "/etc/armbian-image-release" ]; then
+        BOARD_OS="Armbian"
+        BOARD_MODEL="$(grep "BOARD=" /etc/armbian-image-release | awk -F '=' '{print $2}' | tr -d \")"
+        BOARD_NAME="$(grep BOARD_NAME /etc/armbian-image-release | awk -F '=' '{print $2}' | tr -d \" )"
+        BOARD_NEON=true
+    fi
+
+    if [[ "$BOARD_MODEL" == "Raspberry Pi"* ]]; then
+        BOARD_OS="Raspbian"
+
+        # Check for default password is still set for user pi
+        # If it is force password before reboot
+        # shellcheck disable=SC2016
+        if [[ "$BOARD_MODEL" == "Raspberry Pi 3"* ]]; then
+            BOARD_NAME="raspberrypi3"
+            BOARD_NEON=true
+        fi
+        if [[ "$BOARD_MODEL" == "Raspberry Pi 2"* ]]; then
+            BOARD_MODEL="raspberrypi2"
+            BOARD_NEON=true
+        fi
+        if [[ "$BOARD_MODEL" == "Raspberry Pi A"* || "$BOARD_MODEL" == "Raspberry Pi B"* ]]; then
+            BOARD_MODEL="raspberrypi1"
+            BOARD_NEON=false
+        fi
+
+        if [[ "$BOARD_MODEL" == "Zero"* ]]; then
+            BOARD_MODEL="raspberrypizero"
+            BOARD_NEON=false
+        fi
+    fi
+
 }

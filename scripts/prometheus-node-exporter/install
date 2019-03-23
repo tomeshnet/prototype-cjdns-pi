@@ -2,20 +2,36 @@
 
 set -e
 
-NODE_EXPORTER_VERSION=0.14.0
+NODE_EXPORTER_VERSION=0.17.0
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Download and install Prometheus Node Exporter
-ARM_VERSION=v7
-if uname -m | grep -Eq ^armv6; then
-    ARM_VERSION=v6
-elif uname -m | grep -q aarch64; then
-    ARM_VERSION=64
-fi
+ARCH="$(uname -m)" 
+case "$ARCH" in
+  x86_64)
+    ARCH="amd64"
+  ;;
+  i386 | i586 | i686 )
+    ARCH="386"
+  ;;
+  armv7l)
+    ARCH="armv7";
+  ;;
+  armv6l)
+      ARCH="armv6";
+  ;;
+  aarch64)
+    ARCH="arm64";
+  ;;
+  *)
+    echo "Unknown Arch"
+    exit 1
+  ;;
+esac
+
 if [[ ! -f "/usr/local/bin/node_exporter" ]]; then
     mkdir "$BASE_DIR/tmp" || true
-    wget "https://github.com/prometheus/node_exporter/releases/download/v${NODE_EXPORTER_VERSION}/node_exporter-${NODE_EXPORTER_VERSION}.linux-arm${ARM_VERSION}.tar.gz" -O "$BASE_DIR/tmp/node_exporter.tar.gz"
+    wget "https://github.com/prometheus/node_exporter/releases/download/v${NODE_EXPORTER_VERSION}/node_exporter-${NODE_EXPORTER_VERSION}.linux-${ARCH}.tar.gz" -O "$BASE_DIR/tmp/node_exporter.tar.gz"
     tar xvfz "$BASE_DIR/tmp/node_exporter.tar.gz" -C "$BASE_DIR/tmp" --strip 1
     sudo cp "$BASE_DIR/tmp/node_exporter" /usr/local/bin/node_exporter
     sudo chown root:staff /usr/local/bin/node_exporter
