@@ -96,12 +96,12 @@ if [ "$(checkModule 'WITH_DIALOG')" ]; then
     sudo apt-get install dialog -y
 fi
 
-
 askSelection "Z Custom" "Select node install type\nA Basic node\nB IPFS Node\nC Monitor Node\nD SSB Node\nE Camera Node\nF Raspberry Pi Adhoc (Experimental)"
 
 case "$dialogREPLY" in
     "A")
         echo "Basic node"
+	WITH_CJDNS=true
         WITH_YGGDRASIL=true
         WITH_YGGDRASIL_IPTUNNEL=true
         WITH_MESH_POINT=""
@@ -121,6 +121,7 @@ case "$dialogREPLY" in
     ;;
     "B")
         echo "Basic IPFS node"
+	WITH_CJDNS=true
         WITH_YGGDRASIL=true
         WITH_YGGDRASIL_IPTUNNEL=true
         WITH_MESH_POINT=""
@@ -140,6 +141,7 @@ case "$dialogREPLY" in
     ;;
     "C")
         echo "Monitor Node"
+	WITH_CJDNS=true
         WITH_YGGDRASIL=true
         WITH_YGGDRASIL_IPTUNNEL=true
         WITH_MESH_POINT=""
@@ -159,6 +161,7 @@ case "$dialogREPLY" in
     ;;
     "D")
         echo "SSB Node"
+	WITH_CJDNS=true
         WITH_YGGDRASIL=true
         WITH_YGGDRASIL_IPTUNNEL=true
         WITH_MESH_POINT=""
@@ -178,6 +181,7 @@ case "$dialogREPLY" in
     ;;
     "E")
         echo "IPFS Camera Node"
+	WITH_CJDNS=true
         WITH_YGGDRASIL=true
         WITH_YGGDRASIL_IPTUNNEL=true
         WITH_MESH_POINT=""
@@ -197,6 +201,7 @@ case "$dialogREPLY" in
     ;;
     "F")
         echo "Raspberry Pi Ad-Hoc"
+	WITH_CJDNS=true
 	WITH_YGGDRASIL=true
         WITH_MESH_POINT=false
 	WITH_AD_HOC=true
@@ -233,6 +238,10 @@ if [ "${#MESH_NAME}" == 0 ]; then
 fi
 export MESH_NAME
 
+askModule "WITH_CJDNS" "CJDNS routing engine"
+if [ "$WITH_CJDNS" == "true" ]; then
+    askModule "WITH_CJDNS_IPTUNNEL" "Internet Gateway over CJDNS"
+fi
 askModule "WITH_YGGDRASIL" "Yggdrasil routing engine"
 if [ "$WITH_YGGDRASIL" == "true" ]; then
     askModule "WITH_YGGDRASIL_IPTUNNEL" "Internet Gateway over Yggdrasil"
@@ -245,7 +254,6 @@ if [ "$SUPPORT_HOSTAP" == "true" ]; then
     askModule "WITH_WIFI_AP" "WiFi Access Point"
 fi
 askModule "WITH_FIREWALL" "Basic Firewall"
-askModule "WITH_CJDNS_IPTUNNEL" "Internet Gateway over CJDNS"
 askModule "WITH_IPFS" "IPFS"
 if [ "$WITH_IPFS" == true ] && [ "$BOARD_FAMILY" == "Raspberry Pi" ]; then
     askModule "WITH_IPFS_PI_STREAM" "IPFS Pi Stream" "n"
@@ -270,89 +278,16 @@ if [ "$SUPPORT_WATCHDOG" == "true" ]; then
     askModule "WITH_WATCHDOG" "Hardware Watchdog"
 fi
 
-# Get tools
-if ! [ "$(which nodejs)" ]; then
-    # Check for armv6 and install nodejs manually instead since it will not install via repo
-    if uname -m | grep -Eq ^armv6; then
-        wget -O /tmp/node-v6.11.0-linux-armv6l.tar.gz https://nodejs.org/dist/v6.11.0/node-v6.11.0-linux-armv6l.tar.gz
-        sudo tar xfz /tmp/node-v6.11.0-linux-armv6l.tar.gz --strip 1 -C /
-        rm -rf /tmp/node-v6.11.0-linux-armv6l.tar.gz
-        sudo ln -s /bin/node /bin/nodejs
-    else
-       curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-       sudo apt-get install nodejs -y
-   fi
-fi
-
 # Install possibly missing tools
 sudo apt-get install haveged -y || true
 
-# Check if cjdns is to be compiled or downloaded
-if [[ ! -e "/usr/bin/cjdroute" ]]; then
-    if [ ! -z "$CJDNS_PACKAGE" ]; then
-        read -p "Compile cjdns from source (Y) or use $CJDNS_PACKAGE Debian package (n)?" -n 1 -r
-        echo ""
-        if [[ ! $REPLY =~ ^[Nn]$ ]]; then
-            CJDNS_PACKAGE="";
-        fi
-    fi
-fi
-
-if [ ! -z "$CJDNS_PACKAGE" ]; then
-    if ! [ -x "/opt/cjdns/cjdroute" ]; then
-        echo -e "\e[1;31mInstalling cjdns debian package\e[0m"
-        wget https://github.com/darkdrgn2k/ToMeshPackages/raw/master/CJDNS/$CJDNS_PACKAGE -O /tmp/cjdns.deb
-        sudo dpkg -i /tmp/cjdns.deb
-        #Link up folder so files are in the same place as compiled
-        if [[ -e "/opt/cjdns" ]]; then
-            sudo rm -rf /opt/cjdns
-        fi
-        sudo ln -s /usr/share/cjdns /opt/cjdns
-        sudo ln -s /usr/bin/cjdroute /opt/cjdns/cjdroute || true
-    fi
-else
-    # Download cjdns repo and checkout TAG_CJDNS tag
-    echo -e "\e[1;31mCompiling cjdns from source\e[0m"
-    if ! [ -d "/opt/cjdns" ]; then
-        sudo apt-get install -y python
-        here="$(pwd)"
-        sudo git clone https://github.com/cjdelisle/cjdns.git /opt/cjdns
-        cd /opt/cjdns
-        sudo git checkout $TAG_CJDNS
-        cd "$here"
-    fi
-
-    # Build cjdns
-    if ! [ -x "/opt/cjdns/cjdroute" ]; then
-        here="$(pwd)"
-        cd /opt/cjdns && eval "$CJDNS_BUILD_CMD" && cd "$here"
-    fi
-
-    # Install cjdns to /usr/bin
-    sudo rm -f /usr/bin/cjdroute
-    sudo cp /opt/cjdns/cjdroute /usr/bin/cjdroute
-
-    # Generate cjdns configurations
-    if ! [ -f "/etc/cjdroute.conf" ]; then
-        sudo /usr/bin/cjdroute --genconf | sudo tee --append /etc/cjdroute.conf > /dev/null
-    fi
-
-    # Configure systemd to start cjdns.service on system boot
-    sudo cp /opt/cjdns/contrib/systemd/cjdns.service /etc/systemd/system/cjdns.service
-    sudo chmod 644 /etc/systemd/system/cjdns.service
-    sudo cp /opt/cjdns/contrib/systemd/cjdns-resume.service /etc/systemd/system/cjdns-resume.service
-    sudo chmod 644 /etc/systemd/system/cjdns-resume.service
-    sudo systemctl daemon-reload
-fi
-
-sudo systemctl enable cjdns.service
-
-# Define new hostname
-NEWHOSTNAME=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-/g")
-export NEWHOSTNAME
-
 # Install nginx
 source nginx/install
+
+# Install yggdrasil
+if [ "$(checkModule 'WITH_CJDNS')" ]; then
+    source cjdns/install
+fi
 
 # Install yggdrasil
 if [ "$(checkModule 'WITH_YGGDRASIL')" ]; then
