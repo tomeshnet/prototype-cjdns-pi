@@ -138,16 +138,12 @@ sudo touch /etc/udev/rules.d/80-net-setup-link.rules
 # Remove Network Manager
 sudo apt-get remove network-manager
 sudo systemctl daemon-reload
+sudo rm -rf /etc/network/interfaces
 echo allow-hotplug eth0 | sudo tee /etc/network/interfaces.d/eth0 > /dev/null 
-echo iface eth0 inet dhcp | sudo tee --append /etc/network/interfaces.d/eth0 > /dev/null
-
-# Check for broken interface file, create if broken
-if [ ! -e "/etc/network/interfaces" ] ; then
-  rm /etc/network/interfaces || true
-  echo "auto lo" | sudo tee /etc/network/interfaces > /dev/null
-  echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces > /dev/null
-fi
-
+echo iface eth0 inet dhcp | sudo tee --append /etc/network/interfaces.d/eth0 >> /dev/null
+echo "auto lo" | sudo tee /etc/network/interfaces.d/lo > /dev/null
+echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces.d/lo >> /dev/null
+  
 # Detect missing /sbin from $PATH variable on Debian distros, and add it
 if ! echo "$PATH" | grep -q "/sbin" ; then
     # Current environment
