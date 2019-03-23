@@ -63,7 +63,7 @@ case "$BOARD_OS" in
         CHANGE_PASSWORD="pi"
     ;;
 esac
-echo -e "\e[1;32mStarting installation on ${BOARD_MODEL} (${BOARD_NAME})...\e[0m"
+echo -e "\e[1;32mStarting installation on ${BOARD_NAME} (${BOARD_MODEL})...\e[0m"
 
 # Disable predictable network interface naming
 sudo touch /etc/udev/rules.d/80-net-setup-link.rules
