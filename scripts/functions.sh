@@ -146,7 +146,7 @@ function detectBoard {
         BOARD_FAMILY="i386 Board"
     esac
 
-    if [[ -z "${BOARD_MODEL}" ]]; then
+    if [[ "${BOARD_MODEL}" == "Unknown" ]]; then
         # Use tr to remove null byte generating warning
         if [ -f "/sys/firmware/devicetree/base/model" ]; then
             BOARD_MODEL=$(tr -d '\0' < /sys/firmware/devicetree/base/model)
