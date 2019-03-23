@@ -77,28 +77,23 @@ function checkModule {
 #       x - single capital character that will be returned
 #       text - description of item
 #
-#    askSelection <list> <message> <default>
+#    askSelection <list> <message>
 #
 # Result is stored in $dialogREPLY
 dialogREPLY=""
 function askSelection {
     selection=$1
     dialogREPLY=""
-    default="$3"
     if [ "$(checkModule 'WITH_DIALOG')" ]; then
         selection=$(echo -e "$selection" | while read -r selected; do
                     selectedItem="${selected:0:1}"
                     selectedText="${selected:2}"
-                    if [[ "${selected:0:1}" == "$default" ]]; then
-                        echo "$selectedItem \"$selectedText\" on"
-                    else
-                        echo "$selectedItem \"$selectedText\" off"
-                    fi
+                    echo "$selectedItem \"$selectedText\""
             done)
         echo "$selection" > /tmp/selectionList
 
         # shellcheck disable=SC2086
-        dialog $dialogGlobalParams --radiolist "$2" 15 55 8  --file /tmp/selectionList 2> /tmp/res
+        dialog $dialogGlobalParams --menu "$2" 15 55 8  --file /tmp/selectionList 2> /tmp/res
         rm -f selectionList
         response=$(cat /tmp/res)
         rm -f /tmp/res
@@ -119,10 +114,7 @@ function askSelection {
             echo -------------------
             read -p "Selection:  " -n 1 -r
             echo ""
-            if [[ "$REPLY" == "" ]] && [[ "$default" != "" ]]; then
-                REPLY="$default"
-                isValid=1
-            else
+            if [[ ! "$REPLY" == "" ]]; then
                 REPLY=$(echo "$REPLY" | awk '{print toupper($0)}')
 
                 isValid=$(echo -e "$selection" | while read -r selected; do
