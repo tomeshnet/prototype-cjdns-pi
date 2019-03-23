@@ -82,7 +82,7 @@ function checkModule {
 # Result is stored in $dialogREPLY
 dialogREPLY=""
 function askSelection {
-    selection=$1
+    selection=$2
     dialogREPLY=""
     if [ "$(checkModule 'WITH_DIALOG')" ]; then
         selection=$(echo -e "$selection" | while read -r selected; do
@@ -93,7 +93,7 @@ function askSelection {
         echo "$selection" > /tmp/selectionList
 
         # shellcheck disable=SC2086
-        dialog $dialogGlobalParams --menu "$2" 15 55 8  --file /tmp/selectionList 2> /tmp/res
+        dialog $dialogGlobalParams --menu "$1" 15 55 8  --file /tmp/selectionList 2> /tmp/res
         rm -f selectionList
         response=$(cat /tmp/res)
         rm -f /tmp/res
@@ -108,9 +108,9 @@ function askSelection {
     else
         isValid=""
         while [[ "$isValid" == "" ]]; do
-            echo "$2"
-            echo -------------------
             echo -e "$1"
+            echo -------------------
+            echo -e "$2"
             echo -------------------
             read -p "Selection:  " -n 1 -r
             echo ""
