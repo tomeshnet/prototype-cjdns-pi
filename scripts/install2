@@ -320,7 +320,7 @@ if [ "$(checkModule 'WITH_CJDNS_IPTUNNEL')" ]; then
 fi
 # Configure Internet gateway using yggdrasil  iptunnel
 if [ "$(checkModule 'WITH_YGGDRASIL_IPTUNNEL')" ]; then
-    source cjdns-iptunnel/install
+    source yggdrasil-iptunnel/install
 fi
 # IPFS
 if [ ! -x "$(command -v ipfs)" ] && [ "$(checkModule 'WITH_IPFS')" ]; then
