@@ -177,7 +177,7 @@ function detectBoard {
             BOARD_MODEL="raspberrypi2"
             BOARD_NEON=true
         fi
-        if [[ "$BOARD_NAME" == "Raspberry Pi A"* || "$BOARD_NAME" == "Raspberry Pi B"* ]]; then
+        if [[ "$BOARD_NAME" == "Raspberry Pi Model A"* || "$BOARD_NAME" == "Raspberry Pi Model B"* ]]; then
             BOARD_MODEL="raspberrypi1"
             BOARD_NEON=false
         fi
