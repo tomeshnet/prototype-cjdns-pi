@@ -55,7 +55,6 @@ sudo usermod -a -G yggdrasil www-data || true
 
 # Define new hostname
 if [ -z "${NEWHOSTNAME}" ]; then
-   YGGIP=$(sudo ifconfig ygg0 | grep -E 'inet6 2[0-9a-fA-F]{2}:' | awk '{print $2}')
    NEWHOSTNAME=$(sudo ifconfig ygg0 | grep -E 'inet6 2[0-9a-fA-F]{2}:' | awk '{print $2}' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-Y/g")
    export NEWHOSTNAME
 fi
