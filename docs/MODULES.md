@@ -215,29 +215,9 @@ You can specify a protocol, but that would limit the ports that are open.
 
 #### CJDNS
 
-Other peers can be found in the [this](https://github.com/hyperboria/peers) repo of peers. Try to connect to only a few peers, and ones that are close to where you live. One peer is already shown below for you.
+Other peers can be found in the [this](https://github.com/hyperboria/peers) repo of peers. Try to connect to only a few peers, and ones that are close to where you live.
 
-Go to [Deprecated Systems](https://deprecated.systems/) website. You will see the following information:
-
-```
-cjdns peering
-
-    "159.203.5.91:30664": {
-      "peerName": "deprecated.systems",
-      "login": "tomesh-public",
-      "password": "iuw4nklm3j89qno876ef2jabpvlg1j0",
-      "publicKey": "2scyvybg4qqms1c5c9nyt50b1cdscxnr6ycpwsxf6pccbmwuynk0.k"
-    }
-
-    "[2604:a880:cad:d0::45:d001]:30664": {
-      "peerName": "deprecated.systems",
-      "login": "tomesh-public",
-      "password": "iuw4nklm3j89qno876ef2jabpvlg1j0",
-      "publicKey": "2scyvybg4qqms1c5c9nyt50b1cdscxnr6ycpwsxf6pccbmwuynk0.k"
-    }
-```
-
-This is the peering information that will give you the address (ipv4 or ipv6) and credentials to connect to 
+You'll see the peering information that will give you the address (ipv4 or ipv6) and credentials to connect to 
 the node. You must either select to use just the ipv4 config, or you could use both. Now that we have this info, 
 connect to your mesh device, and edit the following config file:
 
@@ -285,18 +265,9 @@ config file is written using JSON).
 
 ### Yggdrasil
 
-Other peers can be found in the [public-peers](https://github.com/yggdrasil-network/public-peers) repo. Try to connect to only a few peers, and ones that are close to where you live. One peer is already shown below for you.
+Other peers can be found in the [public-peers](https://github.com/yggdrasil-network/public-peers) repo. Try to connect to only a few peers, and ones that are close to where you live.
 
-To connect to the "Deprecated Systems" node via Yggdrasil, you must do the similar as above, but with quite a few less steps.
-
-On the [deprecated.systems](https://deprecated.systems/) website, there is a section outlining the info for Yggdrasil:
-
-```
-"104.248.104.141:59168"
-"[2604:a880:cad:d0::45:d001]:59168"
-```
-
-One is ipv4, the other ipv6. Head over to your mesh node yet again, and enter the following in your terminal:
+Some will be IPv4, others IPv6. Head over to your mesh node yet again, and enter the following in your terminal:
 
 ```
 $ sudo nano /etc/yggdrasil.conf
@@ -312,7 +283,7 @@ Peers: []
 This is where we are going to insert the code to connect to the peer node. Your code should look similar to this:
 
 ```
-Peers: ["tcp://104.248.104.141:59168"]
+Peers: ["tcp://11.22.33.44:1234"]
 ```
 
 Exit out of nano and save the changes. Restart Yggdrasil with a `sudo killall yggdrasil` command. Pass a `status`
