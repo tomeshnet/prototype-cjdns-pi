@@ -308,4 +308,4 @@ curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binar
 
 ## SSB pub peering
 
-Beyond connecting over with mesh peers, or peers on the LAN, you will need to connect to a "pub" to get your Scuttlebutt feed across the internet. You can find a list of public pubs [here](https://github.com/ssbc/ssb-server/wiki/Pub-Servers), but you can also go to [deprecated.systems](https://deprecated.systems/) and scroll down to the section labeled "ssb pub invite". There are three invites to use, for clearnet, CJDNS, or Yggdrasil. They will all give you access to a pub used by Tomesh.
+Beyond connecting over with mesh peers, or peers on the LAN, you will need to connect to a "pub" to get your Scuttlebutt feed across the internet. You can find a list of public pubs [here](https://github.com/ssbc/ssb-server/wiki/Pub-Servers).
