@@ -33,6 +33,8 @@ function confset {
 
 # Give yggdrasil enough time to create an ygg0 interface before we start adding routes
 sleep 3
+if [ -z "/etc/yggdrasil.iptunnel.conf" ]; then touch /etc/yggdrasil.iptunnel.conf
+
 IPv6NAT=$(confget -f "/etc/yggdrasil.iptunnel.conf" -s "iptunnel" IPv6nat)
 if [[ -z "$IPv6NAT" ]]; then
     IPv6NAT=true
