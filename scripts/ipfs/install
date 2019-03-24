@@ -41,8 +41,8 @@ ipfs config --bool Experimental.FilestoreEnabled true
 # Setup connection management - Reduce connections to stress the Pi less
 # XXX: These values need to be tweaked and tested
 ipfs config Swarm.ConnMgr.Type basic
-ipfs config Swarm.ConnMgr.LowWater 100
-ipfs config Swarm.ConnMgr.HighWater 200
+ipfs config --json Swarm.ConnMgr.LowWater 100
+ipfs config --json Swarm.ConnMgr.HighWater 200
 ipfs config Swarm.ConnMgr.GracePeriod 60s
 
 # Enable QUIC for better connections when possible
