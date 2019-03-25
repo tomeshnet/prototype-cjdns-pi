@@ -325,6 +325,7 @@ org_role = Viewer
 ```
 
 # Prometheus
+**NOTE** Prometheus Server does not support i386 installation becuase there is no known binary for it.
 
 To make prometheus dynamically change the nodes it will monitor during runtim, you can tell it to read from a file and update it's targets every time the file is changed.  Make the following change in `/opt/prometheus/prometheus.yml`
 
