@@ -14,7 +14,6 @@ case "$ARCH" in
   ;;
   i386 | i586 | i686 )
    ARCH_VERSION="i386"
-   exit 0
   ;;
   armv7l)
    ARCH_VERSION="armhf"
