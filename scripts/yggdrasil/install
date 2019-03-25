@@ -19,7 +19,6 @@ case "$ARCH" in
    ARCH_VERSION="armhf"
   ;;
   armv6l)
-    # Use old grafana - no new one available
     ARCH_VERSION="armhf"
   ;;
   aarch64)
