@@ -50,6 +50,15 @@ sudo sed -i "s/Listen: \[\]/Listen\: [\"tcp:\/\/\[::\]:12345\"\]/" /etc/yggdrasi
 sudo systemctl enable yggdrasil.service
 sudo systemctl start yggdrasil.service 
 
+# Dont count yggdrasill ips as internet ip addresses
+if [ -f "/etc/gai.conf" ]; then
+  sudo sed -i '/label 200::/d' /etc/gai.conf
+  sudo sed -i '/label 300::/d' /etc/gai.conf
+  echo "label 200::/7 6" | sudo tee --append /etc/gai.conf
+  echo "label 300::/7 6" | sudo tee --append /etc/gai.conf
+fi
+
+
 # Allow nginx access to yggdrasil socket when installed
 sudo usermod -a -G yggdrasil www-data || true
 
