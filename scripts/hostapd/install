@@ -24,31 +24,23 @@ sudo apt-get install hostapd radvd dnsmasq iptables -y
 
 # Configure wlan-ap interface
 sudo mv /etc/network/interfaces /etc/network/interfaces.bak
-sudo touch /etc/network/interfaces
 
-echo "source-directory /etc/network/interfaces.d" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "auto lo"  | sudo tee --append /etc/network/interfaces > /dev/null
-echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "allow-hotplug wlan-ap" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "iface wlan-ap inet static" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    address 10.0.0.1" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    netmask 255.255.255.0" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    network 10.0.0.0" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    broadcast 10.0.0.255" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "iface wlan-ap inet6 static" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "allow-hotplug wlan-ap" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
+echo "iface wlan-ap inet static" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
+echo "    address 10.0.0.1" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
+echo "    netmask 255.255.255.0" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
+echo "    network 10.0.0.0" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
+echo "    broadcast 10.0.0.255" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
+echo "iface wlan-ap inet6 static" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
 
 if [ "$(which yggdrasil)" ]; then
-    echo "    address ${YGG_SUBNET}1/64" | sudo tee --append /etc/network/interfaces > /dev/null
+    echo "    address ${YGG_SUBNET}1/64" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
 else
-    echo "    address fdfc::2" | sudo tee --append /etc/network/interfaces > /dev/null
+    echo "    address fdfc::2" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
 fi
 
-echo "    netmask 64" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "allow-hotplug eth0" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "iface eth0 inet dhcp" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "    netmask 64" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
+echo "" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
 
 # Enable packet forwarding
 sudo cp /etc/sysctl.conf /etc/sysctl.conf.bak
