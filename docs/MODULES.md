@@ -86,10 +86,19 @@ Value: Any ipv6 address range
 **outint**
 *Server Only*
 
-Defines the intrface connected to the internet.
+Defines the interface connected to the internet.
 
 Default: eth0  
 Value: Any interface on the system
+
+**ipv6subnetint**
+*Client Only*
+
+Defines the interface that will pass on the IPv6 subnet.
+
+Default: wlan-ap
+Value: Any interface on the system
+
 
 **yggint**
 *Server Only*
