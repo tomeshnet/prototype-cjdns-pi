@@ -67,6 +67,15 @@ Disables masquarading of IPv6 tunneles. Set to false when routeable addresses ar
 Default: *true*  
 Values: *true false*
 
+To add advertising of the subnet, add the following prefix to /etc/radvd.conf
+```
+   prefix 20xx:xxxx:xxxx:x::/64
+    {
+        AdvOnLink on;
+        AdvAutonomous on;
+    };
+```
+
 **SUBNET4**  
 *Server only*
 
