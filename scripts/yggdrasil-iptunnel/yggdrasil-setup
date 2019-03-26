@@ -119,7 +119,7 @@ elif [ -e /etc/yggdrasil.iptunnel.client ]; then
             fi
             ip addr add dev "${YGGINT}" "${IP_ADDR}/32"
             yggdrasilctl addRoute subnet="0.0.0.0/0" box_pub_key="${PUBLIC_KEY}"
-            yggdrasilctl addSourceSubnet subnet="${IP_ADDR}"
+            yggdrasilctl addSourceSubnet subnet="${IP_ADDR}/32"
         fi
     done < /etc/yggdrasil.iptunnel.client
 
