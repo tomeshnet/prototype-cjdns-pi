@@ -105,7 +105,11 @@ elif [ -e /etc/yggdrasil.iptunnel.client ]; then
                 ip addr add dev "${YGGINT}" ${IP6_ADDR}/128
                 yggdrasilctl addRoute subnet="::0/0" box_pub_key="${PUBLIC_KEY}"
                 yggdrasilctl addSourceSubnet subnet="${IP6_ADDR}/128"
-                yggdrasilctl addSourceSubnet subnet="${IP6_SUBNET}"
+                if [[ ! -z "${IP6_SUBNET}" ]]; then
+                        yggdrasilctl addSourceSubnet subnet="${IP6_SUBNET}"
+                        ip -6 route add ${IP6_SUBNET} dev "wlan-ap"
+	                ip addr add dev "wlan-ap" $(echo  ${IP6_SUBNET} | sed "s/\/64/1/")
+                fi
             fi
             ip addr add dev "${YGGINT}" ${IP_ADDR}/32
             yggdrasilctl addRoute subnet="0.0.0.0/0" box_pub_key="${PUBLIC_KEY}"
