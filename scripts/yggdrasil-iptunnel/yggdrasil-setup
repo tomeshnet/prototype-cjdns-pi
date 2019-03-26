@@ -46,6 +46,11 @@ if [[ -z "${YGGINT}" ]]; then
     YGGINT="ygg0"
 fi
 
+IPv6SUBNETINT="$(confget -f "/etc/yggdrasil.iptunnel.conf" -s "iptunnel" "ipv6subnetint")"
+if [[ -z "${IPv6SUBNETINT}" ]]; then
+    IPv6SUBNETINT="wlan-ap"
+fi
+
 if [ -e /etc/yggdrasil.iptunnel.server ]; then
 
 
@@ -107,8 +112,8 @@ elif [ -e /etc/yggdrasil.iptunnel.client ]; then
                 yggdrasilctl addSourceSubnet subnet="${IP6_ADDR}/128"
                 if [[ ! -z "${IP6_SUBNET}" ]]; then
                         yggdrasilctl addSourceSubnet subnet="${IP6_SUBNET}"
-                        ip -6 route add ${IP6_SUBNET} dev "wlan-ap"
-	                ip addr add dev "wlan-ap" $(echo  ${IP6_SUBNET} | sed "s/\/64/1/")
+                        ip -6 route add ${IP6_SUBNET} dev "${IPv6SUBNETINT}"
+	                ip addr add dev "${IPv6SUBNETINT}" $(echo  ${IP6_SUBNET} | sed "s/\/64/1/")
                 fi
             fi
             ip addr add dev "${YGGINT}" ${IP_ADDR}/32
