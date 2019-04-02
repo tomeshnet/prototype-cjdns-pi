@@ -114,7 +114,7 @@ elif [ -e /etc/yggdrasil.iptunnel.client ]; then
                 if [[ ! -z "${IP6_SUBNET}" ]]; then
                         yggdrasilctl addSourceSubnet subnet="${IP6_SUBNET}"
                         ip -6 route add ${IP6_SUBNET} dev "${IPv6SUBNETINT}"
-	                ip addr add dev "${IPv6SUBNETINT}" "$(echo  ${IP6_SUBNET} | sed "s/\/64/1/")""
+	                ip addr add dev "${IPv6SUBNETINT}" "$(echo  ${IP6_SUBNET} | sed "s/\/64/1/")"
                 fi
             fi
             ip addr add dev "${YGGINT}" "${IP_ADDR}/32"
