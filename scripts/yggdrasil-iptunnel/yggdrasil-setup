@@ -75,7 +75,7 @@ if [ -e /etc/yggdrasil.iptunnel.server ]; then
                 yggdrasilctl addRoute subnet="${IP6_ADDR}/128" box_pub_key="${PUBLIC_KEY}"
                 if [[ ! -z "${IP6_SUBNET}" ]]; then
                     yggdrasilctl addRoute subnet="${IP6_SUBNET}" box_pub_key="${PUBLIC_KEY}"
-                    ip route add "${IP6_SUBNET}" dev "${YGGINT}" || true
+                    ip -6 route add "${IP6_SUBNET}" dev "${YGGINT}" || true
                 fi
                 isIPv6=true
             fi
