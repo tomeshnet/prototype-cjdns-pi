@@ -75,7 +75,7 @@ if [ -f "/etc/default/grub" ]; then
 fi
 
 # Remove Network Manager and creates standard config settings
-sudo apt-get remove network-manager
+sudo apt-get remove -y network-manager
 sudo systemctl daemon-reload
 echo "source /etc/network/interfaces.d/*" | sudo tee /etc/network/interfaces
 echo allow-hotplug eth0 | sudo tee /etc/network/interfaces.d/eth0 > /dev/null 
