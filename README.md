@@ -92,6 +92,7 @@ List of tested hardware:
 | Pine64                    | [Armbian](https://dl.armbian.com/pine/nightly/)                  | 227k, 151k | 78 Mbps | 2       | 10/100/1000   |  Gigabit Eth |
 | ESPRESSObin               | [Armbian](https://dl.armbian.com/espressobin/)                   | 186k, 128K | 73 Mbps | 2       | 10/100/1000   | 1 USB 3.0, 3x Gigabit Eth, SATA, mPCIe. Use stable and apt-get upgrade after boot |
 | MK802ii       | Debian | 30k, 40k | 25Mbps | | | Android box. Single core. Onboard WiFi supports Mesh Point |
+
 ## Development
 
 You can install from a specific tag or branch, such as `develop`, with:
