@@ -291,8 +291,8 @@ command to terminal and you should see green text where Yggdrasil is printed wit
 You are now connected to the remote peer with Yggdrasil. If you see`[INACTIVE]`, then you need to check your code
 for typos, make sure there are "" around the whole entire string.
 
-
-## Grafana
+# Grafana
+**NOTE**  Older verison used for i386 deployment due to lack of support for officialy binaries
 
 [Grafana](https://grafana.com/) is a dashboard used to display Prometheus collected data.  Once installed you can visit `http://<yournodeip>:3000`.  Default login is `admin`/`admin`. You can skip the welcome screen/wizard by clicking on the Grafana logo at the top left corner.
 
