@@ -65,7 +65,7 @@ if [ -e /etc/yggdrasil.iptunnel.server ]; then
     fi
     OUTINT="$(confget -f "/etc/yggdrasil.iptunnel.conf" -s "iptunnel" outint)"
     if [[ -z "${OUTINT}" ]]; then
-        YGGINT="eth0"
+        OUTINT="eth0"
     fi
 
     while read -r PUBLIC_KEY IP_ADDR IP6_ADDR IP6_SUBNET; do
