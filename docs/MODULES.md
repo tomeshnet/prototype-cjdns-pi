@@ -139,7 +139,7 @@ Example
 3456789012345678901234567890123456789012345678901234567890123467 10.10.0.3 fd00::3 fd00:1::/64
 ```
 
-*note* You do not have to assign an ipv6 address to all nodes, ones without ipv6 address will simply not be issued one.
+**Note:** You do not have to assign an IPv6 address to all nodes, ones without an IPv6 address will simply not be issued one.
 
 #### Client
 To configure as a client (use an exit server to access the Internet), 
