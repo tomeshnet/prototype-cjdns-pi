@@ -48,7 +48,7 @@ sudo sed -i "s/Listen: \[\]/Listen\: [\"tcp:\/\/\[::\]:12345\"\]/" /etc/yggdrasi
 sudo systemctl enable yggdrasil.service
 sudo systemctl start yggdrasil.service 
 
-# Dont count yggdrasill ips as internet ip addresses
+# Don't count Yggdrasil IPs as Internet IP addresses
 if [ -f "/etc/gai.conf" ]; then
   sudo sed -i '/label 200::/d' /etc/gai.conf
   sudo sed -i '/label 300::/d' /etc/gai.conf
