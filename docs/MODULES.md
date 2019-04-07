@@ -63,11 +63,11 @@ Additional configurations can be made in the file `/etc/yggdrasil.iptunnel.conf`
 
 Section `[iptunnel]`
 
-**IPv6nat**  
+**IPv6nat**
 Disables masquerading of IPv6 tunnels. Set to `false` when routable addresses are being used across the tunnel. Usually when passing an additional subnet.
 
-Default: *true*  
-Values: *true false*
+Default: *true*
+Values: `true` , `false`
 
 To add advertising of the subnet, add the following prefix to /etc/radvd.conf
 ```
@@ -78,29 +78,29 @@ To add advertising of the subnet, add the following prefix to /etc/radvd.conf
     };
 ```
 
-**SUBNET4**  
+**SUBNET4**
 *Server only*
 
-Defines ip addresses to add to route table that will be routed over through yggdrasil. Must match ips in `yggdrasil.iptunnel.server` 
+Defines ip addresses to add to route table that will be routed over through yggdrasil. Must match ips in `yggdrasil.iptunnel.server`
 
-Default: 10.10.0.0/24 
-Value: /Any ipv4 address range
+Default: 10.10.0.0/24
+Value: `Any ipv4 address range`
 
-**SUBNET6**  
+**SUBNET6**
 *Server only*
 
-Defines ipv6 addresses to add to route table that will be routed over through yggdrasil. Must match ips in `yggdrasil.iptunnel.server` 
+Defines ipv6 addresses to add to route table that will be routed over through yggdrasil. Must match ips in `yggdrasil.iptunnel.server`
 
-Default: fd00::/64  
-Value: Any ipv6 address range
+Default: fd00::/64
+Value: `Any ipv6 address range`
 
 **outint**
 *Server Only*
 
 Defines the interface connected to the internet.
 
-Default: eth0  
-Value: Any interface on the system
+Default: eth0
+Value: `Any interface on the system`
 
 **ipv6subnetint**
 *Client Only*
@@ -108,7 +108,7 @@ Value: Any interface on the system
 Defines the interface that will pass on the IPv6 subnet.
 
 Default: wlan-ap
-Value: Any interface on the system
+Value: `Any interface on the system`
 
 
 **yggint**
@@ -116,12 +116,12 @@ Value: Any interface on the system
 
 Defines the yggdrasil interface.
 
-Default: ygg0  
-Value: Any interface on the system
+Default: ygg0
+Value: `Any interface on the system`
 
 
 #### Server
- To configure as a server (exit Internet traffic for other nodes), 
+ To configure as a server (exit Internet traffic for other nodes),
  1. create **/etc/yggdrasil.iptunnel.server**
  1. fill it with newline-separated list of:
    - EncryptionPublicKey key of the clients
@@ -142,8 +142,8 @@ Example
 *note* You do not have to assign an ipv6 address to all nodes, ones without ipv6 address will simply not be issued one.
 
 #### Client
-To configure as a client (use an exit server to access the Internet), 
-1. create **/etc/yggdrasil.iptunnel.client** 
+To configure as a client (use an exit server to access the Internet),
+1. create **/etc/yggdrasil.iptunnel.client**
 1. place a single line containing
    - EncryptionPublicKey of the server
    - single space
