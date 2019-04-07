@@ -64,7 +64,7 @@ Additional configurations can be made in the file `/etc/yggdrasil.iptunnel.conf`
 Section `[iptunnel]`
 
 **IPv6nat**  
-Disables masquarading of IPv6 tunneles. Set to false when routeable addresses are being used across the tunnel. Usually when passing an additional subnet.
+Disables masquerading of IPv6 tunnels. Set to `false` when routable addresses are being used across the tunnel. Usually when passing an additional subnet.
 
 Default: *true*  
 Values: *true false*
