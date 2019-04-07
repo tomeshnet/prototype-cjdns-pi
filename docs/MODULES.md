@@ -146,7 +146,7 @@ To configure as a client (use an exit server to access the Internet),
 1. create **/etc/yggdrasil.iptunnel.client**
 1. place a single line containing
    - EncryptionPublicKey of the server
-   - single space
+   - Single white space
    - IPv4 Address assigned to you by the server
    - *Optional* Single white space
    - *Optional* IPv6 address assigned to you by the server
