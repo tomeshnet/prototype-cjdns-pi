@@ -2,6 +2,31 @@
 
 A short summary of each module is directly below. Documentation for specific abilities of modules, or reference commands are further below.
 
+## Table of Contents
+- [Modules Documentation](#modules-documentation)
+  - [Table of Contents](#table-of-contents)
+  - [Command-line flags](#command-line-flags)
+  - [CJDNS](#cjdns)
+  - [Yggdrasil](#yggdrasil)
+    - [Yggdrasil subnetting](#yggdrasil-subnetting)
+    - [Yggdrasil IPTunnel](#yggdrasil-iptunnel)
+      - [Server](#server)
+      - [Client](#client)
+  - [IPFS](#ipfs)
+  - [Firewall](#firewall)
+    - [Applying changes](#applying-changes)
+    - [IPv4](#ipv4)
+      - [Change open ports](#change-open-ports)
+    - [IPv6](#ipv6)
+      - [Change open ports](#change-open-ports-1)
+      - [Yggdrasil Clients](#yggdrasil-clients)
+  - [CJDNS and Yggdrasil public peering (Optional)](#cjdns-and-yggdrasil-public-peering-optional)
+      - [CJDNS](#cjdns-1)
+    - [Yggdrasil](#yggdrasil-1)
+  - [Grafana](#grafana)
+    - [Known install bugs](#known-install-bugs)
+  - [SSB pub peering](#ssb-pub-peering)
+
 ## Command-line flags
 
 | Feature Flag                    | HTTP Service Port                              | Description |
@@ -59,7 +84,7 @@ This module will allow you to tunnel internet from an EXIT node (server) that ha
 #### Server
  To configure as a server (exit Internet traffic for other nodes), 
  1. create **/etc/yggdrasil.iptunnel.server**
- 1. fill it with newline-separated list of:
+ 2. fill it with newline-separated list of:
    - EncryptionPublicKey key of the clients
    - single white space
    - IP Address in the 10.10.0.0/24 range that will be assigned to the client
@@ -186,31 +211,13 @@ If you use this rule, there is no point in having any other Yggdrasil client rul
 
 You can specify a protocol, but that would limit the ports that are open.
 
-## Adding deprecated.systems peer info into CJDNS and Yggdrasil (Optional)
+## CJDNS and Yggdrasil public peering (Optional)
 
 #### CJDNS
 
-Go to [Deprecated Systems](https://deprecated.systems/) website. You will see the following information:
+Other peers can be found in the [this](https://github.com/hyperboria/peers) repo of peers. Try to connect to only a few peers, and ones that are close to where you live.
 
-```
-cjdns peering
-
-    "159.203.5.91:30664": {
-      "peerName": "deprecated.systems",
-      "login": "tomesh-public",
-      "password": "iuw4nklm3j89qno876ef2jabpvlg1j0",
-      "publicKey": "2scyvybg4qqms1c5c9nyt50b1cdscxnr6ycpwsxf6pccbmwuynk0.k"
-    }
-
-    "[2604:a880:cad:d0::45:d001]:30664": {
-      "peerName": "deprecated.systems",
-      "login": "tomesh-public",
-      "password": "iuw4nklm3j89qno876ef2jabpvlg1j0",
-      "publicKey": "2scyvybg4qqms1c5c9nyt50b1cdscxnr6ycpwsxf6pccbmwuynk0.k"
-    }
-```
-
-This is the peering information that will give you the address (ipv4 or ipv6) and credentials to connect to 
+You'll see the peering information that will give you the address (ipv4 or ipv6) and credentials to connect to 
 the node. You must either select to use just the ipv4 config, or you could use both. Now that we have this info, 
 connect to your mesh device, and edit the following config file:
 
@@ -218,7 +225,7 @@ connect to your mesh device, and edit the following config file:
 $ sudo nano /etc/cjdroute.conf
 ```
 
-This file contains everything that is required for cjdns to run, so be careful not to remove anything else, unless
+This file contains everything that is required for CJDNS to run, so be careful not to remove anything else, unless
 you know what you are doing. You need to head down to this line:
 
 ```
@@ -250,24 +257,17 @@ your code should look somewhat like this:
                  }
 ```
 
-Next you should restart cjdns with a `sudo systemctl restart cjdns` command. This will reload cjdns
+Next you should restart CJDNS with a `sudo systemctl restart cjdns` command. This will reload CJDNS
 with the new config file. Run a `status` command on your node, and make sure when it prints out
-the text, that cjdns is green with the text `[ACTIVE]`. if so, you have successfully connected to the remote peer,
+the text, that CJDNS is green with the text `[ACTIVE]`. if so, you have successfully connected to the remote peer,
 if it says `[INACTIVE]`, then there might be a typo in your config file. Make sure its formatted correctly (the
 config file is written using JSON).
 
 ### Yggdrasil
 
-To connect to the "Deprecated Systems" node via Yggdrasil, you must do the similar as above, but with quite a few less steps.
+Other peers can be found in the [public-peers](https://github.com/yggdrasil-network/public-peers) repo. Try to connect to only a few peers, and ones that are close to where you live.
 
-On the [deprecated.systems](https://deprecated.systems/) website, there is a section outlining the info for Yggdrasil:
-
-```
-"104.248.104.141:59168"
-"[2604:a880:cad:d0::45:d001]:59168"
-```
-
-One is ipv4, the other ipv6. Head over to your mesh node yet again, and enter the following in your terminal:
+Some will be IPv4, others IPv6. Head over to your mesh node yet again, and enter the following in your terminal:
 
 ```
 $ sudo nano /etc/yggdrasil.conf
@@ -283,7 +283,7 @@ Peers: []
 This is where we are going to insert the code to connect to the peer node. Your code should look similar to this:
 
 ```
-Peers: ["tcp://104.248.104.141:59168"]
+Peers: ["tcp://11.22.33.44:1234"]
 ```
 
 Exit out of nano and save the changes. Restart Yggdrasil with a `sudo killall yggdrasil` command. Pass a `status`
@@ -291,18 +291,21 @@ command to terminal and you should see green text where Yggdrasil is printed wit
 You are now connected to the remote peer with Yggdrasil. If you see`[INACTIVE]`, then you need to check your code
 for typos, make sure there are "" around the whole entire string.
 
-
 # Grafana
 **NOTE**  Older verison used for i386 deployment due to lack of support for officialy binaries
 
 [Grafana](https://grafana.com/) is a dashboard used to display Prometheus collected data.  Once installed you can visit `http://<yournodeip>:3000`.  Default login is `admin`/`admin`. You can skip the welcome screen/wizard by clicking on the Grafana logo at the top left corner.
 
-## Known install bugs
+### Known install bugs
 
-At times Grafana will not start up properly during install and the dashboards will not install.  To install them manually run the following commands from the `prototype-cjdns/pi/scripts/grafana` folder
+At times Grafana will not start up properly during install and the dashboards will not install.  To install them manually run the following commands from the `prototype-cjdns-pi/scripts/grafana` folder
 
 ```
 BASE_DIR=`pwd`
 curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary "@$BASE_DIR/datasource.json" http://localhost:3000/api/datasources
 curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary "@$BASE_DIR/dashboard.json" http://localhost:3000/api/dashboards/db
 ```
+
+## SSB pub peering
+
+Beyond connecting over with mesh peers, or peers on the LAN, you will need to connect to a "pub" to get your Scuttlebutt feed across the internet. You can find a list of public pubs [here](https://github.com/ssbc/ssb-server/wiki/Pub-Servers).
