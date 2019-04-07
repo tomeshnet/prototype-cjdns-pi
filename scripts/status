@@ -12,7 +12,7 @@ echo "   \__\___/|_| |_| |_|\___|___|_| |_|"
 echo -e '---------------------------------------'
 if [ "$(which cjdroute)" ]; then
     if [ "$(systemctl status cjdns.service | grep 'Active: ' | awk '{ print $2 }')" = 'active' ]; then
-        echo -e "cjdns Service ................ $ACTIVE"
+        echo -e "CJDNS Service ................ $ACTIVE"
     else
         echo -e "cjdns Service .............. $INACTIVE"
     fi
