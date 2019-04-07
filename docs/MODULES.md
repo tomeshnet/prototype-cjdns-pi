@@ -130,7 +130,7 @@ Value: `Any interface on the system`
    - *optional* Single white space
    - *optional* IPv6 Address in the fd00::/64 range that will be assigned to the client
    - *optional* Single white space
-   - *optional* IPv6 Subnet that will be routed through the client
+   - *Optional* IPv6 Subnet that will be routed through the client
 
 Example
 ```
