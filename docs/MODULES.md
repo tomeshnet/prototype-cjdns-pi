@@ -149,7 +149,7 @@ To configure as a client (use an exit server to access the Internet),
    - single space
    - IPv4 Address assigned to you by the server
    - *optional* single white space
-   - *optional* IPv6 Address assigned to you by the server
+   - *Optional* IPv6 address assigned to you by the server
    - *optional* Single white space
    - *Optional* IPv6 subnet that will be routed through the client
 
