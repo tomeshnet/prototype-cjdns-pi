@@ -225,7 +225,7 @@ connect to your mesh device, and edit the following config file:
 $ sudo nano /etc/cjdroute.conf
 ```
 
-This file contains everything that is required for cjdns to run, so be careful not to remove anything else, unless
+This file contains everything that is required for CJDNS to run, so be careful not to remove anything else, unless
 you know what you are doing. You need to head down to this line:
 
 ```
@@ -257,9 +257,9 @@ your code should look somewhat like this:
                  }
 ```
 
-Next you should restart cjdns with a `sudo systemctl restart cjdns` command. This will reload cjdns
+Next you should restart CJDNS with a `sudo systemctl restart cjdns` command. This will reload CJDNS
 with the new config file. Run a `status` command on your node, and make sure when it prints out
-the text, that cjdns is green with the text `[ACTIVE]`. if so, you have successfully connected to the remote peer,
+the text, that CJDNS is green with the text `[ACTIVE]`. if so, you have successfully connected to the remote peer,
 if it says `[INACTIVE]`, then there might be a typo in your config file. Make sure its formatted correctly (the
 config file is written using JSON).
 
@@ -298,7 +298,7 @@ for typos, make sure there are "" around the whole entire string.
 
 ### Known install bugs
 
-At times Grafana will not start up properly during install and the dashboards will not install.  To install them manually run the following commands from the `prototype-cjdns/pi/scripts/grafana` folder
+At times Grafana will not start up properly during install and the dashboards will not install.  To install them manually run the following commands from the `prototype-cjdns-pi/scripts/grafana` folder
 
 ```
 BASE_DIR=`pwd`
