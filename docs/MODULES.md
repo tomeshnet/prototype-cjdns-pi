@@ -54,7 +54,7 @@ However, the Pi does have a firewall, so various commands need be run to allow a
 
 ## Yggdrasil IPTunnel
 
-This module will allow you to tunnel internet from an EXIT node (server) that has Internet to another node that does not. To do this you must exchange public keys.  The public key can be found in /etc/yggdrasil.conf
+This module will allow you to tunnel Internet from an EXIT node (server) that has Internet to another node that does not. To do this you must exchange public keys.  The public key can be found in /etc/yggdrasil.conf
 
 Yo use this module you must have it installed. You can check to see if the file `/usr/local/sbin/yggdrasil-setup` exists. If it does then you have it installed. If it does not then you need to have the module installed first.
 
