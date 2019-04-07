@@ -151,7 +151,7 @@ To configure as a client (use an exit server to access the Internet),
    - *optional* single white space
    - *optional* IPv6 Address assigned to you by the server
    - *optional* Single white space
-   - *optional* IPv6 Subnet that will be routed through the client
+   - *Optional* IPv6 subnet that will be routed through the client
 
 Example
 ```
