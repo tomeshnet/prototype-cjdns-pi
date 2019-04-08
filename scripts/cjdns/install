@@ -98,7 +98,7 @@ else
         cd "$here"
     fi
 
-    # Build cjdns
+    # Build CJDNS
     if ! [ -x "/opt/cjdns/cjdroute" ]; then
         here="$(pwd)"
         cd /opt/cjdns && eval "$CJDNS_BUILD_CMD" && cd "$here"
