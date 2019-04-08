@@ -289,7 +289,7 @@ if [ "$(checkModule 'WITH_CJDNS')" ]; then
     source cjdns/install
 fi
 
-# Install yggdrasil
+# Install Yggdrasil
 if [ "$(checkModule 'WITH_YGGDRASIL')" ]; then
     source yggdrasil/install
 fi
@@ -318,7 +318,7 @@ fi
 if [ "$(checkModule 'WITH_CJDNS_IPTUNNEL')" ]; then
     source cjdns-iptunnel/install
 fi
-# Configure Internet gateway using yggdrasil  iptunnel
+# Configure Internet gateway using Yggdrasil IPTunnel
 if [ "$(checkModule 'WITH_YGGDRASIL_IPTUNNEL')" ]; then
     source yggdrasil-iptunnel/install
 fi

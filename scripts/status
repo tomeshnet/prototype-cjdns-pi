@@ -14,7 +14,7 @@ if [ "$(which cjdroute)" ]; then
     if [ "$(systemctl status cjdns.service | grep 'Active: ' | awk '{ print $2 }')" = 'active' ]; then
         echo -e "CJDNS Service ................ $ACTIVE"
     else
-        echo -e "cjdns Service .............. $INACTIVE"
+        echo -e "CJDNS Service .............. $INACTIVE"
     fi
 fi
 if [ "$(which yggdrasilctl)" ]; then

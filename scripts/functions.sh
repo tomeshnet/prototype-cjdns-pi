@@ -139,11 +139,11 @@ function detectBoard {
     case "$ARCH" in
     x86_64)
         BOARD_MODEL="amd64"
-        BOARD_NAME="AMD 64 Board"
+        BOARD_NAME="Generic AMD64"
     ;;
     i386 | i586 | i686 )
         BOARD_MODEL="i386"
-        BOARD_NAME="i386 Board"
+        BOARD_NAME="Generic x86"
     esac
 
     if [[ "${BOARD_MODEL}" == "Unknown" ]]; then
