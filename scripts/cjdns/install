@@ -76,7 +76,7 @@ fi
 
 if [ ! -z "$CJDNS_PACKAGE" ]; then
     if ! [ -x "/opt/cjdns/cjdroute" ]; then
-        echo -e "\e[1;31mInstalling cjdns debian package\e[0m"
+        echo -e "\e[1;31mInstalling CJDNS debian package\e[0m"
         wget https://github.com/darkdrgn2k/ToMeshPackages/raw/master/CJDNS/$CJDNS_PACKAGE -O /tmp/cjdns.deb
         sudo dpkg -i /tmp/cjdns.deb
         # Link up folder so files are in the same place as compiled
