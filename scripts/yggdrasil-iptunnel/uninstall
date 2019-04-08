@@ -5,3 +5,4 @@ set -e
 # Uninstall scripts that configure yggdrasil iptunnel
 sudo rm /usr/local/sbin/yggdrasil-setup
 sudo rm /etc/systemd/system/yggdrasil.service.d/iptunnel.conf
+sudo systemctl daemon-reload
