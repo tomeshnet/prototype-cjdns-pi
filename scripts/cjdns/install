@@ -105,7 +105,7 @@ else
         cd "$here"
     fi
 
-    # Install cjdns to /usr/bin
+    # Install CJDNS to /usr/bin
     sudo rm -f /usr/bin/cjdroute
     sudo cp /opt/cjdns/cjdroute /usr/bin/cjdroute
 
