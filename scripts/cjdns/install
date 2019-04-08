@@ -88,10 +88,10 @@ if [ ! -z "$CJDNS_PACKAGE" ]; then
     fi
 else
     # Download cjdns repo and checkout TAG_CJDNS tag
-    echo -e "\e[1;31mCompiling cjdns from source\e[0m"
+    here="$(pwd)"
     if ! [ -d "/opt/cjdns" ]; then
+        echo -e "\e[1;31mCompiling cjdns from source\e[0m"
         sudo apt-get install -y python
-        here="$(pwd)"
         sudo git clone https://github.com/cjdelisle/cjdns.git /opt/cjdns
         cd /opt/cjdns
         sudo git checkout $TAG_CJDNS
@@ -100,8 +100,9 @@ else
 
     # Build cjdns
     if ! [ -x "/opt/cjdns/cjdroute" ]; then
-        here="$(pwd)"
-        cd /opt/cjdns && eval "$CJDNS_BUILD_CMD" && cd "$here"
+        cd /opt/cjdns
+        eval "$CJDNS_BUILD_CMD"
+        cd "$here"
     fi
 
     # Install cjdns to /usr/bin
