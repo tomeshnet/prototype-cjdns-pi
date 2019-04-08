@@ -74,7 +74,7 @@ if [ -f "/etc/default/grub" ]; then
 	sudo grub-mkconfig -o /boot/grub/grub.cfg
 fi
 
-# Remove Network Manager and creates standard config settings
+# Remove Network Manager and create standard config settings
 sudo apt-get remove -y network-manager
 sudo systemctl daemon-reload
 echo "source /etc/network/interfaces.d/*" | sudo tee /etc/network/interfaces
