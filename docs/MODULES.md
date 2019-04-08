@@ -175,7 +175,6 @@ IPFS stands for Interplanetary File System. It is an open-source, peer-to-peer d
 This module will install IPFS under the user where the script runs allowing you to access IPFS resouces both directly from the command line, and through the gateway available at <Pi IP Address>/ipfs/
 
 ## Firewall
-
 The firewall module installes a basic firewall for your device. It will block all ports that were not meant to be open. By default there are no ports blocked from the Wireless Access Point interface (`wlan-ap`).
 
 ### Applying changes
