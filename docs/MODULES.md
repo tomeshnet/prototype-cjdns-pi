@@ -153,7 +153,7 @@ To configure as a client (use an exit server to access the Internet),
    - *optional* Single white space
    - *Optional* IPv6 subnet that will be routed through the client
 
-Example
+Example:
 ```
 4567890123456789012345678901234567890123456789012345678901234567 10.10.0.4 fd00::4
 ```
