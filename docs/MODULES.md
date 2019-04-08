@@ -124,7 +124,7 @@ Value: `Any interface on the system`
  To configure as a server (exit Internet traffic for other nodes),
  1. create **/etc/yggdrasil.iptunnel.server**
  1. fill it with newline-separated list of:
-   - EncryptionPublicKey key of the clients
+   - EncryptionPublicKey key of the clients (found in /etc/yggdrasill.conf on the client's device)
    - Single white space
    - IPv4 Address in the 10.10.0.0/24 range that will be assigned to the client
    - *optional* Single white space
