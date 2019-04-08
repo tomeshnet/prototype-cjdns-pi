@@ -109,7 +109,7 @@ else
     sudo rm -f /usr/bin/cjdroute
     sudo cp /opt/cjdns/cjdroute /usr/bin/cjdroute
 
-    # Generate cjdns configurations
+    # Generate CJDNS configurations
     if ! [ -f "/etc/cjdroute.conf" ]; then
         sudo /usr/bin/cjdroute --genconf | sudo tee --append /etc/cjdroute.conf > /dev/null
     fi
