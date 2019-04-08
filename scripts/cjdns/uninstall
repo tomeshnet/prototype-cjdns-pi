@@ -2,7 +2,7 @@
 
 set -e
 
-# Uninstall cjdns
+# Uninstall CJDNS
 sudo systemctl disable cjdns.service 2>/dev/null || true
 sudo systemctl stop cjdns.service 2>/dev/null || true
 sudo rm -f /usr/bin/cjdroute
