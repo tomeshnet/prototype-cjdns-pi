@@ -284,7 +284,7 @@ sudo apt-get install haveged -y || true
 # Install nginx
 source nginx/install
 
-# Install yggdrasil
+# Install CJDNS
 if [ "$(checkModule 'WITH_CJDNS')" ]; then
     source cjdns/install
 fi
