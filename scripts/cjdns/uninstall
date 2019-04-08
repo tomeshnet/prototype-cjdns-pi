@@ -12,7 +12,7 @@ sudo rm -rf /opt/cjdns
 
 if [ -f "/etc/cjdroute.conf" ]; then
     echo "Found /etc/cjdroute.conf"
-    read -p "Keep your cjdns identity (Y/n)? " -n 1 -r
+    read -p "Keep your CJDNS identity (Y/n)? " -n 1 -r
     echo ""
     if [[ $REPLY =~ ^[Nn]$ ]]; then
         echo -e "\e[1;31mRemoving /etc/cjdroute.conf\e[0m"
