@@ -6,6 +6,7 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Dependencies
 sudo apt-get -y install confget
+sudo cp -f ../config.inc /usr/local/bin/config.inc
 
 sudo cp "$BASE_DIR/yggdrasil-setup" "/usr/local/sbin/yggdrasil-setup"
 sudo mkdir /etc/systemd/system/yggdrasil.service.d || true

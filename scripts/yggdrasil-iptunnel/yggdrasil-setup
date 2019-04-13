@@ -4,32 +4,7 @@
 echo 1 > /proc/sys/net/ipv4/ip_forward
 echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
 
-function confset {
-    section="$1"
-    key="$2"
-    value="$3"
-    file="$4"
-
-    # If the file is missing create it
-    if [[ ! -f "$file" ]]; then 
-	    touch "$file"
-    fi
-
-    # If the file is missing the provided section it is created
-    if [[ -z "$(grep "\[$section\]" "$file")" ]]; then
-        echo "[$section]" >> "$file"
-    fi
-
-    confget -f "$file" -s "$section" -c "$key"
-    res=$?
-    if [[ "$res" == "1" ]]; then
-        # If file is missing the key it is added
-        sed -i "s/\[$section]/\[$section]\n$key=$value/" "$file"
-    else
-    # Otherwise change it
-        sed -i "/^\[$section]/,/^\[/{s/^$key=.*/$key=$value/;}" "$file"
-    fi
-}
+source /usr/local/bin/config.inc
 
 # Give yggdrasil enough time to create an ygg0 interface before we start adding routes
 sleep 3
