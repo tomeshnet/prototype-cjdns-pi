@@ -43,19 +43,33 @@ fi
 sudo sed -i "s/IfName: auto/IfName: ygg0/" /etc/yggdrasil.conf 
 
 # Change port to 12345 for firewall
-YGGDRASIL_PORT=$(sudo cat /etc/yggdrasil.conf | grep \ Listen: | awk  '{print $2}' | tr -d \")
-YGGDRASIL_PORT=$(printf "%q" "$YGGDRASIL_PORT") # Escape for sed
-sudo sed  -i "s/$YGGDRASIL_PORT/\[::\]:12345/" /etc/yggdrasil.conf
+sudo sed -i "s/Listen: \[\]/Listen\: [\"tcp:\/\/\[::\]:12345\"\]/" /etc/yggdrasil.conf
 
+sudo systemctl enable yggdrasil.service
+sudo systemctl start yggdrasil.service 
+
+# Don't count Yggdrasil IPs as Internet IP addresses
+if [ -f "/etc/gai.conf" ]; then
+  sudo sed -i '/label 200::/d' /etc/gai.conf
+  sudo sed -i '/label 300::/d' /etc/gai.conf
+  echo "label 200::/7 6" | sudo tee --append /etc/gai.conf
+  echo "label 300::/7 6" | sudo tee --append /etc/gai.conf
+fi
+
+
+# Allow nginx access to yggdrasil socket when installed
+sudo usermod -a -G yggdrasil www-data || true
+
+# Define new hostname
+if [ -z "${NEWHOSTNAME}" ]; then
+   NEWHOSTNAME=$(sudo ifconfig ygg0 | grep -E 'inet6 2[0-9a-fA-F]{2}:' | awk '{print $2}' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-Y/g")
+   export NEWHOSTNAME
+fi
 
 # Set node name
 if [ -z "${NEWHOSTNAME}" ]; then 
     NEWHOSTNAME=$(cat /etc/hostname)
 fi
+
+sudo sed -i "/NodeInfo: {}/d" /etc/yggdrasil.conf
 sudo sed -i "\$i\ \ NodeInfo:\n  {\n   name: ${NEWHOSTNAME}\n  }\n"  /etc/yggdrasil.conf
-
-sudo systemctl enable yggdrasil.service
-sudo systemctl start yggdrasil.service 
-
-# Allow nginx access to yggdrasil socket when installed
-sudo usermod -a -G yggdrasil www-data || true

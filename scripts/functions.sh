@@ -139,19 +139,19 @@ function detectBoard {
     case "$ARCH" in
     x86_64)
         BOARD_MODEL="amd64"
-        BOARD_NAME="AMD 64 Board"
+        BOARD_NAME="Generic AMD64"
     ;;
     i386 | i586 | i686 )
         BOARD_MODEL="i386"
-        BOARD_FAMILY="i386 Board"
+        BOARD_NAME="Generic x86"
     esac
 
-    if [[ -z "${BOARD_MODEL}" ]]; then
+    if [[ "${BOARD_MODEL}" == "Unknown" ]]; then
         # Use tr to remove null byte generating warning
         if [ -f "/sys/firmware/devicetree/base/model" ]; then
-            BOARD_MODEL=$(tr -d '\0' < /sys/firmware/devicetree/base/model)
+            BOARD_NAME=$(tr -d '\0' < /sys/firmware/devicetree/base/model)
         else
-            BOARD_MODEL=$(grep Hardware /proc/cpuinfo | awk '{print $3}' | head -n 1)
+            BOARD_NAME=$(grep Hardware /proc/cpuinfo | awk '{print $3}' | head -n 1)
         fi
     fi
 
@@ -163,26 +163,26 @@ function detectBoard {
         BOARD_NEON=true
     fi
 
-    if [[ "$BOARD_MODEL" == "Raspberry Pi"* ]]; then
+    if [[ "$BOARD_NAME" == "Raspberry Pi"* ]]; then
         BOARD_OS="Raspbian"
 
         # Check for default password is still set for user pi
         # If it is force password before reboot
         # shellcheck disable=SC2016
-        if [[ "$BOARD_MODEL" == "Raspberry Pi 3"* ]]; then
-            BOARD_NAME="raspberrypi3"
+        if [[ "$BOARD_NAME" == "Raspberry Pi 3"* ]]; then
+            BOARD_MODEL="raspberrypi3"
             BOARD_NEON=true
         fi
-        if [[ "$BOARD_MODEL" == "Raspberry Pi 2"* ]]; then
+        if [[ "$BOARD_NAME" == "Raspberry Pi 2"* ]]; then
             BOARD_MODEL="raspberrypi2"
             BOARD_NEON=true
         fi
-        if [[ "$BOARD_MODEL" == "Raspberry Pi A"* || "$BOARD_MODEL" == "Raspberry Pi B"* ]]; then
+        if [[ "$BOARD_NAME" == "Raspberry Pi Model A"* || "$BOARD_NAME" == "Raspberry Pi Model B"* ]]; then
             BOARD_MODEL="raspberrypi1"
             BOARD_NEON=false
         fi
 
-        if [[ "$BOARD_MODEL" == "Zero"* ]]; then
+        if [[ "$BOARD_NAME" == *"Zero"* ]]; then
             BOARD_MODEL="raspberrypizero"
             BOARD_NEON=false
         fi

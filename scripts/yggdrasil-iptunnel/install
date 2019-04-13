@@ -4,19 +4,16 @@ set -e
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-sudo apt-get -y install jq
+# Dependencies
+sudo apt-get -y install confget
 
 sudo cp "$BASE_DIR/yggdrasil-setup" "/usr/local/sbin/yggdrasil-setup"
-sudo cp "$BASE_DIR/yggdrasil-pre-setup" "/usr/local/sbin/yggdrasil-pre-setup"
+sudo mkdir /etc/systemd/system/yggdrasil.service.d || true
+sudo cp "$BASE_DIR/yggdrasil-iptunnel.service" /etc/systemd/system/yggdrasil.service.d/iptunnel.conf
 
-sudo chmod a+x /usr/local/sbin/yggdrasil-pre-setup
+# Enable tunnel routing in config file
+sudo sed -i "/TunnelRouting\:/,/^\[/{s/Enable: false/Enable: true/;}" /etc/yggdrasil.conf
+
 sudo chmod a+x /usr/local/sbin/yggdrasil-setup
-
-# Update service to start script on cjdns start
-if [ -f /etc/systemd/system/yggdrasil.service ]; then
-    sudo sed -i /ExecStartPost/d /etc/systemd/system/yggdrasil.service
-    sudo sed -i s#Restart=always#Restart=always\\nExecStartPost=/usr/local/sbin/yggdrasil-setup# /etc/systemd/system/yggdrasil.service
-    sudo sed -i "s#fi\"#fi; /usr/local/sbin/yggdrasil-pre-setup\"#" /etc/systemd/system/yggdrasil.service
-fi
 
 sudo systemctl daemon-reload

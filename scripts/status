@@ -10,10 +10,12 @@ echo "  | || (_) | | | | | |  __\__ | | | |"
 echo "   \__\___/|_| |_| |_|\___|___|_| |_|"
 
 echo -e '---------------------------------------'
-if [ "$(systemctl status cjdns.service | grep 'Active: ' | awk '{ print $2 }')" = 'active' ]; then
-    echo -e "cjdns Service ................ $ACTIVE"
-else
-    echo -e "cjdns Service .............. $INACTIVE"
+if [ "$(which cjdroute)" ]; then
+    if [ "$(systemctl status cjdns.service | grep 'Active: ' | awk '{ print $2 }')" = 'active' ]; then
+        echo -e "CJDNS Service ................ $ACTIVE"
+    else
+        echo -e "CJDNS Service .............. $INACTIVE"
+    fi
 fi
 if [ "$(which yggdrasilctl)" ]; then
     if [ "$(systemctl status yggdrasil.service | grep 'Active: ' | awk '{ print $2 }')" = 'active' ]; then

@@ -77,45 +77,129 @@ Yggdrasil will give each node (like your Pi, for example) an IPv6 address, but i
 
 However, the Pi does have a firewall, so various commands need be run to allow access to clients. By default all Yggdrasil client access is blocked. See [**Firewall/IPv6/Yggdrasil Clients**](#yggdrasil-clients) to learn how to change that.
 
-### Yggdrasil IPTunnel
+## Yggdrasil IPTunnel
 
-This module will allow you to tunnel internet from an EXIT node (server) that has Internet to another node that does not. To do this you must exchange public keys.  The public key can be found in /etc/yggdrasil.conf
+This module will allow you to tunnel Internet from an EXIT node (server) that has Internet to another node that does not. To do this you must exchange public keys.  The public key can be found in /etc/yggdrasil.conf
+
+To use this module you must have it installed. You can check to see if the file `/usr/local/sbin/yggdrasil-setup` exists. If it does then you have it installed, otherwise you need to have the module installed first.
+
+### Additional configuration
+Additional configurations can be made in the file `/etc/yggdrasil.iptunnel.conf`
+
+Section `[iptunnel]`
+
+**IPv6nat**
+Disables masquerading of IPv6 tunnels. Set to `false` when routable addresses are being used across the tunnel. Usually when passing an additional subnet.
+
+Default: *true*
+Values: `true` , `false`
+
+To add advertising of the subnet, add the following prefix to /etc/radvd.conf
+```
+   prefix 20xx:xxxx:xxxx:x::/64
+    {
+        AdvOnLink on;
+        AdvAutonomous on;
+    };
+```
+
+**SUBNET4**
+*Server only*
+
+Defines ip addresses to add to route table that will be routed over through yggdrasil. Must match ips in `yggdrasil.iptunnel.server`
+
+Default: 10.10.0.0/24
+Value: `Any ipv4 address range`
+
+**SUBNET6**
+*Server only*
+
+Defines ipv6 addresses to add to route table that will be routed over through yggdrasil. Must match ips in `yggdrasil.iptunnel.server`
+
+Default: fd00::/64
+Value: `Any ipv6 address range`
+
+**outint**
+*Server Only*
+
+Defines the interface connected to the internet.
+
+Default: eth0
+Value: `Any interface on the system`
+
+**ipv6subnetint**
+*Client Only*
+
+Defines the interface that will pass on the IPv6 subnet.
+
+Default: wlan-ap
+Value: `Any interface on the system`
+
+
+**yggint**
+*Server Only*
+
+Defines the yggdrasil interface.
+
+Default: ygg0
+Value: `Any interface on the system`
+
 
 #### Server
- To configure as a server (exit Internet traffic for other nodes), 
+ To configure as a server (exit Internet traffic for other nodes),
  1. create **/etc/yggdrasil.iptunnel.server**
  2. fill it with newline-separated list of:
-   - EncryptionPublicKey key of the clients
-   - single white space
-   - IP Address in the 10.10.0.0/24 range that will be assigned to the client
+   - EncryptionPublicKey key of the clients (found in /etc/yggdrasill.conf on the client's device)
+   - Single white space
+   - IPv4 Address in the 10.10.0.0/24 range that will be assigned to the client
+   - *optional* Single white space
+   - *optional* IPv6 Address in the fd00::/64 range that will be assigned to the client
+   - *optional* Single white space
+   - *Optional* IPv6 Subnet that will be routed through the client
 
 Example
 ```
-1234567890123456789012345678901234567890123456789012345678901234 10.10.0.1
+1234567890123456789012345678901234567890123456789012345678901234 10.10.0.1 fd00::1
 2345678901234567890123456789012345678901234567890123456789012345 10.10.0.2
-3456789012345678901234567890123456789012345678901234567890123467 10.10.0.3
+3456789012345678901234567890123456789012345678901234567890123467 10.10.0.3 fd00::3 fd00:1::/64
 ```
+
+**Note:** You do not have to assign an IPv6 address to all nodes, ones without an IPv6 address will simply not be issued one.
 
 #### Client
-To configure as a client (use an exit server to access the Internet), 
-1. create **/etc/yggdrasil.iptunnel.client** 
+To configure as a client (use an exit server to access the Internet),
+1. create **/etc/yggdrasil.iptunnel.client**
 1. place a single line containing
    - EncryptionPublicKey of the server
-   - single space
-   - IP Address assigned to you by the server
+   - Single white space
+   - IPv4 Address assigned to you by the server
+   - *Optional* Single white space
+   - *Optional* IPv6 address assigned to you by the server
+   - *optional* Single white space
+   - *Optional* IPv6 subnet that will be routed through the client
 
-Example
+Example:
+```
+4567890123456789012345678901234567890123456789012345678901234567 10.10.0.4 fd00::4
+```
+or without IPv6
+
 ```
 4567890123456789012345678901234567890123456789012345678901234567 10.10.0.4
 ```
 
+or with IPv6 and subnet
+
+```
+4567890123456789012345678901234567890123456789012345678901234567 10.10.0.4 fd00::3 fd00:1::/64
+```
+
 ## IPFS
-IPFS stands for Interplanetary File System. It is an open-source, peer-to-peer distributed hypermedia protocol that aims to function as a ubiquitous file system for all computing devices. 
+IPFS stands for Interplanetary File System. It is an open-source, peer-to-peer distributed hypermedia protocol that aims to function as a ubiquitous file system for all computing devices.
 
 This module will install IPFS under the user where the script runs allowing you to access IPFS resouces both directly from the command line, and through the gateway available at <Pi IP Address>/ipfs/
-  
+
 ## Firewall
-  
 The firewall module installes a basic firewall for your device. It will block all ports that were not meant to be open. By default there are no ports blocked from the Wireless Access Point interface (`wlan-ap`).
 
 ### Applying changes

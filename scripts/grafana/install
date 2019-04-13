@@ -19,7 +19,7 @@ case "$ARCH" in
    exit 0
   ;;
   armv7l)
-    URL="https://dl.grafana.com/oss/release/grafana_${GRAFANA_VERSION}_armel.deb";
+    URL="https://dl.grafana.com/oss/release/grafana_${GRAFANA_VERSION}_armhf.deb";
   ;;
   armv6l)
     # Use old grafana - no new one available
