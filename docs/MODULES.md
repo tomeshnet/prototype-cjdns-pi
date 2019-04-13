@@ -150,7 +150,7 @@ for typos, make sure there are "" around the whole entire string.
 
 ## Yggdrasil IPTunnel
 
-This module will allow you to tunnel Internet from an EXIT node (server) that has Internet to another node that does not. To do this you must exchange public keys.  The public key can be found in /etc/yggdrasil.conf
+This module uses the [CKR](https://yggdrasil-network.github.io/2018/11/06/crypto-key-routing.html) function of yggdrasill to allow you to tunnel internet from an exit node (server) that has access to the internet to another node that does not. To do this you must exchange public keys.  The public key can be found in /etc/yggdrasil.conf
 
 To use this module you must have it installed. You can check to see if the file `/usr/local/sbin/yggdrasil-setup` exists. If it does then you have it installed, otherwise you need to have the module installed first.
 
