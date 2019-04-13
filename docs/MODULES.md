@@ -183,14 +183,22 @@ Disables masquerading of IPv6 tunnels. Set to `false` when routable addresses ar
 Default: *true*
 Values: `true` , `false`
 
-To add advertising of the subnet, add the following prefix to /etc/radvd.conf
+To add advertising of this subnet, add a prefix to `/etc/radvd.conf` under the correct interface.  For example if the subnet you are routing is prefix `20xx:xxxx:xxxx::/64`
+
+Example of /etc/radvd.conf file
 ```
-   prefix 20xx:xxxx:xxxx:x::/64
-    {
-        AdvOnLink on;
-        AdvAutonomous on;
-    };
+interface wlan-ap {
+  AdvSendAdvert on;
+  MaxRtrAdvInterval 30;
+  prefix 20xx:xxxx:xxxx::/64
+  {
+    AdvOnLink on;
+    AdvAutonomous on;
+  }
+};
 ```
+
+If you installed hostapd you will have this already configured with a prefix.  Simply add the new prefix under the existing one.
 
 **subnet**
 *Server only*
