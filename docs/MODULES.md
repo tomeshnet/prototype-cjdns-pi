@@ -3,6 +3,7 @@
 A short summary of each module is directly below. Documentation for specific abilities of modules, or reference commands are further below.
 
 ## Table of Contents
+
 - [Modules Documentation](#modules-documentation)
   - [Table of Contents](#table-of-contents)
   - [Command-line flags](#command-line-flags)
@@ -27,7 +28,7 @@ A short summary of each module is directly below. Documentation for specific abi
     - [Known install bugs](#known-install-bugs)
   - [SSB pub peering](#ssb-pub-peering)
 
-## Command-line flags
+## Command-line variables
 
 | Feature Flag                    | HTTP Service Port                              | Description |
 | :------------------------------ | :--------------------------------------------- | :---------- |
@@ -52,7 +53,6 @@ A short summary of each module is directly below. Documentation for specific abi
 | `WITH_YGGDRASIL`                | None                                           | Set to `true` if you want to install [Yggdrasil](https://yggdrasil-network.github.io/), an alternate and possibly more efficient mesh routing software than CJDNS. |
 | `WITH_YGGDRASIL_IPTUNNEL`       | None                                           | Set to `true` if you want to use the yggdrasil iptunnel feature to set up an Internet gateway for your node. To configure as a server (exit Internet traffic for other nodes), create **/etc/yggdrasil.iptunnel.server** containing a newline-separated list of yggdrasil public keys of allowed clients and an ipaddress for that client. To configure as a client (use an exit server to access the Internet), create **/etc/yggdrasil.iptunnel.client** containing a newline-separated list of yggdrasil public keys of the gateway servers followed by the IP address set on the server. You can only configure as one or the other, not both and you can only have one entry on the client. |
 
-
 To install all optional modules (not recommended), run the following command:
 
 ```
@@ -68,14 +68,85 @@ For more information please see the [CJDNS FAQ](https://github.com/cjdelisle/cjd
 
 To modify the ports that are accessable from CJDNS modify the `cjdns` *table* in the IPv6 firewall config file. See the [**Firewall**](#firewall) section for more details.
 
+### CJDNS Internet Peering
+
+Other peers can be found in the [this](https://github.com/hyperboria/peers) repo of peers. Try to connect to only a few peers, and ones that are close to where you live.
+
+You'll see the peering information that will give you the address (ipv4 or ipv6) and credentials to connect to the node. You must either select to use just the ipv4 config, or you could use both. Now that we have this info, connect to your mesh device, and edit the following config file:
+
+```
+$ sudo nano /etc/cjdroute.conf
+```
+
+This file contains everything that is required for CJDNS to run, so be careful not to remove anything else, unless you know what you are doing. You need to head down to this line:
+
+```
+// Nodes to connect to (IPv4 only).
+"connectTo":
+{
+```
+
+This is where you input the ipv4 address. There is also a ipv6 field:
+
+```
+// Nodes to connect to (IPv6 only).
+"connectTo":
+{
+```
+
+Insert the respective code, and the save (ctrl+X to save, then ctrl+S to confirm file name, then ENTER to confirm changes).
+your code should look somewhat like this:
+```
+// Nodes to connect to (IPv4 only).
+"connectTo":
+  {
+                "123.123.123.123:54321": {
+                  "peerName": "cosmetic-name.com",
+                  "login": "peer-login",
+                  "password": "peer-passwowrd-here",
+                  "publicKey": "1234567890123456789012345678901234567890123456789012.k"
+                }
+  }
+```
+
+Next you should restart CJDNS with a `sudo systemctl restart cjdns` command. This will reload CJDNS with the new config file. Run a `status` command on your node, and make sure when it prints out
+the text, that CJDNS is green with the text `[ACTIVE]`. if so, you have successfully connected to the remote peer, if it says `[INACTIVE]`, then there might be a typo in your config file. Make sure its formatted correctly (the config file is written using JSON).
+
 ## Yggdrasil
+
 Yggdrasil is another piece of mesh routing software similar to CJDNS, but with potentially better performance and more active development. For more info visit the [website](https://yggdrasil-network.github.io).
 
-### Yggdrasil subnetting
+## Yggdrasil subnetting
 
 Yggdrasil will give each node (like your Pi, for example) an IPv6 address, but it can also give each node a subnet to distribute to its clients. This means that if you connect to the WiFi of your Pi, your device can get a unique Yggdrasil address, with all the benefits it provides. These include being able to access your device directly, without being NATed or blocked.
 
 However, the Pi does have a firewall, so various commands need be run to allow access to clients. By default all Yggdrasil client access is blocked. See [**Firewall/IPv6/Yggdrasil Clients**](#yggdrasil-clients) to learn how to change that.
+
+### Yggdrasil Interent Peering
+
+Other peers can be found in the [public-peers](https://github.com/yggdrasil-network/public-peers) repo. Try to connect to only a few peers, and ones that are close to where you live.
+
+Some will be IPv4, others IPv6. Head over to your mesh node yet again, and enter the following in your terminal:
+
+```
+$ sudo nano /etc/yggdrasil.conf
+```
+
+We are interested in this section of the config file:
+
+```
+List of connection strings for static peers in URI format, e.g. tcp://a.b.c.d:e or socks://a.b.c.d:e/f.g.h.i:j.
+Peers: []
+```
+
+This is where we are going to insert the code to connect to the peer node. Your code should look similar to this:
+
+```
+Peers: ["tcp://11.22.33.44:1234"]
+```
+
+Exit out of nano and save the changes. Restart Yggdrasil with a `sudo killall yggdrasil` command. Pass a `status` command to terminal and you should see green text where Yggdrasil is printed with the words `[ACTIVE]` present. You are now connected to the remote peer with Yggdrasil. If you see`[INACTIVE]`, then you need to check your code
+for typos, make sure there are "" around the whole entire string.
 
 ## Yggdrasil IPTunnel
 
@@ -144,39 +215,44 @@ Defines the yggdrasil interface.
 Default: ygg0
 Value: `Any interface on the system`
 
+#### IPTunnel - Server
 
-#### Server
+The IPTunnel server acts as a exit node.  It will accept connections from other yggdrasil peeres listed in **/etc/yggdrasil.iptunnel.server** and form a tunnnel between them allowing the remote peer to access internet available on this node.
+
  To configure as a server (exit Internet traffic for other nodes),
  1. create **/etc/yggdrasil.iptunnel.server**
  2. fill it with newline-separated list of:
-   - EncryptionPublicKey key of the clients (found in /etc/yggdrasill.conf on the client's device)
+   - EncryptionPublicKey key of the clients (found in /etc/yggdrasil.conf on the client's device)
    - Single white space
    - IPv4 Address in the 10.10.0.0/24 range that will be assigned to the client
    - *optional* Single white space
    - *optional* IPv6 Address in the fd00::/64 range that will be assigned to the client
    - *optional* Single white space
-   - *Optional* IPv6 Subnet that will be routed through the client
+   - *optional* IPv6 Subnet that will be routed through the client
 
 Example
 ```
-1234567890123456789012345678901234567890123456789012345678901234 10.10.0.1 fd00::1
-2345678901234567890123456789012345678901234567890123456789012345 10.10.0.2
-3456789012345678901234567890123456789012345678901234567890123467 10.10.0.3 fd00::3 fd00:1::/64
+1234567890123456789012345678901234567890123456789012345678901234 10.10.0.1 fd00::1  
+2345678901234567890123456789012345678901234567890123456789012345 10.10.0.2  
+3456789012345678901234567890123456789012345678901234567890123467 10.10.0.3 fd00::3 fd00:1::/64  
 ```
 
 **Note:** You do not have to assign an IPv6 address to all nodes, ones without an IPv6 address will simply not be issued one.
 
-#### Client
+#### IPTunnel - Client
+
+The IPTUnnel client will establish a link to a server, and tunnel all traffic not currently in the routing table to this the server node. In most setups this means any traffic that is not LAN traffic that the node is on.
+
 To configure as a client (use an exit server to access the Internet),
 1. create **/etc/yggdrasil.iptunnel.client**
 1. place a single line containing
    - EncryptionPublicKey of the server
    - Single white space
    - IPv4 Address assigned to you by the server
-   - *Optional* Single white space
-   - *Optional* IPv6 address assigned to you by the server
    - *optional* Single white space
-   - *Optional* IPv6 subnet that will be routed through the client
+   - *optional* IPv6 address assigned to you by the server
+   - *optional* Single white space
+   - *optional* IPv6 subnet that will be routed through the client
 
 Example:
 ```
@@ -193,6 +269,20 @@ or with IPv6 and subnet
 ```
 4567890123456789012345678901234567890123456789012345678901234567 10.10.0.4 fd00::3 fd00:1::/64
 ```
+
+##### IPTunnel Client and Interent Peer
+
+If you wish to run an IPTunnel Client on the same node as as an Internet Peer, you will need to create a route to that node over the internet connection available.
+
+The reason of doing this is to allow the Yggdrasil internet peer to not try to use the new path to the internet that it aquies by forming the tunnel to peer.  The peer conenction cannot shuttle tunnel connections of the same tunnel.
+
+```
+sudo route add 123.123.123/24 gw 192.168.0.1
+```
+Were
+*123.123.123* is the ip address of the yggdrasil peer  
+*192.168.0.1* is the current active gateway to the internet  
+
 
 ## IPFS
 IPFS stands for Interplanetary File System. It is an open-source, peer-to-peer distributed hypermedia protocol that aims to function as a ubiquitous file system for all computing devices.
@@ -237,7 +327,6 @@ These are standard `iptables` rules. The basic syntax is as follows:
 `protocol` -  either `tcp` or `udp`, not required but recommended
 
 `port` - Port you wish to open between 1-65535
-
 
 ### IPv6
 
@@ -295,87 +384,7 @@ If you use this rule, there is no point in having any other Yggdrasil client rul
 
 You can specify a protocol, but that would limit the ports that are open.
 
-## CJDNS and Yggdrasil public peering (Optional)
-
-#### CJDNS
-
-Other peers can be found in the [this](https://github.com/hyperboria/peers) repo of peers. Try to connect to only a few peers, and ones that are close to where you live.
-
-You'll see the peering information that will give you the address (ipv4 or ipv6) and credentials to connect to 
-the node. You must either select to use just the ipv4 config, or you could use both. Now that we have this info, 
-connect to your mesh device, and edit the following config file:
-
-```
-$ sudo nano /etc/cjdroute.conf
-```
-
-This file contains everything that is required for CJDNS to run, so be careful not to remove anything else, unless
-you know what you are doing. You need to head down to this line:
-
-```
-// Nodes to connect to (IPv4 only).
-"connectTo":
-{
-```
-
-This is where you input the ipv4 address. There is also a ipv6 field:
-
-```
-// Nodes to connect to (IPv6 only).
-"connectTo": 
-{
-```
-
-Insert the respective code, and the save (ctrl+X to save, then ctrl+S to confirm file name, then ENTER to confirm changes).
-your code should look somewhat like this:
-```
-                // Nodes to connect to (IPv4 only). 
-                "connectTo":
-                 {
-                               "159.203.5.91:30664": {
-                                 "peerName": "deprecated.systems",
-                                 "login": "tomesh-public",
-                                 "password": "iuw4nklm3j89qno876ef2jabpvlg1j0",
-                                 "publicKey": "2scyvybg4qqms1c5c9nyt50b1cdscxnr6ycpwsxf6pccbmwuynk0.k"
-                               }
-                 }
-```
-
-Next you should restart CJDNS with a `sudo systemctl restart cjdns` command. This will reload CJDNS
-with the new config file. Run a `status` command on your node, and make sure when it prints out
-the text, that CJDNS is green with the text `[ACTIVE]`. if so, you have successfully connected to the remote peer,
-if it says `[INACTIVE]`, then there might be a typo in your config file. Make sure its formatted correctly (the
-config file is written using JSON).
-
-### Yggdrasil
-
-Other peers can be found in the [public-peers](https://github.com/yggdrasil-network/public-peers) repo. Try to connect to only a few peers, and ones that are close to where you live.
-
-Some will be IPv4, others IPv6. Head over to your mesh node yet again, and enter the following in your terminal:
-
-```
-$ sudo nano /etc/yggdrasil.conf
-```
-
-We are interested in this section of the config file:
-
-```
-List of connection strings for static peers in URI format, e.g. tcp://a.b.c.d:e or socks://a.b.c.d:e/f.g.h.i:j.
-Peers: []
-```
-
-This is where we are going to insert the code to connect to the peer node. Your code should look similar to this:
-
-```
-Peers: ["tcp://11.22.33.44:1234"]
-```
-
-Exit out of nano and save the changes. Restart Yggdrasil with a `sudo killall yggdrasil` command. Pass a `status`
-command to terminal and you should see green text where Yggdrasil is printed with the words `[ACTIVE]` present.
-You are now connected to the remote peer with Yggdrasil. If you see`[INACTIVE]`, then you need to check your code
-for typos, make sure there are "" around the whole entire string.
-
-# Grafana
+## Grafana
 **NOTE**  Older verison used for i386 deployment due to lack of support for officialy binaries
 
 [Grafana](https://grafana.com/) is a dashboard used to display Prometheus collected data.  Once installed you can visit `http://<yournodeip>:3000`.  Default login is `admin`/`admin`. You can skip the welcome screen/wizard by clicking on the Grafana logo at the top left corner.
@@ -390,6 +399,61 @@ curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binar
 curl --user admin:admin -X POST -H 'Content-Type: application/json' --data-binary "@$BASE_DIR/dashboard.json" http://localhost:3000/api/dashboards/db
 ```
 
-## SSB pub peering
+### Allow Anonymous access
+
+To allow read-one guest access without a password edit `/etc/grafana/grafana.ini`
+
+Uncomment/Change settings as follows
+
+```
+[auth.anonymous]
+# enable anonymous access
+enabled = true
+# specify organization name that should be used for unauthenticated users
+org_name = Main Org.
+# specify role for unauthenticated users
+org_role = Viewer
+```
+
+## Prometheus
+
+**NOTE** Prometheus Server does not support i386 installation because there is no known binary for it.
+
+To make prometheus dynamically change the nodes it will monitor during runtim, you can tell it to read from a file and update it's targets every time the file is changed.  Make the following change in `/opt/prometheus/prometheus.yml`
+
+Change
+```
+    static_configs:
+    - targets: ['[fc0e:741f:1953:b0be:8958:2265:14cf:1e94]:9100']
+```
+to
+
+```
+    file_sd_configs:
+        - files:
+            - "/etc/prometheus.json"
+```
+
+Then create a /etc/prometheus.json file
+
+```
+[
+ {
+  "targets": [
+   "[fc0e:741f:1953:b0be:8958:2265:14cf:1e94]:9100",
+   "[fc00:0000:0000:0000:0000:0000:0000:0000]:9100"
+  ]
+ }
+]
+```
+Finally restart the prometheus service
+
+```sudo systemctl restart prometheus-server```
+If you wish to monitor multiple nodes simply add additioanl nodes to the json. Remember the last entry does not have a ,
+
+## SSB pub
+[SSB](https://www.scuttlebutt.nz/) is a  decent(ralised) secure gossip platform
+
+### SSB pub peering
 
 Beyond connecting over with mesh peers, or peers on the LAN, you will need to connect to a "pub" to get your Scuttlebutt feed across the internet. You can find a list of public pubs [here](https://github.com/ssbc/ssb-server/wiki/Pub-Servers).
