@@ -3,10 +3,9 @@
 A short summary of each module is directly below. Documentation for specific abilities of modules, or reference commands are further below.
 
 ## Table of Contents
-
 - [Modules Documentation](#modules-documentation)
   - [Table of Contents](#table-of-contents)
-  - [Command-line flags](#command-line-flags)
+  - [Command-line Variables](#command-line-variables)
   - [CJDNS](#cjdns)
   - [Yggdrasil](#yggdrasil)
     - [Yggdrasil subnetting](#yggdrasil-subnetting)
@@ -28,7 +27,7 @@ A short summary of each module is directly below. Documentation for specific abi
     - [Known install bugs](#known-install-bugs)
   - [SSB pub peering](#ssb-pub-peering)
 
-## Command-line variables
+## Command-line Variables
 
 | Feature Flag                    | HTTP Service Port                              | Description |
 | :------------------------------ | :--------------------------------------------- | :---------- |
@@ -122,7 +121,7 @@ Yggdrasil will give each node (like your Pi, for example) an IPv6 address, but i
 
 However, the Pi does have a firewall, so various commands need be run to allow access to clients. By default all Yggdrasil client access is blocked. See [**Firewall/IPv6/Yggdrasil Clients**](#yggdrasil-clients) to learn how to change that.
 
-### Yggdrasil Interent Peering
+### Yggdrasil Internet Peering
 
 Other peers can be found in the [public-peers](https://github.com/yggdrasil-network/public-peers) repo. Try to connect to only a few peers, and ones that are close to where you live.
 
@@ -135,7 +134,7 @@ $ sudo nano /etc/yggdrasil.conf
 We are interested in this section of the config file:
 
 ```
-List of connection strings for static peers in URI format, e.g. tcp://a.b.c.d:e or socks://a.b.c.d:e/f.g.h.i:j.
+// List of connection strings for static peers in URI format, e.g. tcp://a.b.c.d:e or socks://a.b.c.d:e/f.g.h.i:j.
 Peers: []
 ```
 
@@ -145,14 +144,13 @@ This is where we are going to insert the code to connect to the peer node. Your 
 Peers: ["tcp://11.22.33.44:1234"]
 ```
 
-Exit out of nano and save the changes. Restart Yggdrasil with a `sudo killall yggdrasil` command. Pass a `status` command to terminal and you should see green text where Yggdrasil is printed with the words `[ACTIVE]` present. You are now connected to the remote peer with Yggdrasil. If you see`[INACTIVE]`, then you need to check your code
-for typos, make sure there are "" around the whole entire string.
+Exit out of nano and save the changes. Restart Yggdrasil with a `sudo systemctl restart yggdrasil` command. Pass a `status` command to terminal and you should see green text where Yggdrasil is printed with the words `[ACTIVE]` present. You are now connected to the remote peer with Yggdrasil. If you see`[INACTIVE]`, then you need to check your code for typos, make sure there are qoute `""` around the whole entire address.  You may also need to wait a bit longer for the restart to complete.
 
 ## Yggdrasil IPTunnel
 
 This module uses the [CKR](https://yggdrasil-network.github.io/2018/11/06/crypto-key-routing.html) function of yggdrasill to allow you to tunnel internet from an exit node (server) that has access to the internet to another node that does not. To do this you must exchange public keys.  The public key can be found in /etc/yggdrasil.conf
 
-To use this module you must have it installed. You can check to see if the file `/usr/local/sbin/yggdrasil-setup` exists. If it does then you have it installed, otherwise you need to have the module installed first.
+To use this module you must have it installed. You can check to see if the file `/usr/local/sbin/yggdrasil-setup` exists. If it does then you have it enable it during the protoype install.
 
 ### Additional configuration
 Additional configurations can be made in the file `/etc/yggdrasil.iptunnel.conf`
@@ -217,18 +215,18 @@ Value: `Any interface on the system`
 
 #### IPTunnel - Server
 
-The IPTunnel server acts as a exit node.  It will accept connections from other yggdrasil peeres listed in **/etc/yggdrasil.iptunnel.server** and form a tunnnel between them allowing the remote peer to access internet available on this node.
+The IPTunnel server acts as a exit node. It will accept connections from other yggdrasil peeres listed in **/etc/yggdrasil.iptunnel.server** and form a tunnnel between them allowing the remote peer to access internet available on this node.
 
  To configure as a server (exit Internet traffic for other nodes),
- 1. create **/etc/yggdrasil.iptunnel.server**
- 2. fill it with newline-separated list of:
-   - EncryptionPublicKey key of the clients (found in /etc/yggdrasil.conf on the client's device)
+ 1. Create `/etc/yggdrasil.iptunnel.server`
+ 2. Fill it with newline-separated list of:
+   - `EncryptionPublicKey` key of the clients (found in `/etc/yggdrasil.conf` on the client's device)
    - Single white space
    - IPv4 Address in the 10.10.0.0/24 range that will be assigned to the client
    - *optional* Single white space
-   - *optional* IPv6 Address in the fd00::/64 range that will be assigned to the client
+   - *optional* IPv6 address in the fd00::/64 range that will be assigned to the client
    - *optional* Single white space
-   - *optional* IPv6 Subnet that will be routed through the client
+   - *optional* IPv6 subnet that will be routed through the client
 
 Example
 ```
@@ -241,12 +239,12 @@ Example
 
 #### IPTunnel - Client
 
-The IPTUnnel client will establish a link to a server, and tunnel all traffic not currently in the routing table to this the server node. In most setups this means any traffic that is not LAN traffic that the node is on.
+The IPTunnel client will establish a link to a server, and tunnel all traffic not currently in the routing table to this the server node. In most setups this means any traffic that is not for the local network you are directly connected to.
 
 To configure as a client (use an exit server to access the Internet),
-1. create **/etc/yggdrasil.iptunnel.client**
-1. place a single line containing
-   - EncryptionPublicKey of the server
+1. Create `/etc/yggdrasil.iptunnel.client`
+1. Place a single line containing
+   - `EncryptionPublicKey` of the server (found in `/etc/yggdrasil.conf` on the server's device)
    - Single white space
    - IPv4 Address assigned to you by the server
    - *optional* Single white space
@@ -270,18 +268,19 @@ or with IPv6 and subnet
 4567890123456789012345678901234567890123456789012345678901234567 10.10.0.4 fd00::3 fd00:1::/64
 ```
 
-##### IPTunnel Client and Interent Peer
+##### IPTunnel Client and Internet Peer
 
-If you wish to run an IPTunnel Client on the same node as as an Internet Peer, you will need to create a route to that node over the internet connection available.
+If you wish to run an IPTunnel client on the same node as as an Internet Peer, you will need to create a route to that node over the internet connection available.
 
-The reason of doing this is to allow the Yggdrasil internet peer to not try to use the new path to the internet that it aquies by forming the tunnel to peer.  The peer conenction cannot shuttle tunnel connections of the same tunnel.
+Because all internet traffic is redirected over the tunnel and a route is not created to the peer, Yggdrasil peering will try to route over the tunnel. Since the tunnel is depended on the peer the peer will not function collapsing the tunnel. Another-words the peer tries to feed packets over the tunnel, that tries to feed packets to the peer causing both to fail.
 
+Add the following command to your `/etc/rc.local`
 ```
-sudo route add 123.123.123/24 gw 192.168.0.1
+route add 123.123.123/24 gw 192.168.0.1
 ```
-Were
-*123.123.123* is the ip address of the yggdrasil peer  
-*192.168.0.1* is the current active gateway to the internet  
+Where:
+`123.123.123` is the IP address of the Yggdrasil peer  
+`192.168.0.1` is the current active gateway to the Internet  
 
 
 ## IPFS
@@ -385,13 +384,13 @@ If you use this rule, there is no point in having any other Yggdrasil client rul
 You can specify a protocol, but that would limit the ports that are open.
 
 ## Grafana
-**NOTE**  Older verison used for i386 deployment due to lack of support for officialy binaries
+**Note:** An older version is used for i386 deployment due to lack of official support in the newer version.
 
 [Grafana](https://grafana.com/) is a dashboard used to display Prometheus collected data.  Once installed you can visit `http://<yournodeip>:3000`.  Default login is `admin`/`admin`. You can skip the welcome screen/wizard by clicking on the Grafana logo at the top left corner.
 
 ### Known install bugs
 
-At times Grafana will not start up properly during install and the dashboards will not install.  To install them manually run the following commands from the `prototype-cjdns-pi/scripts/grafana` folder
+At times Grafana will not start up properly during install and the dashboards will not install.  To install them manually run the following commands from inside the `prototype-cjdns-pi/scripts/grafana` folder
 
 ```
 BASE_DIR=`pwd`
@@ -416,17 +415,18 @@ org_role = Viewer
 ```
 
 ## Prometheus
+[Prometheus](https://prometheus.io/) is a monitoring system and time series database. 
 
-**NOTE** Prometheus Server does not support i386 installation because there is no known binary for it.
+**Note:** Prometheus Server does not support i386 installation because there is no known binary for it.
 
-To make prometheus dynamically change the nodes it will monitor during runtim, you can tell it to read from a file and update it's targets every time the file is changed.  Make the following change in `/opt/prometheus/prometheus.yml`
+To make Prometheus dynamically change the nodes it will monitor during runtime, you can tell it to read from a file and update its targets every time the file is changed. Make the following change in `/opt/prometheus/prometheus.yml`.
 
-Change
+Change this:
 ```
     static_configs:
     - targets: ['[fc0e:741f:1953:b0be:8958:2265:14cf:1e94]:9100']
 ```
-to
+to this:
 
 ```
     file_sd_configs:
@@ -434,7 +434,7 @@ to
             - "/etc/prometheus.json"
 ```
 
-Then create a /etc/prometheus.json file
+Then create a `/etc/prometheus.json` file:
 
 ```
 [
@@ -446,14 +446,15 @@ Then create a /etc/prometheus.json file
  }
 ]
 ```
-Finally restart the prometheus service
+Finally, restart the Prometheus service: Run `sudo systemctl restart prometheus-server`
 
-```sudo systemctl restart prometheus-server```
-If you wish to monitor multiple nodes simply add additioanl nodes to the json. Remember the last entry does not have a ,
+If you wish to monitor multiple nodes, simply add more nodes to the JSON file. Remember the last entry does not have a `,`.
 
-## SSB pub
-[SSB](https://www.scuttlebutt.nz/) is a  decent(ralised) secure gossip platform
+## Secure Scuttlebutt
+[SSB](https://www.scuttlebutt.nz/) is a decent(ralised) secure gossip platform. It allows for the offline and decentralized distribution and copying of data in a "feeds" format. In practice it is often used as a social network similar to Facebook (but P2P), but has many other applications.
 
-### SSB pub peering
+Our nodes can run a Scuttlebutt pub, which allows your messages to propagate through the mesh network, if your node is connected to one. You can download a client as the link above will tell you, and if you installed the SSB module, you'll see the pub running on your Pi in the sidebar of the client when you connect to your node's WiFi network. This pub will sync with users of it's network, and with mesh nodes nearby, spreading your messages and helping you get new ones.
 
-Beyond connecting over with mesh peers, or peers on the LAN, you will need to connect to a "pub" to get your Scuttlebutt feed across the internet. You can find a list of public pubs [here](https://github.com/ssbc/ssb-server/wiki/Pub-Servers).
+### SSB Pub Peering
+
+Beyond connecting with mesh peers, or peers on the LAN, you will need to connect to a "pub" to get your Scuttlebutt feed across the Internet. You can find a list of public pubs to join [here](https://github.com/ssbc/ssb-server/wiki/Pub-Servers).
