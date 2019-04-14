@@ -164,28 +164,27 @@ Section `[general]`
 
 Defines the yggdrasil interface.
 
-Default: ygg0
-Value: `Yggdrasill interface on the system. Usually ygg0 or tun0`
+Default: `ygg0`
+Value: `Yggdrasil interface on the system, usually ygg0 or tun0`
 
 **exit-interface**
 *Server Only*
 
 Defines the exit interface that is connected to the internet.
 
-Default: *eth0*
+Default: `eth0`
 Value: `Any interface on the system`
 
 Section `[ipv6tunnel]`
 
 **nat**
-Disables masquerading of IPv6 tunnels. Set to `false` when routable addresses are being used across the tunnel. This is used when you route another ipv6 route to be used by the remote node to issue IPv6 addresses to it's clients.
+Disables masquerading of IPv6 tunnels. Set to `false` when routable addresses are being used across the tunnel. This is used when you route another IPv6 route to be used by the remote node to issue IPv6 addresses to its clients.
 
-Default: *true*
+Default: `true`
 Values: `true` , `false`
 
-To add advertising of this subnet, add a prefix to `/etc/radvd.conf` under the correct interface.  For example if the subnet you are routing is prefix `20xx:xxxx:xxxx::/64`
+To add advertising of this subnet, add a prefix to `/etc/radvd.conf` under the correct interface.  For example if the subnet you are routing has the prefix `20xx:xxxx:xxxx::/64`
 
-Example of /etc/radvd.conf file
 ```
 interface wlan-ap {
   AdvSendAdvert on;
@@ -203,9 +202,9 @@ If you installed hostapd you will have this already configured with a prefix.  S
 **subnet**
 *Server only*
 
-Defines ipv6 addresses to add to route table that will be routed over through yggdrasil. Must match IPs in `yggdrasil.iptunnel.server`
+Defines IPv6 addresses to add to the routing table that will be routed over through Yggdrasil. Must match IPs in `yggdrasil.iptunnel.server`
 
-Default: *fd00::/64*
+Default: `fd00::/64`
 Value: `Any ipv6 address range`
 
 **subnet-interface**
@@ -213,7 +212,7 @@ Value: `Any ipv6 address range`
 
 Defines the interface that will be used to route the routed IPv6 subnet.
 
-Default: wlan-ap
+Default: `wlan-ap`
 Value: `Any interface on the system`
 
 Section `[iptunnel]`
@@ -221,10 +220,10 @@ Section `[iptunnel]`
 **subnet**
 *Server only*
 
-Defines ip addresses to add to route table that will be routed over through yggdrasil. Must match ips in `yggdrasil.iptunnel.server`
+Defines IP addresses to add to the routing table that will be routed over through Yggdrasil. Must match the IPs in `yggdrasil.iptunnel.server`
 
-Default: *10.10.0.0/24*
-Value: `Any ipv4 address range`
+Default: `10.10.0.0/24`
+Value: `Any IPv4 address range`
 
 #### IPTunnel - Server
 
