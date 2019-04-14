@@ -7,6 +7,9 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Install dependencies
 sudo apt-get install -y socat python-dev libtool python-setuptools autoconf automake
 
+# Install node.js shared module
+source "$BASE_DIR/../shared/node.js/install"
+
 # Install scuttlebot
 # sudo sudo is a hack to allow post-install scripts that drop one level of sudo and still be sudoed
 # otherwise you get permissions errors when it tries to write to root owned folders

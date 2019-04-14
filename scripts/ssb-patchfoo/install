@@ -6,8 +6,12 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 CURRENT_DIR="$(pwd)"
 
+# Install node.js shared module
+source "$BASE_DIR/../shared/node.js/install"
+
 # Make folder if service did not
 mkdir -p ~/.ssb/node_modules || true
+
 # shellcheck disable=SC2164
 cd ~/.ssb/node_modules
 

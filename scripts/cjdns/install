@@ -5,6 +5,9 @@ TAG_CJDNS=d2e55d58548d83940482fe1bbbe1fd36f7f1b4ef
 # Common functions
 source functions.sh
 
+# Install node.js
+source "$BASE_DIR/../shared/node.js/install"
+
 # Default build script for CJDNS
 CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 ./do"
 CJDNS_PACKAGE=""
@@ -48,20 +51,6 @@ case "$BOARD_MODEL" in
         CJDNS_PACKAGE="cjdns-no-neon-v4.deb"
     ;;
 esac
-
-# Get tools
-if ! [ "$(which nodejs)" ]; then
-    # Check for armv6 and install nodejs manually instead since it will not install via repo
-    if uname -m | grep -Eq ^armv6; then
-        wget -O /tmp/node-v6.11.0-linux-armv6l.tar.gz https://nodejs.org/dist/v6.11.0/node-v6.11.0-linux-armv6l.tar.gz
-        sudo tar xfz /tmp/node-v6.11.0-linux-armv6l.tar.gz --strip 1 -C /
-        rm -rf /tmp/node-v6.11.0-linux-armv6l.tar.gz
-        sudo ln -s /bin/node /bin/nodejs
-    else
-       curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-       sudo apt-get install nodejs -y
-   fi
-fi
 
 # Check if cjdns is to be compiled or downloaded
 if [[ ! -e "/usr/bin/cjdroute" ]]; then
