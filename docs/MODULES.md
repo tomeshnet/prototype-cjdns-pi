@@ -157,63 +157,73 @@ To use this module you must have it installed. You can check to see if the file 
 ### Additional configuration
 Additional configurations can be made in the file `/etc/yggdrasil.iptunnel.conf`
 
-Section `[iptunnel]`
+Section `[general]`
 
-**IPv6nat**
-Disables masquerading of IPv6 tunnels. Set to `false` when routable addresses are being used across the tunnel. Usually when passing an additional subnet.
-
-Default: *true*
-Values: `true` , `false`
-
-To add advertising of the subnet, add the following prefix to /etc/radvd.conf
-```
-   prefix 20xx:xxxx:xxxx:x::/64
-    {
-        AdvOnLink on;
-        AdvAutonomous on;
-    };
-```
-
-**SUBNET4**
-*Server only*
-
-Defines ip addresses to add to route table that will be routed over through yggdrasil. Must match ips in `yggdrasil.iptunnel.server`
-
-Default: 10.10.0.0/24
-Value: `Any ipv4 address range`
-
-**SUBNET6**
-*Server only*
-
-Defines ipv6 addresses to add to route table that will be routed over through yggdrasil. Must match ips in `yggdrasil.iptunnel.server`
-
-Default: fd00::/64
-Value: `Any ipv6 address range`
-
-**outint**
-*Server Only*
-
-Defines the interface connected to the internet.
-
-Default: eth0
-Value: `Any interface on the system`
-
-**ipv6subnetint**
-*Client Only*
-
-Defines the interface that will pass on the IPv6 subnet.
-
-Default: wlan-ap
-Value: `Any interface on the system`
-
-
-**yggint**
+**yggdrasil-interface**
 *Server Only*
 
 Defines the yggdrasil interface.
 
-Default: ygg0
+Default: `ygg0`
+Value: `Yggdrasil interface on the system, usually ygg0 or tun0`
+
+**exit-interface**
+*Server Only*
+
+Defines the exit interface that is connected to the internet.
+
+Default: `eth0`
 Value: `Any interface on the system`
+
+Section `[ipv6tunnel]`
+
+**nat**
+Disables masquerading of IPv6 tunnels. Set to `false` when routable addresses are being used across the tunnel. This is used when you route another IPv6 route to be used by the remote node to issue IPv6 addresses to its clients.
+
+Default: `true`
+Values: `true` , `false`
+
+To add advertising of this subnet, add a prefix to `/etc/radvd.conf` under the correct interface.  For example if the subnet you are routing has the prefix `20xx:xxxx:xxxx::/64`
+
+```
+interface wlan-ap {
+  AdvSendAdvert on;
+  MaxRtrAdvInterval 30;
+  prefix 20xx:xxxx:xxxx::/64
+  {
+    AdvOnLink on;
+    AdvAutonomous on;
+  }
+};
+```
+
+If you installed hostapd you will have this already configured with a prefix.  Simply add the new prefix under the existing one.
+
+**subnet**
+*Server only*
+
+Defines IPv6 addresses to add to the routing table that will be routed over through Yggdrasil. Must match IPs in `yggdrasil.iptunnel.server`
+
+Default: `fd00::/64`
+Value: `Any ipv6 address range`
+
+**subnet-interface**
+*Client Only*
+
+Defines the interface that will be used to route the routed IPv6 subnet.
+
+Default: `wlan-ap`
+Value: `Any interface on the system`
+
+Section `[iptunnel]`
+
+**subnet**
+*Server only*
+
+Defines IP addresses to add to the routing table that will be routed over through Yggdrasil. Must match the IPs in `yggdrasil.iptunnel.server`
+
+Default: `10.10.0.0/24`
+Value: `Any IPv4 address range`
 
 #### IPTunnel - Server
 
