@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC1091
 
 TAG_CJDNS=d2e55d58548d83940482fe1bbbe1fd36f7f1b4ef
 
