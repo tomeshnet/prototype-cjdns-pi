@@ -10,6 +10,7 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 sudo apt-get install -y php-fpm socat
 
 # Install node.js shared module
+# shellcheck source=../shared/node.js/install
 source "$BASE_DIR/../shared/node.js/install"
 
 # Install required parts of ssb from npm
