@@ -6,6 +6,7 @@ TAG_CJDNS=d2e55d58548d83940482fe1bbbe1fd36f7f1b4ef
 source functions.sh
 
 # Install node.js
+# shellcheck source=../shared/node.js/install
 source "$BASE_DIR/../shared/node.js/install"
 
 # Default build script for CJDNS
