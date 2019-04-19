@@ -196,10 +196,9 @@ interface wlan-ap {
   {
     AdvOnLink on;
     AdvAutonomous on;
-  }
+  };
 };
 ```
-
 If you installed hostapd you will have this already configured with a prefix.  Simply add the new prefix under the existing one.
 
 **subnet**
