@@ -219,7 +219,7 @@ Value: `Any interface on the system`
 
 #### IPTunnel - Server
 
-The IPTunnel server acts as a exit node. It will accept connections from other yggdrasil peeres listed in **/etc/yggdrasil.iptunnel.server** and form a tunnnel between them allowing the remote peer to access internet available on this node.
+The IPTunnel server acts as a exit node. It will accept connections from other Yggdrasil peers listed in **/etc/yggdrasil.iptunnel.server** and form a tunnel between them allowing the remote peer to access Internet available on this node.
 
  To configure as a server (exit Internet traffic for other nodes),
  1. Create `/etc/yggdrasil.iptunnel.server`
