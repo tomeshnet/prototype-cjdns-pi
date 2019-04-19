@@ -75,7 +75,7 @@ To modify the ports that are accessable from CJDNS modify the `cjdns` *table* in
 
 Other peers can be found in the [this](https://github.com/hyperboria/peers) repo of peers. Try to connect to only a few peers, and ones that are close to where you live.
 
-You'll see the peering information that will give you the address (ipv4 or ipv6) and credentials to connect to the node. You must either select to use just the ipv4 config, or you could use both. Now that we have this info, connect to your mesh device, and edit the following config file:
+You'll see the peering information that will give you the address (IPv4 or IPv6) and credentials to connect to the node. You must decide to use the IPv4 or IPv6 Internet address, in almost all cases you want IPv4. Now that we have this info, connect to your mesh device, and edit the following config file:
 
 ```
 $ sudo nano /etc/cjdroute.conf
