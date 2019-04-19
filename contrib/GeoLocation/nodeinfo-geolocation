@@ -1,0 +1,16 @@
+#!/bin/bash
+
+echo "{ "wifiAccessPoints": {" > /tmp/locationScan
+iwlist  wlan0 scanning | grep Cell | grep Address | awk '{print "\"macAddress\": \""$5"\","}' >>/tmp/locationScan
+echo "}}" >> /tmp/locationScan
+
+curl -d @/tmp/locationScan -H "Content-Type: application/json" "http://node2.e-mesh.net/geo.php" -o /tmp/locationResult > /dev/null
+a=`jq -r ".accuracy" /tmp/locationResult 2>/dev/null`
+lat=`jq -r ".location.lat" /tmp/locationResult 2>/dev/null`
+lng=`jq -r ".location.lng" /tmp/locationResult 2>/dev/null`
+
+echo "\"geolocation\": {"
+echo "    \"latitude\": \"$lat\","
+echo "    \"longitude\": \"$lng\","
+echo "    \"accuracy\": \"$a\""
+echo "}"
