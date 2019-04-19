@@ -162,7 +162,7 @@ Section `[general]`
 **yggdrasil-interface**
 *Server Only*
 
-Defines the yggdrasil interface.
+Defines the Yggdrasil interface.
 
 Default: `ygg0`
 Value: `Yggdrasil interface on the system, usually ygg0 or tun0`
