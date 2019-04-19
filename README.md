@@ -4,7 +4,11 @@
 
 The following instructions will help you set up an encrypted mesh network on Raspberry Pi's. It takes about 15 minutes to set up a node with the Pi 3. Obviously, to have a mesh you will need more than one node. 
 
-The software also supports Debian running on x86 and x64 boards, and many board that run [Armbian](https://www.armbian.com/) (such as many models of Orange Pi hardware family). The same installation steps can be followed, except you would flash the SD card with Armbian instead of Raspbian or have Debian installed onto the computer. See [Hardware Table](#hardware-table) for the full list of supported hardware and check for board specific installation details in our [Frequently Asked Questions](./docs/FAQ.md).
+This software stack will also support hardware (desktops, laptops and boards) running Debian, Raspbian or [Armbian](https://www.armbian.com/), with the `amd64 / x86_64`, `i386 / x86`, `armhf`, `arm64 / aarch64`, `armv6` and `armv7`. This should cover almost all modern computers. 
+
+If your board came with its own OS that isn't an up-to-date Debian or Raspbian, check if there is an Armbian OS for it and flash that on it instead.
+
+The same installation steps can be followed for these non-RPi devices, except you would flash the SD card with Armbian instead of Raspbian or have Debian installed onto the computer. See [Hardware Table](#hardware-table) for the full list of tested hardware and check for board specific installation details in our [Frequently Asked Questions](./docs/FAQ.md).
 
 ## Set Up
 
@@ -16,25 +20,25 @@ The software also supports Debian running on x86 and x64 boards, and many board 
       * For [802.11s Mesh Point](https://github.com/o11s/open80211s/wiki/HOWTO) wireless links (recommended), device such as the [TP-LINK TL-WN722N v1](http://www.tp-link.com/en/products/details/TL-WN722N.html), [Toplinkst TOP-GS07](https://github.com/tomeshnet/documents/blob/master/technical/20170208_mesh-point-with-topgs07-rt5572.md) or [another supported device](https://github.com/phillymesh/802.11s-adapters/blob/master/README.md).
       * For [ad-hoc](https://en.wikipedia.org/wiki/Wireless_ad_hoc_network) wireless links (experimental), any device that supports linux and ad-hoc.
 
-1. Flash the SD card with [Raspbian Stretch Lite](https://www.raspberrypi.org/downloads/raspbian/).
+2. Flash the SD card with [Raspbian Stretch Lite](https://www.raspberrypi.org/downloads/raspbian/).
 
-1. Create an empty file named **ssh** to enable SSH when the Pi boots:
+3. Create an empty file named **ssh** to enable SSH when the Pi boots:
 
     ```
     $ touch /path/to/sd/boot/ssh
     ```
 
-1. Plug the SD card and USB WiFi adapter into the Pi.
+4. Plug the SD card and USB WiFi adapter into the Pi.
 
-1. Plug the Pi into your router so it has connectivity to the Internet. SSH into the Pi with `ssh pi@raspberrypi.local` and password **raspberry**.
+5. Plug the Pi into your router so it has connectivity to the Internet. SSH into the Pi with `ssh pi@raspberrypi.local` and password **raspberry**.
 
     **Optional:** There are other ways to connect, such as connecting the Pi to your computer and sharing Internet to it. If you have multiple Pi's connected to your router, find their IPs with `nmap -sn 192.168.X.0/24` (where 192.168.X is your subnet) and SSH to the local IP assigned to the Pi you want to address `ssh pi@192.168.X.Y`.  
 
     **Note:** After the install the node will be renamed to `tomesh-xxxx` where `xxxx` is the last 4 characters of your CJDNS address.  Before the reboot the node will notify you of what the name is.
 
-1. In your SSH session, run `passwd` and change your login password. It is very important to choose a strong password so others cannot remotely access your Pi.
+6. In your SSH session, run `passwd` and change your login password. It is very important to choose a strong password so others cannot remotely access your Pi.
 
-1. Run the following, then let the installation complete. After about 5 minutes the Pi will reboot:
+7. Run the following, then let the installation complete. After about 5 minutes the Pi will reboot:
 
     ```
     $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install && chmod +x install && ./install
@@ -66,17 +70,12 @@ To uninstall the services, run `./prototype-cjdns-pi/scripts/uninstall`.
 
 If you are updating, run the same uninstall script, but keep all configuration files and data directories when prompted, remove the **prototype-cjdns-pi** directory along with the **install** script, then repeat the last installation step.
 
-## Experimental Support for Other Boards
-
-We have added support for other single board computers such as the [Orange Pi](http://www.orangepi.org) family of boards. So far all the boards that have been tested support [Armbian](http://www.armbian.com) and usualy our install script needs no modification to work.  To use one of these boards start with the Armbian nightly images linked in the table below, then follow the same installation steps as the Raspberry Pi.  Below is a table of boards we have tested and some metrics of what you can expect from the board.
-
 ## Hardware Table
 
 List of tested hardware:
 
 | Hardware                  | Base OS         | [CJDNS Benchmark](https://github.com/phillymesh/cjdns-optimizations) <sub>(salsa20/poly1305, switching)</sub> | iPerf3 | USB | Ethernet | Notes    |
 | :-------------------------|:----------------|:--------------------------------------------------------------------------------------------------------------|:-------|:----|:---------|:---------|
-| Genericx x86              | Debian 9                                                         |            |         |         |   |  Performance depended on underlying hardware. |
 | Raspberry Pi 3b+          | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) | 405k, 119k | ~90 Mbps| 2       | 10/100/1000 | Eth only ~320mbps. Onboard wifi dual band |
 | Raspberry Pi 3b           | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) | 350k, 100k | 89 Mbps | 2       | 10/100 | |
 | Raspberry Pi 2            | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) | 145k,  55k | 39 Mbps | 2       | 10/100 | |
@@ -113,10 +112,12 @@ To add a new module, use **scripts/ipfs/** as an example to:
 * Create **scripts/new-module/install** and **scripts/new-module/uninstall**
 * Make corresponding references in the main **install**, **install2**, **status**, **uninstall** files
 
+Come say hi in our [Software chatroom](https://chat.tomesh.net/#/group/+tomesh:tomesh.net) for more help.
+
 ## Notes
 
 * We keep a list of [Frequently Asked Questions](./docs/FAQ.md). Feel free to add to this list with the issues you experienced on your boards.
 
-* Your computer can be a node too! It will mesh with the Pi's over your router. See the [cjdns repository](https://github.com/cjdelisle/cjdns) on how to set this up.
+* Your computer can be a node too! It will mesh with the RPi(s) over your router. Install software like [CJDNS](https://github.com/cjdelisle/cjdns) or [Yggdrasil](https://yggdrasil-network.github.io/) to get started.
 
 * Original plan for this repository and early benchmark results are available in [the doc folder](./docs).
