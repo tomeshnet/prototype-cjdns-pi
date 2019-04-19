@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC1091
-true
 
 set -e
 
-GO_IPFS_VERSION=v0.4.19
+GO_IPFS_VERSION="v0.4.20"
+
 ARCH="$(uname -m)" 
 case "$ARCH" in
   x86_64)
@@ -27,7 +27,7 @@ case "$ARCH" in
   ;;
 esac
 
-# Hyperborea connected peer used to bootstrap hyperborea only ipfs nodes
+# Hyperborea connected peer used to bootstrap Hyperborea only ipfs nodes
 # DarkDrgn2k's peer
 IPFS_PEER_1="/ip6/fc6e:691e:dfaa:b992:a10a:7b49:5a1a:5e09/tcp/4001/ipfs/QmU6NeD2Uu34WKest1NZGvGmScLhN1zVo66K35GeE6Jft2"
 # HeavyMetal's peer
