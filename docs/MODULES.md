@@ -284,7 +284,7 @@ route add 123.123.123/24 gw 192.168.0.1
 ```
 Where:
 `123.123.123` is the IP address of the Yggdrasil peer  
-`192.168.0.1` is the current active gateway to the Internet  
+`192.168.0.1` is the current active gateway to the Internet, ie your router.
 
 
 ## IPFS
