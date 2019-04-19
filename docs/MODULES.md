@@ -111,6 +111,7 @@ your code should look somewhat like this:
                 }
   }
 ```
+Remember that multiple peers will need a comma and the end of the `}` for each peer except the last one!
 
 Next you should restart CJDNS with a `sudo systemctl restart cjdns` command. This will reload CJDNS with the new config file. Run a `status` command on your node, and make sure when it prints out
 the text, that CJDNS is green with the text `[ACTIVE]`. if so, you have successfully connected to the remote peer, if it says `[INACTIVE]`, then there might be a typo in your config file. Make sure its formatted correctly (the config file is written using JSON).
