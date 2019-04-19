@@ -457,7 +457,7 @@ If you wish to monitor multiple nodes, simply add more nodes to the JSON file. R
 ## Secure Scuttlebutt
 [SSB](https://www.scuttlebutt.nz/) is a decent(ralised) secure gossip platform. It allows for the offline and decentralized distribution and copying of data in a "feeds" format. In practice it is often used as a social network similar to Facebook (but P2P), but has many other applications.
 
-Our nodes can run a Scuttlebutt pub, which allows your messages to propagate through the mesh network, if your node is connected to one. You can download a client as the link above will tell you, and if you installed the SSB module, you'll see the pub running on your Pi in the sidebar of the client when you connect to your node's WiFi network. This pub will sync with users of it's network, and with mesh nodes nearby, spreading your messages and helping you get new ones.
+Our nodes can run a Scuttlebutt pub, which allows your messages to propagate through the mesh network, if your node is connected to one. You can download a [client](https://www.scuttlebutt.nz/applications) like [Patchwork](https://github.com/ssbc/patchwork), and if you installed the SSB module, you'll see the pub running on your Pi in the sidebar of the client when you connect to your node's WiFi network. This pub will sync with users of its network, and with mesh nodes nearby, spreading your messages and helping you get new ones.
 
 ### SSB Pub Peering
 
