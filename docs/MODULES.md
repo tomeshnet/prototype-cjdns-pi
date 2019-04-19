@@ -170,7 +170,7 @@ Value: `Yggdrasil interface on the system, usually ygg0 or tun0`
 **exit-interface**
 *Server Only*
 
-Defines the exit interface that is connected to the internet.
+Defines the exit interface that is connected to the Internet.
 
 Default: `eth0`
 Value: `Any interface on the system`
