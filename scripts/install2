@@ -84,7 +84,7 @@ echo "auto lo" | sudo tee /etc/network/interfaces.d/lo > /dev/null
 echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces.d/lo >> /dev/null
 
 # Replace netcat with IPv6 supported one, see https://unix.stackexchange.com/questions/457670/netcat-how-to-listen-on-a-tcp-port-using-ipv6-address
-sudo apt-get remove -y netcat-traditional netcat6 ncat netcat
+sudo apt-get remove -y netcat-traditional netcat6 ncat netcat || true
 sudo apt-get install -y netcat-openbsd
 
 # Detect missing /sbin from $PATH variable on Debian distros, and add it
