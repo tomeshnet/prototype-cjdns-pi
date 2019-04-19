@@ -12,6 +12,7 @@ function confset {
     fi
 
     # If the file is missing the provided section it is created
+    # shellcheck disable=SC2143
     if [[ -z "$(grep "\[$section\]" "$file")" ]]; then
         echo "[$section]" >> "$file"
     fi
