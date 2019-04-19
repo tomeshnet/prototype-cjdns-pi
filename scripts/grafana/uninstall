@@ -20,4 +20,5 @@ if [ -d "/var/lib/grafana" ]; then
         sudo rm -rf /var/log/grafana
     else
         echo -e "\e[1;32mKeeping Grafana database\e[0m"
+    fi
 fi
