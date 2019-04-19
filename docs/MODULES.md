@@ -89,7 +89,7 @@ This file contains everything that is required for CJDNS to run, so be careful n
 {
 ```
 
-This is where you input the ipv4 address. There is also a ipv6 field:
+This is where you input the IPv4 address. There is also a IPv6 field, if you are using the IPv6 address instead:
 
 ```
 // Nodes to connect to (IPv6 only).
