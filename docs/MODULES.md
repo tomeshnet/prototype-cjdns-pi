@@ -97,7 +97,7 @@ This is where you input the ipv4 address. There is also a ipv6 field:
 {
 ```
 
-Insert the respective code, and the save (ctrl+X to save, then ctrl+S to confirm file name, then ENTER to confirm changes).
+Insert the respective code, and the save (`ctrl-x` to save, then `y` to confirm file name, then `enter` to confirm changes).
 Your code should look somewhat like this:
 ```
 // Nodes to connect to (IPv4 only).
