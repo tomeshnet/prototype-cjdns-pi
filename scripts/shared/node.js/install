@@ -15,8 +15,9 @@ if ! [[ -f "/bin/nodejs" ]]; then
             rm -rf /tmp/node-v6.11.0-linux-armv6l.tar.gz
             sudo ln -s /bin/node /bin/nodejs
         else
-        curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-        sudo apt-get install nodejs -y
+            curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+            sudo apt-get install nodejs -y
+        fi
     fi
 fi
 
