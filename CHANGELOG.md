@@ -13,11 +13,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 - Stack can run without CJDNS installed
-- [MODULES.md](./docs/MODULES.md) file added
-  - Many module instructions and documentation have been added there
-- Support for generic `amd64` or `i386`, as well as other ARM boards in all relevant modules
+- [MODULES.md](./docs/MODULES.md) file updated
+  - Table of Contents
+  - CJDNS Internet peering instructions
+  - Yggdrasil Internet peering instructions
+  - Yggdrasil IPTunnel instructions
+  - Grafana instructions
+  - Prometheus instructions
+  - Scuttlebutt explanation
+  - Scuttlebutt Internet pub peering instructions
+- Support for generic `amd64` or `i386` was added, as well as other ARM boards
+  - All relevant modules now download different binaries depending on the hardware
 - Grafana database can be saved on uninstall
-- IPFS configuration to use less resources  - `Swarm.ConnMgr.LowWater/HighWater/GracePeriod`
+- IPFS configuration to use less resources  - Changed `Swarm.ConnMgr.LowWater/HighWater/GracePeriod`
 - IPFS configuration to enable QUIC
 - Hostname can be changed with the installation of Yggdrasil or CJDNS
 - Yggdrasil IPTunnel supports IPv6 and routed IPv6
@@ -26,7 +34,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Changed
 - Grafana version 5.1.4 -> 6.0.0
 - CJDNS is now a module
-- NodeJS is now a module, as several modules need it installed it - **NOT MERGED YET** #381
+- NodeJS is now a module, as several modules need it installed
 - NetworkManager is now removed, it was never used
 - IPFS version 0.4.19 -> 0.4.20
 - IPFS peering will now try and use QUIC if it's available on the node being connected to
@@ -41,8 +49,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Passwordless sudo now works on Armbian
 - Choosing the Yggdrasil IPTunnel module now actually installs it
 - Prometheus Node Exporter now uses the correct `collector.textfile.directory`
-- Yggdrasil IP addresses will no longer be seen as Internet addresses
+- Yggdrasil IP addresses will no longer be seen as Internet addresses by the node's routing
 
 ---
 
-Versions prior to v0.5 were neither formatted in this style or originally added to this file. A rough changelog for those releases can be found on the [Github Releases page](https://github.com/tomeshnet/prototype-cjdns-pi/releases) for this repo.
+Versions prior to v0.5 were neither formatted in this style or originally added to this file. A rough changelog for those releases can be found on the [Github releases page](https://github.com/tomeshnet/prototype-cjdns-pi/releases) for this repo.
