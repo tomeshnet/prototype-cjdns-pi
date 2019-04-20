@@ -3,6 +3,9 @@
 
 TAG_CJDNS=d2e55d58548d83940482fe1bbbe1fd36f7f1b4ef
 
+# Set BASE_DIR
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # Common functions
 source functions.sh
 
