@@ -67,7 +67,7 @@ ipfs config --json Swarm.ConnMgr.HighWater 200
 ipfs config Swarm.ConnMgr.GracePeriod 60s
 
 # Enable QUIC for better connections when possible
-ipfs config --bool Experimental.QUIC true 
+ipfs config --bool Experimental.QUIC true
 
 # Configure HTTP to IPFS gateway
 sudo cp "$BASE_DIR/ipfs-http-gateway.conf" /etc/nginx/site-path-enabled/ipfs-http-gateway.conf

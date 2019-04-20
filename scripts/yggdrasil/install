@@ -7,7 +7,7 @@ YGGDRASIL_HOST=700-115685026
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-ARCH="$(uname -m)" 
+ARCH="$(uname -m)"
 case "$ARCH" in
   x86_64)
     ARCH_VERSION="amd64"
@@ -40,13 +40,13 @@ if [[ ! -f "/usr/bin/yggdrasil" ]]; then
 fi
 
 # Change configuration to have yggdrasil's tun interface called ygg0
-sudo sed -i "s/IfName: auto/IfName: ygg0/" /etc/yggdrasil.conf 
+sudo sed -i "s/IfName: auto/IfName: ygg0/" /etc/yggdrasil.conf
 
 # Change port to 12345 for firewall
 sudo sed -i "s/Listen: \[\]/Listen\: [\"tcp:\/\/\[::\]:12345\"\]/" /etc/yggdrasil.conf
 
 sudo systemctl enable yggdrasil.service
-sudo systemctl start yggdrasil.service 
+sudo systemctl start yggdrasil.service
 
 # Don't count Yggdrasil IPs as Internet IP addresses
 if [ -f "/etc/gai.conf" ]; then
@@ -67,7 +67,7 @@ if [ -z "${NEWHOSTNAME}" ]; then
 fi
 
 # Set node name
-if [ -z "${NEWHOSTNAME}" ]; then 
+if [ -z "${NEWHOSTNAME}" ]; then
     NEWHOSTNAME=$(cat /etc/hostname)
 fi
 
