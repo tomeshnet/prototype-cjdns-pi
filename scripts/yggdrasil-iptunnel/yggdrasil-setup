@@ -4,8 +4,6 @@
 echo 1 > /proc/sys/net/ipv4/ip_forward
 echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
 
-source /usr/local/bin/confset.sh
-
 # Give yggdrasil enough time to create an ygg0 interface before we start adding routes
 sleep 3
 if [ -f /etc/yggdrasil.iptunnel.conf ]; then 

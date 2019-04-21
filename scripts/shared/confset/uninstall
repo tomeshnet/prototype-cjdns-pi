@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Dependencies
+sudo apt-get -y install confget
+sudo rm -rf /usr/local/bin/confset
