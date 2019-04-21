@@ -6,6 +6,8 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 MESH_NAME=$(confget -f /etc/mesh.conf -s general "mesh-name")
 
+sudo apt-get install -y iw 
+
 # Install bring-up script for the Mesh Point interface to /usr/bin
 cp "$BASE_DIR/mesh-point" "$BASE_DIR/mesh-point2"
 sed -i "s/MESH_NAME/$MESH_NAME/g" "$BASE_DIR/mesh-point2"
