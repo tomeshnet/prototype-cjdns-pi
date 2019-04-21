@@ -6,7 +6,6 @@ if [ -f '/etc/cjdroute.conf' ]; then
     # Define new hostname
     if [ -z "${NEWHOSTNAME}" ]; then
     NEWHOSTNAME=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-/g")
-    export NEWHOSTNAME
     fi
 fi
 
@@ -14,12 +13,11 @@ if ! [ -z "$(ifconfig  | grep tun0:)" ]; then
     # Define new hostname
     if [ -z "${NEWHOSTNAME}" ]; then
     NEWHOSTNAME=$(sudo ifconfig ygg0 | grep -E 'inet6 2[0-9a-fA-F]{2}:' | awk '{print $2}' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-Y/g")
-    export NEWHOSTNAME
     fi
 fi
 
 # Set node name
-if [ -z "${NEWHOSTNAME}" ]; then
+if ! [ -z "${NEWHOSTNAME}" ]; then
 
     # Rename node based on cjdns address
     oldhostname=$(hostname)
