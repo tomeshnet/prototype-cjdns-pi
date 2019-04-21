@@ -18,6 +18,12 @@ function isMeshable {
 
 set -e
 
+mesh_name=$(confget -f /etc/mesh.conf -s general "mesh-name")
+frequency=$(confget -f /etc/mesh.conf -s general "frequency")
+if [ -z "$frequency" ]; then
+  frequency=2412
+fi
+
 # Set wireless regulatory domain
 sudo iw reg set CA
 
@@ -53,7 +59,7 @@ sudo ifconfig $mesh_dev up
 
 # Join the mesh network
 # To join radio in HT40+ htmode (enable 802.11n rates) add  HT40+ to end of this line
-sudo iw dev $mesh_dev mesh join MESH_NAME freq 2412
+sudo iw dev $mesh_dev mesh join $MESH_NAME freq $frequency
 
 # Disable forwarding since we rely on cjdns to do routing and only uses Mesh Point as a point-to-point link
 sudo iw dev $mesh_dev set mesh_param mesh_fwding=0

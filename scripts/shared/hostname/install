@@ -1,0 +1,34 @@
+#!/bin/bash
+
+MESH_NAME=$(confget -f /etc/mesh.conf -s general "mesh-name")
+
+if [ -f '/etc/cjdroute.conf' ]; then
+    # Define new hostname
+    if [ -z "${NEWHOSTNAME}" ]; then
+    NEWHOSTNAME=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-/g")
+    export NEWHOSTNAME
+    fi
+fi
+
+if ! [ -z "$(ifconfig  | grep tun0:)" ]; then
+    # Define new hostname
+    if [ -z "${NEWHOSTNAME}" ]; then
+    NEWHOSTNAME=$(sudo ifconfig ygg0 | grep -E 'inet6 2[0-9a-fA-F]{2}:' | awk '{print $2}' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-Y/g")
+    export NEWHOSTNAME
+    fi
+fi
+
+# Set node name
+if [ -z "${NEWHOSTNAME}" ]; then
+
+    # Rename node based on cjdns address
+    oldhostname=$(hostname)
+    sudo echo "$NEWHOSTNAME" | sudo tee /etc/hostname > /dev/null
+    sudo sed -i -e "s/$oldhostname/$NEWHOSTNAME/" /etc/hosts
+
+    if [ -f '/etc/yggdrasil.conf' ]; then
+        sudo sed -i "/NodeInfo: {}/d" /etc/yggdrasil.conf
+        sudo sed -i "\$i\ \ NodeInfo:\n  {\n   name: ${NEWHOSTNAME}\n  }\n"  /etc/yggdrasil.conf
+    fi
+
+fi

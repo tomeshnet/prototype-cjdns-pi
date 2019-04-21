@@ -326,6 +326,7 @@ fi
 if [ "$(checkModule 'WITH_YGGDRASIL_IPTUNNEL')" ]; then
     source yggdrasil-iptunnel/install
 fi
+source shared/hostname/install
 # IPFS
 if [ ! -x "$(command -v ipfs)" ] && [ "$(checkModule 'WITH_IPFS')" ]; then
     source ipfs/install
@@ -408,10 +409,6 @@ cp ~/.profile ~/.bash_profile
     echo "# print mesh node status"
     echo "status"
 } >> ~/.bash_profile
-# Rename node based on cjdns address
-oldhostname=$(hostname)
-sudo echo "$NEWHOSTNAME" | sudo tee /etc/hostname > /dev/null
-sudo sed -i -e "s/$oldhostname/$NEWHOSTNAME/" /etc/hosts
 
 if [[ "$CHANGE_PASSWORD" == "pi" ]]; then
     sudo passwd -e "$CHANGE_PASSWORD"
