@@ -4,6 +4,9 @@ set -e
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Install nodeinfo
+source shared/nodeinfo/install
+
 sudo cp "$BASE_DIR/yggdrasil-setup" "/usr/local/sbin/yggdrasil-setup"
 sudo mkdir /etc/systemd/system/yggdrasil.service.d || true
 sudo cp "$BASE_DIR/yggdrasil-iptunnel.service" /etc/systemd/system/yggdrasil.service.d/iptunnel.conf
