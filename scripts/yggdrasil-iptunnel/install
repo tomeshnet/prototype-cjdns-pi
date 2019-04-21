@@ -4,7 +4,7 @@ set -e
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Install nodeinfo
+# Install confset
 source shared/confset/install
 
 sudo cp "$BASE_DIR/yggdrasil-setup" "/usr/local/sbin/yggdrasil-setup"
