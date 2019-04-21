@@ -229,6 +229,9 @@ esac
 
 # Prompt and set missing flags
 
+# Install confset
+source shared/confset/install
+
 # Prompt for name of the mesh network
 ##TODO## Add dialog option
 read -p "Enter the name of your mesh network (default: tomesh): " -r
@@ -236,7 +239,8 @@ MESH_NAME="${REPLY// }"
 if [ "${#MESH_NAME}" == 0 ]; then
     MESH_NAME="tomesh"
 fi
-export MESH_NAME
+
+sudo confset general mesh-name "$MESH_NAME" /etc/mesh.conf
 
 askModule "WITH_CJDNS" "CJDNS routing engine"
 if [ "$WITH_CJDNS" == "true" ]; then
@@ -399,7 +403,7 @@ cp ~/.profile ~/.bash_profile
 {
     echo ""
     echo "# export mesh network name"
-    echo "export MESH_NAME=$MESH_NAME"
+    echo "export MESH_NAME=$(confget -f /etc/mesh.conf -s general "mesh-name")"
     echo ""
     echo "# print mesh node status"
     echo "status"
