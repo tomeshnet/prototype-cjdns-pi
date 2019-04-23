@@ -9,6 +9,7 @@ if [ -f '/etc/cjdroute.conf' ]; then
     fi
 fi
 
+# Define hostname based off Yggdrasil if CJDNS isn't installed
 if ! [ -z "$(ifconfig  | grep ygg0:)" ]; then
     # Define new hostname
     if [ -z "${NEWHOSTNAME}" ]; then
