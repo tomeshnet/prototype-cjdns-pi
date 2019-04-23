@@ -19,7 +19,7 @@ fi
 
 # Set node name
 if ! [ -z "${NEWHOSTNAME}" ]; then
-    # Rename node based on cjdns address
+    # Rename node based on new hostname
     oldhostname=$(hostname)
     sudo echo "$NEWHOSTNAME" | sudo tee /etc/hostname > /dev/null
     sudo sed -i -e "s/$oldhostname/$NEWHOSTNAME/" /etc/hosts
