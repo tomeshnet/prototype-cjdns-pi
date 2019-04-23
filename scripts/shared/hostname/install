@@ -9,7 +9,7 @@ if [ -f '/etc/cjdroute.conf' ]; then
     fi
 fi
 
-if ! [ -z "$(ifconfig  | grep tun0:)" ]; then
+if ! [ -z "$(ifconfig  | grep ygg0:)" ]; then
     # Define new hostname
     if [ -z "${NEWHOSTNAME}" ]; then
     NEWHOSTNAME=$(sudo ifconfig ygg0 | grep -E 'inet6 2[0-9a-fA-F]{2}:' | awk '{print $2}' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-Y/g")
