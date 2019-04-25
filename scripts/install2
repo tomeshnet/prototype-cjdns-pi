@@ -326,7 +326,7 @@ fi
 if [ "$(checkModule 'WITH_YGGDRASIL_IPTUNNEL')" ]; then
     source yggdrasil-iptunnel/install
 fi
-source shared/hostname/install
+
 # IPFS
 if [ ! -x "$(command -v ipfs)" ] && [ "$(checkModule 'WITH_IPFS')" ]; then
     source ipfs/install
@@ -398,6 +398,9 @@ echo -e "Run \e[1;32mstatus\e[0m anytime to print the status of your node"
 
 # Install nodeinfo
 source shared/nodeinfo/install
+
+# Set hostname nodeinfo
+source shared/hostname/install
 
 # Print node status on login
 cp ~/.profile ~/.bash_profile
