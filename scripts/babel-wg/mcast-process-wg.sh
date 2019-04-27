@@ -1,4 +1,5 @@
 #!/bin/bash
+source /etc/wg
 SOCAT_PEERADDR=$(echo "$SOCAT_PEERADDR" | tr -d \[ | tr -d \]) #Remote
 SOCAT_SOCKADDR=$(echo "$SOCAT_SOCKADDR" | tr -d \[ | tr -d \]) #Local
 LOCAL=$(echo $SOCAT_SOCKADDR  | tr -d \[ | tr -d \] | tr -d \:)
@@ -19,6 +20,6 @@ if [[ "$A" == "WG" ]]; then
         ipv6=0${key:0:31}
         ip=${ipv6:0:4}:${ipv6:4:4}:${ipv6:8:4}:${ipv6:12:4}:${ipv6:16:4}:${ipv6:20:4}:${ipv6:24:4}:${ipv6:28:4}
         ip="$(echo $ip | cut -d ":" -f5-8)"
-        wg set wg0 listen-port 1010 private-key key peer $peerPub endpoint [$SOCAT_PEERADDR%$IFACE]:1010 persistent-keepalive 60 allowed-ips fe80::${ip}/128,ff02:0:0:0:0:0:1:6/128
+        wg set wg0 listen-port 1010 private-key key peer $peerPub endpoint [$SOCAT_PEERADDR%$IFACE]:1010 persistent-keepalive 60 allowed-ips fe80::${ip}/128,ff02::1:6/128,40::/8
     fi
 fi
