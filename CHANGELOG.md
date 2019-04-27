@@ -30,6 +30,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Hostname can be changed with the installation of Yggdrasil or CJDNS
 - Yggdrasil IPTunnel supports IPv6 and routed IPv6
 - Yggdrasil IPtunnel drop in service adjustment - **EXPAND ON THIS**
+- There is now a `confset` command used to set INI-like files - view the command [here](https://github.com/tomeshnet/prototype-cjdns-pi/blob/43b6fc62e2bbc07594e07c56fdba8dc345163d61/scripts/shared/confset/confset.sh)
+- The GeoLocation contrib module was added, which will insert the longitude, latitude and accuracy of the node's location into `nodeinfo.json`
+- The installation process now has a question about `netcat`, giving the user an option to install `netcat-openbsd` over any other versions of `netcat`, since the BSD rewrite supports IPv6
 
 ### Changed
 - Grafana version 5.1.4 -> 6.0.0
