@@ -44,3 +44,8 @@ sudo cp "$BASE_DIR/babel-wg-peer-announce.service" /etc/systemd/system/babel-wg-
 sudo systemctl daemon-reload
 sudo systemctl enable babel-wg-peer-announce.service
 sudo systemctl start babel-wg-peer-announce.service
+
+sudo cp "$BASE_DIR/babeld.service" /etc/systemd/system/babeld.service
+sudo systemctl daemon-reload
+sudo systemctl enable babeld.service
+sudo systemctl start babeld.service
