@@ -20,6 +20,7 @@ while [ 1 ]; do
 done
 echo +
 
+echo $privateKey | sudo tee /etc/wg.key > /dev/null
 echo privateKey=$privateKey > /tmp/wg
 echo publicKey=$publicKey >> /tmp/wg
 ipv6=0${key:0:31}
