@@ -28,6 +28,8 @@ sudo mv /tmp/wg /etc/wg
 
 sudo cp ${BASE_DIR}/mcast-process-wg.sh /usr/local/sbin/mcast-process-wg.sh
 sudo chmod +x /usr/local/sbin/mcast-process-wg.sh
+sudo cp ${BASE_DIR}/mcast-process-wg.sh /usr/local/sbin/babel-wg-init.sh
+sudo chmod +x /usr/local/sbin/babel-wg-init.sh
 sudo cp ${BASE_DIR}/mcast-announce.sh /usr/local/sbin/mcast-announce.sh
 sudo chmod +x /usr/local/sbin/mcast-announce.sh
 
