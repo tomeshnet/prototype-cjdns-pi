@@ -18,6 +18,7 @@ while [ 1 ]; do
   fi
   echo -n .
 done
+echo +
 
 echo privateKey=$privateKey > /tmp/wg
 echo publicKey=$publicKey >> /tmp/wg
@@ -26,7 +27,9 @@ echo ipv6=${ipv6:0:4}:${ipv6:4:4}:${ipv6:8:4}:${ipv6:12:4}:${ipv6:16:4}:${ipv6:2
 sudo mv /tmp/wg /etc/wg
 
 sudo cp ${BASE_DIR}/mcast-process-wg.sh /usr/local/sbin/mcast-process-wg.sh
+sudo chmod +x /usr/local/sbin/mcast-process-wg.sh
 sudo cp ${BASE_DIR}/mcast-announce.sh /usr/local/sbin/mcast-announce.sh
+sudo chmod +x /usr/local/sbin/mcast-announce.sh
 
 # Configure systemd to start ipfs.service on system boot
 sudo cp "$BASE_DIR/babel-wg-peer.service" /etc/systemd/system/babel-wg-peer.service
