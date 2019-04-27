@@ -1,0 +1,24 @@
+#!/bin/bash
+
+echo "deb http://deb.debian.org/debian/ unstable main" | sudo tee --append /etc/apt/sources.list.d/unstable.list > /dev/null
+printf 'Package: *\nPin: release a=unstable\nPin-Priority: 90\n' | sudo tee --append /etc/apt/sources.list.d/unstable.list > /dev/null
+sudo apt update
+sudo apt install -y wireguard socat
+
+echo Generating crypto keys... Please wait.
+while [ 1 ]; do
+  privateKey=$(wg genkey)
+  publicKey=$(echo $privateKey | wg pubkey)
+
+  key=$(echo $publicKey | sha512sum  | awk '{print $1}' | sha512sum | awk '{print $1}')
+  if [[ "${key:0:2}" == "40" ]]; then
+    break
+  fi
+  echo -n .
+done
+
+echo privateKey=$privateKey > /tmp/wg
+echo publicKey=$publicKey >> /tmp/wg
+ipv6=0${key:0:31}
+echo ipv6=${ipv6:0:4}:${ipv6:4:4}:${ipv6:8:4}:${ipv6:12:4}:${ipv6:16:4}:${ipv6:20:4}:${ipv6:24:4}:${ipv6:28:4} >> /tmp/wg
+sudo mv /tmp/wg /etc/wg
