@@ -1,5 +1,7 @@
 #!/bin/bash
 
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 echo "deb http://deb.debian.org/debian/ unstable main" | sudo tee --append /etc/apt/sources.list.d/unstable.list > /dev/null
 printf 'Package: *\nPin: release a=unstable\nPin-Priority: 90\n' | sudo tee --append /etc/apt/sources.list.d/unstable.list > /dev/null
 sudo apt update
@@ -22,3 +24,17 @@ echo publicKey=$publicKey >> /tmp/wg
 ipv6=0${key:0:31}
 echo ipv6=${ipv6:0:4}:${ipv6:4:4}:${ipv6:8:4}:${ipv6:12:4}:${ipv6:16:4}:${ipv6:20:4}:${ipv6:24:4}:${ipv6:28:4} >> /tmp/wg
 sudo mv /tmp/wg /etc/wg
+
+sudo cp ${BASE_DIR}/mcast-process-wg.sh /usr/local/sbin/mcast-process-wg.sh
+sudo cp ${BASE_DIR}/mcast-announce.sh /usr/local/sbin/mcast-announce.sh
+
+# Configure systemd to start ipfs.service on system boot
+sudo cp "$BASE_DIR/babel-wg-peer.service" /etc/systemd/system/babel-wg-peer.service
+sudo systemctl daemon-reload
+sudo systemctl enable babel-wg-peer.service
+sudo systemctl start babel-wg-peer.service
+
+sudo cp "$BASE_DIR/babel-wg-peer-announce.service" /etc/systemd/system/babel-wg-peer-announce.service
+sudo systemctl daemon-reload
+sudo systemctl enable babel-wg-peer-announce.service
+sudo systemctl start babel-wg-peer-announce.service
