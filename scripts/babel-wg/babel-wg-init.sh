@@ -1,14 +1,13 @@
 #!/bin/bash
-
 source /etc/wg
-ip link del dev wg0 type wireguard || true
-ip link add dev wg0 type wireguard
-ip link set dev wg0 up
-wg set wg0 listen-port 1010
- 
-if [ -z "$(ip addr show dev wg0  | grep inet6\ fe)" ]; then
-	  ip="$(echo $ipv6 | cut -d ":" -f5-8)"
-	  ip address add dev wg0 scope link fe80::${ip}/64
-fi
 
-ip address add dev wg0 scope link $ipv6/12
+for int in $(find /sys/class/net/* -maxdepth 1 -print0 | xargs -0 -l basename); do
+  if [[ "$int" == "wg"* ]]; then
+    ip link del dev $int type wireguard
+  fi
+done
+ip -6 address add dev lo scope link $ipv6/12
+
+mkdir -p /var/run/babel-wg
+echo 0 > /var/run/babel-wg/index
+echo > /var/run/babel-wg/list
