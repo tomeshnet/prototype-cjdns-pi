@@ -11,4 +11,4 @@ fi
 
 source /etc/wg
 
-ip address add dev wg0 scope link $ipv6/8
+ip address add dev wg0 scope link $ipv6/12
