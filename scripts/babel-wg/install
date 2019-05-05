@@ -2,11 +2,20 @@
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Install needed debian key-ring keys
+sudo apt-get install -y debian-keyring debian-archive-keyring
+gpg --keyserver pgpkeys.mit.edu --recv-key 7638D0442B90D010     
+gpg -a --export 7638D0442B90D010 | sudo apt-key add -
+
+# Enable required debian packages
 echo "deb http://deb.debian.org/debian/ unstable main" | sudo tee --append /etc/apt/sources.list.d/unstable.list > /dev/null
 printf 'Package: *\nPin: release a=unstable\nPin-Priority: 90\n' | sudo tee --append /etc/apt/preferences.d/limit-unstable > /dev/null
 sudo apt update
+
+# Install wireguard
 sudo apt install -y wireguard socat babeld
 
+# Generate crypto keys that yeild a valid IPv6 address
 echo Generating crypto keys... Please wait.
 while [ 1 ]; do
   privateKey=$(wg genkey)
@@ -20,6 +29,7 @@ while [ 1 ]; do
 done
 echo +
 
+# Store values in file
 echo $privateKey | sudo tee /etc/wg.key > /dev/null
 echo privateKey=$privateKey > /tmp/wg
 echo publicKey=$publicKey >> /tmp/wg
@@ -27,6 +37,7 @@ ipv6=0${key:0:31}
 echo ipv6=${ipv6:0:4}:${ipv6:4:4}:${ipv6:8:4}:${ipv6:12:4}:${ipv6:16:4}:${ipv6:20:4}:${ipv6:24:4}:${ipv6:28:4} >> /tmp/wg
 sudo mv /tmp/wg /etc/wg
 
+# Install services  
 sudo cp ${BASE_DIR}/mcast-process-wg.sh /usr/local/sbin/mcast-process-wg.sh
 sudo chmod +x /usr/local/sbin/mcast-process-wg.sh
 sudo cp ${BASE_DIR}/babel-wg-init.sh /usr/local/sbin/babel-wg-init.sh
