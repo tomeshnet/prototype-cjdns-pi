@@ -20,6 +20,6 @@ if [[ "$A" == "WG" ]]; then
         ipv6=0${key:0:31}
         ip=${ipv6:0:4}:${ipv6:4:4}:${ipv6:8:4}:${ipv6:12:4}:${ipv6:16:4}:${ipv6:20:4}:${ipv6:24:4}:${ipv6:28:4}
         ip="$(echo $ip | cut -d ":" -f5-8)"
-        wg set wg0 listen-port 1010 private-key /etc/wg.key peer $peerPub endpoint [$SOCAT_PEERADDR%$IFACE]:1010 persistent-keepalive 60 allowed-ips fe80::${ip}/128,ff02::1:6/128,400::/7
+        wg set wg0 listen-port 1010 private-key /etc/wg.key peer $peerPub endpoint [$SOCAT_PEERADDR%$IFACE]:1010 persistent-keepalive 60 allowed-ips fe80::${ip}/128,ff02::1:6/128,400::/12
     fi
 fi
