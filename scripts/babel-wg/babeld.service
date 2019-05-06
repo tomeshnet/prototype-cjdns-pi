@@ -5,7 +5,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/sbin/babeld -g 999 wg0
+ExecStart=/usr/local/sbin/babeld -G 999 wg0
 ExecStop=/bin/kill -s QUIT $MAINPID
 Restart=on-failure
 RestartSec=10s
