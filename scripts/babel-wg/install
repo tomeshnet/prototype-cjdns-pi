@@ -13,7 +13,12 @@ printf 'Package: *\nPin: release a=unstable\nPin-Priority: 90\n' | sudo tee --ap
 sudo apt update
 
 # Install wireguard
-sudo apt install -y wireguard socat babeld
+sudo apt install -y wireguard socat
+
+mkdir $BASE_DIR/tmp
+git clone git://github.com/jech/babeld.git $BASE_DIR/tmp/babled
+cd $BASE_DIR/tmp/babled
+make install
 
 # Generate crypto keys that yeild a valid IPv6 address
 echo Generating crypto keys... Please wait.
