@@ -15,10 +15,12 @@ sudo apt update
 # Install wireguard
 sudo apt install -y wireguard socat
 
+last=`pwd`
 mkdir $BASE_DIR/tmp
 git clone git://github.com/jech/babeld.git $BASE_DIR/tmp/babled
 cd $BASE_DIR/tmp/babled
-make install
+sudo make install
+cd $last
 
 # Generate crypto keys that yeild a valid IPv6 address
 echo Generating crypto keys... Please wait.
