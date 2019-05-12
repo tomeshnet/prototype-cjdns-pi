@@ -242,6 +242,9 @@ esac
 
 # Prompt and set missing flags
 
+# Install confset
+source shared/confset/install
+
 # Prompt for name of the mesh network
 ##TODO## Add dialog option
 read -p "Enter the name of your mesh network (default: tomesh): " -r
@@ -249,7 +252,8 @@ MESH_NAME="${REPLY// }"
 if [ "${#MESH_NAME}" == 0 ]; then
     MESH_NAME="tomesh"
 fi
-export MESH_NAME
+
+sudo confset general mesh-name "$MESH_NAME" /etc/mesh.conf
 
 askModule "WITH_CJDNS" "CJDNS routing engine"
 if [ "$WITH_CJDNS" == "true" ]; then
@@ -335,6 +339,7 @@ fi
 if [ "$(checkModule 'WITH_YGGDRASIL_IPTUNNEL')" ]; then
     source yggdrasil-iptunnel/install
 fi
+
 # IPFS
 if [ ! -x "$(command -v ipfs)" ] && [ "$(checkModule 'WITH_IPFS')" ]; then
     source ipfs/install
@@ -407,20 +412,19 @@ echo -e "Run \e[1;32mstatus\e[0m anytime to print the status of your node"
 # Install nodeinfo
 source shared/nodeinfo/install
 
+# Set hostname nodeinfo
+source shared/hostname/install
+
 # Print node status on login
 cp ~/.profile ~/.bash_profile
 {
     echo ""
     echo "# export mesh network name"
-    echo "export MESH_NAME=$MESH_NAME"
+    echo "export MESH_NAME=$(confget -f /etc/mesh.conf -s general "mesh-name")"
     echo ""
     echo "# print mesh node status"
     echo "status"
 } >> ~/.bash_profile
-# Rename node based on cjdns address
-oldhostname=$(hostname)
-sudo echo "$NEWHOSTNAME" | sudo tee /etc/hostname > /dev/null
-sudo sed -i -e "s/$oldhostname/$NEWHOSTNAME/" /etc/hosts
 
 if [[ "$CHANGE_PASSWORD" == "pi" ]]; then
     sudo passwd -e "$CHANGE_PASSWORD"

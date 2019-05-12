@@ -59,17 +59,3 @@ fi
 
 # Allow nginx access to yggdrasil socket when installed
 sudo usermod -a -G yggdrasil www-data || true
-
-# Define new hostname
-if [ -z "${NEWHOSTNAME}" ]; then
-   NEWHOSTNAME=$(sudo ifconfig ygg0 | grep -E 'inet6 2[0-9a-fA-F]{2}:' | awk '{print $2}' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-Y/g")
-   export NEWHOSTNAME
-fi
-
-# Set node name
-if [ -z "${NEWHOSTNAME}" ]; then
-    NEWHOSTNAME=$(cat /etc/hostname)
-fi
-
-sudo sed -i "/NodeInfo: {}/d" /etc/yggdrasil.conf
-sudo sed -i "\$i\ \ NodeInfo:\n  {\n   name: ${NEWHOSTNAME}\n  }\n"  /etc/yggdrasil.conf
