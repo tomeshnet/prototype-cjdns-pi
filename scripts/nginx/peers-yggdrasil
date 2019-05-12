@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 echo -e "Content-type: text/html\n\n";
 
 if [ -z "$(which yggdrasilctl)" ]; then

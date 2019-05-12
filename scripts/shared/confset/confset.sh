@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-if [ -z "$4" ]; then 
+if [ -z "$4" ]; then
     echo Syntax: confset \<section\> \<key\> \<value\> \<file\>
     exit 0
 fi
@@ -11,7 +11,7 @@ value="$3"
 file="$4"
 
 # If the file is missing create it
-if [[ ! -f "$file" ]]; then 
+if [[ ! -f "$file" ]]; then
     touch "$file"
 fi
 

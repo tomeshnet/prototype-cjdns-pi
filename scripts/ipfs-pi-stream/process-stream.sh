@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 HLS_TIME=40
 M3U8_SIZE=3
