@@ -21,6 +21,13 @@ set -e
 # Set wireless regulatory domain
 sudo iw reg set CA
 
+# Kill wpa_supplicant if running while no AP active
+# Mesh point interface sometimes will not enter RUNNING status if it is running
+if [ ! -d /sys/class/net/wlan-ap ]; then
+  # Kill wpa_supplicant will sometimes conflicts with Mesh Point
+  sudo killall wpa_supplicant || true
+fi
+
 # Find first 802.11s Mesh Point capable device
 for wlanfile in /sys/class/net/*; do
     int="$(basename "$wlanfile")"
