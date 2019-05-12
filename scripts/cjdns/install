@@ -117,9 +117,3 @@ else
 fi
 
 sudo systemctl enable cjdns.service
-
-# Define new hostname
-if [ -z "${NEWHOSTNAME}" ]; then
-   NEWHOSTNAME=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-/g")
-   export NEWHOSTNAME
-fi
