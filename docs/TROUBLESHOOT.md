@@ -40,7 +40,7 @@ Below are a few things you should look at when diagnosing connections. These can
 - Is the cjdns.iptunnel.server/client filename correct and on the correct device
 - Are the keys correct (ends in a k)
 - Does `tun0` have an IPv4 IP address on server
-- Does `tun0` have ipv4 address on client
+- Does `tun0` have an IPv4 address on client
 - Can you ping the ipv4 addresses across the tunnel
 - Does masquerade line in `iptables -L -v -n -t nat` exist
 - Does masquerade line in `iptables -L -v -n -t nat` show the right out interface
