@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 function isMeshable {
     interface=`iw dev | grep phy#$1 -A 1 | grep Interface | awk '{print $2}'`

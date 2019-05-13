@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This script connects to local mesh peers,
 # and it sets up connection filters based on what networks this node can access.

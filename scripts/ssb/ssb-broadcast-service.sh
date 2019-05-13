@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # shellcheck disable=SC2162
 true
 
@@ -20,7 +20,7 @@ while true; do
                 ip=$(sudo /opt/cjdns/publictoip6 "$peer")
                 # shellcheck disable=SC2102
                 echo -n "net:$mycjdnsip:8008~shs:$id" | sudo socat -T 1 - UDP6-DATAGRAM:[$ip]:8008
-            done  
+            done
         fi
 
         # Add yggdrasil direct peers

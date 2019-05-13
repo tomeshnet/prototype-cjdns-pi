@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 INACTIVE='\e[1;31m[INACTIVE]\e[0m'
 ACTIVE='\e[1;32m[ACTIVE]\e[0m'
