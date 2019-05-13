@@ -2,7 +2,7 @@
 
 Below are a few things you should look at when diagnosing connections. These can help identify bad configurations or other errors.
 
-## ISBB
+## IBSS
 - `iw dev` - do all the devices have matching BSSID and Channels
 - `iw wlan0 station dump` does it show stations
     - If they do then the peering between nodes is working
