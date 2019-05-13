@@ -18,7 +18,7 @@ Below are a few things you should look at when diagnosing connections. These can
 
 ## Mesh Point
 - `iw dev` - do all the devices have matching BSSID and Channels
-- `cat /usr/bin/mesh-mesh` - is the JOIN line have the correct mesh name
+- `cat /usr/bin/mesh-mesh` - does the JOIN line have the correct mesh name
 - `iw wlan0 station dump` - does it show the stations
 - `sudo /usr/bin/mesh-point`  - does it return any errors
    - If es run `sudo bash -x  /usr/bin/mesh-point` -  - This will help identify where the error occurs
