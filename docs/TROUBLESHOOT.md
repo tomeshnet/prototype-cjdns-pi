@@ -51,5 +51,5 @@ Below are a few things you should look at when diagnosing connections. These can
 - Are the keys correct (64 character alpha numeric)
 - Does `ygg0` have IPv4 address on client
 - Can you ping the ipv4 addresses from the server
-- Does masquerade line in `iptables -L -v -n -t nat` exist
+- Does MASQUERADE line in `iptables -L -v -n -t nat` exist
 - Does masquerade line in `iptables -L -v -n -t nat` show the right out interface
