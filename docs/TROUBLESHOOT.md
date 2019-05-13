@@ -30,7 +30,7 @@ Below are a few things you should look at when diagnosing connections. These can
     - Does it say `request timeout` or does the ping succeed?
 
 # IPTunnel - Internet Exit Over Yggdrasil/CJDNS
-- Can client node ping cjdns/yggdsaill address of exit node
+- Can client node ping CJDNS/Yggdsaill address of exit node
 - Can exit node access the internet
 - Can client node ping an ip address (not DNS)
     - IE: `ping 1.1.1.1`
