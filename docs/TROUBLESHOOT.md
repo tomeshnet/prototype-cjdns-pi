@@ -11,7 +11,7 @@ Below are a few things you should look at when diagnosing connections. These can
    - If yes run `sudo bash -x  /usr/bin/mesh-adhoc` - Thiw will help identify where the error occurs
 - If you set an IP address on wlan0 on both sides, can it ping in the clear
     - On Pi-1 run `ifconfig wlan0 10.10.10.1/24`
-    - On pi two run `ifconfig wlan0 10.10.10.2/24`
+    - On Pi-2 run `ifconfig wlan0 10.10.10.2/24`
     - On Pi-1 run `ping 10.10.10.1`
     - On Pi-2 run `ping 10.10.10.2`
     - Does it say `request timeout` or does the ping succeed?
