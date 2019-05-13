@@ -6,7 +6,7 @@ Below are a few things you should look at when diagnosing connections. These can
 - `iw dev` - do all the devices have matching BSSID and Channels
 - `iw wlan0 station dump` does it show stations
     - If they do then the peering between nodes is working
-    - If they do not show up, this may just mean the drive does not report properly. For example the onboard pi driver will not yield any results
+    - If they do not show up, this may just mean the drive does not report properly. For example the onboard Pi driver will not yield any results
 - `sudo /usr/bin/mesh-adhoc`  - does it return any errors
    - If yes run `sudo bash -x  /usr/bin/mesh-adhoc` - Thiw will help identify where the error occurs
 - If you set an IP address on wlan0 on both sides, can it ping in the clear
