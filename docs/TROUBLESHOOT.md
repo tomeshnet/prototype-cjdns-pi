@@ -23,7 +23,7 @@ Below are a few things you should look at when diagnosing connections. These can
 - `sudo /usr/bin/mesh-point`  - does it return any errors
    - If es run `sudo bash -x  /usr/bin/mesh-point` -  - This will help identify where the error occurs
 - If you set an IP address on wlan0 on both sides, can it ping in the clear
-    - On pi one run `ifconfig wlan0 10.10.10.1/24`
+    - On Pi-1 run `ifconfig wlan0 10.10.10.1/24`
     - On pi two run `ifconfig wlan0 10.10.10.2/24`
     - On pi one run `ping 10.10.10.1`
     - On pi two run `ping 10.10.10.2`
