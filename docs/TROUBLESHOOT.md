@@ -32,7 +32,7 @@ Below are a few things you should look at when diagnosing connections. These can
 # IPTunnel - Internet Exit Over Yggdrasil/CJDNS
 - Can client node ping CJDNS/Yggdsaill address of exit node
 - Can exit node access the internet
-- Can client node ping an ip address (not DNS)
+- Can the client node ping an IP address (not DNS)
     - IE: `ping 1.1.1.1`
 
 ## IPTUNNEL - cjdns
