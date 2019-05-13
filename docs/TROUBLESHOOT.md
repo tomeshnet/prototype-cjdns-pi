@@ -46,7 +46,7 @@ Below are a few things you should look at when diagnosing connections. These can
 - Does MASQUERADE line in `iptables -L -v -n -t nat` show the right out interface
 
 ## IPTUNNEL - yggdrasil
-- Is iptunnel installed (/usr/local/sbin/yggdrasil-setup exists)
+- Is IPTunnel installed (`/usr/local/sbin/yggdrasil-setup` exists)
 - Is the yggdrasil.iptunnel.server/client filename correct and on the correct device
 - Are the keys correct (64 character alpha numeric)
 - Does `ygg0` have IPv4 address on client
