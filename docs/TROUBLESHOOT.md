@@ -26,7 +26,7 @@ Below are a few things you should look at when diagnosing connections. These can
     - On Pi-1 run `ifconfig wlan0 10.10.10.1/24`
     - On Pi-2 run `ifconfig wlan0 10.10.10.2/24`
     - On Pi-1 run `ping 10.10.10.1`
-    - On pi two run `ping 10.10.10.2`
+    - On Pi-2 run `ping 10.10.10.2`
     - Does it request `request timeout` or do the ping succeed
 
 # IPTunnel - Internet Exit Over Yggdrasil/CJDNS
