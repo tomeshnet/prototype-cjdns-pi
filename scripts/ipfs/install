@@ -50,8 +50,10 @@ sudo cp "$BASE_DIR/tmp/go-ipfs/ipfs" /usr/local/bin/ipfs
 sudo chown root:staff /usr/local/bin/ipfs
 rm -rf "$BASE_DIR/tmp"
 
-# Initialize IPFS
-ipfs init || true
+# Initialize IPFS if not already
+if [ ! -d "$HOME/.ipfs" ]; then  
+  ipfs init || true
+fi
 
 # Enable gossipsub routing
 ipfs config Pubsub.Router gossipsub
@@ -69,7 +71,7 @@ ipfs config Swarm.ConnMgr.GracePeriod 60s
 # Enable QUIC for better connections when possible
 ipfs config --bool Experimental.QUIC true
 
-# Configure HTTP to IPFS gateway
+# Configure HTTP reverse proxy to IPFS gateway
 sudo cp "$BASE_DIR/ipfs-http-gateway.conf" /etc/nginx/site-path-enabled/ipfs-http-gateway.conf
 sudo systemctl restart nginx.service
 
