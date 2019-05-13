@@ -25,7 +25,7 @@ Below are a few things you should look at when diagnosing connections. These can
 - If you set an IP address on wlan0 on both sides, can it ping in the clear
     - On Pi-1 run `ifconfig wlan0 10.10.10.1/24`
     - On Pi-2 run `ifconfig wlan0 10.10.10.2/24`
-    - On pi one run `ping 10.10.10.1`
+    - On Pi-1 run `ping 10.10.10.1`
     - On pi two run `ping 10.10.10.2`
     - Does it request `request timeout` or do the ping succeed
 
