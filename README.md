@@ -4,7 +4,7 @@
 
 The following instructions will help you set up an encrypted mesh network on Raspberry Pi's. It takes about 15 minutes to set up a node with the Pi 3. Obviously, to have a mesh you will need more than one node. 
 
-The software also supports Debian running on x86 and x64 boards, and many board that run [Armbian](https://www.armbian.com/) (such as many models of Orange Pi hardware family). The same installation steps can be followed, except you would flash the SD card with Armbian instead of Raspbian or have Debian installed onto the computer. See [Hardware Table](#hardware-table) for the full list of supported hardware and check for board specific installation details in our [Frequently Asked Questions](./docs/FAQ.md).
+The software also supports Debian running on x86 and x64 boards, and many board that run [Armbian](https://www.armbian.com/) (such as many models of Orange Pi hardware family). The same installation steps can be followed, except you would flash the SD card with Armbian instead of Raspbian or have Debian installed onto the computer. See [Hardware Table](#hardware-table) for the full list of supported hardware and check for board specific installation details in our [Frequently Asked Questions](./docs/FAQ.md). 
 
 ## Set Up
 
@@ -117,6 +117,8 @@ To add a new module, use **scripts/ipfs/** as an example to:
 
 * We keep a list of [Frequently Asked Questions](./docs/FAQ.md). Feel free to add to this list with the issues you experienced on your boards.
 
-* Your computer can be a node too! It will mesh with the Pi's over your router. See the [cjdns repository](https://github.com/cjdelisle/cjdns) on how to set this up.
+* We have a [Troubleshooting](./docs/TROUBLESHOOT.MD) doc with information to point you in the right direction of some common problems.
+
+* Your computer can be a node too! It will mesh with the Pi's over your router. See the [cjdns repository](https://github.com/cjdelisle/cjdns) on how to set this up. You can now also install this prototype stack on debian/ubuntu PC hardware. This includes a Virtual Machine.
 
 * Original plan for this repository and early benchmark results are available in [the doc folder](./docs).
