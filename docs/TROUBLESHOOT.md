@@ -43,7 +43,7 @@ Below are a few things you should look at when diagnosing connections. These can
 - Does `tun0` have an IPv4 address on client
 - Can you ping the IPv4 addresses across the tunnel
 - Does the MASQUERADE line in `iptables -L -v -n -t nat` exist
-- Does masquerade line in `iptables -L -v -n -t nat` show the right out interface
+- Does MASQUERADE line in `iptables -L -v -n -t nat` show the right out interface
 
 ## IPTUNNEL - yggdrasil
 - Is iptunnel installed (/usr/local/sbin/yggdrasil-setup exists)
