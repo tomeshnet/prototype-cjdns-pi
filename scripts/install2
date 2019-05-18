@@ -91,7 +91,7 @@ if ! echo "$PATH" | grep -q "/sbin" ; then
     echo "export PATH=\"/sbin:/usr/sbin:$PATH\"" | sudo tee -a /etc/profile
 fi
 
-askModule "WITH_DIALOG" "Text User Interface?" "n"
+askModule "WITH_DIALOG" "Dialog ASCII User Interface?" "n"
 if [ "$(checkModule 'WITH_DIALOG')" ]; then
     sudo apt-get install dialog -y
 fi
