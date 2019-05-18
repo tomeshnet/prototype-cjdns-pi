@@ -23,7 +23,7 @@ if ! [ -z "${NEWHOSTNAME}" ]; then
     oldhostname=$(hostname)
     sudo echo "$NEWHOSTNAME" | sudo tee /etc/hostname > /dev/null
     sudo sed -i -e "s/$oldhostname/$NEWHOSTNAME/" /etc/hosts
-    hostname "$NEWHOSTNAME"
+    sudo hostname "$NEWHOSTNAME"
 
     if [ -f '/etc/yggdrasil.conf' ] && [ -z "$(grep NodeInfo\: /etc/yggdrasil.conf)" ]; then
         sudo sed -i "/NodeInfo: {}/d" /etc/yggdrasil.conf
