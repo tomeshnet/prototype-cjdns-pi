@@ -83,19 +83,6 @@ echo iface eth0 inet dhcp | sudo tee --append /etc/network/interfaces.d/eth0 >> 
 echo "auto lo" | sudo tee /etc/network/interfaces.d/lo > /dev/null
 echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces.d/lo >> /dev/null
 
-# Replace netcat with IPv6 supported one, see https://unix.stackexchange.com/questions/457670/netcat-how-to-listen-on-a-tcp-port-using-ipv6-address
-read -p "Replace any IPv4-only netcat software with one that also supports IPv6 (Y/n)?" -n 1 -r
-echo ""
-if [[ $REPLY =~ ^[Nn]$ ]]; then
-    echo -e "The current software will not be removed."
-else
-    sudo apt-get remove -y netcat-traditional || true
-    sudo apt-get remove -y netcat6 || true
-    sudo apt-get remove -y ncat || true
-    sudo apt-get remove -y netcat || true
-    sudo apt-get install -y netcat-openbsd
-fi
-
 # Detect missing /sbin from $PATH variable on Debian distros, and add it
 if ! echo "$PATH" | grep -q "/sbin" ; then
     # Current environment
@@ -291,6 +278,7 @@ if [ "$WITH_PROMETHEUS_SERVER" == true ]; then
     askModule "WITH_GRAFANA" "Grafana"
 fi
 askModule "WITH_EXTRA_TOOLS" "Non-Essential Tools Useful for Network Analysis"
+askModule "WITH_EXTRA_NETCAT" "Replace IPv4-only netcat with one that also supports IPv6"
 if [ "$SUPPORT_WATCHDOG" == "true" ]; then
     askModule "WITH_WATCHDOG" "Hardware Watchdog"
 fi
@@ -398,6 +386,11 @@ fi
 # Non-essential extra tools
 if [ "$(checkModule 'WITH_EXTRA_TOOLS')" ]; then
     source extra-tools/install
+fi
+
+# Non-essential extra tools - netcat replacemnet
+if [ "$(checkModule 'WITH_EXTRA_NETCAT')" ]; then
+    source extra-tools_netcat/install
 fi
 
 # Watchdog on supported boards
