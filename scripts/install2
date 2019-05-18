@@ -278,7 +278,7 @@ if [ "$WITH_PROMETHEUS_SERVER" == true ]; then
     askModule "WITH_GRAFANA" "Grafana"
 fi
 askModule "WITH_EXTRA_TOOLS" "Non-Essential Tools Useful for Network Analysis"
-askModule "WITH_EXTRA_NETCAT" "Replace IPv4-only netcat with one that also supports IPv6"
+askModule "WITH_EXTRA_NETCAT" "Replacement netcat that supports IPv6"
 if [ "$SUPPORT_WATCHDOG" == "true" ]; then
     askModule "WITH_WATCHDOG" "Hardware Watchdog"
 fi
