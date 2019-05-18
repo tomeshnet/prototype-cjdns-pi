@@ -390,7 +390,7 @@ fi
 
 # Non-essential extra tools - netcat replacemnet
 if [ "$(checkModule 'WITH_EXTRA_NETCAT')" ]; then
-    source extra-tools_netcat/install
+    source extra-tools-netcat/install
 fi
 
 # Watchdog on supported boards
