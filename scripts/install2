@@ -398,10 +398,6 @@ if [ "$SUPPORT_WATCHDOG" == "true" ] && [ "$(checkModule 'WITH_WATCHDOG')" ]; th
     source watchdog/install
 fi
 
-# Install node status script
-sudo cp status /usr/local/bin/status
-echo -e "Run \e[1;32mstatus\e[0m anytime to print the status of your node"
-
 # Install nodeinfo
 source shared/nodeinfo/install
 
@@ -418,6 +414,10 @@ cp ~/.profile ~/.bash_profile
     echo "# print mesh node status"
     echo "status"
 } >> ~/.bash_profile
+
+# Install node status script
+sudo cp status /usr/local/bin/status
+echo -e "Run \e[1;32mstatus\e[0m anytime to print the status of your node"
 
 if [[ "$CHANGE_PASSWORD" == "pi" ]]; then
     sudo passwd -e "$CHANGE_PASSWORD"
