@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -e
+# Replace netcat with IPv6 supported one
+# see https://unix.stackexchange.com/questions/457670/netcat-how-to-listen-on-a-tcp-port-using-ipv6-address
+sudo apt-get remove -y netcat-traditional || true
+sudo apt-get remove -y netcat6 || true
+sudo apt-get remove -y ncat || true
+sudo apt-get remove -y netcat || true
+sudo apt-get install -y netcat-openbsd
