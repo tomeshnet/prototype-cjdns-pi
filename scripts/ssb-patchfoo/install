@@ -34,9 +34,9 @@ cp "$BASE_DIR/config" ~/.ssb
 # Stop ssb service to process plugin
 sudo systemctl stop ssb
 
-# Disable the git-ssb prerequisite
-# Comment out two lines in patchwork that create a prerequisite for git-ssb
-# but don't seem to serve any purpose. Git-ssb is not available on npm
+# Disable the git-ssb and npm-ssb prerequisite
+# Comment out two lines in patchwork that create a prerequisite for git-ssb and npm-ssb
+# but don't seem to serve any purpose. git-ssb and and npm-ssbis not available on npm
 sed -i 's#var Git#//var Git#' patchfoo/lib/app.js  patchfoo/lib/app.js
 sed -i 's#this.git = new Git(this.sbot, this.config)#//this.git = new Git(this.sbot, this.config)#' patchfoo/lib/app.js
 sed -i 's#var SsbNpmRegistry#//var SsbNpmRegistry#' patchfoo/lib/app.js  patchfoo/lib/app.js
