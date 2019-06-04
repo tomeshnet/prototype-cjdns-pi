@@ -44,7 +44,7 @@ The software also supports Debian running on x86 and x64 boards, and many board 
 
 During the installation, you may be able to pick a profile, or choose between many modules. To learn what each module is for, look at [MODULES.md](./docs/MODULES.md). This is important for the installation.
 
-There are some more experimental, 3rd party, or not fully supported modules in the [contrib](./contrib) folder for you to explore. Run those scripts with caution.
+There is also the [contrib](./contrib/) folder for software that has been contributed to the project, but which might not actually be maintained by the core developers.
 
 ## Check Status
 
