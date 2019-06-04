@@ -3,7 +3,7 @@
 
 set -e
 
-GO_IPFS_VERSION="v0.4.20"
+GO_IPFS_VERSION="v0.4.21"
 
 ARCH="$(uname -m)" 
 case "$ARCH" in
