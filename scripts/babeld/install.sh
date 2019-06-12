@@ -7,7 +7,7 @@ mkdir /tmp/babeld/root
 mkdir /tmp/babeld/src
 
 # Prepare root directory
-cp -R $BASE_DIR/files /tmp/babeld/root
+cp -R $BASE_DIR/files/* /tmp/babeld/root/
 
 # Compile and install babeld into root directory
 last=`pwd`
@@ -19,5 +19,5 @@ make install
 cd $last
 
 # Copy files over
-cp -R /tmp/babeld/root/* /
-rm -rf /tmp/babeld
+sudo cp -R /tmp/babeld/root/* /
+#rm -rf /tmp/babeld
