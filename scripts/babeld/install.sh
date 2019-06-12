@@ -16,7 +16,9 @@ cd /tmp/babeld/src
 sed -i 's|PREFIX = /usr/local|PREFIX = /tmp/babeld/root|' Makefile
 make
 make install
-
-echo "Architecture: $(uname -m)" >> DEBIAN/control
 cd ..
+version="$(root/bin/babeld -V  2>&1)"
+version=${version:7}
+echo "Version: $version" >> root/DEBIAN/control
+echo "Architecture: $( dpkg --print-architecture)" >> root/DEBIAN/control
 dpkg-deb --build root
