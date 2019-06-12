@@ -16,8 +16,7 @@ cd /tmp/babeld/src
 sed -i 's|PREFIX = /usr/local|PREFIX = /tmp/babeld/root|' Makefile
 make
 make install
-cd $last
 
-# Copy files over
-sudo cp -R /tmp/babeld/root/* /
-#rm -rf /tmp/babeld
+echo "Architecture: $(uname -m)" >> DEBIAN/control
+cd ..
+dpkg-deb --build root
