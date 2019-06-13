@@ -20,12 +20,12 @@ make install
 cd ..
 
 # Make deb pacakges
-version="$(root/bin/babeld -V  2>&1)"
+version="$(root/bin/babeld -V 2>&1)"
 version=${version:7}
 echo "Version: $version" >> root/DEBIAN/control
-echo "Architecture: $( dpkg --print-architecture)" >> root/DEBIAN/control
+echo "Architecture: $(dpkg --print-architecture)" >> root/DEBIAN/control
 dpkg-deb --build root
 
 # Install and cleanup
-sudo dpkg -i /tmp/babeld/root.dev
+sudo dpkg -i /tmp/babeld/root.deb
 rm -rf /tmp/babeld
