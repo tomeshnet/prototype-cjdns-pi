@@ -3,7 +3,7 @@
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 #Enable test repo
-echo deb deb http://meshwithme.online/deb/repos/apt/debian stretch main | sudo tee /etc/apt/sources.list.d/tomesh.list
+echo deb http://meshwithme.online/deb/repos/apt/debian stretch main | sudo tee /etc/apt/sources.list.d/tomesh.list
 
 sudo apt-get update
 sudo apt-get install babeld
@@ -18,5 +18,37 @@ echo redistribute deny local ip 10.0.0.1/32 | sudo tee --append /etc/babeld.conf
 
 # enable babeld on mesh interface
 echo interface wlan0 | sudo tee --append /etc/babeld.conf
+
+# Attempt to find eth0's mac address even if predictive naming is on
+if [ -f "/sys/class/net/eth0/address" ]; then
+    mac=$(cat /sys/class/net/eth0/address )
+else
+   if ! [ -z "$(sudo dmesg | grep eth0 | grep renamed | awk '{print $8}') | grep eth0" ]; then
+       mac=$(cat /sys/class/net/$(sudo dmesg | grep eth0 | grep renamed | awk '{print $5}' | tr -d \: )/address);
+   fi
+fi
+
+# Generate IPv4 address from mac address
+# Taken from Pitmesh's model
+if ! [ -z $mac ]; then
+  ip2=$(printf "%d" "0x$(echo $mac | cut -f 4 -d \:)")
+  ip3=$(printf "%d" "0x$(echo $mac | cut -f 5 -d \:)")
+  ip4=$(printf "%d" "0x$(echo $mac | cut -f 6 -d \:)")
+  ip2=$(expr $ip2 % 32 + 96)
+  ip4=$(expr $ip4 - $(expr $ip4 % 64 - $ip4 % 32))
+  IPV4="10.$ip2.$ip3.$ip4"
+  IPAP="172.$(expr $ip2 % 16 + 16).$ip3.1"
+  NODEID=$ip3-$ip4
+  
+  # Add ip addres as a secondary ip of the lookback interface
+  # Then announce it on mesh
+  echo auto lo:1  |  sudo tee /etc/network/interfaces.d/lo1
+  echo iface lo:1 inet static  |  sudo tee --append /etc/network/interfaces.d/lo1
+  echo   address $IPV4  |  sudo tee --append /etc/network/interfaces.d/lo1
+  echo   netmask 255.255.255.255 |  sudo tee --append /etc/network/interfaces.d/lo1
+
+  echo redistribute if lo:1 | sudo tee --append /etc/babeld.conf
+
+fi
 
 sudo systemctl start babeld
