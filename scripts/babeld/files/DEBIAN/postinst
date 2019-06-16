@@ -1,4 +1,0 @@
-#!/bin/bash
-echo "interface eth0" > /etc/babeld.conf
-systemctl enable babeld
-systemctl start babeld
