@@ -13,4 +13,10 @@ sudo systemctl stop babeld
 echo redistribute deny local ip 200::/7 | sudo tee --append /etc/babeld.conf
 echo redistribute deny local ip 300::/7 | sudo tee --append /etc/babeld.conf
 echo redistribute deny local ip fc00::/8 | sudo tee --append /etc/babeld.conf
+# Dont announce natted 10.0.0.1 from access point
+echo redistribute deny local ip 10.0.0.1/8 | sudo tee --append /etc/babeld.conf
+
+# enable babeld on mesh interface
+echo interface wlan0 | sudo tee --append /etc/babeld.conf
+
 sudo systemctl start babeld
