@@ -425,7 +425,7 @@ if [[ "$CHANGE_PASSWORD" == "pi" ]]; then
 fi
 
 echo -e ""
-echo -e "Your node's new hostname is $NEWHOSTNAME"
+echo -e "Your node's new hostname is $(cat /etc/hostname)"
 echo -e ""
 read -p "Installation complete. Press any key to reboot your new node. " -n 1 -r
 
