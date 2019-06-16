@@ -253,8 +253,6 @@ askModule "WITH_YGGDRASIL" "Yggdrasil routing engine"
 if [ "$WITH_YGGDRASIL" == "true" ]; then
     askModule "WITH_YGGDRASIL_IPTUNNEL" "Internet Gateway over Yggdrasil"
 fi
-# Set hostname nodeinfo
-source shared/hostname/install
 
 askModule "WITH_MESH_POINT" "Mesh Point Interface"
 if [ "$WITH_MESH_POINT" == false ]; then
@@ -301,6 +299,9 @@ fi
 if [ "$(checkModule 'WITH_YGGDRASIL')" ]; then
     source yggdrasil/install
 fi
+
+# Set hostname nodeinfo
+source shared/hostname/install
 
 # 802.11s Mesh Point interface
 if [ "$(checkModule 'WITH_MESH_POINT')" ]; then
