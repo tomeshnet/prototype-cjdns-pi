@@ -10,7 +10,7 @@ fi
 # Select physical device that supports IBSS Ad-hoc
 mesh_dev=$(confget -f /etc/mesh.conf -s general "ibss-dev")
 if [ -z "$mesh_dev" ]; then
-  mesh_dev=wlan0
+  mesh_dev="$(iw dev | grep Interface | grep -v wlan-ap | head -n 1 | awk '{print $2}')"
 fi
 
 # Set wireless regulatory domain
