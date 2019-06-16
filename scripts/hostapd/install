@@ -46,6 +46,7 @@ sudo sed -i 's/#net.ipv6.conf.all.forwarding=1/net.ipv6.conf.all.forwarding=1/' 
 
 # Get network name and password
 APSSID=${NEWHOSTNAME}
+APSSID="$(cat /etc/hostname)"
 
 # Select wpa-eap or wpa-psk
 read -p "Use WPA-EAP (Y) or WPA2-PSK (n) for WiFi Access Point $APSSID? " -n 1 -r
