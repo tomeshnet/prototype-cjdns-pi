@@ -74,7 +74,7 @@ if [ "$(which sbot)" ]; then
         echo -e "ScuttleBot Service ......... $INACTIVE"
     fi
 fi
-if [ "$(which ffmpeg)" ]; then
+if [ "$(which process-stream.sh)" ]; then
     if [ ! -z "$(ps aux | grep ffmpeg | grep -v grep)" ] && [ "$(systemctl status process-stream.service | grep 'Active: ' | awk '{ print $2 }')" = 'active' ]; then
         echo -e "IPFS Pi Stream Service ....... $ACTIVE"
     else
