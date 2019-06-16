@@ -2,6 +2,8 @@
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+source shared/confset/install
+
 #Enable test repo
 echo deb http://meshwithme.online/deb/repos/apt/debian stretch main | sudo tee /etc/apt/sources.list.d/tomesh.list
 
@@ -40,14 +42,7 @@ if ! [ -z $mac ]; then
   IPAP="172.$(expr $ip2 % 16 + 16).$ip3.1"
   NODEID=$ip3-$ip4
   
-  # Add ip addres as a secondary ip of the lookback interface
-  # Then announce it on mesh
-  echo auto lo:1  |  sudo tee /etc/network/interfaces.d/lo1
-  echo iface lo:1 inet static  |  sudo tee --append /etc/network/interfaces.d/lo1
-  echo   address $IPV4  |  sudo tee --append /etc/network/interfaces.d/lo1
-  echo   netmask 255.255.255.255 |  sudo tee --append /etc/network/interfaces.d/lo1
-
-  echo redistribute if lo:1 | sudo tee --append /etc/babeld.conf
+  sudo confset general ipv4 "$IPV4" /etc/mesh.conf
 
 fi
 
