@@ -44,6 +44,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Yggdrasil version 0.3.3 -> 0.3.5
 - Yggdrasil IPTunnel now does not change config files
 - TUI profile selection changed to a menu type instead of radio buttons
+- The Pine64 Armbian link in the hardware table has been fixed to the correct one
+- The IBSS device first checked from the `mesh.conf` file, then a search of the interfaces available is used. Previously it was just always `wlan0` that was tried.
 
 ### Fixed
 - User is instructed to install `sudo` if it's not installed
