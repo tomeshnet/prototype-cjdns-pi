@@ -28,6 +28,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - The GeoLocation contrib module was added, which will insert the longitude, latitude and accuracy of the node's location into `nodeinfo.json`
 - The installation process now has a module (`extra-tools-netcat`) for `netcat`, giving the user an option to install `netcat-openbsd` over any other versions of `netcat`, since the BSD rewrite supports IPv6
 - The [TROUBLESHOOT.md](./docs/TROUBLESHOOT.md) file has been created, with information on on wireless meshing and CJDNS or Yggdrasil IPTunnel-ing
+- The `/etc/mesh.conf` file as been added, as an INI style configuration file. It contains variables such `mesh-name` and `frequency`, which modules now use instead of just assuming the values
 
 ### Changed
 - Grafana version 5.1.4 -> 6.0.0
