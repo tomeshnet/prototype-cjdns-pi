@@ -24,6 +24,7 @@ detectBoard;
 if [[ "$ARCH" == "armv7l" ]]; then
     #TODO# -O2 workaround. Needs to be resolved.
     CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-O2 -s -static -Wall -march=armv7-a -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -fomit-frame-pointer -marm\" ./do"
+    CJDNS_PACKAGE="cjdns-neon-v4.deb"
 fi
 
 if [[ "$ARCH" == "aarch64" ]]; then
