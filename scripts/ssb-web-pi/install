@@ -76,3 +76,8 @@ sudo chown -R www-data.www-data /var/www/sbot
 # Add entry into nginx home screen
 APP="<div class='app'><h2>SSB Web Pi</h2>Very experimental interface for SSB. <br/><a href='/ssb-web-pi'>Go</a></div>"
 sudo sed -i "s#<\!--APPLIST-->#$APP\n<\!--APPLIST-->#" "/var/www/html/index.html"
+
+# if php7.3 is installed update config
+if ! [ -z "$(which php-fpm7.3)" ]; then
+   sudo sed -i "s/php7.0/php7.3/" /etc/nginx/site-path-enabled/ssb-web-pi.conf
+fi
