@@ -20,7 +20,8 @@ cd ~/.ssb/node_modules
 npm install --unsafe-perm asyncmemo hashlru pull-stream pull-cat multicb hyperscript pull-paramap ssb-contact ssb-sort stream-to-pull-stream emoji-server pull-paginate ssb-mentions busboy mime-types pull-identify-filetype human-time pull-hyperscript jpeg-autorotate pull-catch diff pull-split pull-utf8-decoder ssb-web-resolver highlight.js pull-box-stream base64-url ssb-backlinks ssb-private
 
 # Install patchfoo and enable plugin
-git clone https://github.com/darkdrgn2k/patchfoo.git patchfoo
+#git clone https://github.com/darkdrgn2k/patchfoo.git patchfoo
+git clone  http://git.scuttlebot.io/%25YAg1hicat%2B2GELjE2QJzDwlAWcx0ML%2B1sXEdsWwvdt8%3D.sha256 patchfoo
 
 # Replace ssb-server plugins.install with a static config file
 # This will prevent the installation of these modules a second time
@@ -33,11 +34,13 @@ cp "$BASE_DIR/config" ~/.ssb
 # Stop ssb service to process plugin
 sudo systemctl stop ssb
 
-# Disable the git-ssb prerequisite
-# Comment out two lines in patchwork that create a prerequisite for git-ssb
-# but don't seem to serve any purpose. Git-ssb is not available on npm
+# Disable the git-ssb and npm-ssb prerequisite
+# Comment out two lines in patchwork that create a prerequisite for git-ssb and npm-ssb
+# but don't seem to serve any purpose. git-ssb and and npm-ssbis not available on npm
 sed -i 's#var Git#//var Git#' patchfoo/lib/app.js  patchfoo/lib/app.js
 sed -i 's#this.git = new Git(this.sbot, this.config)#//this.git = new Git(this.sbot, this.config)#' patchfoo/lib/app.js
+sed -i 's#var SsbNpmRegistry#//var SsbNpmRegistry#' patchfoo/lib/app.js  patchfoo/lib/app.js
+sed -i 's#this.serveSsbNpmRegistry = SsbNpmRegistry.respond(this.sbot, this.config)#//this.serveSsbNpmRegistry = SsbNpmRegistry.respond(this.sbot, this.config)#' patchfoo/lib/app.js
 
 # Start service again to start patchfoo
 sudo systemctl start ssb
