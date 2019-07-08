@@ -39,6 +39,9 @@ sudo systemctl stop ssb
 sed -i 's#var Git#//var Git#' patchfoo/lib/app.js  patchfoo/lib/app.js
 sed -i 's#this.git = new Git(this.sbot, this.config)#//this.git = new Git(this.sbot, this.config)#' patchfoo/lib/app.js
 
+# this line causes patchfoo not to work at all. so comment it out.
+sed -i "s#h('input', {type: 'file', name: 'upload'})#//h('input', {type: 'file', name: 'upload'})#" patchfoo/lib/serve.js
+
 # Start service again to start patchfoo
 sudo systemctl start ssb
 
