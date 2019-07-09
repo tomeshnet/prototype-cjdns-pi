@@ -43,8 +43,7 @@ sed -i 's#var SsbNpmRegistry#//var SsbNpmRegistry#' patchfoo/lib/app.js  patchfo
 sed -i 's#this.serveSsbNpmRegistry = SsbNpmRegistry.respond(this.sbot, this.config)#//this.serveSsbNpmRegistry = SsbNpmRegistry.respond(this.sbot, this.config)#' patchfoo/lib/app.js
 
 # Comment out line that breaks things
-sed -i 's#h('input', {type: 'file', name: 'upload'})#//h('input', {type: 'file', name: 'upload'})#' patchfoo/lib/serve.js
-
+sed -i "s#h('input', {type: 'file', name: 'upload'})#//h('input', {type: 'file', name: 'upload'})#" patchfoo/lib/serve.js
 
 
 # Start service again to start patchfoo
