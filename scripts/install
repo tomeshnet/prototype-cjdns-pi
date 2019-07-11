@@ -6,7 +6,7 @@ apt-get install -y sudo || (
    echo Sudo is not installed and cannot be installed.
    echo Please run 
    echo "    apt-get install sudo "
-   echo "    usermod -aG sudo $USER"
+   echo "    /usr/sbin/usermod -aG sudo $USER"
    echo as root.
    echo You may need to log in again for changes to take effect.
    exit 1
