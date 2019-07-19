@@ -151,3 +151,7 @@ fi
 if ! grep -q rfkill /etc/rc.local; then
     sudo sed -i 's/^exit 0/rfkill unblock wifi \&\& service hostapd restart\nexit 0/' /etc/rc.local 
 fi
+
+# Apply wpa_supplicant patch 
+sudo patch -p2 -N -d / < wpa-patch.diff
+echo "wlan-ap" | sudo tee /etc/wpa_devices
