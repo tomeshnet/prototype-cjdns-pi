@@ -11,7 +11,8 @@ source functions.sh
 
 # Normalize OS environment
 # True required to avoid odd armbian bug.  Update does work but reports missing file.
-sudo apt-get update -y || true
+# --allow-releaseinfo-change to work around repository movies. IE when rasbian buster moved from testing to main
+sudo apt-get update --allow-releaseinfo-change -y || true
 
 # Dependencies
 sudo apt-get install -y gcc make curl wget
