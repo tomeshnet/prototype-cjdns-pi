@@ -1,0 +1,12 @@
+--- /tmp/10-wpa_supplicant      2019-07-19 21:31:41.130053542 +0100
++++ /lib/dhcpcd/dhcpcd-hooks/10-wpa_supplicant  2019-07-19 21:58:03.470829257 +0100
+@@ -102,7 +102,8 @@
+
+ if [ "$ifwireless" = "1" ] && \
+     type wpa_supplicant >/dev/null 2>&1 && \
+-    type wpa_cli >/dev/null 2>&1
++    type wpa_cli >/dev/null 2>&1 &&
++    ([ -f /etc/wpa_devices ] && ! [ grep -q  "$ifwireless" /etc/wpa_devices >/dev/null 2>&1 ])
+ then
+        case "$reason" in
+        PREINIT)        wpa_supplicant_start;;
