@@ -300,7 +300,10 @@ if [ "$(checkModule 'WITH_YGGDRASIL')" ]; then
     source yggdrasil/install
 fi
 
-# Set hostname nodeinfo
+# Install nodeinfo
+source shared/nodeinfo/install
+
+# Set hostname
 source shared/hostname/install
 
 # 802.11s Mesh Point interface
@@ -401,9 +404,6 @@ fi
 if [ "$SUPPORT_WATCHDOG" == "true" ] && [ "$(checkModule 'WITH_WATCHDOG')" ]; then
     source watchdog/install
 fi
-
-# Install nodeinfo
-source shared/nodeinfo/install
 
 # Print node status on login
 cp ~/.profile ~/.bash_profile
