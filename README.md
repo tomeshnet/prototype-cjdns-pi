@@ -121,6 +121,14 @@ To add a new module, use **scripts/ipfs/** as an example to:
 
 * We have a [Troubleshooting](./docs/TROUBLESHOOT.MD) doc with information to point you in the right direction of some common problems.
 
-* Your computer can be a node too! It will mesh with the Pi's over your router. See the [cjdns repository](https://github.com/cjdelisle/cjdns) on how to set this up. You can now also install this prototype stack on debian/ubuntu PC hardware. This includes a Virtual Machine.
+* Your computer can be a node too! It will mesh with the Pi's over your router. See the [cjdns repository](https://github.com/cjdelisle/cjdns) on how to set this up.  
+
+* You can install this prototype stack on debian/ubuntu PC hardware. This includes a Virtual Machine.
 
 * Original plan for this repository and early benchmark results are available in [the doc folder](./docs).
+
+### Additional resources
+
+* [CJDNS installer for Windows](https://www.santacruzmesh.net/installer.html) care of Santa Cruz Meshnesh
+
+* [Yggdrasil latest builds](https://yggdrasil-network.github.io/builds.html)
