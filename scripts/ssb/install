@@ -6,7 +6,7 @@ set -e
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Install dependencies
-sudo apt-get install -y socat python-dev libtool python-setuptools autoconf automake
+sudo apt-get install -y socat python-dev libtool python-setuptools autoconf automake socat
 
 # Install node.js shared module
 # shellcheck source=../shared/node.js/install
@@ -31,6 +31,8 @@ sudo systemctl start ssb.service
 sudo cp "$BASE_DIR/ssb-broadcast-service.sh" "/usr/local/bin/ssb-broadcast-service.sh"
 sudo cp "$BASE_DIR/ssb-broadcast.service" /etc/systemd/system/ssb-broadcast.service
 sudo sed -i "s|__USER__|${currentUser}|g" /etc/systemd/system/ssb-broadcast.service
+sudo cp "$BASE_DIR/ssb-ipv6-broadcast.service" "/etc/systemd/system/ssb-ipv6-broadcast.service"
 
 sudo systemctl daemon-reload
 sudo systemctl enable ssb-broadcast.service
+sudo systemctl enable ssb-ipv6-broadcast.service
