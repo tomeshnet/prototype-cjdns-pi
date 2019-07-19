@@ -169,6 +169,10 @@ function detectBoard {
         # Check for default password is still set for user pi
         # If it is force password before reboot
         # shellcheck disable=SC2016
+        if [[ "$BOARD_NAME" == "Raspberry Pi 4"* ]]; then
+            BOARD_MODEL="raspberrypi4"
+            BOARD_NEON=true
+        fi
         if [[ "$BOARD_NAME" == "Raspberry Pi 3"* ]]; then
             BOARD_MODEL="raspberrypi3"
             BOARD_NEON=true
