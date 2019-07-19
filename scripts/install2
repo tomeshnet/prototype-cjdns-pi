@@ -11,7 +11,7 @@ source functions.sh
 
 # Normalize OS environment
 # True required to avoid odd armbian bug.  Update does work but reports missing file.
-# --allow-releaseinfo-change to work around repository movies. IE when rasbian buster moved from testing to main
+# --allow-releaseinfo-change to work around testing-stable repo moves if using an older image
 sudo apt-get update --allow-releaseinfo-change -y || true
 
 # Dependencies
