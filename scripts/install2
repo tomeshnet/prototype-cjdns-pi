@@ -40,7 +40,7 @@ case "$BOARD_MODEL" in
     orangepizeroplus2-h5)
         SUPPORT_HOSTAP=true
     ;;
-    "raspberrypi3")
+    "raspberrypi3"|"raspberrypi4")
         # Raspberry Pi 3 has on-board WiFi that can be used as an AP
         SUPPORT_HOSTAP=true
         # Raspberry Pi 3 has hardware watchdog
