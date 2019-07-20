@@ -1,5 +1,5 @@
---- /tmp/10-wpa_supplicant      2019-07-19 21:31:41.130053542 +0100
-+++ /lib/dhcpcd/dhcpcd-hooks/10-wpa_supplicant  2019-07-19 21:58:03.470829257 +0100
++++ /a/lib/dhcpcd/dhcpcd-hooks/10-wpa_supplicant      2019-07-19 21:31:41.130053542 +0100
++++ /b/lib/dhcpcd/dhcpcd-hooks/10-wpa_supplicant      2019-07-19 21:58:03.470829257 +0100
 @@ -102,7 +102,8 @@
 
  if [ "$ifwireless" = "1" ] && \
