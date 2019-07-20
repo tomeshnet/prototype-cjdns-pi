@@ -37,7 +37,7 @@ function unroute() {
 	    if [[ -z "$ip2" ]]; then ip2=0; fi
 	    if [[ -z "$ip3" ]]; then ip3=0; fi
 	    if [[ -z "$ip4" ]]; then ip4=0; fi
-	    ip route $((2#$ip1)).$((2#$ip2)).$((2#$ip3)).$((2#$ip4))/$i dev "${YGGINT}"
+	    ip route add $((2#$ip1)).$((2#$ip2)).$((2#$ip3)).$((2#$ip4))/$i dev "${YGGINT}"
 	done
 }
 
@@ -152,7 +152,7 @@ elif [ -e /etc/yggdrasil.iptunnel.client ]; then
     fi
 
     # Use method of routing the tc peers to the gateway
-    if [[ ! "${reroutepeers}" == "routepeers" ]]; then
+    if [[ "${reroutepeers}" == "routepeers" ]]; then
         # Loop through peers and route them over the default gateway
 	gw="$(ip r | grep default | head -n 1 | awk '{print $3}')"
 	for i in "$(yggdrasilctl getPeers | awk '{print $4}' | grep tcp | awk -F : '{print $2}' | tr -d /)"
