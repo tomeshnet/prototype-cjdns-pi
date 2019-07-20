@@ -1,5 +1,46 @@
 #!/usr/bin/env bash
 
+# Converts an ip address to binary
+function convip()
+{
+    CONV=({0..1}{0..1}{0..1}{0..1}{0..1}{0..1}{0..1}{0..1})
+
+    ip=""
+    for byte in `echo ${1} | tr "." " "`; do
+        ip="${ip} ${CONV[${byte}]}"
+    done
+    echo ${ip:1}
+}
+
+# CJD's method of routing instead of 0.0.0.0/0  you route every other ip except the peer
+# by creating multiple narrowing routes
+function unroute() {
+	#Convert to binary
+	ip="$(convip $1 | tr -d " ")"
+	#Flip last bit
+	ip2=${ip:1:31}
+	if [[ "${ip:31:1}" == "1" ]]; then
+	    ip2="${ip2}0"
+	else
+	    ip2="${ip2}1"
+	fi
+	ip=$ip2
+	#Loop through all ips narrowing scope
+	for i in {1..31}
+	do
+	    nowip=${ip:0:$i}
+	    ip1=${nowip:0:8}
+	    ip2=${nowip:8:8}
+	    ip3=${nowip:16:8}
+	    ip4=${nowip:24:8}
+	    if [[ -z "$ip1" ]]; then ip1=0; fi
+	    if [[ -z "$ip2" ]]; then ip2=0; fi
+	    if [[ -z "$ip3" ]]; then ip3=0; fi
+	    if [[ -z "$ip4" ]]; then ip4=0; fi
+	    ip route $((2#$ip1)).$((2#$ip2)).$((2#$ip3)).$((2#$ip4))/$i dev "${YGGINT}"
+	done
+}
+
 # Enable forwarding for ipv4 and ipv6
 echo 1 > /proc/sys/net/ipv4/ip_forward
 echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
@@ -110,17 +151,24 @@ elif [ -e /etc/yggdrasil.iptunnel.client ]; then
         ip6tables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
     fi
 
-    if [[ ! "${reroutepeers}" == true ]]; then
+    # Use method of routing the tc peers to the gateway
+    if [[ ! "${reroutepeers}" == "routepeers" ]]; then
         # Loop through peers and route them over the default gateway
 	gw="$(ip r | grep default | head -n 1 | awk '{print $3}')"
-	for i in "$(sudo yggdrasilctl getPeers | awk '{print $4}' | grep tcp | awk -F : '{print $2}' | tr -d /)"
+	for i in "$(yggdrasilctl getPeers | awk '{print $4}' | grep tcp | awk -F : '{print $2}' | tr -d /)"
 	do
-            sudo route add $i gw $gw
+            ip route add $i via $gw
         done
+        ip route add 0.0.0.0/1 dev "${YGGINT}"
+        ip route add 128.0.0.0/1 dev "${YGGINT}"
+    elif [[ ! "${reroutepeers}" == "unroutepeers" ]]; then
+	ip=$(yggdrasilctl getPeers | awk '{print $4}' | grep tcp | awk -F : '{print $2}' | tr -d / | head -n 1)
+        unroute $ip
+    else
+    # Special hack to change default route without removing original one
+        ip route add 0.0.0.0/1 dev "${YGGINT}"
+        ip route add 128.0.0.0/1 dev "${YGGINT}"
     fi
     
-    # Special hack to change default route without removing original one
-    route add  -net 0.0.0.0/1 "${YGGINT}"
-    route add  -net 128.0.0.0/1 "${YGGINT}"
     ip -6 route add ::/0 dev "${YGGINT}"
 fi
