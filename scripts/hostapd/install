@@ -154,5 +154,5 @@ fi
 
 # Apply wpa_supplicant patch 
 # shellcheck disable=SC2024
-sudo patch -F99 -p2 -N -d / < wpa-patch.diff
+sudo patch -F99 -p2 -N  -d / < wpa-patch.diff
 echo "wlan-ap" | sudo tee /etc/wpa_devices
