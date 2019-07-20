@@ -10,7 +10,7 @@
         dir=$(key_get_value "[[:space:]]*ctrl_interface=" \
                 "$wpa_supplicant_conf")
         dir=$(trim "$dir")
-@@ -36,6 +39,9 @@
+@@ -35,6 +38,9 @@
 
  wpa_supplicant_start()
  {
@@ -20,7 +20,7 @@
         # If the carrier is up, don't bother checking anything
         [ "$ifcarrier" = "up" ] && return 0
 
-@@ -70,6 +76,9 @@
+@@ -69,6 +75,9 @@
 
  wpa_supplicant_reconfigure()
  {
@@ -30,7 +30,7 @@
         dir=$(wpa_supplicant_ctrldir)
         [ -z "$dir" ] && return 1
         if ! wpa_cli -p "$dir" -i "$interface" status >/dev/null 2>&1; then
-@@ -88,6 +97,9 @@
+@@ -87,6 +96,9 @@
 
  wpa_supplicant_stop()
  {
@@ -40,13 +40,11 @@
         dir=$(wpa_supplicant_ctrldir)
         [ -z "$dir" ] && return 1
         wpa_cli -p "$dir" -i "$interface" status >/dev/null 2>&1 || return 0
-@@ -103,7 +115,8 @@
-
+@@ -103,6 +115,7 @@
  if [ "$ifwireless" = "1" ] && \
      type wpa_supplicant >/dev/null 2>&1 && \
--    type wpa_cli >/dev/null 2>&1
-+    type wpa_cli >/dev/null 2>&1 &&
-+    ([ -f /etc/wpa_devices ] && grep -q  "$interface" /etc/wpa_devices)
+     type wpa_cli >/dev/null 2>&1
++    ([ -f /etc/wpa_devices ] && grep -q  "$interface" /etc/wpa_devices); then
  then
-
         case "$reason" in
+        PREINIT)        wpa_supplicant_start;;
