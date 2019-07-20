@@ -18,7 +18,7 @@ function unroute() {
 	#Convert to binary
 	ip="$(convip $1 | tr -d " ")"
 	#Flip last bit
-	ip2=${ip:1:31}
+	ip2=${ip:0:31}
 	if [[ "${ip:31:1}" == "1" ]]; then
 	    ip2="${ip2}0"
 	else
@@ -37,7 +37,15 @@ function unroute() {
 	    if [[ -z "$ip2" ]]; then ip2=0; fi
 	    if [[ -z "$ip3" ]]; then ip3=0; fi
 	    if [[ -z "$ip4" ]]; then ip4=0; fi
+	    
+	    # apply right padding
+	    ip1=$(printf '%-8s' "$ip1" | tr " " 0)
+	    ip2=$(printf '%-8s' "$ip2" | tr " " 0)
+	    ip3=$(printf '%-8s' "$ip3" | tr " " 0)
+	    ip4=$(printf '%-8s' "$ip4" | tr " " 0)
+	   
 	    ip route add $((2#$ip1)).$((2#$ip2)).$((2#$ip3)).$((2#$ip4))/$i dev "${YGGINT}"
+
 	done
 }
 
