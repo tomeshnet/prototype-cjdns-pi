@@ -25,6 +25,11 @@ if [[ -z "${IPv6SUBNETINT}" ]]; then
     IPv6SUBNETINT="wlan-ap"
 fi
 
+reroutepeers="$(confget -f "/etc/yggdrasil.iptunnel.conf" -s "general" reroutepeers)"
+if [[ -z "${reroutepeers}" ]]; then
+    reroutepeers=false
+fi
+
 if [ -e /etc/yggdrasil.iptunnel.server ]; then
 
     SUBNET4=$(confget -f "/etc/yggdrasil.iptunnel.conf" -s "iptunnel" subnet)
@@ -105,6 +110,15 @@ elif [ -e /etc/yggdrasil.iptunnel.client ]; then
         ip6tables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
     fi
 
+    if [[ ! "${reroutepeers}" == true ]]; then
+        # Loop through peers and route them over the default gateway
+	gw="$(ip r | grep default | head -n 1 | awk '{print $3}')"
+	for i in "$(sudo yggdrasilctl getPeers | awk '{print $4}' | grep tcp | awk -F : '{print $2}' | tr -d /)"
+	do
+            sudo route add $i gw $gw
+        done
+    fi
+    
     # Special hack to change default route without removing original one
     route add  -net 0.0.0.0/1 "${YGGINT}"
     route add  -net 128.0.0.0/1 "${YGGINT}"
