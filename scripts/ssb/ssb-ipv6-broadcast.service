@@ -5,7 +5,7 @@ After=ssb.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/socat UDP6-LISTEN:8008,reuseaddr,su=nobody UDP4:127.0.0.1:8008
+ExecStart=/usr/bin/socat -T 4 UDP6-LISTEN:8008,reuseaddr,fork,su=nobody UDP4:127.0.0.1:8008
 ExecStop=/bin/kill -s QUIT $MAINPID
 Restart=on-failure
 RestartSec=10s
