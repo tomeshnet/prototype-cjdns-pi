@@ -40,10 +40,12 @@
         dir=$(wpa_supplicant_ctrldir)
         [ -z "$dir" ] && return 1
         wpa_cli -p "$dir" -i "$interface" status >/dev/null 2>&1 || return 0
-@@ -103,6 +115,7 @@
+@@ -102,7 +114,8 @@
+
  if [ "$ifwireless" = "1" ] && \
      type wpa_supplicant >/dev/null 2>&1 && \
-     type wpa_cli >/dev/null 2>&1
+-    type wpa_cli >/dev/null 2>&1
++    type wpa_cli >/dev/null 2>&1 && \
 +    ([ -f /etc/wpa_devices ] && grep -q  "$interface" /etc/wpa_devices); then
  then
         case "$reason" in
