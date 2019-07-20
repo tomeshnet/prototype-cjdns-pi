@@ -12,24 +12,33 @@ function convip()
     echo ${ip:1}
 }
 
+# Flip last bit of a binary string
+function flipLastBit() {
+    ip="$1"
+    len=$(expr length $ip)
+    len=$((len-1))
+    #Flip last bit
+    ip2=${ip:0:$len}
+    if [[ "${ip:$len:1}" == "1" ]]; then
+        ip2="${ip2}0"
+    else
+        ip2="${ip2}1"
+    fi
+   echo $ip2
+}
+
 # CJD's method of routing instead of 0.0.0.0/0  you route every other ip except the peer
 # by creating multiple narrowing routes
 function unroute() {
 	#Convert to binary
 	ip="$(convip $1 | tr -d " ")"
-	#Flip last bit
-	ip2=${ip:0:31}
-	if [[ "${ip:31:1}" == "1" ]]; then
-	    ip2="${ip2}0"
-	else
-	    ip2="${ip2}1"
-	fi
-	ip=$ip2
+	
 	#Loop through all ips narrowing scope
 	for i in {1..31}
 	do
 	    nowip=${ip:0:$i}
-	    ip1=${nowip:0:8}
+            nowip=$(flipLastBit $nowip)
+            ip1=${nowip:0:8}
 	    ip2=${nowip:8:8}
 	    ip3=${nowip:16:8}
 	    ip4=${nowip:24:8}
