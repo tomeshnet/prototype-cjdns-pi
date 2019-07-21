@@ -163,9 +163,8 @@ Additional configurations can be made in the file `/etc/yggdrasil.iptunnel.conf`
 Section `[general]`
 
 **yggdrasil-interface**
-*Server Only*
 
-Defines the Yggdrasil interface.
+Defines the Yggdrasil interface. You can configure this on yggdrasil.conf as for example `IfName: ygg0`.
 
 Default: `ygg0`
 Value: `Yggdrasil interface on the system, usually ygg0 or tun0`
