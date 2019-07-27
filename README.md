@@ -79,12 +79,12 @@ List of tested hardware:
 | Hardware                  | Base OS         | [CJDNS Benchmark](https://github.com/phillymesh/cjdns-optimizations) <sub>(salsa20/poly1305, switching)</sub> | iPerf3 | USB | Ethernet | Notes    |
 | :-------------------------|:----------------|:--------------------------------------------------------------------------------------------------------------|:-------|:----|:---------|:---------|
 | Genericx x86              | Debian 9                                                         |            |         |         |   |  Performance depended on underlying hardware. |
-| Raspberry Pi 4b           | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) | 650k, 230k | ??? Mbps| 4       | 10/100/1000 | Onboard wifi dual band |
+| Raspberry Pi 4b           | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) | 650k, 230k | ~160 Mbps| 4       | 10/100/1000 | Onboard wifi dual band |
 | Raspberry Pi 3b+          | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) | 405k, 119k | ~90 Mbps| 4       | 10/100/1000 | Eth only ~320mbps. Onboard wifi dual band |
 | Raspberry Pi 3b           | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) | 350k, 100k | 89 Mbps | 4       | 10/100 | |
-| Raspberry Pi 2            | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) | 145k,  55k | 39 Mbps | 4       | 10/100 | |
-| Raspberry Pi 1 A+         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) |  35k,   -  | ~9 Mbps | 1       | None   | |
-| Raspberry Pi 1 B+         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) |  51k,  22k | ~8 Mbps | 2       | 10/100 | |
+| Raspberry Pi 2b            | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) | 145k,  55k | 39 Mbps | 4       | 10/100 | |
+| Raspberry Pi 1a+         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) |  35k,   -  | ~9 Mbps | 1       | None   | |
+| Raspberry Pi 1b+         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) |  51k,  22k | ~8 Mbps | 2       | 10/100 | |
 | Raspberry Pi Zero         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) |  68k,  30k | ~9 Mbps | 1*      | None   | *Need OTG Cable No FPV |
 | Orange Pi Lite            | [Armbian](https://dl.armbian.com/orangepilite/)                  | 160k,  74k | 67 Mbps | 2       | None   | |
 | Orange Pi One             | [Armbian](https://dl.armbian.com/orangepione/)                   | 160k,  74k | 67 Mbps | 1       | 10/100 | |
