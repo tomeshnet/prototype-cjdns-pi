@@ -22,6 +22,7 @@ npm install --unsafe-perm asyncmemo hashlru pull-stream pull-cat multicb hypersc
 
 # Install patchfoo and enable plugin
 git clone https://github.com/tomeshnet/patchfoo.git patchfoo
+# shellcheck disable=SC2164
 cd patchfoo
 git checkout ${VERSION}
 cd ..
