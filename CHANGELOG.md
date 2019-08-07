@@ -29,6 +29,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - The installation process now has a module (`extra-tools-netcat`) for `netcat`, giving the user an option to install `netcat-openbsd` over any other versions of `netcat`, since the BSD rewrite supports IPv6
 - The [TROUBLESHOOT.md](./docs/TROUBLESHOOT.md) file has been created, with information on on wireless meshing and CJDNS or Yggdrasil IPTunnel-ing
 - The `/etc/mesh.conf` file as been added, as an INI style configuration file. It contains variables such `mesh-name` and `frequency`, which modules now use instead of just assuming the values
+  - It is documented in the [MODULES.md](./docs/MODULES.md) file
 - The stack will now run on Raspbian/Debian Buster, the latest stable version at the time of release.
 
 ### Changed
@@ -38,7 +39,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - NodeJS version 8.x -> 10.x
   - The latest LTS
 - NetworkManager is now removed, it was never used
-- IPFS version 0.4.19 -> 0.4.20
+- IPFS version 0.4.19 -> 0.4.21
 - IPFS peering will now try and use QUIC if it's available on the node being connected to
 - Prometheus Node Exporter version 0.14.0 -> 0.17.0
 - Prometheus Server version 2.0.0-alpha.3 -> 2.7.2
@@ -47,6 +48,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - TUI profile selection changed to a menu type instead of radio buttons
 - The Pine64 Armbian link in the hardware table has been fixed to the correct one
 - The IBSS device first checked from the `mesh.conf` file, then a search of the interfaces available is used. Previously it was just always `wlan0` that was tried.
+- [Patchfoo](https://www.scuttlebutt.nz/applications.html#patchfoo) is now being cloned from a [Github mirror](https://github.com/tomeshnet/patchfoo) for reliability and version control
 
 ### Fixed
 - User is instructed to install `sudo` if it's not installed
