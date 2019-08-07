@@ -69,7 +69,7 @@ Config file: `/etc/mesh.conf`
 Section `[general]`  
 
 **mesh-name**  
-Defines name of mesh. Used when creating AdHoc/MeshPoint SSID.  
+Defines name of mesh. Used when creating AdHoc/MeshPoint SSID, as well as the hostname of the device. Examples are Tomesh, Massmesh, NYCmesh, etc.
 Value: `alphanumeric word`   
 
 **frequency**  
