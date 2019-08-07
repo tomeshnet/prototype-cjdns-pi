@@ -80,7 +80,7 @@ Default: `2412`
 **ibss-dev**
 Defines the interface AdHoc will run on.
 Value: `interface on system`  
-Default: `first interface not wlan-ap`
+Default: `The first interface that has a name other than wlan-ap`
 
 ## CJDNS
 Cjdns (Caleb James DeLisle's Network Suite) is a networking protocol and reference implementation. It is founded on the ideology that networks should be easy to set up, protocols should scale smoothly, and security should be built in by default.
