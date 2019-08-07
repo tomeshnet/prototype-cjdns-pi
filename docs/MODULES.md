@@ -70,7 +70,7 @@ Section `[general]`
 
 **mesh-name**  
 Defines name of mesh. Used when creating AdHoc/MeshPoint SSID, as well as the hostname of the device. Examples are Tomesh, Massmesh, NYCmesh, etc.
-Value: `alphanumeric word`   
+Value: `ASCII character string with no spaces`   
 
 **frequency**  
 Defines frquency AdHoc/MeshPoint will run on.  
