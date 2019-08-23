@@ -5,9 +5,16 @@ iwlist  wlan0 scanning | grep Cell | grep Address | awk '{print "\"macAddress\":
 echo "}}" >> /tmp/locationScan
 
 curl -d @/tmp/locationScan -H "Content-Type: application/json" "http://node2.e-mesh.net/geo.php" -o /tmp/locationResult > /dev/null
-a=`jq -r ".accuracy" /tmp/locationResult 2>/dev/null`
-lat=`jq -r ".location.lat" /tmp/locationResult 2>/dev/null`
-lng=`jq -r ".location.lng" /tmp/locationResult 2>/dev/null`
+
+if [ -z "$(type jq)" ]; then
+   a=$(cat /tmp/locationResult |grep \"accuracy\" | awk '{print $2}')
+   lat=$(cat /tmp/locationResult |grep \"lat\" | awk '{print $2}')
+   lng=$(cat /tmp/locationResult |grep \"lng\" | awk '{print $2}')
+else
+  a=`jq -r ".accuracy" /tmp/locationResult 2>/dev/null`
+  lat=`jq -r ".location.lat" /tmp/locationResult 2>/dev/null`
+  lng=`jq -r ".location.lng" /tmp/locationResult 2>/dev/null`
+fi
 
 echo "\"geolocation\": {"
 echo "    \"latitude\": \"$lat\","
