@@ -30,7 +30,7 @@ if ! [ -z "${NEWHOSTNAME}" ]; then
         sudo sed -i "\$i\ \ NodeInfo:\n  {\n   name: ${NEWHOSTNAME}\n  }\n"  /etc/yggdrasil.conf
     fi
 
-    sudo sed -i -e "s/$oldhostname/$NEWHOSTNAME/" /opt/hostapd/hostapd.conf || true
+    sudo sed -i -e "s/$oldhostname/$NEWHOSTNAME/" /etc/hostapd/hostapd.conf || true
     sudo sed -i -e "s/$oldhostname/$NEWHOSTNAME/" /opt/tomesh/nodeinfo.json || true
     sudo sed -i -e "s/$oldhostname/$NEWHOSTNAME/" /etc/yggdrasil.conf || true
 
