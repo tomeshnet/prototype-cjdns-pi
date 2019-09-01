@@ -40,6 +40,10 @@ case "$BOARD_MODEL" in
     i386)
         CJDNS_BUILD_CMD="sudo ./do"
     ;;
+    "raspberrypi4")
+        CJDNS_BUILD_CMD="sudo CFLAGS=\"-march=armv8-a+crc -mtune=cortex-a53 -mfpu=crypto-neon-fp-armv8 -mfloat-abi=hard -O2\" ./do"
+        CJDNS_PACKAGE="cjdns-neon-v4.deb"
+    ;;
     "raspberrypi3")
         CJDNS_BUILD_CMD="sudo CFLAGS=\"-march=armv8-a+crc -mtune=cortex-a53 -mfpu=crypto-neon-fp-armv8 -mfloat-abi=hard -O2\" ./do"
         CJDNS_PACKAGE="cjdns-neon-v4.deb"

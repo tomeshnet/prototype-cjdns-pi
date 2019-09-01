@@ -11,7 +11,8 @@ source functions.sh
 
 # Normalize OS environment
 # True required to avoid odd armbian bug.  Update does work but reports missing file.
-sudo apt-get update -y || true
+# --allow-releaseinfo-change to work around testing-stable repo moves if using an older image
+sudo apt-get update --allow-releaseinfo-change -y || true
 
 # Dependencies
 sudo apt-get install -y gcc make curl wget
@@ -40,7 +41,7 @@ case "$BOARD_MODEL" in
     orangepizeroplus2-h5)
         SUPPORT_HOSTAP=true
     ;;
-    "raspberrypi3")
+    "raspberrypi3"|"raspberrypi4")
         # Raspberry Pi 3 has on-board WiFi that can be used as an AP
         SUPPORT_HOSTAP=true
         # Raspberry Pi 3 has hardware watchdog
