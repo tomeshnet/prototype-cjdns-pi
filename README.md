@@ -79,7 +79,7 @@ List of tested hardware:
 | Hardware                  | Base OS         | [CJDNS Benchmark](https://github.com/phillymesh/cjdns-optimizations) <sub>(salsa20/poly1305, switching)</sub> | iPerf3 | USB | Ethernet | Notes    |
 | :-------------------------|:----------------|:--------------------------------------------------------------------------------------------------------------|:-------|:----|:---------|:---------|
 | Genericx x86              | Debian 9                                                         |            |         |         |   |  Performance depended on underlying hardware. |
-| Raspberry Pi 4b           | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) | 650k, 230k | ~160 Mbps| 4       | 10/100/1000 | Onboard wifi dual band |
+| Raspberry Pi 4B (2GB ram)           | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) | 650k, 230k | ~160 Mbps| 4       | 10/100/1000 | Onboard wifi dual band |
 | Raspberry Pi 3b+          | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) | 405k, 119k | ~90 Mbps| 4       | 10/100/1000 | Eth only ~320mbps. Onboard wifi dual band |
 | Raspberry Pi 3b           | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) | 350k, 100k | 89 Mbps | 4       | 10/100 | |
 | Raspberry Pi 2b            | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) | 145k,  55k | 39 Mbps | 4       | 10/100 | |
