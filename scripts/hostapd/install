@@ -30,7 +30,7 @@ echo "    network 10.0.0.0" | sudo tee --append /etc/network/interfaces.d/wlan-a
 echo "    broadcast 10.0.0.255" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
 echo "iface wlan-ap inet6 static" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
 
-if [ "$(which yggdrasil)" ]; then
+if [ "$(command -v yggdrasil)" ]; then
     echo "    address ${YGG_SUBNET}1/64" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
 else
     echo "    address fdfc::2" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
@@ -109,7 +109,7 @@ fi
 
 # Setup radvd
 cp "$BASE_DIR/radvd.conf" /tmp
-if [ "$(which yggdrasil)" ]; then
+if [ "$(command -v yggdrasil)" ]; then
     # Setup Yggdrasil radvd prefix for subnetting
     sed -i "s/fdfc::\/64/${YGG_SUBNET}\/64/" /tmp/radvd.conf
 fi
