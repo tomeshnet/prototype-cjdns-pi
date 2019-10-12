@@ -91,12 +91,12 @@ fi
 
 # Use Hyperboria DNS addressses if h-dns is enabled
 sudo cp "$BASE_DIR/dnsmasq.conf" /etc/dnsmasq.conf
-if [ ! -z "$WITH_H_DNS" ] && [ "$WITH_H_DNS" == "true" ]; then
+if [ -n "$WITH_H_DNS" ] && [ "$WITH_H_DNS" == "true" ]; then
    echo "server=$H_DNS_SERVER_0" | sudo tee --append /etc/dnsmasq.conf
    echo "server=$H_DNS_SERVER_1" | sudo tee --append /etc/dnsmasq.conf
    echo "server=$H_DNS_SERVER_2" | sudo tee --append /etc/dnsmasq.conf
    echo "server=$H_DNS_SERVER_3" | sudo tee --append /etc/dnsmasq.conf   
-elif [ ! -z "$WITH_CJDNS_IPTUNNEL" ] && [ "$WITH_CJDNS_IPTUNNEL" ]; then
+elif [ -n "$WITH_CJDNS_IPTUNNEL" ] && [ "$WITH_CJDNS_IPTUNNEL" ]; then
    echo "server=$I_DNS_SERVER_0" | sudo tee --append /etc/dnsmasq.conf
    echo "server=$I_DNS_SERVER_1" | sudo tee --append /etc/dnsmasq.conf
 fi
