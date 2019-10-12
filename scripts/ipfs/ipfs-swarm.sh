@@ -51,7 +51,7 @@ while read -r cjdns_peer; do
 done <<< "$(sudo nodejs /opt/cjdns/tools/peerStats 2>/dev/null | awk '{ if ($3 == "ESTABLISHED") print $2 }' | awk -F. '{ print $6".k" }' | xargs)"
 
 # Add yggdrasil direct peers
-if [ "$(which yggdrasil)" ]; then
+if [ "$(command -v yggdrasil)" ]; then
     while read -r ygg_peer; do
         addPeer "${ygg_peer}"
     done <<< "$(sudo yggdrasilctl getPeers | grep -v "(self)" | awk '{print $1}' | grep -v bytes_recvd | xargs)"
