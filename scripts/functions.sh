@@ -64,7 +64,7 @@ function askModule {
 #    checkModule <Variable>
 function checkModule {
      eval "res=\$$1"
-     if [ ! -z "$res" ] && [ "$res" == "true" ]; then
+     if [ -n "$res" ] && [ "$res" == "true" ]; then
         echo "1"
     else
         echo ""
