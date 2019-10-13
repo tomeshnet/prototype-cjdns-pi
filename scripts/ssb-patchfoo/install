@@ -25,6 +25,8 @@ git clone https://github.com/tomeshnet/patchfoo.git patchfoo
 # shellcheck disable=SC2164
 cd patchfoo
 git checkout ${VERSION}
+
+# shellcheck disable=SC2103
 cd ..
 
 # Replace ssb-server plugins.install with a static config file
