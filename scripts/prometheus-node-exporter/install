@@ -47,7 +47,7 @@ sudo cp "$BASE_DIR/prometheus-node-exporter.service" /etc/systemd/system/prometh
 sudo cp "$BASE_DIR/node-exporter-tomesh.service" /etc/systemd/system/node-exporter-tomesh.service
 
 apt-get install python2 libpython2-stdlib
-pip install 
+
 sudo systemctl daemon-reload
 sudo systemctl enable prometheus-node-exporter.service
 sudo systemctl start prometheus-node-exporter.service
