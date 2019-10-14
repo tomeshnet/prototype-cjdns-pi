@@ -2,7 +2,7 @@
 
 set -e
 
-NODE_EXPORTER_VERSION=0.17.0
+NODE_EXPORTER_VERSION=0.18.1
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
