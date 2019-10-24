@@ -64,7 +64,7 @@ esac
 
 # Check if cjdns is to be compiled or downloaded
 if [[ ! -e "/usr/bin/cjdroute" ]]; then
-    if [ ! -z "$CJDNS_PACKAGE" ]; then
+    if [ -n "$CJDNS_PACKAGE" ]; then
         read -p "Compile CJDNS from source [Y] or use $CJDNS_PACKAGE Debian package (faster) [n]?" -n 1 -r
         echo ""
         if [[ ! $REPLY =~ ^[Nn]$ ]]; then
@@ -73,7 +73,7 @@ if [[ ! -e "/usr/bin/cjdroute" ]]; then
     fi
 fi
 
-if [ ! -z "$CJDNS_PACKAGE" ]; then
+if [ -n "$CJDNS_PACKAGE" ]; then
     if ! [ -x "/opt/cjdns/cjdroute" ]; then
         echo -e "\e[1;31mInstalling CJDNS debian package\e[0m"
         wget https://github.com/darkdrgn2k/ToMeshPackages/raw/master/CJDNS/$CJDNS_PACKAGE -O /tmp/cjdns.deb
