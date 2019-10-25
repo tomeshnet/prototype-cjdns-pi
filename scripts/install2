@@ -85,7 +85,7 @@ echo "auto lo" | sudo tee /etc/network/interfaces.d/lo > /dev/null
 echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces.d/lo >> /dev/null
 
 # espressobin uses br0 not eth0
-if ( "$BOARD_MODEL" == "espressobin" ); then
+if [ "$BOARD_MODEL" == "espressobin" ]; then
     sudo mv /etc/network/interfaces.d/eth0 /etc/network/interfaces.d/br0
     sudo sed 's/eth0/br0/' -i /etc/network/interfaces.d/br0
 fi
