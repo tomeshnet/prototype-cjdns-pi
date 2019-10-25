@@ -107,7 +107,7 @@ askSelection "Select Node install type" "A Basic node\nB IPFS Node\nC Monitor No
 
 case "$dialogREPLY" in
     "A")
-        echo "Basic Nde"
+        echo "Basic Node"
 	WITH_CJDNS=true
         WITH_YGGDRASIL=true
         WITH_YGGDRASIL_IPTUNNEL=true
