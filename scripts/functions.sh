@@ -43,6 +43,10 @@ function askModule {
 	fi
     else
         if [ -z "$res" ] || [ "$res" != "true" ] && [ "$res" != "false" ]; then
+	
+	    # Clear buffer before asking
+	    read -t 1 -n 10000 discard 
+	    
             read -p "Install $2 $askPrompt? " -n 1 -r
             echo ""
             if [[ $REPLY =~ ^[$nonDefaultMatch]$ ]]; then
@@ -85,6 +89,10 @@ function askSelection {
     selection=$2
     dialogREPLY=""
     if [ "$(checkModule 'WITH_DIALOG')" ]; then
+    
+    	# Clear buffer before asking
+	read -t 1 -n 10000 discard 
+	
         selection=$(echo -e "$selection" | while read -r selected; do
                     selectedItem="${selected:0:1}"
                     selectedText="${selected:2}"
@@ -108,6 +116,10 @@ function askSelection {
     else
         isValid=""
         while [[ "$isValid" == "" ]]; do
+	
+    	    # Clear buffer before asking
+	    read -t 1 -n 10000 discard 
+	
             echo -e "$1"
             echo -------------------
             echo -e "$2"
@@ -117,6 +129,9 @@ function askSelection {
             if [[ ! "$REPLY" == "" ]]; then
                 REPLY=$(echo "$REPLY" | awk '{print toupper($0)}')
 
+    	       # Clear buffer before asking
+	        read -t 1 -n 10000 discard 
+		
                 isValid=$(echo -e "$selection" | while read -r selected; do
                     if [[ "${selected:0:1}" == "$REPLY" ]]; then
                         echo 1
