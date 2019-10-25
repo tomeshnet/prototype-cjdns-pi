@@ -103,11 +103,11 @@ if [ "$(checkModule 'WITH_DIALOG')" ]; then
     sudo apt-get install dialog -y
 fi
 
-askSelection "Select node install type" "A Basic node\nB IPFS Node\nC Monitor Node\nD SSB Node\nE Camera Node\nF Raspberry Pi Adhoc (Experimental)\nZ Custom Node"
+askSelection "Select Node install type" "A Basic node\nB IPFS Node\nC Monitor Node\nD SSB Node\nE Camera Node\nF Raspberry Pi Adhoc (Experimental)\nZ Custom Node"
 
 case "$dialogREPLY" in
     "A")
-        echo "Basic node"
+        echo "Basic Nde"
 	WITH_CJDNS=true
         WITH_YGGDRASIL=true
         WITH_YGGDRASIL_IPTUNNEL=true
