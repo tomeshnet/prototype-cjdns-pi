@@ -127,7 +127,7 @@ case "$dialogREPLY" in
         WITH_IPFS_PI_STREAM=false
     ;;
     "B")
-        echo "Basic IPFS node"
+        echo "IPFS Node"
 	WITH_CJDNS=true
         WITH_YGGDRASIL=true
         WITH_YGGDRASIL_IPTUNNEL=true
