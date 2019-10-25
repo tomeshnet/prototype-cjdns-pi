@@ -26,7 +26,7 @@ function flipLastBit() {
    echo $ip2
 }
 function getYggPeers {
-    if [[ -z "$(type jq)" ]]; then
+    if [[ "$(type jq)" ]]; then
         yggdrasil -useconffile /etc/yggdrasil.conf -normaliseconf -json | jq -r ".Peers[]"
     else
         yggdrasilctl getPeers | awk '{print $4}' | grep tcp
