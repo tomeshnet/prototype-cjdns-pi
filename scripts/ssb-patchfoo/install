@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC1091
 true
+VERSION="TO-V0.5"
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -20,8 +21,11 @@ cd ~/.ssb/node_modules
 npm install --unsafe-perm asyncmemo hashlru pull-stream pull-cat multicb hyperscript pull-paramap ssb-contact ssb-sort stream-to-pull-stream emoji-server pull-paginate ssb-mentions busboy mime-types pull-identify-filetype human-time pull-hyperscript jpeg-autorotate pull-catch diff pull-split pull-utf8-decoder ssb-web-resolver highlight.js pull-box-stream base64-url ssb-backlinks ssb-private
 
 # Install patchfoo and enable plugin
-#git clone https://github.com/darkdrgn2k/patchfoo.git patchfoo
-git clone  http://git.scuttlebot.io/%25YAg1hicat%2B2GELjE2QJzDwlAWcx0ML%2B1sXEdsWwvdt8%3D.sha256 patchfoo
+git clone https://github.com/tomeshnet/patchfoo.git patchfoo
+# shellcheck disable=SC2164
+cd patchfoo
+git checkout ${VERSION}
+cd ..
 
 # Replace ssb-server plugins.install with a static config file
 # This will prevent the installation of these modules a second time
@@ -43,10 +47,6 @@ sed -i 's#var SsbNpmRegistry#//var SsbNpmRegistry#' patchfoo/lib/app.js  patchfo
 sed -i 's#this.serveSsbNpmRegistry = SsbNpmRegistry.respond(this.sbot, this.config)#//this.serveSsbNpmRegistry = SsbNpmRegistry.respond(this.sbot, this.config)#' patchfoo/lib/app.js
 
 # Comment out line that breaks things
-sed -i "s#h('input', {type: 'file', name: 'upload'})#//h('input', {type: 'file', name: 'upload'})#" patchfoo/lib/serve.js
-
-
-# this line causes patchfoo not to work at all. so comment it out.
 sed -i "s#h('input', {type: 'file', name: 'upload'})#//h('input', {type: 'file', name: 'upload'})#" patchfoo/lib/serve.js
 
 # Start service again to start patchfoo

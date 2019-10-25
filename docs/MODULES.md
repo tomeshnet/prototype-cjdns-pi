@@ -62,6 +62,26 @@ To install all optional modules (not recommended), run the following command:
 $ wget https://raw.githubusercontent.com/tomeshnet/prototype-cjdns-pi/master/scripts/install && chmod +x install && WITH_MESH_POINT=true WITH_AD_HOC=false WITH_WIFI_AP=true WITH_FIREWALL=true WITH_CJDNS_IPTUNNEL=true WITH_IPFS=true WITH_SSB=true WITH_SSB_WEB_PI=true WITH_PROMETHEUS_NODE_EXPORTER=true WITH_PROMETHEUS_SERVER=true WITH_GRAFANA=true WITH_H_DNS=true WITH_H_NTP=true WITH_EXTRA_TOOLS=true WITH_WATCHDOG=true WITH_YRD=true ./install
 ```
 
+## Mesh-Point / Mesh-Adhoc  
+Configured Mesh Point or AdHoc wireless mesh on interface.  
+
+Config file: `/etc/mesh.conf`  
+Section `[general]`  
+
+**mesh-name**  
+Defines name of mesh. Used when creating AdHoc/MeshPoint SSID, as well as the hostname of the device. Examples are Tomesh, Massmesh, NYCmesh, etc.
+Value: `ASCII character string with no spaces`   
+
+**frequency**  
+Defines frquency AdHoc/MeshPoint will run on.  
+Value: `valid frequency in Mhz`  
+Default: `2412` 
+
+**ibss-dev**
+Defines the interface AdHoc will run on.
+Value: `interface on system`  
+Default: `The first interface that has a name other than wlan-ap`
+
 ## CJDNS
 Cjdns (Caleb James DeLisle's Network Suite) is a networking protocol and reference implementation. It is founded on the ideology that networks should be easy to set up, protocols should scale smoothly, and security should be built in by default.
 
@@ -163,9 +183,8 @@ Additional configurations can be made in the file `/etc/yggdrasil.iptunnel.conf`
 Section `[general]`
 
 **yggdrasil-interface**
-*Server Only*
 
-Defines the Yggdrasil interface.
+Defines the Yggdrasil interface. You can configure this on yggdrasil.conf as for example `IfName: ygg0`.
 
 Default: `ygg0`
 Value: `Yggdrasil interface on the system, usually ygg0 or tun0`
@@ -472,4 +491,3 @@ Our nodes can run a Scuttlebutt pub, which allows your messages to propagate thr
 ### SSB Pub Peering
 
 Beyond connecting with mesh peers, or peers on the LAN, you will need to connect to a "pub" to get your Scuttlebutt feed across the Internet. You can find a list of public pubs to join [here](https://github.com/ssbc/ssb-server/wiki/Pub-Servers).
-
