@@ -180,7 +180,7 @@ elif [ -e /etc/yggdrasil.iptunnel.client ]; then
         done
         ip route add 0.0.0.0/1 dev "${YGGINT}"
         ip route add 128.0.0.0/1 dev "${YGGINT}"
-    elif [[ ! "${reroutepeers}" == "unroutepeers" ]]; then
+    elif [[ "${reroutepeers}" == "unroutepeers" ]]; then
 	ip=$(getYggPeers | grep tcp | awk -F : '{print $2}' | tr -d / | head -n 1)
         unroute $ip
     else
