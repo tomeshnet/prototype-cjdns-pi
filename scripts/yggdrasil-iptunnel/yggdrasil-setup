@@ -188,6 +188,6 @@ elif [ -e /etc/yggdrasil.iptunnel.client ]; then
         ip route add 0.0.0.0/1 dev "${YGGINT}"
         ip route add 128.0.0.0/1 dev "${YGGINT}"
     fi
-    
-    ip -6 route add ::/0 dev "${YGGINT}"
+    ip -6 route add ::/1 dev "${YGGINT}"
+    ip -6 route add 8000::/1 dev "${YGGINT}" 
 fi
