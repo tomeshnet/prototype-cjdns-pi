@@ -315,8 +315,8 @@ Method is configed in the `[general]` secion of yggdrasill.iptunnel.config
 **reroutepeers**
 *Server Only*
 
-Default: ``
-Value: `blank, routepeers or unroutepeers`
+Default: `false`
+Value: `blank/false, routepeers or unroutepeers`
 
 Section `[general]`
 
@@ -326,7 +326,7 @@ Iterate through peers and add them to the systems default gateway. Then adds def
 
 **Pros**
 
-Currently works for all listed peers
+Currently works for all IPv4 listed peers
 
 **Cons**
 
@@ -346,14 +346,13 @@ Since route for peer is never set it always uses the system default (survives ro
 Currently works for only the first peer
 Fills up the route table with routes
 
-
 ###### Additional Notes
 
 - Does not yet work for IPv6 peers
 - When JQ is installed on system, it will read the yggdarsill config file for peers
 - If JQ is not installed uses getPeers which means the peer must already be connected
 - Currently Can't parse hostnames (assumes ips)
-- If/When Hostnames are used, DNS resolve may be an issue (round robin dns)
+- If/When Hostnames are used, DNS resolve may be an issue (round robin dns) 
 
 ## IPFS
 IPFS stands for Interplanetary File System. It is an open-source, peer-to-peer distributed hypermedia protocol that aims to function as a ubiquitous file system for all computing devices.
