@@ -30,7 +30,7 @@ echo "    network 10.0.0.0" | sudo tee --append /etc/network/interfaces.d/wlan-a
 echo "    broadcast 10.0.0.255" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
 echo "iface wlan-ap inet6 static" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
 
-if [ "$(which yggdrasil)" ]; then
+if [ "$(command -v yggdrasil)" ]; then
     echo "    address ${YGG_SUBNET}1/64" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
 else
     echo "    address fdfc::2" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
@@ -91,12 +91,12 @@ fi
 
 # Use Hyperboria DNS addressses if h-dns is enabled
 sudo cp "$BASE_DIR/dnsmasq.conf" /etc/dnsmasq.conf
-if [ ! -z "$WITH_H_DNS" ] && [ "$WITH_H_DNS" == "true" ]; then
+if [ -n "$WITH_H_DNS" ] && [ "$WITH_H_DNS" == "true" ]; then
    echo "server=$H_DNS_SERVER_0" | sudo tee --append /etc/dnsmasq.conf
    echo "server=$H_DNS_SERVER_1" | sudo tee --append /etc/dnsmasq.conf
    echo "server=$H_DNS_SERVER_2" | sudo tee --append /etc/dnsmasq.conf
    echo "server=$H_DNS_SERVER_3" | sudo tee --append /etc/dnsmasq.conf   
-elif [ ! -z "$WITH_CJDNS_IPTUNNEL" ] && [ "$WITH_CJDNS_IPTUNNEL" ]; then
+elif [ -n "$WITH_CJDNS_IPTUNNEL" ] && [ "$WITH_CJDNS_IPTUNNEL" ]; then
    echo "server=$I_DNS_SERVER_0" | sudo tee --append /etc/dnsmasq.conf
    echo "server=$I_DNS_SERVER_1" | sudo tee --append /etc/dnsmasq.conf
 fi
@@ -109,7 +109,7 @@ fi
 
 # Setup radvd
 cp "$BASE_DIR/radvd.conf" /tmp
-if [ "$(which yggdrasil)" ]; then
+if [ "$(command -v yggdrasil)" ]; then
     # Setup Yggdrasil radvd prefix for subnetting
     sed -i "s/fdfc::\/64/${YGG_SUBNET}\/64/" /tmp/radvd.conf
 fi

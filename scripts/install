@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
-if [[ -z "$(which sudo)" ]]; then
+if [[ -z "$(command -v sudo)" ]]; then
 apt-get install -y sudo || (
    echo Sudo is not installed and cannot be installed.
    echo Please run 
@@ -39,7 +39,7 @@ fi
 # Get git
 # True required to avoid odd armbian bug. Update does work but reports missing file.
 sudo apt-get update -y || true
-if ! [ "$(which git)" ]; then
+if ! [ "$(command -v git)" ]; then
     sudo apt-get install git -y
 fi
 

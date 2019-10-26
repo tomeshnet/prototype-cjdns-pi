@@ -40,6 +40,10 @@ case "$BOARD_MODEL" in
     i386)
         CJDNS_BUILD_CMD="sudo ./do"
     ;;
+    "raspberrypi4")
+        CJDNS_BUILD_CMD="sudo CFLAGS=\"-march=armv8-a+crc -mtune=cortex-a53 -mfpu=crypto-neon-fp-armv8 -mfloat-abi=hard -O2\" ./do"
+        CJDNS_PACKAGE="cjdns-neon-v4.deb"
+    ;;
     "raspberrypi3")
         CJDNS_BUILD_CMD="sudo CFLAGS=\"-march=armv8-a+crc -mtune=cortex-a53 -mfpu=crypto-neon-fp-armv8 -mfloat-abi=hard -O2\" ./do"
         CJDNS_PACKAGE="cjdns-neon-v4.deb"
@@ -60,7 +64,7 @@ esac
 
 # Check if cjdns is to be compiled or downloaded
 if [[ ! -e "/usr/bin/cjdroute" ]]; then
-    if [ ! -z "$CJDNS_PACKAGE" ]; then
+    if [ -n "$CJDNS_PACKAGE" ]; then
         read -p "Compile CJDNS from source [Y] or use $CJDNS_PACKAGE Debian package (faster) [n]?" -n 1 -r
         echo ""
         if [[ ! $REPLY =~ ^[Nn]$ ]]; then
@@ -69,7 +73,7 @@ if [[ ! -e "/usr/bin/cjdroute" ]]; then
     fi
 fi
 
-if [ ! -z "$CJDNS_PACKAGE" ]; then
+if [ -n "$CJDNS_PACKAGE" ]; then
     if ! [ -x "/opt/cjdns/cjdroute" ]; then
         echo -e "\e[1;31mInstalling CJDNS debian package\e[0m"
         wget https://github.com/darkdrgn2k/ToMeshPackages/raw/master/CJDNS/$CJDNS_PACKAGE -O /tmp/cjdns.deb

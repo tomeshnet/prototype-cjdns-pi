@@ -11,7 +11,8 @@ source functions.sh
 
 # Normalize OS environment
 # True required to avoid odd armbian bug.  Update does work but reports missing file.
-sudo apt-get update -y || true
+# --allow-releaseinfo-change to work around testing-stable repo moves if using an older image
+sudo apt-get update --allow-releaseinfo-change -y || true
 
 # Dependencies
 sudo apt-get install -y gcc make curl wget
@@ -40,7 +41,7 @@ case "$BOARD_MODEL" in
     orangepizeroplus2-h5)
         SUPPORT_HOSTAP=true
     ;;
-    "raspberrypi3")
+    "raspberrypi3"|"raspberrypi4")
         # Raspberry Pi 3 has on-board WiFi that can be used as an AP
         SUPPORT_HOSTAP=true
         # Raspberry Pi 3 has hardware watchdog
@@ -82,6 +83,12 @@ echo allow-hotplug eth0 | sudo tee /etc/network/interfaces.d/eth0 > /dev/null
 echo iface eth0 inet dhcp | sudo tee --append /etc/network/interfaces.d/eth0 >> /dev/null
 echo "auto lo" | sudo tee /etc/network/interfaces.d/lo > /dev/null
 echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces.d/lo >> /dev/null
+
+# espressobin uses br0 not eth0
+if [ "$BOARD_MODEL" == "espressobin" ]; then
+    sudo mv /etc/network/interfaces.d/eth0 /etc/network/interfaces.d/br0
+    sudo sed 's/eth0/br0/' -i /etc/network/interfaces.d/br0
+fi
 
 # Detect missing /sbin from $PATH variable on Debian distros, and add it
 if ! echo "$PATH" | grep -q "/sbin" ; then
@@ -300,7 +307,10 @@ if [ "$(checkModule 'WITH_YGGDRASIL')" ]; then
     source yggdrasil/install
 fi
 
-# Set hostname nodeinfo
+# Install nodeinfo
+source shared/nodeinfo/install
+
+# Set hostname
 source shared/hostname/install
 
 # 802.11s Mesh Point interface
@@ -401,9 +411,6 @@ fi
 if [ "$SUPPORT_WATCHDOG" == "true" ] && [ "$(checkModule 'WITH_WATCHDOG')" ]; then
     source watchdog/install
 fi
-
-# Install nodeinfo
-source shared/nodeinfo/install
 
 # Print node status on login
 cp ~/.profile ~/.bash_profile
