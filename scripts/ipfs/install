@@ -39,7 +39,7 @@ IPFS_PEER_4="/ip6/200:98bf:d6df:e49a:f525:40bf:18d:ac45/tcp/4001/ipfs/QmU6NeD2Uu
 # HeavyMetal's peer
 IPFS_PEER_5="/ip6/201:3d73:dbf:da97:e008:2d29:3919:cdb1/tcp/4001/ipfs/QmRGk8DdMWy5P5xgUisnv7u4hV4WfgEhbxa6iGpviYGC7q"
 # Yk3Music's Irvine-CA peer
-IPFS_Peer_6="/ip6/fcbb:1db3:54fb:e519:d915:d7db:4893:4f30/tcp/4001/ipfs/QmZEiPvrfZHapq4uiyTDEcR2szCUhDnjdS4q3Uv2b1Uh88"
+IPFS_PEER_6="/ip6/fcbb:1db3:54fb:e519:d915:d7db:4893:4f30/tcp/4001/ipfs/QmZEiPvrfZHapq4uiyTDEcR2szCUhDnjdS4q3Uv2b1Uh88"
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
