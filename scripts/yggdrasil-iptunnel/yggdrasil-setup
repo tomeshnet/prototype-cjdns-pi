@@ -97,7 +97,7 @@ if [ -e /etc/yggdrasil.iptunnel.server ]; then
     SUBNET6=$(confget -f "/etc/yggdrasil.iptunnel.conf" -s "ipv6tunnel" subnet)
     if [[ -z "${SUBNET6}" ]]; then
         SUBNET6="fd00::/64"
-    ip -6 route add ${SUBNET6} dev "${YGGINT}"
+        ip -6 route add ${SUBNET6} dev "${YGGINT}"
     fi
     EXITINT="$(confget -f "/etc/yggdrasil.iptunnel.conf" -s "general" exit-interface)"
     if [[ -z "${EXITINT}" ]]; then
