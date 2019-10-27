@@ -27,26 +27,26 @@ function askModule {
 
     if [ "$(checkModule 'WITH_DIALOG')" ]; then
         if [ -z "$res" ] || [ "$res" != "true" ] && [ "$res" != "false" ]; then
-	        # Do not stop exec on non 0 return values
-	        set +e
-	        # shellcheck disable=SC2086
-	        dialog $dialogGlobalParams $dialogParam --title "$2" --yesno "Install $2?" 6 55
-	        response=$?
-	        # Return to previous setting
-	        set -e
+            # Do not stop exec on non 0 return values
+            set +e
+            # shellcheck disable=SC2086
+            dialog $dialogGlobalParams $dialogParam --title "$2" --yesno "Install $2?" 6 55
+            response=$?
+            # Return to previous setting
+            set -e
 
-	        case $response in
-	            0) res="true";;
-	            1) res="false";;
-	            255) exit;;
+            case $response in
+                0) res="true";;
+                1) res="false";;
+                255) exit;;
         	esac
-	fi
+        fi
     else
         if [ -z "$res" ] || [ "$res" != "true" ] && [ "$res" != "false" ]; then
 	
-	    # Clear buffer before asking
-	    read -t 1 -n 10000 discard 
-	    
+        # Clear buffer before asking
+        read -t 1 -n 10000 discard 
+
             read -p "Install $2 $askPrompt? " -n 1 -r
             echo ""
             if [[ $REPLY =~ ^[$nonDefaultMatch]$ ]]; then
@@ -91,7 +91,7 @@ function askSelection {
     if [ "$(checkModule 'WITH_DIALOG')" ]; then
     
     	# Clear buffer before asking
-	read -t 1 -n 10000 discard 
+        read -t 1 -n 10000 discard 
 	
         selection=$(echo -e "$selection" | while read -r selected; do
                     selectedItem="${selected:0:1}"
@@ -101,7 +101,7 @@ function askSelection {
         echo "$selection" > /tmp/selectionList
 
         # shellcheck disable=SC2086
-        dialog $dialogGlobalParams --menu "$1" 15 55 8  --file /tmp/selectionList 2> /tmp/res
+        dialog $dialogGlobalParams --menu "$1" 15 55 8 --file /tmp/selectionList 2> /tmp/res
         rm -f selectionList
         response=$(cat /tmp/res)
         rm -f /tmp/res
@@ -117,8 +117,8 @@ function askSelection {
         isValid=""
         while [[ "$isValid" == "" ]]; do
 	
-    	    # Clear buffer before asking
-	    read -t 1 -n 10000 discard 
+            # Clear buffer before asking
+            read -t 1 -n 10000 discard 
 	
             echo -e "$1"
             echo -------------------
@@ -129,8 +129,8 @@ function askSelection {
             if [[ ! "$REPLY" == "" ]]; then
                 REPLY=$(echo "$REPLY" | awk '{print toupper($0)}')
 
-    	       # Clear buffer before asking
-	        read -t 1 -n 10000 discard 
+                # Clear buffer before asking
+	            read -t 1 -n 10000 discard 
 		
                 isValid=$(echo -e "$selection" | while read -r selected; do
                     if [[ "${selected:0:1}" == "$REPLY" ]]; then
@@ -169,7 +169,6 @@ function detectBoard {
             BOARD_NAME=$(grep Hardware /proc/cpuinfo | awk '{print $3}' | head -n 1)
         fi
     fi
-
     # Check for armbian identification
     if [ -f "/etc/armbian-image-release" ]; then
         BOARD_OS="Armbian"
@@ -177,10 +176,8 @@ function detectBoard {
         BOARD_NAME="$(grep BOARD_NAME /etc/armbian-image-release | awk -F '=' '{print $2}' | tr -d \" )"
         BOARD_NEON=true
     fi
-
     if [[ "$BOARD_NAME" == "Raspberry Pi"* ]]; then
         BOARD_OS="Raspbian"
-
         # Check for default password is still set for user pi
         # If it is force password before reboot
         # shellcheck disable=SC2016
@@ -200,11 +197,9 @@ function detectBoard {
             BOARD_MODEL="raspberrypi1"
             BOARD_NEON=false
         fi
-
         if [[ "$BOARD_NAME" == *"Zero"* ]]; then
             BOARD_MODEL="raspberrypizero"
             BOARD_NEON=false
         fi
     fi
-
 }
