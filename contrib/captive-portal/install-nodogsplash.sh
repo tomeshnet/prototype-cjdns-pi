@@ -1,6 +1,7 @@
 #!/bin/bash
 
 sudo apt install -y libmicrohttpd-dev
+
 mkdir tmp
 cd tmp
 git clone https://github.com/nodogsplash/nodogsplash.git
@@ -9,9 +10,9 @@ make
 sudo make install
 sudo cp debian/nodogsplash.service /etc/systemd/system
 cd ..
+cd ..
 rm -rf tmp
 
 cp nodogsplash.conf /etc/nodogsplash/nodogsplash.conf
-
 sudo systemctl enable nodogsplash
-sudo systemctl start  nodogsplash
+sudo systemctl start nodogsplash
