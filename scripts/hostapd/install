@@ -131,6 +131,7 @@ sudo cp "$BASE_DIR/hostapd.service" /etc/systemd/system/hostapd.service
 sudo systemctl daemon-reload
 sudo systemctl enable hostapd.service
 
+WITH_ONBOARD_WIFI=false
 # Find onboard adapter by driver and lock to wlan-ap
 for wlanfile in /sys/class/net/wlan*; do
     wlan="$(basename "$wlanfile")"
@@ -138,10 +139,38 @@ for wlanfile in /sys/class/net/wlan*; do
     driver=$(basename "$driverPath")
 #    mac="$(cat /sys/class/net/$wlan/address)"
     if [[ "$driver" == "xradio_wlan" || "$driver" == "brcm80211" || "$driver" == "brcmfmac" || "$driver" == "rtl8189fs" ]]; then
-        echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"$driver\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan-ap\"" |
+    
+        askModule "WITH_ONBOARD_WIFI" "HostAP - Found an onboard WiFi. Configure it as an Access Point?" "n"
+        if [ "$(checkModule 'WITH_ONBOARD_WIFI')" ]; then
+            echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"$driver\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan-ap\"" |
                 sudo tee /etc/udev/rules.d/70-persistent-net.rules
+        fi
     fi
 done
+
+if [ ! "$(checkModule 'WITH_ONBOARD_WIFI')" ]; then
+    askModule "WITH_EXTERNAL_WIFI" "HostAP - Configure External WiFi adapter as an Access Point?" "n"
+fi
+if [ "$(checkModule 'WITH_EXTERNAL_WIFI')" ]; then
+    OPTION=""
+    i=0
+    for wlanfile in /sys/class/net/wlan*; do
+        wlan="$(basename "$wlanfile")"        
+        mac="$(cat /sys/class/net/$wlan/address)"
+        i=$((i+1))
+        MAC[$i]=$mac
+        OPTION="${OPTION} \\n $i $mac"
+    done
+    askSelection "Select Adapter MAC to pin" "$OPTION"
+    mac="${MAC[$dialogREPLY]}"
+    if [ -z "$mac" ]; then
+        echo "Error unknown response $dialogREPLY"
+        exit
+    else
+       echo "SUBSYSTEM==\"net\", ACTION==\"add\", ATTR{address}==\"$mac\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan-ap\"" |
+          sudo tee /etc/udev/rules.d/70-persistent-net.rules
+    fi    
+fi
 
 # dnsmasq for some reason won't bind to the hostapd on Orange Pi, restarting it works
 if ! grep -q dnsmasq /etc/rc.local; then
