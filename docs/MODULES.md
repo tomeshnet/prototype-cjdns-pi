@@ -305,7 +305,7 @@ or with IPv6 and subnet
 
 If you wish to run an IPTunnel client on the same node as an Internet peer, you will need to ensure the path to the Yggdrasil peer goes over the Internet connection instead of using the tunnel.
 
-This must be done because since all Internet traffic will be redirected over the tunnel.  If a route is not created to the peer, Yggdrasil peering will try to route over the tunnel. Since the tunnel depends on the peer, the peer will not function, which will collapse the tunnel. In other words, the peer tries to feed packets over the tunnel, that tries to feed packets to the peer, causing both to fail.
+This must be done because all Internet traffic will be redirected over the tunnel. If a route is not created to the peer, Yggdrasil peering will try to route over the tunnel. Since the tunnel depends on the peer, the peer will not function, which will collapse the tunnel. In other words, the peer tries to feed packets over the tunnel, that tries to feed packets to the peer, causing both to fail.
 
 There are two ways of rerouting packets as part of this package.
 
