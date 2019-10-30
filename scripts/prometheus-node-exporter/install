@@ -2,7 +2,7 @@
 
 set -e
 
-NODE_EXPORTER_VERSION=0.17.0
+NODE_EXPORTER_VERSION=0.18.1
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -45,6 +45,9 @@ sudo cp "$BASE_DIR/nodestats-tomesh.py" "/opt/tomesh/nodestats-tomesh.py"
 # Configure systemd to start prometheus-node-exporter.service on system boot
 sudo cp "$BASE_DIR/prometheus-node-exporter.service" /etc/systemd/system/prometheus-node-exporter.service
 sudo cp "$BASE_DIR/node-exporter-tomesh.service" /etc/systemd/system/node-exporter-tomesh.service
+
+# Some distros need additional files
+sudo apt-get install python2 libpython2-stdlib || true
 
 sudo systemctl daemon-reload
 sudo systemctl enable prometheus-node-exporter.service
