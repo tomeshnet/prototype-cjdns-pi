@@ -2,7 +2,7 @@
 
 set -e
 
-PROMETHEUS_VERSION="2.7.2"
+PROMETHEUS_VERSION="2.13.0"
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
