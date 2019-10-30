@@ -349,7 +349,7 @@ Fills up the route table with routes
 ###### Additional Notes
 
 - Does not yet work for IPv6 peers
-- When JQ is installed on system, it will read the yggdarsill config file for peers
+- When JQ is installed on system, it will read the yggdarsil config file for peers
 - If JQ is not installed uses getPeers which means the peer must already be connected
 - Currently Can't parse hostnames (assumes ips)
 - If/When Hostnames are used, DNS resolve may be an issue (round robin dns) 
