@@ -309,7 +309,7 @@ This must be done because all Internet traffic will be redirected over the tunne
 
 There are two ways of rerouting packets as part of this package.
 
-Method is configed in the `[general]` secion of yggdrasill.iptunnel.config
+Method is configured in the `[general]` section of yggdrasill.iptunnel.config
 
 
 **reroutepeers**
