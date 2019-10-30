@@ -53,3 +53,6 @@ Below are a few things you should look at when diagnosing connections. These can
 - Can you ping the IPv4 addresses from the server
 - Does MASQUERADE line in `iptables -L -v -n -t nat` exist
 - Does masquerade line in `iptables -L -v -n -t nat` show the right out interface
+- check if routes have been added to yggdrasil
+  - `sudo yggdrasilctl getsourcesubnets` - should be all your routes
+  - `sudo yggdrasilctl getroutes` - should be 0.0.0.0 and ::/0
