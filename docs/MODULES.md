@@ -37,7 +37,7 @@ A short summary of each module is directly below. Documentation for specific abi
 | :------------------------------ | :--------------------------------------------- | :---------- |
 | `WITH_MESH_POINT`               | None                                           | Set to `true` if you have a suitable USB WiFi adapter and want to configure it as a 802.11s Mesh Point interface. |
 | `WITH_AD_HOC`                   | None                                           | Set to `true` if you have a suitable USB WiFi adapter and want to configure it as a IBSS Ad-hoc interface. |
-| `WITH_WIFI_AP`                  | None                                           | Set to `true` if you have a suitable Onboard WIfI adapter or USB WiFi adapter and want to use it as an Access Point. The default configuration routes all traffic to the Ethernet port `eth0`. |
+| `WITH_WIFI_AP`                  | None                                           | Set to `true` if you have a suitable Onboard WiFi adapter or USB WiFi adapter and want to use it as an Access Point. The default configuration routes all traffic to the Ethernet port `eth0`. |
 | `WITH_FIREWALL`                 | None                                           | Set to `true` if you want to enable a basic firewall on your node.|
 | `WITH_CJDNS_IPTUNNEL`           | None                                           | Set to `true` if you want to use the cjdns iptunnel feature to set up an Internet gateway for your node. To configure as a server (exit Internet traffic for other nodes), create **/etc/cjdns.iptunnel.server** containing a newline-separated list of cjdns public keys of allowed clients. To configure as a client (use an exit server to access the Internet), create **/etc/cjdns.iptunnel.client** containing a newline-separated list of cjdns public keys of the gateway servers. You can only configure as one or the other, not both. |
 | `WITH_IPFS`                     | **80**: HTTP-to-IPFS gateway at `/ipfs/HASH`   | Set to `true` if you want to install [IPFS](https://ipfs.io). |
@@ -83,7 +83,7 @@ Value: `interface on system`
 Default: `The first interface that has a name other than wlan-ap`
 
 ## Hostapd - WITH_WIFI_AP
-Configure hostapd to create an access point over one of the WiFi adapters available. 
+Configure hostapd to create an access point over one of the WiFi adapters available. The selected device will be pinned as `wlan-ap` to prevent run conditions.
 
 During installation you will be asked to select additional settings.
 
@@ -91,11 +91,11 @@ During installation you will be asked to select additional settings.
 
 **WPA-PSK**
 
-Traditional wireless password only encryption. You will be asked for a password as well
+Traditional wireless password only encryption. You will be asked for a password as well.
 
 **WPA-EAP** 
 
-Generates certificates and provides a Login/Password means of authentication. Note you may need to set the invalid CA.
+Generates certificates and provides a Login/Password means of authentication. Note you may need to set the invalid CA. You will be asked for a password. The username will be guest. Additional accounts can be made by editing `/etc/hostapd/hostapd.eap_user`.
 
 ### WiFi adapter 
 
@@ -103,7 +103,7 @@ Generates certificates and provides a Login/Password means of authentication. No
 
 Uses the onboard adapter if available for an Access Point
 
-**Extneral Adapter**
+**External Adapter**
 
 Select one of the adapters available on your device to be the Access Point. You can have the system recognize it by Mac address or Driver. 
 
