@@ -152,23 +152,40 @@ if [ ! "$(checkModule 'WITH_ONBOARD_WIFI')" ]; then
     askModule "WITH_EXTERNAL_WIFI" "HostAP - Configure External WiFi adapter as an Access Point?" "n"
 fi
 if [ "$(checkModule 'WITH_EXTERNAL_WIFI')" ]; then
+
+    askSelection "Pin adapter by" "1 Mac\n2 Driver"
+    pinBy=$dialogREPLY
+    pinByName[1]="Mac"
+    pinByName[2]="Driver"
+    pinBy=${pinByName[$pinBy]}
+
     OPTION=""
     i=0
     for wlanfile in /sys/class/net/wlan*; do
         wlan="$(basename "$wlanfile")"        
         mac="$(cat /sys/class/net/$wlan/address)"
+        driver="$(basename $(readlink /sys/class/net/$wlan/device/driver))"
         i=$((i+1))
+        DRIVER[$i]=$driver
         MAC[$i]=$mac
-        OPTION="${OPTION} \\n $i $mac"
+        OPTION="${OPTION} \\n $i $mac $driver"
     done
-    askSelection "Select Adapter MAC to pin" "$OPTION"
+    askSelection "Select wireless adapter $pinBy to pin" "$OPTION"
+    driver="${DRIVER[$dialogREPLY]}"
     mac="${MAC[$dialogREPLY]}"
+
     if [ -z "$mac" ]; then
         echo "Error unknown response $dialogREPLY"
         exit
     else
-       echo "SUBSYSTEM==\"net\", ACTION==\"add\", ATTR{address}==\"$mac\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan-ap\"" |
-          sudo tee /etc/udev/rules.d/70-persistent-net.rules
+       if [[ "$pinBy" == "Mac" ]]; then
+           echo "SUBSYSTEM==\"net\", ACTION==\"add\", ATTR{address}==\"$mac\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan-ap\"" |
+              sudo tee /etc/udev/rules.d/70-persistent-net.rules
+       fi
+       if [[ "$pinBy" == "Driver" ]]; then
+           echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVER==\"$driver\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan-ap\", NAME=\"wlan-ap\"" |
+              sudo tee /etc/udev/rules.d/70-persistent-net.rules
+       fi
     fi    
 fi
 
