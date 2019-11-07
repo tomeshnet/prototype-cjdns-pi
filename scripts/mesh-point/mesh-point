@@ -3,6 +3,10 @@
 function isMeshable {
     interface=`iw dev | grep phy#$1 -A 1 | grep Interface | awk '{print $2}'`
 
+    if [ "$interface" == "wlan-ap" ]; then
+        return=''
+    fi
+
     # Check to see if driver reports missing mesh point support
     if  [ -z "$(iw phy phy$1 info | grep 'mesh point')" ]; then
         result='' # Indicate interface is not meshable
