@@ -184,7 +184,7 @@ if [ "$(checkModule 'WITH_EXTERNAL_WIFI')" ]; then
               sudo tee /etc/udev/rules.d/70-persistent-net.rules
        fi
        if [[ "$pinBy" == "Driver" ]]; then
-           echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVER==\"$driver\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan-ap\", NAME=\"wlan-ap\"" |
+           echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVER==\"$driver\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan-ap\"" |
               sudo tee /etc/udev/rules.d/70-persistent-net.rules
        fi
     fi    
