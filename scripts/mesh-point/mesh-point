@@ -5,6 +5,7 @@ function isMeshable {
 
     if [ "$interface" == "wlan-ap" ]; then
         return=''
+	exit 0
     fi
 
     # Check to see if driver reports missing mesh point support
