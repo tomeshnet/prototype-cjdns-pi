@@ -131,7 +131,6 @@ sudo cp "$BASE_DIR/hostapd.service" /etc/systemd/system/hostapd.service
 sudo systemctl daemon-reload
 sudo systemctl enable hostapd.service
 
-WITH_ONBOARD_WIFI=false
 # Find onboard adapter by driver and lock to wlan-ap
 for wlanfile in /sys/class/net/wlan*; do
     wlan="$(basename "$wlanfile")"
@@ -145,6 +144,8 @@ for wlanfile in /sys/class/net/wlan*; do
             echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"$driver\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan-ap\"" |
                 sudo tee /etc/udev/rules.d/70-persistent-net.rules
         fi
+    else
+        WITH_ONBOARD_WIFI=false
     fi
 done
 
