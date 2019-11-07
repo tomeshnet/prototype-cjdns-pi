@@ -255,9 +255,7 @@ askModule "WITH_MESH_POINT" "Mesh Point Interface"
 if [ "$WITH_MESH_POINT" == false ]; then
     askModule "WITH_AD_HOC" "Ad-Hoc Interface"
 fi
-if [ "$SUPPORT_HOSTAP" == "true" ]; then
-    askModule "WITH_WIFI_AP" "WiFi Access Point"
-fi
+askModule "WITH_WIFI_AP" "WiFi Access Point"
 askModule "WITH_FIREWALL" "Basic Firewall"
 askModule "WITH_IPFS" "IPFS"
 if [ "$WITH_IPFS" == true ] && [ "$BOARD_FAMILY" == "Raspberry Pi" ]; then
