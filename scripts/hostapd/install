@@ -139,7 +139,7 @@ for wlanfile in /sys/class/net/wlan*; do
 #    mac="$(cat /sys/class/net/$wlan/address)"
     if [[ "$driver" == "xradio_wlan" || "$driver" == "brcm80211" || "$driver" == "brcmfmac" || "$driver" == "rtl8189fs" ]]; then
     
-        askModule "WITH_ONBOARD_WIFI" "HostAP - Found an onboard WiFi. Configure it as an Access Point?" "n"
+        askModule "WITH_ONBOARD_WIFI" "HostAP - Found an onboard WiFi. Configure it as an Access Point?" "y"
         if [ "$(checkModule 'WITH_ONBOARD_WIFI')" ]; then
             echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"$driver\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan-ap\"" |
                 sudo tee /etc/udev/rules.d/70-persistent-net.rules
