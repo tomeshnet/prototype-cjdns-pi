@@ -75,13 +75,21 @@ if [ -f "/etc/default/grub" ]; then
 	sudo grub-mkconfig -o /boot/grub/grub.cfg
 fi
 
-# Remove Network Manager and create standard config settings
+# Create standard config settings
 echo "source /etc/network/interfaces.d/*" | sudo tee /etc/network/interfaces
 echo allow-hotplug eth0 | sudo tee /etc/network/interfaces.d/eth0 > /dev/null 
 echo iface eth0 inet dhcp | sudo tee --append /etc/network/interfaces.d/eth0 >> /dev/null
 echo "auto lo" | sudo tee /etc/network/interfaces.d/lo > /dev/null
 echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces.d/lo >> /dev/null
 
+if [[ -e '/etc/NetworkManager/NetworkManager.conf' ]]; then
+    if [[ -z "$(grep "\[keyfile\]" /etc/NetworkManager/NetworkManager.conf)" ]]; then
+        echo "[keyfile]" | sudo tee --append /etc/NetworkManager/NetworkManager.conf > /dev/null
+        echo "unmanaged-devices=interface-name:wlan1" | sudo tee --append /etc/NetworkManager/NetworkManager.conf > /dev/null
+        echo "unmanaged-devices=interface-name:wlan0" | sudo tee --append /etc/NetworkManager/NetworkManager.conf > /dev/null
+    fi
+ fi
+ 
 # espressobin uses br0 not eth0
 if [ "$BOARD_MODEL" == "espressobin" ]; then
     sudo mv /etc/network/interfaces.d/eth0 /etc/network/interfaces.d/br0
