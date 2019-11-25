@@ -305,54 +305,7 @@ or with IPv6 and subnet
 
 If you wish to run an IPTunnel client on the same node as an Internet peer, you will need to ensure the path to the Yggdrasil peer goes over the Internet connection instead of using the tunnel.
 
-This must be done because all Internet traffic will be redirected over the tunnel. If a route is not created to the peer, Yggdrasil peering will try to route over the tunnel. Since the tunnel depends on the peer, the peer will not function, which will collapse the tunnel. In other words, the peer tries to feed packets over the tunnel, that tries to feed packets to the peer, causing both to fail.
-
-There are two ways of rerouting packets as part of this package.
-
-Method is configured in the `[general]` section of yggdrasill.iptunnel.config
-
-
-**reroutepeers**
-*Server Only*
-
-Default: `false`
-Value: `blank/false, routepeers or unroutepeers`
-
-Section `[general]`
-
-###### Method routepeers 
-
-Iterate through peers and add them to the systems default gateway. Then adds default routes over ygg.
-
-**Pros**
-
-Currently works for all IPv4 listed peers
-
-**Cons**
-
-When gateway changes tunnel collapses 
-
-###### Method unroutepeers 
-
-Instead adding default routes, it routes everyting BUT the yggdrasil peer.
-
-**Pros**
-
-When ygg interface collapses routes are removed
-Since route for peer is never set it always uses the system default (survives roaming wifi etc)
-
-**Cons**
-
-Currently works for only the first peer
-Fills up the route table with routes
-
-###### Additional Notes
-
-- Does not yet work for IPv6 peers
-- When JQ is installed on system, it will read the yggdarsil config file for peers
-- If JQ is not installed uses getPeers which means the peer must already be connected
-- Currently Can't parse hostnames (assumes ips)
-- If/When Hostnames are used, DNS resolve may be an issue (round robin dns) 
+In Yggdrasil config you can use the `InterfacePeers: {"eth0": ["tcp://xxxx.xxx"] }`  instead of the `Peers` definition to force a specific interface to establish the internet peers.
 
 ## IPFS
 IPFS stands for Interplanetary File System. It is an open-source, peer-to-peer distributed hypermedia protocol that aims to function as a ubiquitous file system for all computing devices.
