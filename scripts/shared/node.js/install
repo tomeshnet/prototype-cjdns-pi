@@ -2,8 +2,6 @@
 
 set -e
 
-LAST_BASE="$BASE_DIR"
-BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 NODEJS_PREFIX=10
 NODEJS_VERSION="$NODEJS_PREFIX.15.3"
 
@@ -26,5 +24,3 @@ if [[ ("$(node --version)" != "v$NODEJS_VERSION") || ("$(uname -m)" =~ ^(i386|i5
         sudo apt-get install -y nodejs
     fi
 fi
-
-BASE_DIR="$LAST_BASE"
