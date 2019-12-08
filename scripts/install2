@@ -21,29 +21,19 @@ sudo apt-get install -y net-tools || true
 # Get board information and set flags accordingly
 detectBoard;
 
-# Flag to identify if board can support on-board AP. Default to false.
-SUPPORT_HOSTAP=false
 # Flag to identify if board can support on-board hardware watchdog.
 SUPPORT_WATCHDOG=false
 
 case "$BOARD_MODEL" in
     orangepizero)
-        # AP is supported if board already supports XRadio
-        if lsmod | grep -q xradio_wlan; then
-            SUPPORT_HOSTAP=true
-        fi
         SUPPORT_WATCHDOG=true
     ;;
     orangepilite)
-        SUPPORT_HOSTAP=true
         SUPPORT_WATCHDOG=true
     ;;
     orangepizeroplus2-h5)
-        SUPPORT_HOSTAP=true
     ;;
     "raspberrypi3"|"raspberrypi4")
-        # Raspberry Pi 3 has on-board WiFi that can be used as an AP
-        SUPPORT_HOSTAP=true
         # Raspberry Pi 3 has hardware watchdog
         SUPPORT_WATCHDOG=true
     ;;
@@ -265,9 +255,7 @@ askModule "WITH_MESH_POINT" "Mesh Point Interface"
 if [ "$WITH_MESH_POINT" == false ]; then
     askModule "WITH_AD_HOC" "Ad-Hoc Interface"
 fi
-if [ "$SUPPORT_HOSTAP" == "true" ]; then
-    askModule "WITH_WIFI_AP" "WiFi Access Point"
-fi
+askModule "WITH_WIFI_AP" "WiFi Access Point"
 askModule "WITH_FIREWALL" "Basic Firewall"
 askModule "WITH_IPFS" "IPFS"
 if [ "$WITH_IPFS" == true ] && [ "$BOARD_FAMILY" == "Raspberry Pi" ]; then
@@ -324,7 +312,7 @@ if [ "$(checkModule 'WITH_AD_HOC')" ]; then
 fi
 
 # WiFi Access Point on supported boards
-if [ "$SUPPORT_HOSTAP" == "true" ] && [ "$(checkModule 'WITH_WIFI_AP')" ]; then
+if [ "$(checkModule 'WITH_WIFI_AP')" ]; then
     source hostapd/install
 fi
 
