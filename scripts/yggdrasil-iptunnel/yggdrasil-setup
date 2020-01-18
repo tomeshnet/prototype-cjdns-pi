@@ -1,64 +1,5 @@
 #!/usr/bin/env bash
 
-# Converts an ip address to binary
-function convip()
-{
-    CONV=({0..1}{0..1}{0..1}{0..1}{0..1}{0..1}{0..1}{0..1})
-    ip=""
-    for byte in `echo ${1} | tr "." " "`; do
-        ip="${ip} ${CONV[${byte}]}"
-    done
-    echo ${ip:1}
-}
-# Flip last bit of a string representing a binary number
-function flipLastBit() {
-    ip="$1"
-    len=$(expr length $ip)
-    len=$((len-1))
-    #Flip last bit
-    ip2=${ip:0:$len}
-    if [[ "${ip:$len:1}" == "1" ]]; then
-        ip2="${ip2}0"
-    else
-        ip2="${ip2}1"
-    fi
-   echo $ip2
-}
-# Get peers used by ygg
-function getYggPeers {
-    if [[ "$(type jq)" ]]; then
-        yggdrasil -useconffile /etc/yggdrasil.conf -normaliseconf -json | jq -r ".Peers[]"
-    else
-        yggdrasilctl getPeers | awk '{print $4}' | grep tcp
-    fi
- }
-# CJD's method of routing 
-# instead of routing 0.0.0.0/0 (default gateway) you route every other ip except the peer
-# by creating multiple narrowing routes.
-# does not work for more then 1 peer
-function unroute() {
-    #Convert to binary
-    ip="$(convip $1 | tr -d " ")"
-    #Loop through all ips narrowing scope
-    for i in {1..31}; do
-        nowip=${ip:0:$i}
-        nowip=$(flipLastBit $nowip)
-        ip1=${nowip:0:8}
-        ip2=${nowip:8:8}
-        ip3=${nowip:16:8}
-        ip4=${nowip:24:8}
-        if [[ -z "$ip1" ]]; then ip1=0; fi
-        if [[ -z "$ip2" ]]; then ip2=0; fi
-        if [[ -z "$ip3" ]]; then ip3=0; fi
-        if [[ -z "$ip4" ]]; then ip4=0; fi
-        ip1=$(printf '%-8s' "$ip1" | tr " " 0)
-        ip2=$(printf '%-8s' "$ip2" | tr " " 0)
-        ip3=$(printf '%-8s' "$ip3" | tr " " 0)
-        ip4=$(printf '%-8s' "$ip4" | tr " " 0)
-        ip route add $((2#$ip1)).$((2#$ip2)).$((2#$ip3)).$((2#$ip4))/$i dev "${YGGINT}"
-    done
-}
-
 # Enable forwarding for ipv4 and ipv6
 echo 1 > /proc/sys/net/ipv4/ip_forward
 echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
@@ -82,11 +23,6 @@ fi
 IPv6SUBNETINT="$(confget -f "/etc/yggdrasil.iptunnel.conf" -s "ipv6tunnel" subnet-interface)"
 if [[ -z "${IPv6SUBNETINT}" ]]; then
     IPv6SUBNETINT="wlan-ap"
-fi
-
-reroutepeers="$(confget -f "/etc/yggdrasil.iptunnel.conf" -s "general" reroutepeers)"
-if [[ -z "${reroutepeers}" ]]; then
-    reroutepeers=false
 fi
 
 if [ -e /etc/yggdrasil.iptunnel.server ]; then
@@ -170,23 +106,9 @@ elif [ -e /etc/yggdrasil.iptunnel.client ]; then
         ip6tables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
     fi
 
-    # Use method of routing the tc peers to the gateway
-    if [[ "${reroutepeers}" == "routepeers" ]]; then
-        # Loop through peers and route them over the default gateway
-        gw="$(ip r | grep default | head -n 1 | awk '{print $3}')"
-        for i in "$(getYggPeers | grep tcp | awk -F : '{print $2}' | tr -d /)"; do
-            ip route add $i via $gw
-        done
-        ip route add 0.0.0.0/1 dev "${YGGINT}"
-        ip route add 128.0.0.0/1 dev "${YGGINT}"
-    elif [[ "${reroutepeers}" == "unroutepeers" ]]; then
-        ip=$(getYggPeers | grep tcp | awk -F : '{print $2}' | tr -d / | head -n 1)
-        unroute $ip
-    else
-        # Special hack to change default route without removing original one
-        ip route add 0.0.0.0/1 dev "${YGGINT}"
-        ip route add 128.0.0.0/1 dev "${YGGINT}"
-    fi
+    # Special hack to change default route without removing original one
+    ip route add 0.0.0.0/1 dev "${YGGINT}"
+    ip route add 128.0.0.0/1 dev "${YGGINT}"
 
     ip -6 route add ::/1 dev "${YGGINT}"
     ip -6 route add 8000::/1 dev "${YGGINT}" 
