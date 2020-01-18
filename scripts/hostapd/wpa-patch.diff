@@ -1,0 +1,52 @@
++++ /a/lib/dhcpcd/dhcpcd-hooks/10-wpa_supplicant      2019-07-19 21:31:41.130053542 +0100
++++ /b/lib/dhcpcd/dhcpcd-hooks/10-wpa_supplicant      2019-07-19 21:58:03.470829257 +0100
+@@ -20,6 +20,9 @@
+
+ wpa_supplicant_ctrldir()
+ {
++        if ([ -f /etc/wpa_devices ] && ! grep -q  "$interface" /etc/wpa_devices); then
++            exit 0
++        fi
+        dir=$(key_get_value "[[:space:]]*ctrl_interface=" \
+                "$wpa_supplicant_conf")
+        dir=$(trim "$dir")
+@@ -35,6 +38,9 @@
+
+ wpa_supplicant_start()
+ {
++        if ([ -f /etc/wpa_devices ] && ! grep -q  "$interface" /etc/wpa_devices); then
++            exit 0
++        fi
+        # If the carrier is up, don't bother checking anything
+        [ "$ifcarrier" = "up" ] && return 0
+
+@@ -69,6 +75,9 @@
+
+ wpa_supplicant_reconfigure()
+ {
++        if ([ -f /etc/wpa_devices ] && ! grep -q  "$interface" /etc/wpa_devices); then
++            exit 0
++        fi
+        dir=$(wpa_supplicant_ctrldir)
+        [ -z "$dir" ] && return 1
+        if ! wpa_cli -p "$dir" -i "$interface" status >/dev/null 2>&1; then
+@@ -87,6 +96,9 @@
+
+ wpa_supplicant_stop()
+ {
++        if ([ -f /etc/wpa_devices ] && ! grep -q  "$interface" /etc/wpa_devices); then
++            exit 0
++        fi
+        dir=$(wpa_supplicant_ctrldir)
+        [ -z "$dir" ] && return 1
+        wpa_cli -p "$dir" -i "$interface" status >/dev/null 2>&1 || return 0
+@@ -102,7 +114,8 @@
+
+ if [ "$ifwireless" = "1" ] && \
+     type wpa_supplicant >/dev/null 2>&1 && \
+-    type wpa_cli >/dev/null 2>&1
++    type wpa_cli >/dev/null 2>&1 && \
++    ([ -f /etc/wpa_devices ] && grep -q  "$interface" /etc/wpa_devices); then
+ then
+        case "$reason" in
+        PREINIT)        wpa_supplicant_start;;

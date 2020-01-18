@@ -198,3 +198,10 @@ fi
 if ! grep -q rfkill /etc/rc.local; then
     sudo sed -i 's/^exit 0/rfkill unblock wifi \&\& service hostapd restart\nexit 0/' /etc/rc.local 
 fi
+
+# Apply wpa_supplicant patch 
+# shellcheck disable=SC2024
+if [ -f /lib/dhcpcd/dhcpcd-hooks/10-wpa_supplicant ]; then
+    sudo patch -F99 -p2 -N  -d / < "$BASE_DIR/wpa-patch.diff"
+    echo "wlan-ap" | sudo tee /etc/wpa_devices
+fi
