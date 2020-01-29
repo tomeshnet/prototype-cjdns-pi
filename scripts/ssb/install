@@ -22,9 +22,10 @@ sudo sudo npm install ssb-server -g --unsafe-perm
 currentUser=$USER
 
 # Copy SYSTEMD service to correct location
-sudo cp "$BASE_DIR/ssb.service" /etc/systemd/system/ssb.service
+sudo cp "$BASE_DIR/ssb.service" /tmp/ssb.service
 # Copy repplace __USER__ place holder to current user
-sudo sed -i "s|__USER__|${currentUser}|g" /etc/systemd/system/ssb.service
+sudo sed -i "s|__USER__|${currentUser}|g" /tmp/ssb.service
+sudo mv /tmp/ssb.service /etc/systemd/system/ssb.service
 
 # Reload, Enable and start SSB Service
 sudo systemctl daemon-reload
