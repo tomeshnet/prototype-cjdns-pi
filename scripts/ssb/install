@@ -12,25 +12,30 @@ sudo apt-get install -y socat python-dev libtool python-setuptools autoconf auto
 # shellcheck source=../shared/node.js/install
 source "$BASE_DIR/../shared/node.js/install"
 
-# Install scuttlebot
+# Install sbot-server
 # sudo sudo is a hack to allow post-install scripts that drop one level of sudo and still be sudoed
 # otherwise you get permissions errors when it tries to write to root owned folders
+# -g installs system wide --unsafe-perm required to do so
 sudo sudo npm install ssb-server -g --unsafe-perm
 
 # Store current user as sudo will change it
 currentUser=$USER
 
+# Copy SYSTEMD service to correct location
 sudo cp "$BASE_DIR/ssb.service" /etc/systemd/system/ssb.service
+# Copy repplace __USER__ place holder to current user
 sudo sed -i "s|__USER__|${currentUser}|g" /etc/systemd/system/ssb.service
 
+# Reload, Enable and start SSB Service
 sudo systemctl daemon-reload
 sudo systemctl enable ssb.service
 sudo systemctl start ssb.service
 
-# Install broadcast service to workaround issue with sbot not broadcasting correctly
+# Install broadcast service to workaround issue with sbot not broadcasting correctly when there are multiple interfaces
 sudo cp "$BASE_DIR/ssb-broadcast-service.sh" "/usr/local/bin/ssb-broadcast-service.sh"
 sudo cp "$BASE_DIR/ssb-broadcast.service" /etc/systemd/system/ssb-broadcast.service
 sudo sed -i "s|__USER__|${currentUser}|g" /etc/systemd/system/ssb-broadcast.service
 
+# Start new broadcast server
 sudo systemctl daemon-reload
 sudo systemctl enable ssb-broadcast.service
