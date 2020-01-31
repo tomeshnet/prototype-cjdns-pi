@@ -102,3 +102,7 @@ echo  redistribute ip 172.16.0.0/12  allow >> /etc/babeld.conf
 echo  redistribute ip 0.0.0.0/0 le 0  allow >> /etc/babeld.conf
 echo  redistribute local  deny >> /etc/babeld.conf
 echo  redistribute  deny >> /etc/babeld.conf
+
+# Force meshpoint to run at higher mtu  (1560) to prevent fragmentation of batman-adv
+echo 'ip link set dev $mesh_dev mtu 1560' >> /usr/bin/mesh-point
+
