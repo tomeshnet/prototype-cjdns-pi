@@ -92,7 +92,13 @@ wget http://meshwithme.online/deb/repos/apt/debian/pool/main/b/babeld/babeld_1.9
 dpkg -i babeld_1.9.1-dirty_armhf.deb 
 
 # Configure BABELD
-echo interface wlan0.${BABELD_VLAN} > /etc/babeld.conf
-echo interface eth0.${BABELD_VLAN} >> /etc/babeld.conf
-echo local-port 30003 >> /etc/babeld.conf
-
+echo local-port 30003 > /etc/babeld.conf
+echo interface eth0.17 >> /etc/babeld.conf
+echo interface wlan0.17 >> /etc/babeld.conf
+echo  redistribute ip 2000::0/3  allow >> /etc/babeld.conf
+echo  redistribute ip 0::0/0 le 0  allow >> /etc/babeld.conf
+echo  redistribute ip 10.0.0.0/8  allow >> /etc/babeld.conf
+echo  redistribute ip 172.16.0.0/12  allow >> /etc/babeld.conf
+echo  redistribute ip 0.0.0.0/0 le 0  allow >> /etc/babeld.conf
+echo  redistribute local  deny >> /etc/babeld.conf
+echo  redistribute  deny >> /etc/babeld.conf
