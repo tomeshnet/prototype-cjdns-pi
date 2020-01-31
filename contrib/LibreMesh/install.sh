@@ -76,6 +76,10 @@ echo auto bat0 > /etc/network/interfaces.d/bat0
 echo iface bat0 inet manual >> /etc/network/interfaces.d/bat0
 echo        pre-up batctl if add wlan0.${BATMAN_VLAN} >> /etc/network/interfaces.d/bat0
 echo        post-up ip addr add ${NODEIP}/16 dev bat0 >> /etc/network/interfaces.d/bat0
+echo        post-up batctl bridge_loop_avoidance 1 >> /etc/network/interfaces.d/bat0
+echo        post-up batctl multicast_mode 0 >> /etc/network/interfaces.d/bat0
+echo        post-up batctl distributed_arp_table 0 >> /etc/network/interfaces.d/bat0
+echo        post-up batctl gw_mode client >> /etc/network/interfaces.d/bat0
 
 
 # ETH VLAN for layer 3 BABELD meshing
