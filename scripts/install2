@@ -48,7 +48,9 @@ esac
 case "$BOARD_OS" in
     Armbian)
         # Install Armbian WIFI Drivers
-        sudo apt-get install -y armbian-firmware-full armbian-firmware  2> /dev/null || true
+        sudo apt-get install -y armbian-firmware-full 2> /dev/null || true
+	sudo apt-get install -u armbian-firmware 2> /dev/null || true
+	sudo apt-get install -u firmware-ath9k-htc 2> /dev/null || true
     ;;
     Raspbian)
         CHANGE_PASSWORD="pi"
