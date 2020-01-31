@@ -41,7 +41,7 @@ fi
 
 # Yggdrasil 0.3.12 service fix
 sudo sed -i "s/CapabilityBoundingSet=CAP_NET_ADMIN/CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_RAW/" /etc/systemd/system/yggdrasil.service
-systemctl daemon-reload
+sudo systemctl daemon-reload
 
 # Change configuration to have yggdrasil's tun interface called ygg0
 sudo sed -i "s/IfName: auto/IfName: ygg0/" /etc/yggdrasil.conf
