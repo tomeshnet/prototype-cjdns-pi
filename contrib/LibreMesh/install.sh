@@ -62,7 +62,7 @@ echo post-up batctl if add wlan0.${BATMAN_VLAN} >> /etc/network/interfaces.d/wla
 
 # WLAN VLAN for layer 3 BABELD meshing
 
-echo echo auto wlan0.${BABELD_VLAN} > /etc/network/interfaces.d/wlan0.${BABELD_VLAN}
+echo auto wlan0.${BABELD_VLAN} > /etc/network/interfaces.d/wlan0.${BABELD_VLAN}
 echo iface wlan0.${BABELD_VLAN} inet manual >> /etc/network/interfaces.d/wlan0.${BABELD_VLAN}
 echo    post-up ip link del wlan0.${BABELD_VLAN} >> /etc/network/interfaces.d/wlan0.${BABELD_VLAN}
 echo    post-up ip link add link wlan0 name wlan0.${BABELD_VLAN} type vlan proto 802.1ad id ${BABELD_VLAN} >> /etc/network/interfaces.d/wlan0.${BABELD_VLAN}
