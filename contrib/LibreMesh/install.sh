@@ -1,3 +1,4 @@
+#!/bin/bash
 
 # LibreMesh Default Layer 3 Babled Network
 BABELD_VLAN=17 
