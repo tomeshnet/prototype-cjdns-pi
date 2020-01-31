@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Static libremesh vlan
 # Source: https://github.com/libremesh/lime-packages/blob/master/packages/lime-docs/files/lime-example#L41
 BABELD_VLAN=17 
