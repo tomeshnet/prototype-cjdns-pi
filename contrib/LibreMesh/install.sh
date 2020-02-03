@@ -110,3 +110,5 @@ echo  redistribute  deny >> /etc/babeld.conf
 # Force meshpoint to run at higher mtu  (1560) to prevent fragmentation of batman-adv
 echo 'ip link set dev $mesh_dev mtu 1560' >> /usr/bin/mesh-point
 
+# Try to add a second interface to mesh on the tomesh name (channel will still be differnt)
+echo 'iw dev $mesh_dev interface add wlan0-tomesh type mesh mesh_id tomesh || true'  >> /usr/bin/mesh-point
