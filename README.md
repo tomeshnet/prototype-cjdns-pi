@@ -92,7 +92,7 @@ List of tested hardware:
 | Orange Pi Zero Plus 2 H5  | [Armbian](https://dl.armbian.com/orangepizeroplus2-h5/)          | 190k, 130K | 80 Mbps | 0 (+2*) | None   | *USB Headers |
 | NanoPi Neo 2              | [Armbian](https://dl.armbian.com/nanopineo2/)                    | 160k, 95K  | 67 Mbps | 1 (+2*) | 10/100/1000   | *USB Headers, Gigabit Eth |
 | Rock64                    | [Armbian](https://dl.armbian.com/rock64/)                        | 255k, 168K | 94 Mbps | 3       | 10/100/1000   | 1 USB 3.0, Gigabit Eth |
-| Pine64                    | [Armbian](https://dl.armbian.com/pine64/nightly/)                | 227k, 151k | 78 Mbps | 2       | 10/100/1000   |  Gigabit Eth |
+| Pine64                    | [Armbian](https://dl.armbian.com/pine64/)                        | 227k, 151k | 78 Mbps | 2       | 10/100/1000   |  Gigabit Eth |
 | ESPRESSObin               | [Armbian](https://dl.armbian.com/espressobin/)                   | 186k, 128K | 73 Mbps | 2       | 10/100/1000   | 1 USB 3.0, 3x Gigabit Eth, SATA, mPCIe. Use stable and apt-get upgrade after boot |
 | MK802ii       | Debian | 30k, 40k | 25Mbps | | | Android box. Single core. Onboard WiFi supports Mesh Point |
 

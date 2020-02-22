@@ -352,7 +352,7 @@ Default open ports to the device are below. Since both CJDNS and Yggdrasil use I
 | 22    | UDP     | Accept | SSH                       |
 | 53    | TCP/UDP | Accept | DNS Server                |
 | 80    | TCP     | Accept | HTTP                      |
-| 443   | TCP     | Accept | SSH                       |
+| 443   | TCP     | Accept | SSL                       |
 | 8008  | TCP/UDP | Accept | SSB                       |
 | 9100  | TCP     | Accept | NodeExporter              |
 | 9090  | TCP     | Accept | Prometheus Server         |
