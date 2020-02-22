@@ -5,5 +5,20 @@ set -e
 # Uninstall Grafana
 sudo systemctl disable grafana-server.service 2>/dev/null || true
 sudo systemctl stop grafana-server.service 2>/dev/null || true
-sudo systemctl daemon-reload
-sudo apt-get -y remove grafana
+sudo systemctl daemon-reload || true
+sudo apt-get -y remove grafana || true
+
+# Remove other fies
+if [ -d "/var/lib/grafana" ]; then
+    echo "Found Grafana database"
+    read -p "Keep your Grafana database (Y/n)? " -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        sudo rm -rf /usr/share/grafana
+        sudo rm -rf /var/lib/grafana
+        sudo rm -rf /etc/grafana
+        sudo rm -rf /var/log/grafana
+    else
+        echo -e "\e[1;32mKeeping Grafana database\e[0m"
+    fi
+fi

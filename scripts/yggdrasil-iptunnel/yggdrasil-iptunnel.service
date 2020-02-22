@@ -1,0 +1,3 @@
+[Service]
+CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_RAW
+ExecStartPost=/usr/local/sbin/yggdrasil-setup

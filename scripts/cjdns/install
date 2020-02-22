@@ -1,0 +1,124 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC1091
+
+TAG_CJDNS=d2e55d58548d83940482fe1bbbe1fd36f7f1b4ef
+
+# Set BASE_DIR
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Common functions
+source functions.sh
+
+# Install node.js
+# shellcheck source=../shared/node.js/install
+source "$BASE_DIR/../shared/node.js/install"
+
+# Default build script for CJDNS
+CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 ./do"
+CJDNS_PACKAGE=""
+
+# Detect board
+detectBoard;
+
+# Set some defaults
+if [[ "$ARCH" == "armv7l" ]]; then
+    #TODO# -O2 workaround. Needs to be resolved.
+    CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-O2 -s -static -Wall -march=armv7-a -mtune=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -fomit-frame-pointer -marm\" ./do"
+    CJDNS_PACKAGE="cjdns-neon-v4.deb"
+fi
+
+if [[ "$ARCH" == "aarch64" ]]; then
+    CJDNS_BUILD_CMD="sudo Seccomp_NO=1 CFLAGS=\"-s -static -Wall -march=armv8-a+crc+crypto -fomit-frame-pointer\" ./do"
+    CJDNS_PACKAGE="cjdns-neon-arm64-v4.deb"
+fi
+
+
+case "$BOARD_MODEL" in
+    amd64)
+        CJDNS_BUILD_CMD="sudo ./do"
+    ;;
+    i386)
+        CJDNS_BUILD_CMD="sudo ./do"
+    ;;
+    "raspberrypi4")
+        CJDNS_BUILD_CMD="sudo CFLAGS=\"-march=armv8-a+crc -mtune=cortex-a53 -mfpu=crypto-neon-fp-armv8 -mfloat-abi=hard -O2\" ./do"
+        CJDNS_PACKAGE="cjdns-neon-v4.deb"
+    ;;
+    "raspberrypi3")
+        CJDNS_BUILD_CMD="sudo CFLAGS=\"-march=armv8-a+crc -mtune=cortex-a53 -mfpu=crypto-neon-fp-armv8 -mfloat-abi=hard -O2\" ./do"
+        CJDNS_PACKAGE="cjdns-neon-v4.deb"
+    ;;
+    "raspberrypi2")
+        CJDNS_BUILD_CMD="sudo NO_TEST=1 CFLAGS=\"-mfpu=neon-vfpv4 -O2\" ./do"
+        CJDNS_PACKAGE="cjdns-neon-v4.deb"
+   ;;
+    "raspberrypi1")
+        CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 NO_TEST=1 CFLAGS=\"-s -static -Wall\" ./do"
+        CJDNS_PACKAGE="cjdns-no-neon-v4.deb"
+    ;;
+    "raspberrypizero")
+        CJDNS_BUILD_CMD="sudo Seccomp_NO=1 NO_NEON=1 NO_TEST=1 CFLAGS=\"-s -static -Wall\" ./do"
+        CJDNS_PACKAGE="cjdns-no-neon-v4.deb"
+    ;;
+esac
+
+# Check if cjdns is to be compiled or downloaded
+if [[ ! -e "/usr/bin/cjdroute" ]]; then
+    if [ -n "$CJDNS_PACKAGE" ]; then
+        read -p "Compile CJDNS from source [Y] or use $CJDNS_PACKAGE Debian package (faster) [n]?" -n 1 -r
+        echo ""
+        if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+            CJDNS_PACKAGE="";
+        fi
+    fi
+fi
+
+if [ -n "$CJDNS_PACKAGE" ]; then
+    if ! [ -x "/opt/cjdns/cjdroute" ]; then
+        echo -e "\e[1;31mInstalling CJDNS debian package\e[0m"
+        wget https://github.com/darkdrgn2k/ToMeshPackages/raw/master/CJDNS/$CJDNS_PACKAGE -O /tmp/cjdns.deb
+        sudo dpkg -i /tmp/cjdns.deb
+        # Link up folder so files are in the same place as compiled
+        if [[ -e "/opt/cjdns" ]]; then
+            sudo rm -rf /opt/cjdns
+        fi
+        sudo ln -s /usr/share/cjdns /opt/cjdns
+        sudo ln -s /usr/bin/cjdroute /opt/cjdns/cjdroute || true
+    fi
+else
+    here="$(pwd)"
+    # Download CJDNS repo and checkout TAG_CJDNS tag
+    if ! [ -d "/opt/cjdns" ]; then
+        echo -e "\e[1;31mCompiling cjdns from source\e[0m"
+        sudo apt-get install -y python
+        sudo git clone https://github.com/cjdelisle/cjdns.git /opt/cjdns
+        cd /opt/cjdns
+        sudo git checkout $TAG_CJDNS
+        cd "$here"
+    fi
+
+    # Build CJDNS
+    if ! [ -x "/opt/cjdns/cjdroute" ]; then
+        cd /opt/cjdns
+        eval "$CJDNS_BUILD_CMD"
+        cd "$here"
+    fi
+
+    # Install CJDNS to /usr/bin
+    sudo rm -f /usr/bin/cjdroute
+    sudo cp /opt/cjdns/cjdroute /usr/bin/cjdroute
+
+    # Generate CJDNS configurations
+    if ! [ -f "/etc/cjdroute.conf" ]; then
+        sudo /usr/bin/cjdroute --genconf | sudo tee --append /etc/cjdroute.conf > /dev/null
+    fi
+
+    # Configure systemd to start cjdns.service on system boot
+    sudo cp /opt/cjdns/contrib/systemd/cjdns.service /etc/systemd/system/cjdns.service
+    sudo chmod 644 /etc/systemd/system/cjdns.service
+    sudo cp /opt/cjdns/contrib/systemd/cjdns-resume.service /etc/systemd/system/cjdns-resume.service
+    sudo chmod 644 /etc/systemd/system/cjdns-resume.service
+    sudo systemctl daemon-reload
+fi
+
+sudo systemctl enable cjdns.service

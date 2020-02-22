@@ -2,24 +2,45 @@
 
 set -e
 
-PROMETHEUS_VERSION="2.0.0-alpha.3"
+PROMETHEUS_VERSION="2.13.0"
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Download and install Prometheus Server
-ARM_VERSION=v7
-if uname -m | grep -Eq ^armv6; then
-    ARM_VERSION=v6
-elif uname -m | grep aarch64; then
-    ARM_VERSION=64
-fi
+ARCH="$(uname -m)" 
+case "$ARCH" in
+  x86_64)
+    ARCH="amd64"
+  ;;
+  i386 | i586 | i686 )
+    ARCH="386"
+  ;;  armv7l)
+    ARCH="armv7";
+  ;;
+  armv6l)
+    ARCH="armv6";
+  ;;
+  aarch64)
+    ARCH="arm64";
+  ;;
+  *)
+    echo "Unknown Arch"
+    exit 1
+  ;;
+esac
+
 
 mkdir "$BASE_DIR/tmp"
-wget "https://github.com/prometheus/prometheus/releases/download/v${PROMETHEUS_VERSION}/prometheus-${PROMETHEUS_VERSION}.linux-arm${ARM_VERSION}.tar.gz" -O "$BASE_DIR/tmp/prometheus.tar.gz"
+wget "https://github.com/prometheus/prometheus/releases/download/v${PROMETHEUS_VERSION}/prometheus-${PROMETHEUS_VERSION}.linux-${ARCH}.tar.gz" -O "$BASE_DIR/tmp/prometheus.tar.gz"
 tar xvfz "$BASE_DIR/tmp/prometheus.tar.gz" -C "$BASE_DIR/tmp" --strip 1
 mv "$BASE_DIR/tmp/prometheus.yml" "$BASE_DIR/tmp/prometheus.yml.orig"
-CJDNS_IPV6=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g')
-sed "s|localhost:9090|[${CJDNS_IPV6}]:9100|" "$BASE_DIR/tmp/prometheus.yml.orig" > "$BASE_DIR/tmp/prometheus.yml"
+
+if [ "$(command -v cjdroute)" ]; then
+  CJDNS_IPV6=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g')
+  sed "s|localhost:9090|[${CJDNS_IPV6}]:9100|" "$BASE_DIR/tmp/prometheus.yml.orig" > "$BASE_DIR/tmp/prometheus.yml"
+else
+  sed "s|localhost:9090|localhost:9100|" "$BASE_DIR/tmp/prometheus.yml.orig" > "$BASE_DIR/tmp/prometheus.yml"
+fi
+
 sudo cp -r "$BASE_DIR/tmp" /opt/prometheus
 rm -rf "$BASE_DIR/tmp"
 

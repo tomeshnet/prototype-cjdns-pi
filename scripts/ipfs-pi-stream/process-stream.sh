@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 HLS_TIME=40
 M3U8_SIZE=3
@@ -46,7 +46,7 @@ while true; do
 # shellcheck disable=SC2086,SC2012
   nextfile=$(ls -tr ${what}*.ts 2>/dev/null | head -n 1)
 
-  if ! [ -z "${nextfile}" ]; then
+  if [ -n "${nextfile}" ]; then
     # Check if the next file on the list is still being written to by ffmpeg
     if lsof "${nextfile}" | grep -1 ffmpeg; then
       # Wait for file to finish writing

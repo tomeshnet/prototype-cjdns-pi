@@ -3,7 +3,7 @@
 set -e
 
 # Remove script and service for ipfs bootstrap
-sudo rm -r /usr/local/bin/ipfs-swarm-cjdns.sh || true
+sudo rm -r /usr/local/bin/ipfs-swarm.sh || true
 
 # Uninstall dependencies
 sudo apt-get remove -y jq

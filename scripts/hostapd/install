@@ -22,33 +22,22 @@ YGG_SUBNET=${YGG_SUBNET:0:-3}
 # Install packages to run IEEE 802.11 Access Point
 sudo apt-get install hostapd radvd dnsmasq iptables -y
 
-# Configure wlan-ap interface
-sudo mv /etc/network/interfaces /etc/network/interfaces.bak
-sudo touch /etc/network/interfaces
+echo "allow-hotplug wlan-ap" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
+echo "iface wlan-ap inet static" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
+echo "    address 10.0.0.1" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
+echo "    netmask 255.255.255.0" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
+echo "    network 10.0.0.0" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
+echo "    broadcast 10.0.0.255" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
+echo "iface wlan-ap inet6 static" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
 
-echo "source-directory /etc/network/interfaces.d" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "auto lo"  | sudo tee --append /etc/network/interfaces > /dev/null
-echo "iface lo inet loopback" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "allow-hotplug wlan-ap" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "iface wlan-ap inet static" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    address 10.0.0.1" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    netmask 255.255.255.0" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    network 10.0.0.0" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "    broadcast 10.0.0.255" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "iface wlan-ap inet6 static" | sudo tee --append /etc/network/interfaces > /dev/null
-
-if [ "$(which yggdrasil)" ]; then
-    echo "    address ${YGG_SUBNET}1/64" | sudo tee --append /etc/network/interfaces > /dev/null
+if [ "$(command -v yggdrasil)" ]; then
+    echo "    address ${YGG_SUBNET}1/64" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
 else
-    echo "    address fdfc::2" | sudo tee --append /etc/network/interfaces > /dev/null
+    echo "    address fdfc::2" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
 fi
 
-echo "    netmask 64" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "allow-hotplug eth0" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "iface eth0 inet dhcp" | sudo tee --append /etc/network/interfaces > /dev/null
+echo "    netmask 64" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
+echo "" | sudo tee --append /etc/network/interfaces.d/wlan-ap > /dev/null
 
 # Enable packet forwarding
 sudo cp /etc/sysctl.conf /etc/sysctl.conf.bak
@@ -56,7 +45,7 @@ sudo sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/' /etc/sysctl.conf
 sudo sed -i 's/#net.ipv6.conf.all.forwarding=1/net.ipv6.conf.all.forwarding=1/' /etc/sysctl.conf
 
 # Get network name and password
-APSSID=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-/g")
+APSSID="$(cat /etc/hostname)"
 
 # Select wpa-eap or wpa-psk
 read -p "Use WPA-EAP (Y) or WPA2-PSK (n) for WiFi Access Point $APSSID? " -n 1 -r
@@ -102,12 +91,12 @@ fi
 
 # Use Hyperboria DNS addressses if h-dns is enabled
 sudo cp "$BASE_DIR/dnsmasq.conf" /etc/dnsmasq.conf
-if [ ! -z "$WITH_H_DNS" ] && [ "$WITH_H_DNS" == "true" ]; then
+if [ -n "$WITH_H_DNS" ] && [ "$WITH_H_DNS" == "true" ]; then
    echo "server=$H_DNS_SERVER_0" | sudo tee --append /etc/dnsmasq.conf
    echo "server=$H_DNS_SERVER_1" | sudo tee --append /etc/dnsmasq.conf
    echo "server=$H_DNS_SERVER_2" | sudo tee --append /etc/dnsmasq.conf
    echo "server=$H_DNS_SERVER_3" | sudo tee --append /etc/dnsmasq.conf   
-elif [ ! -z "$WITH_CJDNS_IPTUNNEL" ] && [ "$WITH_CJDNS_IPTUNNEL" ]; then
+elif [ -n "$WITH_CJDNS_IPTUNNEL" ] && [ "$WITH_CJDNS_IPTUNNEL" ]; then
    echo "server=$I_DNS_SERVER_0" | sudo tee --append /etc/dnsmasq.conf
    echo "server=$I_DNS_SERVER_1" | sudo tee --append /etc/dnsmasq.conf
 fi
@@ -120,7 +109,7 @@ fi
 
 # Setup radvd
 cp "$BASE_DIR/radvd.conf" /tmp
-if [ "$(which yggdrasil)" ]; then
+if [ "$(command -v yggdrasil)" ]; then
     # Setup Yggdrasil radvd prefix for subnetting
     sed -i "s/fdfc::\/64/${YGG_SUBNET}\/64/" /tmp/radvd.conf
 fi
@@ -149,10 +138,57 @@ for wlanfile in /sys/class/net/wlan*; do
     driver=$(basename "$driverPath")
 #    mac="$(cat /sys/class/net/$wlan/address)"
     if [[ "$driver" == "xradio_wlan" || "$driver" == "brcm80211" || "$driver" == "brcmfmac" || "$driver" == "rtl8189fs" ]]; then
-        echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"$driver\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan-ap\"" |
+    
+        askModule "WITH_ONBOARD_WIFI" "HostAP - Found an onboard WiFi. Configure it as an Access Point?" "y"
+        if [ "$(checkModule 'WITH_ONBOARD_WIFI')" ]; then
+            echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"$driver\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan-ap\"" |
                 sudo tee /etc/udev/rules.d/70-persistent-net.rules
+        fi
+    else
+        WITH_ONBOARD_WIFI=false
     fi
 done
+
+if [ ! "$(checkModule 'WITH_ONBOARD_WIFI')" ]; then
+    askModule "WITH_EXTERNAL_WIFI" "HostAP - Configure External WiFi adapter as an Access Point?" "n"
+fi
+if [ "$(checkModule 'WITH_EXTERNAL_WIFI')" ]; then
+
+    askSelection "Pin adapter by" "1 Mac\n2 Driver"
+    pinBy=$dialogREPLY
+    pinByName[1]="Mac"
+    pinByName[2]="Driver"
+    pinBy=${pinByName[$pinBy]}
+
+    OPTION=""
+    i=0
+    for wlanfile in /sys/class/net/wlan*; do
+        wlan="$(basename "$wlanfile")"        
+        mac="$(cat /sys/class/net/$wlan/address)"
+        driver="$(basename $(readlink /sys/class/net/$wlan/device/driver))"
+        i=$((i+1))
+        DRIVER[$i]=$driver
+        MAC[$i]=$mac
+        OPTION="${OPTION} \\n $i $mac $driver"
+    done
+    askSelection "Select wireless adapter $pinBy to pin" "$OPTION"
+    driver="${DRIVER[$dialogREPLY]}"
+    mac="${MAC[$dialogREPLY]}"
+
+    if [ -z "$mac" ]; then
+        echo "Error unknown response $dialogREPLY"
+        exit
+    else
+       if [[ "$pinBy" == "Mac" ]]; then
+           echo "SUBSYSTEM==\"net\", ACTION==\"add\", ATTR{address}==\"$mac\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan-ap\"" |
+              sudo tee /etc/udev/rules.d/70-persistent-net.rules
+       fi
+       if [[ "$pinBy" == "Driver" ]]; then
+           echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVER==\"$driver\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan-ap\"" |
+              sudo tee /etc/udev/rules.d/70-persistent-net.rules
+       fi
+    fi    
+fi
 
 # dnsmasq for some reason won't bind to the hostapd on Orange Pi, restarting it works
 if ! grep -q dnsmasq /etc/rc.local; then
@@ -161,4 +197,11 @@ fi
 
 if ! grep -q rfkill /etc/rc.local; then
     sudo sed -i 's/^exit 0/rfkill unblock wifi \&\& service hostapd restart\nexit 0/' /etc/rc.local 
+fi
+
+# Apply wpa_supplicant patch 
+# shellcheck disable=SC2024
+if [ -f /lib/dhcpcd/dhcpcd-hooks/10-wpa_supplicant ]; then
+    sudo patch -F99 -p2 -N  -d / < "$BASE_DIR/wpa-patch.diff"
+    echo "wlan-ap" | sudo tee /etc/wpa_devices
 fi

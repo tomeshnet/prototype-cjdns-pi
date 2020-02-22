@@ -9,6 +9,10 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Install php
 sudo apt-get install -y php-fpm socat
 
+# Install node.js shared module
+# shellcheck source=../shared/node.js/install
+source "$BASE_DIR/../shared/node.js/install"
+
 # Install required parts of ssb from npm
 # sudo sudo is a hack to allow post-install scripts that drop one level of sudo and still be sudoed
 # otherwise you get permissions errors when it tries to write to root owned folders
@@ -24,6 +28,7 @@ ssbPath="$HOME/.ssb"
 # Install broadcast service for users of sbot
 currentUser=$USER
 sudo cp "$BASE_DIR/ssb-web-pi-broadcast-service.sh" "/usr/local/bin/ssb-web-pi-broadcast-service.sh"
+sudo chmod a+x "/usr/local/bin/ssb-web-pi-broadcast-service.sh"
 sudo cp "$BASE_DIR/ssb-web-pi-broadcast.service" /etc/systemd/system/ssb-web-pi-broadcast.service
 sudo sed -i "s|__USER__|${currentUser}|g" /etc/systemd/system/ssb-web-pi-broadcast.service
 
@@ -72,3 +77,8 @@ sudo chown -R www-data.www-data /var/www/sbot
 # Add entry into nginx home screen
 APP="<div class='app'><h2>SSB Web Pi</h2>Very experimental interface for SSB. <br/><a href='/ssb-web-pi'>Go</a></div>"
 sudo sed -i "s#<\!--APPLIST-->#$APP\n<\!--APPLIST-->#" "/var/www/html/index.html"
+
+# if php7.3 is installed update config
+if [ -n "$(command -v php-fpm7.3)" ]; then
+   sudo sed -i "s/php7.0/php7.3/" /etc/nginx/site-path-enabled/ssb-web-pi.conf
+fi

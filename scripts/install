@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
 
 set -e
+if [[ -z "$(command -v sudo)" ]]; then
+apt-get install -y sudo || (
+   echo Sudo is not installed and cannot be installed.
+   echo Please run 
+   echo "    apt-get install sudo "
+   echo "    /usr/sbin/usermod -aG sudo $USER"
+   echo as root.
+   echo You may need to log in again for changes to take effect.
+   exit 1
+)
+fi
 
 # Use provided repository or default to tomeshnet/prototype-cjdns-pi
 if [ -z "$GIT_PROTOTYPE_CJDNS_PI" ]; then
@@ -26,9 +37,9 @@ if ps xa | awk '{print $5}' | grep -q dpkg; then
 fi
 
 # Get git
-# True required to avoid odd armbian bug.  Update does work but reports missing file.
+# True required to avoid odd armbian bug. Update does work but reports missing file.
 sudo apt-get update -y || true
-if ! [ "$(which git)" ]; then
+if ! [ "$(command -v git)" ]; then
     sudo apt-get install git -y
 fi
 
@@ -52,6 +63,7 @@ export WITH_PROMETHEUS_NODE_EXPORTER
 export WITH_PROMETHEUS_SERVER
 export WITH_GRAFANA
 export WITH_EXTRA_TOOLS
+export WITH_EXTRA_NETCAT
 export WITH_WATCHDOG
 export WITH_YRD
 export WITH_SSB

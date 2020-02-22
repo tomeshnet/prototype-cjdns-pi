@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -e
+
+sudo apt-get remove nodejs -y || true
+sudo rm -rf /bin/node /bin/nodejs

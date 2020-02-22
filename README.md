@@ -4,7 +4,7 @@
 
 The following instructions will help you set up an encrypted mesh network on Raspberry Pi's. It takes about 15 minutes to set up a node with the Pi 3. Obviously, to have a mesh you will need more than one node. 
 
-Many board that run [Armbian](https://www.armbian.com/) such as many models of Orange Pi hardware are also supported. The same installation steps can be followed, except you would flash the SD card with Armbian instead of Raspbian. See [Hardware Table](#hardware-table) for the full list of supported hardware and check for board specific installation details in our [Frequently Asked Questions](./docs/FAQ.md).
+The software also supports Debian running on x86 and x64 boards, and many board that run [Armbian](https://www.armbian.com/) (such as many models of Orange Pi hardware family). The same installation steps can be followed, except you would flash the SD card with Armbian instead of Raspbian or have Debian installed onto the computer. See [Hardware Table](#hardware-table) for the full list of supported hardware and check for board specific installation details in our [Frequently Asked Questions](./docs/FAQ.md). 
 
 ## Set Up
 
@@ -16,7 +16,7 @@ Many board that run [Armbian](https://www.armbian.com/) such as many models of O
       * For [802.11s Mesh Point](https://github.com/o11s/open80211s/wiki/HOWTO) wireless links (recommended), device such as the [TP-LINK TL-WN722N v1](http://www.tp-link.com/en/products/details/TL-WN722N.html), [Toplinkst TOP-GS07](https://github.com/tomeshnet/documents/blob/master/technical/20170208_mesh-point-with-topgs07-rt5572.md) or [another supported device](https://github.com/phillymesh/802.11s-adapters/blob/master/README.md).
       * For [ad-hoc](https://en.wikipedia.org/wiki/Wireless_ad_hoc_network) wireless links (experimental), any device that supports linux and ad-hoc.
 
-1. Flash the SD card with [Raspbian Stretch Lite](https://www.raspberrypi.org/downloads/raspbian/).
+1. Flash the SD card with [Raspbian Buster Lite](https://www.raspberrypi.org/downloads/raspbian/).
 
 1. Create an empty file named **ssh** to enable SSH when the Pi boots:
 
@@ -43,6 +43,8 @@ Many board that run [Armbian](https://www.armbian.com/) such as many models of O
 ## Modules
 
 During the installation, you may be able to pick a profile, or choose between many modules. To learn what each module is for, look at [MODULES.md](./docs/MODULES.md). This is important for the installation.
+
+There is also the [contrib](./contrib/) folder for software that has been contributed to the project, but which might not actually be maintained by the core developers.
 
 ## Check Status
 
@@ -76,11 +78,13 @@ List of tested hardware:
 
 | Hardware                  | Base OS         | [CJDNS Benchmark](https://github.com/phillymesh/cjdns-optimizations) <sub>(salsa20/poly1305, switching)</sub> | iPerf3 | USB | Ethernet | Notes    |
 | :-------------------------|:----------------|:--------------------------------------------------------------------------------------------------------------|:-------|:----|:---------|:---------|
-| Raspberry Pi 3b+          | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) | 405k, 119k | ~90 Mbps| 2       | 10/100/1000 | Eth only ~320mbps. Onboard wifi dual band |
-| Raspberry Pi 3b           | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) | 350k, 100k | 89 Mbps | 2       | 10/100 | |
-| Raspberry Pi 2            | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) | 145k,  55k | 39 Mbps | 2       | 10/100 | |
-| Raspberry Pi 1 A+         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) |  35k,   -  | ~9 Mbps | 1       | None   | |
-| Raspberry Pi 1 B+         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) |  51k,  22k | ~8 Mbps | 2       | 10/100 | |
+| Genericx x86              | Debian 9                                                         |            |         |         |   |  Performance depended on underlying hardware. |
+| Raspberry Pi 4B (2GB ram)           | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) | 650k, 230k | ~160 Mbps| 4       | 10/100/1000 | Onboard wifi dual band |
+| Raspberry Pi 3b+          | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) | 405k, 119k | ~90 Mbps| 4       | 10/100/1000 | Eth only ~320mbps. Onboard wifi dual band |
+| Raspberry Pi 3b           | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) | 350k, 100k | 89 Mbps | 4       | 10/100 | |
+| Raspberry Pi 2b            | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) | 145k,  55k | 39 Mbps | 4       | 10/100 | |
+| Raspberry Pi 1a+         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) |  35k,   -  | ~9 Mbps | 1       | None   | |
+| Raspberry Pi 1b+         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) |  51k,  22k | ~8 Mbps | 2       | 10/100 | |
 | Raspberry Pi Zero         | [Raspbian Lite](https://www.raspberrypi.org/downloads/raspbian/) |  68k,  30k | ~9 Mbps | 1*      | None   | *Need OTG Cable No FPV |
 | Orange Pi Lite            | [Armbian](https://dl.armbian.com/orangepilite/)                  | 160k,  74k | 67 Mbps | 2       | None   | |
 | Orange Pi One             | [Armbian](https://dl.armbian.com/orangepione/)                   | 160k,  74k | 67 Mbps | 1       | 10/100 | |
@@ -116,6 +120,8 @@ To add a new module, use **scripts/ipfs/** as an example to:
 
 * We keep a list of [Frequently Asked Questions](./docs/FAQ.md). Feel free to add to this list with the issues you experienced on your boards.
 
-* Your computer can be a node too! It will mesh with the Pi's over your router. See the [cjdns repository](https://github.com/cjdelisle/cjdns) on how to set this up.
+* We have a [Troubleshooting](./docs/TROUBLESHOOT.MD) doc with information to point you in the right direction of some common problems.
+
+* Your computer can be a node too! It will mesh with the Pi's over your router. See the [cjdns repository](https://github.com/cjdelisle/cjdns) on how to set this up. You can now also install this prototype stack on debian/ubuntu PC hardware. This includes a Virtual Machine.
 
 * Original plan for this repository and early benchmark results are available in [the doc folder](./docs).
