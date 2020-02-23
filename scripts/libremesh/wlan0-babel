@@ -1,0 +1,6 @@
+auto wlan0.__BABELD_VLAN__
+iface wlan0.__BABELD_VLAN__ inet manual
+    post-up ip link del wlan0.__BABELD_VLAN__
+    post-up ip link add link wlan0 name wlan0.__BABELD_VLAN__ type vlan proto 802.1ad id __BABELD_VLAN__
+    post-up ip link set wlan0.__BABELD_VLAN__ up
+    post-up ip addr add __NODEIP__/16 dev wlan0.__BABELD_VLAN__
