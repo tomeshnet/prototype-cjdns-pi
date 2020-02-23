@@ -1,61 +1,114 @@
+#!/bin/bash
+
+# Static libremesh vlan
+# Source: https://github.com/libremesh/lime-packages/blob/master/packages/lime-docs/files/lime-example#L41
+BABELD_VLAN=17 
+
+# Default SSID for LibreMesh is "LibreMesh.org"
+# It is used to define NETWORK related settings
+SSID="LibreMesh.org"
+# MD5SUM hash for SSID will be used for the calculations (NOTE: ends in \n)
+SSIDHASH=$(echo ${SSID} | md5sum) # Hash of the SSID
+
+# First 4 bytes of the HASHED SSID will be used for differnt network settings
+# We convert HEX to  DEC
+N1=$( printf "%d" "0x${SSIDHASH:0:2}" )
+N2=$( printf "%d" "0x${SSIDHASH:2:2}" )
+N3=$( printf "%d" "0x${SSIDHASH:4:2}" )
+N4=$( printf "%d" "0x${SSIDHASH:6:2}" )
+
+# MAC address of ethernet. Used to identify NODE specific settings
+MAC=$(cat /sys/class/net/eth0/address ) # Get Mac
+# Last 3 bytes of the MAC (make up the node name)
+NODEID=$(echo $MAC | cut -f 4 -d \:)$(echo $MAC | cut -f 5 -d \:)$(echo $MAC | cut -f 6 -d \:)
+# We convert HEX to  DEC
+M1=$( printf "%d" "0x${NODEID:0:2}" )
+M2=$( printf "%d" "0x${NODEID:2:2}" )
+M3=$( printf "%d" "0x${NODEID:4:2}" )
+
+# BATMAN-ADV VLAN setting
+# Each Unique SSID has (we hope) a unique VLANID so the two networks wont mesh together layer2
+# Lots of legacy things in this calculations so its odd
+# BATMAN-ADV vlan is 29 + (N1 - 13) % 254
+# Notes (I THINK)
+# N1-13 = 0 on Default Setups
+# 29 is added to allow for lower VLANS being Layer 3 (i think)
+# % 254 makes sure the number is between 0-254
+BATMAN_VLAN=$(( 29 + $(( N1 -13 )) % 254 ))
+
+NODEIP=10.$N1.$M2.$M3
 
 # Install batman
 apt-get install -y batctl
 
 
-# Change to channel 11 and set meshname the LiMe
+# Change mesh-point seattings to use channel 11 (Libremesh defailt) and set meshname of LiMe
 confset general frequency 2462 /etc/mesh.conf
 confset general mesh-name LiMe /etc/mesh.conf
-
 
 # Always load batman on boot
 echo batman-adv >> /etc/modules
 
 # WLAN VLAN for layer 2 BATMAN 
-echo <<"EOF"> /etc/network/interfaces.d/wlan0.29
-auto wlan0.29
-iface wlan0.29 inet manual
-post-up ip link del wlan0.29
-post-up ip link add link wlan0 name wlan0.29 type vlan proto 802.1ad id 29
-post-up batctl if add wlan0.29
-post-up ip link set wlan0.29 up
-EOF
+echo auto wlan0.${BATMAN_VLAN} > /etc/network/interfaces.d/wlan0.${BATMAN_VLAN}
+echo iface wlan0.${BATMAN_VLAN} inet manual >> /etc/network/interfaces.d/wlan0.${BATMAN_VLAN}
+echo post-up ip link del wlan0.${BATMAN_VLAN} >> /etc/network/interfaces.d/wlan0.${BATMAN_VLAN}
+echo post-up ip link add link wlan0 name wlan0.${BATMAN_VLAN} type vlan proto 802.1ad id ${BATMAN_VLAN} >> /etc/network/interfaces.d/wlan0.${BATMAN_VLAN}
+echo post-up batctl if add wlan0.${BATMAN_VLAN} >> /etc/network/interfaces.d/wlan0.${BATMAN_VLAN}
+echo post-up ip link set wlan0.${BATMAN_VLAN} up >> /etc/network/interfaces.d/wlan0.${BATMAN_VLAN}
+echo post-up batctl if add wlan0.${BATMAN_VLAN} >> /etc/network/interfaces.d/wlan0.${BATMAN_VLAN}
+
+
 
 # WLAN VLAN for layer 3 BABELD meshing
-echo <<"EOF"> /etc/network/interfaces.d/wlan0.17
-auto wlan0.17
-iface wlan0.17 inet manual
-   post-up ip link del wlan0.17
-   post-up ip link add link wlan0 name wlan0.17 type vlan proto 802.1ad id 17
-   post-up ip link set wlan0.17 up
-   post-up ip addr add 10.13.183.231/16 dev wlan0.17
-EOF
+
+echo auto wlan0.${BABELD_VLAN} > /etc/network/interfaces.d/wlan0.${BABELD_VLAN}
+echo iface wlan0.${BABELD_VLAN} inet manual >> /etc/network/interfaces.d/wlan0.${BABELD_VLAN}
+echo    post-up ip link del wlan0.${BABELD_VLAN} >> /etc/network/interfaces.d/wlan0.${BABELD_VLAN}
+echo    post-up ip link add link wlan0 name wlan0.${BABELD_VLAN} type vlan proto 802.1ad id ${BABELD_VLAN} >> /etc/network/interfaces.d/wlan0.${BABELD_VLAN}
+echo    post-up ip link set wlan0.${BABELD_VLAN} up >> /etc/network/interfaces.d/wlan0.${BABELD_VLAN}
+echo    post-up ip addr add ${NODEIP}/16 dev wlan0.${BABELD_VLAN} >> /etc/network/interfaces.d/wlan0.${BABELD_VLAN}
+
 
 # BAT0 configuration
-echo <<"EOF"> /etc/network/interfaces.d/bat0
-auto bat0
-iface bat0 inet manual
-        pre-up batctl if add wlan0.29	
-        post-up ip addr add 10.13.183.231/16 dev bat0
-EOF
+
+echo auto bat0 > /etc/network/interfaces.d/bat0
+echo iface bat0 inet manual >> /etc/network/interfaces.d/bat0
+echo        pre-up batctl if add wlan0.${BATMAN_VLAN} >> /etc/network/interfaces.d/bat0
+echo        post-up ip addr add ${NODEIP}/16 dev bat0 >> /etc/network/interfaces.d/bat0
+echo        post-up batctl bridge_loop_avoidance 1 >> /etc/network/interfaces.d/bat0
+echo        post-up batctl multicast_mode 0 >> /etc/network/interfaces.d/bat0
+echo        post-up batctl distributed_arp_table 0 >> /etc/network/interfaces.d/bat0
+echo        post-up batctl gw_mode client >> /etc/network/interfaces.d/bat0
+
 
 # ETH VLAN for layer 3 BABELD meshing
-echo <<"EOF"> /etc/network/interfaces.d/eth0.17
-auto eth0.17
-iface eth0.17 inet manual
-   post-up ip link del eth0.17
-   post-up ip link add link eth0 name eth0.17 type vlan proto 802.1ad id 17
-   post-up ip link set eth0.17 up
-   post-up ip addr add 10.13.183.231/16 dev eth0.17
-EOF
+echo auto eth0.${BABELD_VLAN} > /etc/network/interfaces.d/eth0.${BABELD_VLAN}
+echo iface eth0.${BABELD_VLAN} inet manual  >> /etc/network/interfaces.d/eth0.${BABELD_VLAN}
+echo    post-up ip link del eth0.${BABELD_VLAN} >> /etc/network/interfaces.d/eth0.${BABELD_VLAN}
+echo    post-up ip link add link eth0 name eth0.${BABELD_VLAN} type vlan proto 802.1ad id ${BABELD_VLAN} >> /etc/network/interfaces.d/eth0.${BABELD_VLAN}
+echo    post-up ip link set eth0.${BABELD_VLAN} up >> /etc/network/interfaces.d/eth0.${BABELD_VLAN}
+echo    post-up ip addr add ${NODEIP}/16 dev eth0.${BABELD_VLAN} >> /etc/network/interfaces.d/eth0.${BABELD_VLAN}
+
 
 # Install BABELD
 wget http://meshwithme.online/deb/repos/apt/debian/pool/main/b/babeld/babeld_1.9.1-dirty_armhf.deb
 dpkg -i babeld_1.9.1-dirty_armhf.deb 
 
 # Configure BABELD
-echo <<"EOF"> /etc/babeld.conf
-interface wlan0.17
-interface eth0.17
-local-port 30003
-EOF
+echo local-port 30003 > /etc/babeld.conf
+echo interface eth0.17 >> /etc/babeld.conf
+echo interface wlan0.17 >> /etc/babeld.conf
+echo  redistribute ip 2000::0/3  allow >> /etc/babeld.conf
+echo  redistribute ip 0::0/0 le 0  allow >> /etc/babeld.conf
+echo  redistribute ip 10.0.0.0/8  allow >> /etc/babeld.conf
+echo  redistribute ip 172.16.0.0/12  allow >> /etc/babeld.conf
+echo  redistribute ip 0.0.0.0/0 le 0  allow >> /etc/babeld.conf
+echo  redistribute local  deny >> /etc/babeld.conf
+echo  redistribute  deny >> /etc/babeld.conf
+
+# Force meshpoint to run at higher mtu  (1560) to prevent fragmentation of batman-adv
+echo 'ip link set dev $mesh_dev mtu 1560' >> /usr/bin/mesh-point
+
+# Try to add a second interface to mesh on the tomesh name (channel will still be differnt)
+echo 'iw dev $mesh_dev interface add wlan0-tomesh type mesh mesh_id tomesh || true'  >> /usr/bin/mesh-point
