@@ -48,10 +48,10 @@ wget http://meshwithme.online/deb/repos/apt/debian/pool/main/b/babeld-tomesh/bab
 sudo dpkg -i babeld-tomesh_1_all.deb
 
 # Force meshpoint to run at higher mtu  (1560) to prevent fragmentation of batman-adv
-echo 'ip link set dev $mesh_dev mtu 1560' >> /usr/bin/mesh-point
+echo 'ip link set dev $mesh_dev mtu 1560' | sudo tee --append /usr/bin/mesh-point
 
 # Try to add a second interface to mesh on the tomesh name (channel will still be differnt)
-echo 'iw dev $mesh_dev interface add wlan0-tomesh type mesh mesh_id tomesh || true'  >> /usr/bin/mesh-point 
+echo 'iw dev $mesh_dev interface add wlan0-tomesh type mesh mesh_id tomesh || true' | sudo tee --append /usr/bin/mesh-point
 
 # Generate network config
 sudo ./updateConfig.sh

@@ -1,5 +1,10 @@
 #!/bin/bash
 
+BABELD_VLAN=$(confget -f /etc/mesh-libre.conf -s libremesh "BABELD_VLAN")
+BATMAN_VLAN=$(confget -f /etc/mesh-libre.conf -s libremesh "BATMAN_VLAN")
+NODEIP=$(confget -f /etc/mesh-libre.conf -s libremesh "NODEIP")
+
+
 cp wlan0-bat /tmp/wlan0.${BATMAN_VLAN}
 sed -i "s/__BATMAN_VLAN__/$BATMAN_VLAN/g" "/tmp/wlan0.${BATMAN_VLAN}"
 sudo mv /tmp/wlan0.${BATMAN_VLAN} /etc/network/interfaces.d/wlan0.${BATMAN_VLAN}
@@ -9,7 +14,7 @@ sed -i "s/__BATMAN_VLAN__/$BATMAN_VLAN/g" "/tmp/bat0"
 sed -i "s/__NODEIP__/$NODEIP/g" "/tmp/bat0"
 sudo mv /tmp/bat0 /etc/network/interfaces.d/bat0
 
-cp wlan0-bat /tmp/wlan0.${BABELD_VLAN}
+cp wlan0-babeld /tmp/wlan0.${BABELD_VLAN}
 sed -i "s/__BABELD_VLAN__/$BABELD_VLAN/g" "/tmp/wlan0.${BABELD_VLAN}"
 sed -i "s/__NODEIP__/$NODEIP/g" "/tmp/wlan0.${BABELD_VLAN}"
 sudo mv /tmp/wlan0.${BABELD_VLAN} /etc/network/interfaces.d/wlan0.${BABELD_VLAN}

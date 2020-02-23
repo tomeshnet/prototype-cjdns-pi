@@ -1,7 +1,7 @@
 auto bat0
 iface bat0 inet manual
         pre-up batctl if add wlan0.__BATMAN_VLAN__
-        post-up ip addr add $__NODEIP__/16 dev bat0
+        post-up ip addr add __NODEIP__/16 dev bat0
         post-up batctl bridge_loop_avoidance 1
         post-up batctl multicast_mode 0
         post-up batctl distributed_arp_table 0
