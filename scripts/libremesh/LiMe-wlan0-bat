@@ -1,0 +1,7 @@
+auto wlan0.__BATMAN_VLAN__
+iface wlan0.__BATMAN_VLAN__ inet manual
+post-up ip link del wlan0.__BATMAN_VLAN__
+post-up ip link add link wlan0 name wlan0.__BATMAN_VLAN__ type vlan proto 802.1ad id $__BATMAN_VLAN__
+post-up batctl if add wlan0.__BATMAN_VLAN__
+post-up ip link set wlan0.__BATMAN_VLAN__ up
+post-up batctl if add wlan0.__BATMAN_VLAN__
