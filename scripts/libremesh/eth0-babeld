@@ -1,0 +1,7 @@
+# ETH VLAN for layer 3 BABELD meshing
+auto eth0.__BABELD_VLAN__
+iface eth0.__BABELD_VLAN__ inet manual
+  post-up ip link del eth0.__BABELD_VLAN__
+  post-up ip link add link eth0 name eth0.__BABELD_VLAN__ type vlan proto 802.1ad id __BABELD_VLAN__
+  post-up ip link set eth0.__BABELD_VLAN__ up
+  post-up ip addr add __NODEIP__/16 dev eth0.__BABELD_VLAN__
