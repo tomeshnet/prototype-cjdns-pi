@@ -45,7 +45,7 @@ function askModule {
         if [ -z "$res" ] || [ "$res" != "true" ] && [ "$res" != "false" ]; then
 	
         # Clear buffer before asking
-        read -t 1 -n 10000 discard || true
+        read -r -t 1 -n 10000 discard || true
 
             read -p "Install $2 $askPrompt? " -n 1 -r
             echo ""
@@ -91,7 +91,7 @@ function askSelection {
     if [ "$(checkModule 'WITH_DIALOG')" ]; then
     
     	# Clear buffer before asking
-        read -t 1 -n 10000 discard || true
+        read -r -t 1 -n 10000 discard || true
 	
         selection=$(echo -e "$selection" | while read -r selected; do
                     selectedItem="${selected:0:1}"
@@ -118,7 +118,7 @@ function askSelection {
         while [[ "$isValid" == "" ]]; do
 	
             # Clear buffer before asking
-            read -t 1 -n 10000 discard || true
+            read -r -t 1 -n 10000 discard || true
 	
             echo -e "$1"
             echo -------------------
@@ -130,7 +130,7 @@ function askSelection {
                 REPLY=$(echo "$REPLY" | awk '{print toupper($0)}')
 
                 # Clear buffer before asking
-	            read -t 1 -n 10000 discard || true
+	            read -r -t 1 -n 10000 discard || true
 		
                 isValid=$(echo -e "$selection" | while read -r selected; do
                     if [[ "${selected:0:1}" == "$REPLY" ]]; then

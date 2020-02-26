@@ -136,15 +136,16 @@ for wlanfile in /sys/class/net/wlan*; do
     wlan="$(basename "$wlanfile")"
     driverPath=$(readlink "/sys/class/net/$wlan/device/driver")
     driver=$(basename "$driverPath")
-#    mac="$(cat /sys/class/net/$wlan/address)"
+#   mac="$(cat /sys/class/net/$wlan/address)"
     if [[ "$driver" == "xradio_wlan" || "$driver" == "brcm80211" || "$driver" == "brcmfmac" || "$driver" == "rtl8189fs" ]]; then
-    
+        # shellcheck disable=SC2034
         askModule "WITH_ONBOARD_WIFI" "HostAP - Found an onboard WiFi. Configure it as an Access Point?" "y"
         if [ "$(checkModule 'WITH_ONBOARD_WIFI')" ]; then
             echo "SUBSYSTEM==\"net\", ACTION==\"add\", DRIVERS==\"$driver\", ATTR{dev_id}==\"0x0\", ATTR{type}==\"1\", KERNEL==\"wlan*\", NAME=\"wlan-ap\"" |
                 sudo tee /etc/udev/rules.d/70-persistent-net.rules
         fi
     else
+        # shellcheck disable=SC2034
         WITH_ONBOARD_WIFI=false
     fi
 done
@@ -155,6 +156,7 @@ fi
 if [ "$(checkModule 'WITH_EXTERNAL_WIFI')" ]; then
 
     askSelection "Pin adapter by" "1 Mac\n2 Driver"
+    # shellcheck disable=SC2154
     pinBy=$dialogREPLY
     pinByName[1]="Mac"
     pinByName[2]="Driver"
@@ -164,8 +166,8 @@ if [ "$(checkModule 'WITH_EXTERNAL_WIFI')" ]; then
     i=0
     for wlanfile in /sys/class/net/wlan*; do
         wlan="$(basename "$wlanfile")"        
-        mac="$(cat /sys/class/net/$wlan/address)"
-        driver="$(basename $(readlink /sys/class/net/$wlan/device/driver))"
+        mac="$(cat /sys/class/net/"$wlan"/address)"
+        driver="$(basename "$(readlink /sys/class/net/"$wlan"/device/driver)")"
         i=$((i+1))
         DRIVER[$i]=$driver
         MAC[$i]=$mac
