@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# Dependencies
+sudo apt-get -y remove confget
+sudo rm -rf /usr/local/bin/confset

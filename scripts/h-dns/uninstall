@@ -2,4 +2,4 @@
 
 set -e
 
-sudo sed -i '/dns-nameservers /d' /etc/network/interfaces
+sudo rm -rf /etc/network/interfaces.d/dns 

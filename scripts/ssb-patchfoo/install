@@ -1,13 +1,19 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # shellcheck disable=SC1091
 true
+VERSION="TO-V0.5"
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 CURRENT_DIR="$(pwd)"
 
+# Install node.js shared module
+# shellcheck source=../shared/node.js/install
+source "$BASE_DIR/../shared/node.js/install"
+
 # Make folder if service did not
 mkdir -p ~/.ssb/node_modules || true
+
 # shellcheck disable=SC2164
 cd ~/.ssb/node_modules
 
@@ -15,7 +21,13 @@ cd ~/.ssb/node_modules
 npm install --unsafe-perm asyncmemo hashlru pull-stream pull-cat multicb hyperscript pull-paramap ssb-contact ssb-sort stream-to-pull-stream emoji-server pull-paginate ssb-mentions busboy mime-types pull-identify-filetype human-time pull-hyperscript jpeg-autorotate pull-catch diff pull-split pull-utf8-decoder ssb-web-resolver highlight.js pull-box-stream base64-url ssb-backlinks ssb-private
 
 # Install patchfoo and enable plugin
-git clone https://github.com/darkdrgn2k/patchfoo.git patchfoo
+git clone https://github.com/tomeshnet/patchfoo.git patchfoo
+
+(
+# shellcheck disable=SC2164
+cd patchfoo
+git checkout ${VERSION}
+)
 
 # Replace ssb-server plugins.install with a static config file
 # This will prevent the installation of these modules a second time
@@ -28,11 +40,16 @@ cp "$BASE_DIR/config" ~/.ssb
 # Stop ssb service to process plugin
 sudo systemctl stop ssb
 
-# Disable the git-ssb prerequisite
-# Comment out two lines in patchwork that create a prerequisite for git-ssb
-# but don't seem to serve any purpose. Git-ssb is not available on npm
+# Disable the git-ssb and npm-ssb prerequisite
+# Comment out two lines in patchwork that create a prerequisite for git-ssb and npm-ssb
+# but don't seem to serve any purpose. git-ssb and and npm-ssbis not available on npm
 sed -i 's#var Git#//var Git#' patchfoo/lib/app.js  patchfoo/lib/app.js
 sed -i 's#this.git = new Git(this.sbot, this.config)#//this.git = new Git(this.sbot, this.config)#' patchfoo/lib/app.js
+sed -i 's#var SsbNpmRegistry#//var SsbNpmRegistry#' patchfoo/lib/app.js  patchfoo/lib/app.js
+sed -i 's#this.serveSsbNpmRegistry = SsbNpmRegistry.respond(this.sbot, this.config)#//this.serveSsbNpmRegistry = SsbNpmRegistry.respond(this.sbot, this.config)#' patchfoo/lib/app.js
+
+# Comment out line that breaks things
+sed -i "s#h('input', {type: 'file', name: 'upload'})#//h('input', {type: 'file', name: 'upload'})#" patchfoo/lib/serve.js
 
 # Start service again to start patchfoo
 sudo systemctl start ssb

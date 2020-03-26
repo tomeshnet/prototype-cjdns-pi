@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+MESH_NAME=$(confget -f /etc/mesh.conf -s general "mesh-name")
+
+if [ -f '/etc/cjdroute.conf' ]; then
+    # Define new hostname
+    if [ -z "${NEWHOSTNAME}" ]; then
+    NEWHOSTNAME=$(sudo grep -m 1 '"ipv6"' /etc/cjdroute.conf | awk '{ print $2 }' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-/g")
+    fi
+fi
+
+# Define hostname based off Yggdrasil if CJDNS isn't installed
+if ! [ -z "$(ifconfig  | grep ygg0:)" ]; then
+    # Define new hostname
+    if [ -z "${NEWHOSTNAME}" ]; then
+        NEWHOSTNAME=$(sudo ifconfig ygg0 | grep -E 'inet6 2[0-9a-fA-F]{2}:' | awk '{print $2}' | sed 's/[",]//g' | sed "s/.*:/$MESH_NAME-Y/g")
+    fi
+fi
+
+# Set node name
+if ! [ -z "${NEWHOSTNAME}" ]; then
+    # Rename node based on new hostname
+    oldhostname=$(hostname)
+    sudo echo "$NEWHOSTNAME" | sudo tee /etc/hostname > /dev/null
+    sudo sed -i -e "s/$oldhostname/$NEWHOSTNAME/" /etc/hosts
+    sudo hostname "$NEWHOSTNAME"
+
+    if [ -f '/etc/yggdrasil.conf' ] && [ -z "$(grep NodeInfo\: /etc/yggdrasil.conf)" ]; then
+        sudo sed -i "/NodeInfo: {}/d" /etc/yggdrasil.conf
+        sudo sed -i "\$i\ \ NodeInfo:\n  {\n   name: ${NEWHOSTNAME}\n  }\n"  /etc/yggdrasil.conf
+    fi
+
+    sudo sed -i -e "s/$oldhostname/$NEWHOSTNAME/" /etc/hostapd/hostapd.conf || true
+    sudo sed -i -e "s/$oldhostname/$NEWHOSTNAME/" /opt/tomesh/nodeinfo.json || true
+    sudo sed -i -e "s/$oldhostname/$NEWHOSTNAME/" /etc/yggdrasil.conf || true
+
+fi

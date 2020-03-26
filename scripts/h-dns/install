@@ -7,6 +7,6 @@ H_DNS_SERVER_1="fc6e:691e:dfaa:b992:a10a:7b49:5a1a:5e09"
 H_DNS_SERVER_2="fc16:b44c:2bf9:467:8098:51c6:5849:7b4f"
 
 # Configure Hyperboria DNS
-sudo sed -i '/dns-nameservers /d' /etc/network/interfaces
-echo "" | sudo tee --append /etc/network/interfaces > /dev/null
-echo "dns-nameservers ${H_DNS_SERVER_0} ${H_DNS_SERVER_1} ${H_DNS_SERVER_2}" | sudo tee --append /etc/network/interfaces > /dev/null
+sudo sed -i '/dns-nameservers /d' /etc/network/interfaces || true
+echo "" | sudo tee /etc/network/interfaces.d/dns > /dev/null
+echo "dns-nameservers ${H_DNS_SERVER_0} ${H_DNS_SERVER_1} ${H_DNS_SERVER_2}" | sudo tee --append /etc/network/interfaces.d/dns > /dev/null

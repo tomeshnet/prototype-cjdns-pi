@@ -84,7 +84,7 @@ while 1:
                                         if (words2[1]  == "mesh") or (words2[1] == "IBSS"):
                                                 meshtype=words2[1]
                                                 fifo.write("wlan_mesh{type=\"" + meshtype + "\", iface=\"" + currentitn + "\"} 1\n")
-
+                                                fifo.write("mesh_node_wifi{mac=\"" + mac + "\",type=\"" + meshtype + "\", device=\"" + currentitn + "\"} -1\n")
                                                 # Loop through connected stations
                                                 command_line = "iw dev " + currentitn + " station dump"
                                                 args = shlex.split(command_line)

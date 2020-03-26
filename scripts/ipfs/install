@@ -1,12 +1,33 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC1091
-true
 
 set -e
 
-GO_IPFS_VERSION=v0.4.18
+GO_IPFS_VERSION="v0.4.22"
 
-# Hyperborea connected peer used to bootstrap hyperborea only ipfs nodes
+ARCH="$(uname -m)" 
+case "$ARCH" in
+  x86_64)
+    ARCH="amd64"
+  ;;
+  i386 | i586 | i686 )
+    ARCH="386"
+  ;;  armv7l)
+    ARCH="arm";
+  ;;
+  armv6l)
+    ARCH="arm";
+  ;;
+  aarch64)
+    ARCH="arm64";
+  ;;
+  *)
+    echo "Unknown Arch"
+    exit 1
+  ;;
+esac
+
+# Hyperborea connected peer used to bootstrap Hyperborea only ipfs nodes
 # DarkDrgn2k's peer
 IPFS_PEER_1="/ip6/fc6e:691e:dfaa:b992:a10a:7b49:5a1a:5e09/tcp/4001/ipfs/QmU6NeD2Uu34WKest1NZGvGmScLhN1zVo66K35GeE6Jft2"
 # HeavyMetal's peer
@@ -17,20 +38,23 @@ IPFS_PEER_3="/ip6/301:4541:2f84:1188:216:3eff:fed5:a2df/tcp/4001/ipfs/QmWZpTdfET
 IPFS_PEER_4="/ip6/200:98bf:d6df:e49a:f525:40bf:18d:ac45/tcp/4001/ipfs/QmU6NeD2Uu34WKest1NZGvGmScLhN1zVo66K35GeE6Jft2"
 # HeavyMetal's peer
 IPFS_PEER_5="/ip6/201:3d73:dbf:da97:e008:2d29:3919:cdb1/tcp/4001/ipfs/QmRGk8DdMWy5P5xgUisnv7u4hV4WfgEhbxa6iGpviYGC7q"
-
+# Yk3Music's Irvine-CA peer
+IPFS_PEER_6="/ip6/fcbb:1db3:54fb:e519:d915:d7db:4893:4f30/tcp/4001/ipfs/QmZEiPvrfZHapq4uiyTDEcR2szCUhDnjdS4q3Uv2b1Uh88"
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Download and install IPFS
 mkdir "$BASE_DIR/tmp"
-wget "https://dist.ipfs.io/go-ipfs/${GO_IPFS_VERSION}/go-ipfs_${GO_IPFS_VERSION}_linux-arm.tar.gz" -O "$BASE_DIR/tmp/go-ipfs.tar.gz"
+wget "https://dist.ipfs.io/go-ipfs/${GO_IPFS_VERSION}/go-ipfs_${GO_IPFS_VERSION}_linux-${ARCH}.tar.gz" -O "$BASE_DIR/tmp/go-ipfs.tar.gz"
 tar xvfz "$BASE_DIR/tmp/go-ipfs.tar.gz" -C "$BASE_DIR/tmp"
 sudo cp "$BASE_DIR/tmp/go-ipfs/ipfs" /usr/local/bin/ipfs
 sudo chown root:staff /usr/local/bin/ipfs
 rm -rf "$BASE_DIR/tmp"
 
-# Initialize IPFS
-ipfs init || true
+# Initialize IPFS if not already
+if [ ! -d "$HOME/.ipfs" ]; then  
+  ipfs init || true
+fi
 
 # Enable gossipsub routing
 ipfs config Pubsub.Router gossipsub
@@ -38,7 +62,17 @@ ipfs config Pubsub.Router gossipsub
 # Enable Filestore for --nocopy capability
 ipfs config --bool Experimental.FilestoreEnabled true
 
-# Configure HTTP to IPFS gateway
+# Setup connection management - Reduce connections to stress the Pi less
+# XXX: These values need to be tweaked and tested
+ipfs config Swarm.ConnMgr.Type basic
+ipfs config --json Swarm.ConnMgr.LowWater 100
+ipfs config --json Swarm.ConnMgr.HighWater 200
+ipfs config Swarm.ConnMgr.GracePeriod 60s
+
+# Enable QUIC for better connections when possible
+ipfs config --bool Experimental.QUIC true
+
+# Configure HTTP reverse proxy to IPFS gateway
 sudo cp "$BASE_DIR/ipfs-http-gateway.conf" /etc/nginx/site-path-enabled/ipfs-http-gateway.conf
 sudo systemctl restart nginx.service
 
@@ -52,6 +86,7 @@ ipfs bootstrap add "$IPFS_PEER_2"
 ipfs bootstrap add "$IPFS_PEER_3"
 ipfs bootstrap add "$IPFS_PEER_4"
 ipfs bootstrap add "$IPFS_PEER_5"
+ipfs bootstrap add "$IPFS_PEER_6"
 
 # Download dependencies
 sudo apt-get install -y jq

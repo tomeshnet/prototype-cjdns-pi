@@ -1,15 +1,19 @@
-#!/bin/bash
-# shellcheck disable=SC2162
-true
+#!/usr/bin/env bash
 
-# Wait for ipfs to initalize
-attempts=15
+# This script connects to local mesh peers,
+# and it sets up connection filters based on what networks this node can access.
+# It runs continually, to change IPFS settings as the environment around the node changes.
+
+
+# Wait for IPFS to initalize
+attempts=10
 until [[ $(curl http://localhost:5001/api/v0/id -s 2>/dev/null) || ${attempts} -eq 0 ]]; do
-    sleep 1
+    sleep 3
     attempts=$((attempts-1))
 done
 
 if [[  ${attempts} -eq 0 ]]; then
+    echo "Error: Failed to connect to local IPFS daemon. Is it running?"
     exit 1
 fi
 
@@ -21,9 +25,16 @@ function addPeer  {
         id=$(echo "${res}" | jq -r -M '.services.ipfs.ID')
         # Value is found
         if [[ ! ${id} == "null" ]] && [[ ! "${id}" == "" ]]; then
-            # Connect to neighbouring ipfs
-            ipfs swarm connect "/ip6/${addr}/tcp/4001/ipfs/${id}"
-            echo "Connecting to ${addr}"
+            # Connect to neighbouring IPFS nodes
+            # Check for QUIC connections first
+            if [ "$(echo "${res}" | jq -r -M '.services.IPFS.quic_enabled')" == 'true' ]; then
+                # ID is not needed for QUIC connections
+                echo "Connecting to ${addr} with QUIC"
+                ipfs swarm connect "/ip6/${addr}/udp/4001/quic"
+            else
+                echo "Connecting to ${addr} over TCP"
+                ipfs swarm connect "/ip6/${addr}/tcp/4001/ipfs/${id}"
+            fi
         fi
     fi
 }
@@ -40,7 +51,7 @@ while read -r cjdns_peer; do
 done <<< "$(sudo nodejs /opt/cjdns/tools/peerStats 2>/dev/null | awk '{ if ($3 == "ESTABLISHED") print $2 }' | awk -F. '{ print $6".k" }' | xargs)"
 
 # Add yggdrasil direct peers
-if [ "$(which yggdrasil)" ]; then
+if [ "$(command -v yggdrasil)" ]; then
     while read -r ygg_peer; do
         addPeer "${ygg_peer}"
     done <<< "$(sudo yggdrasilctl getPeers | grep -v "(self)" | awk '{print $1}' | grep -v bytes_recvd | xargs)"

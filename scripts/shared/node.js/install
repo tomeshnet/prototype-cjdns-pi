@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+set -e
+
+NODEJS_PREFIX=10
+NODEJS_VERSION="$NODEJS_PREFIX.15.3"
+
+# Check whether it has the newest version - 32-bit OSes need an older one
+if [[ ("$(node --version)" != "v$NODEJS_VERSION") || ("$(uname -m)" =~ ^(i386|i586|i686)$ && "$(node --version)" != "v8.11.0") ]]; then
+    # Check for armv6 and install NodeJS manually instead since it will not install via repo
+    if uname -m | grep -Eq ^armv6; then
+        wget -O /tmp/node-v$NODEJS_VERSION-linux-armv6l.tar.gz https://nodejs.org/dist/v$NODEJS_VERSION/node-v$NODEJS_VERSION-linux-armv6l.tar.gz
+        sudo tar xfz /tmp/node-v$NODEJS_VERSION-linux-armv6l.tar.gz --strip 1 -C /
+        rm -rf /tmp/node-v$NODEJS_VERSION-linux-armv6l.tar.gz
+        sudo ln -s /bin/node /bin/nodejs
+    # Check if it's 32-bit and install the previous NodeJS LTS since 10 doesn't support this arch
+    elif [[ "$(uname -m)" =~ ^(i386|i586|i686)$ ]]; then
+        wget -O /tmp/node-v8.16.0-linux-x86.tar.gz https://nodejs.org/dist/v8.11.0/node-v8.11.0-linux-x86.tar.gz
+        sudo tar xfz /tmp/node-v8.11.0-linux-x86.tar.gz --strip 1 -C /
+        rm -rf /tmp/node-v8.11.0-linux-x86.tar.gz
+        sudo ln -s /bin/node /bin/nodejs
+    else
+        curl -sL https://deb.nodesource.com/setup_$NODEJS_PREFIX.x | sudo -E bash -
+        sudo apt-get install -y nodejs
+    fi
+fi
