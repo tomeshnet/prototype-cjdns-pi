@@ -120,7 +120,7 @@ To add a new module, use **scripts/ipfs/** as an example to:
 
 * We keep a list of [Frequently Asked Questions](./docs/FAQ.md). Feel free to add to this list with the issues you experienced on your boards.
 
-* We have a [Troubleshooting](./docs/TROUBLESHOOT.MD) doc with information to point you in the right direction of some common problems.
+* We have a [Troubleshooting](./docs/TROUBLESHOOT.md) doc with information to point you in the right direction of some common problems.
 
 * Your computer can be a node too! It will mesh with the Pi's over your router. See the [cjdns repository](https://github.com/cjdelisle/cjdns) on how to set this up. You can now also install this prototype stack on debian/ubuntu PC hardware. This includes a Virtual Machine.
 
