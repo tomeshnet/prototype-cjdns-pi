@@ -3,7 +3,7 @@
 
 set -e
 
-GO_IPFS_VERSION="v0.4.22"
+GO_IPFS_VERSION="v0.9.1"
 
 ARCH="$(uname -m)" 
 case "$ARCH" in
@@ -70,7 +70,7 @@ ipfs config --json Swarm.ConnMgr.HighWater 200
 ipfs config Swarm.ConnMgr.GracePeriod 60s
 
 # Enable QUIC for better connections when possible
-ipfs config --bool Experimental.QUIC true
+ipfs config --bool QUIC true
 
 # Configure HTTP reverse proxy to IPFS gateway
 sudo cp "$BASE_DIR/ipfs-http-gateway.conf" /etc/nginx/site-path-enabled/ipfs-http-gateway.conf
