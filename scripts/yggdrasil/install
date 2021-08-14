@@ -3,7 +3,6 @@
 set -e
 
 YGGDRASIL_VERSION=0.4.0
-YGGDRASIL_HOST=3008-115685026
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -39,9 +38,9 @@ if [[ ! -f "/usr/bin/yggdrasil" ]]; then
     rm -rf "$BASE_DIR/tmp"
 fi
 
-# Yggdrasil 0.3.12 service fix
-sudo sed -i "s/CapabilityBoundingSet=CAP_NET_ADMIN/CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_RAW/" /etc/systemd/system/yggdrasil.service
-sudo systemctl daemon-reload
+## Yggdrasil 0.3.12 service fix
+#sudo sed -i "s/CapabilityBoundingSet=CAP_NET_ADMIN/CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_RAW/" /etc/systemd/system/yggdrasil.service
+#sudo systemctl daemon-reload
 
 # Change configuration to have yggdrasil's tun interface called ygg0
 sudo sed -i "s/IfName: auto/IfName: ygg0/" /etc/yggdrasil.conf
