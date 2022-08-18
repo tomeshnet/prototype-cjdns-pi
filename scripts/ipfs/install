@@ -96,8 +96,10 @@ sudo cp "$BASE_DIR/ipfs-swarm.sh" /usr/local/bin/
 sudo chmod +x /usr/local/bin/ipfs-swarm.sh
 
 # Configure systemd to start ipfs.service on system boot
-sudo cp "$BASE_DIR/ipfs.service" /etc/systemd/system/ipfs.service
-sudo sed -i "s|__USER_HOME__|${HOME}|" /etc/systemd/system/ipfs.service
+sudo cp "$BASE_DIR/ipfs.service" /tmp/ipfs.service
+sudo sed -i "s|__USER_HOME__|${HOME}|" /tmp/ipfs.service
+sudo mv /tmp/ipfs.service /etc/systemd/system/ipfs.service
+
 sudo systemctl daemon-reload
 sudo systemctl enable ipfs.service
 sudo systemctl start ipfs.service
