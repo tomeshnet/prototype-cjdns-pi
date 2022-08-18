@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC1091
+
+set -e
+
+GO_VER=1.17
+
+GO_IPFS_VERSION="v0.0.8"
+
+ARCH="$(uname -m)"
+case "$ARCH" in
+  x86_64)
+    ARCH="amd64"
+  ;;
+  i386 | i586 | i686 )
+    ARCH="386"
+  ;;  armv7l)
+    ARCH="armv6l";
+  ;;
+  armv6l)
+    ARCH="armv6l";
+  ;;
+  aarch64)
+    ARCH="arm64";
+  ;;
+  *)
+    echo "Unknown Arch"
+    exit 1
+  ;;
+esac
+
+BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+
+URL=https://go.dev/dl/go${GO_VER}.linux-${ARCH}.tar.gz
+wget $URL -O /tmp/go.tar.gz
+sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf /tmp/go.tar.gz
+export PATH=$PATH:/usr/local/go/bin
+rm -rf /tmp/go.tar.gz
+
+sudo rm -rf /opt/saturn-l2
+sudo git clone https://github.com/filecoin-saturn/L2-node.git /opt/saturn-l2
+sudo chmod a+rwX -R /opt/saturn-l2
+cd /opt/saturn-l2
+git checkout v0.0.8
+./scripts/download-webui.sh
+cd cmd/saturn-l2
+go build ./...
+
+sudo rm -rf /mnt/saturn || true
+sudo mkdir /mnt/saturn || true
+
+sudo cp "$BASE_DIR/saturn-l2.service" /etc/systemd/system/saturn-l2.service
+sudo systemctl daemon-reload
+sudo systemctl enable saturn-l2.service
+sudo systemctl start saturn-l2.service
+
+sudo cp "$BASE_DIR/saturn-ui.conf" /etc/nginx/site-path-enabled/saturn-ui.conf
+sudo systemctl restart nginx.service
