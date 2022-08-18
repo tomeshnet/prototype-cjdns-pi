@@ -1,0 +1,18 @@
+[Unit]
+Description=Saturn L2 daemon
+Wants=network.target
+After=network.target
+
+[Service]
+Type=simple
+Environment=ROOT_DIR=/mnt/saturn
+Environment=PORT=46877
+Environment=FIL_WALLET_ADDRESS=f1yj7hti5izguul4bzrzfaz3ze3faoog3xk4umkuy
+ExecStart=/opt/saturn-l2/cmd/saturn-l2/saturn-l2
+
+ExecStop=/bin/kill -s QUIT $MAINPID
+Restart=on-failure
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target
