@@ -7,7 +7,7 @@ echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
 # Give yggdrasil enough time to create an ygg0 interface before we start adding routes
 sleep 3
 
-LOCAL_YGG=$(sudo yggdrasilctl -v getSelf | grep IPv6\ a | awk '{print $3}')
+LOCAL_YGG=$(sudo yggdrasilctl getSelf | grep IPv6\ a | awk '{print $3}')
 
 if [ -f /etc/yggdrasil.iptunnel.conf ]; then
     touch /etc/yggdrasil.iptunnel.conf
@@ -35,10 +35,10 @@ if [ -e /etc/yggdrasil.iptunnel ]; then
         SUBNET4="10.10.0.0/24"
     fi
     SUBNET6=$(confget -f "/etc/yggdrasil.iptunnel.conf" -s "ipv6tunnel" subnet)
-    if [[ -z "${SUBNET6}" ]]; then
-        SUBNET6="fd00::/64"
-        ip -6 route add ${SUBNET6} dev "${YGGINT}"
-    fi
+#    if [[ -z "${SUBNET6}" ]]; then
+#        SUBNET6="fd00::/64"
+#        ip -6 route add ${SUBNET6} dev "${YGGINT}"
+#    fi
     EXITINT="$(confget -f "/etc/yggdrasil.iptunnel.conf" -s "general" exit-interface)"
     if [[ -z "${EXITINT}" ]]; then
         EXITINT="eth0"
@@ -48,16 +48,16 @@ if [ -e /etc/yggdrasil.iptunnel ]; then
     while read -r REMOTE_YGG IP_ADDR IP6_ADDR; do
             INDEX=$((INDEX+1))
             GREINT="gre_ygg${INDEX}"
-            ifconfig ${GREINT} down
-            ip tunnel delete ${GREINT}
+            ifconfig ${GREINT} down || true 
+            ip tunnel delete ${GREINT} || true
             ip tunnel add ${GREINT} mode ip6gre remote ${REMOTE_YGG} local ${LOCAL_YGG} ttl 255
 	          ip link set ${GREINT} up
             ip addr add $IP_ADDR/30 dev ${GREINT}
-            ip route add $IP_ADDR/30 dev ${GREINT}
+#            ip route add $IP_ADDR/30 dev ${GREINT}
 
             if [[ ! -z "${IP6_ADDR}" ]]; then
                 ip addr add $IP6_ADDR/126 dev ${GREINT}
-                ip -6 route add "${IP6_ADDR}/126" dev ${GREINT} || true
+#                ip -6 route add "${IP6_ADDR}/126" dev ${GREINT} || true
             fi
             isIPv6=true
     done < /etc/yggdrasil.iptunnel
@@ -98,4 +98,3 @@ fi
         ip -6 route add ::/1 dev "${GREINT}"
         ip -6 route add 8000::/1 dev "${GREINT}" 
    fi
-fi
