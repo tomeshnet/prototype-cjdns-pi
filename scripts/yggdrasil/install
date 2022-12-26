@@ -2,7 +2,7 @@
 
 set -e
 
-YGGDRASIL_VERSION=0.4.0
+YGGDRASIL_VERSION=0.4.7
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
