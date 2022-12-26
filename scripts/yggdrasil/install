@@ -34,6 +34,7 @@ esac
 if [[ ! -f "/usr/bin/yggdrasil" ]]; then
     mkdir "$BASE_DIR/tmp"
     wget https://github.com/yggdrasil-network/yggdrasil-go/releases/download/v${YGGDRASIL_VERSION}/yggdrasil-${YGGDRASIL_VERSION}-${ARCH_VERSION}.deb -O "$BASE_DIR/tmp/yggdrasil.deb"
+
     sudo dpkg -i "$BASE_DIR/tmp/yggdrasil.deb"
     rm -rf "$BASE_DIR/tmp"
 fi

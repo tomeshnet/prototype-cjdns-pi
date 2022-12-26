@@ -17,6 +17,7 @@ if [[ -z "$IPv6NAT" ]]; then
     IPv6NAT=true
     confset "iptunnel" "IPv6nat" "$IPv6NAT" /etc/yggdrasil.iptunnel.conf
 fi
+
 EXITNODE=$(confget -f "/etc/yggdrasil.iptunnel.conf" -s "iptunnel" EXIT)
 
 YGGINT="$(confget -f "/etc/yggdrasil.iptunnel.conf" -s "general" yggdrasil-interface)"
