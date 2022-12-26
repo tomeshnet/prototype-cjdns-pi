@@ -17,7 +17,6 @@ if [[ -z "$IPv6NAT" ]]; then
     IPv6NAT=true
     confset "iptunnel" "IPv6nat" "$IPv6NAT" /etc/yggdrasil.iptunnel.conf
 fi
-
 EXITNODE=$(confget -f "/etc/yggdrasil.iptunnel.conf" -s "iptunnel" EXIT)
 
 YGGINT="$(confget -f "/etc/yggdrasil.iptunnel.conf" -s "general" yggdrasil-interface)"
@@ -49,8 +48,8 @@ if [ -e /etc/yggdrasil.iptunnel ]; then
     while read -r REMOTE_YGG IP_ADDR IP6_ADDR; do
             INDEX=$((INDEX+1))
             GREINT="gre_ygg${INDEX}"
-            ifconfig ${GREINT} down || true 
-            ip tunnel delete ${GREINT} || true
+            ifconfig ${GREINT} down
+            ip tunnel delete ${GREINT}
             ip tunnel add ${GREINT} mode ip6gre remote ${REMOTE_YGG} local ${LOCAL_YGG} ttl 255
 	          ip link set ${GREINT} up
             ip addr add $IP_ADDR/30 dev ${GREINT}
@@ -99,3 +98,4 @@ fi
         ip -6 route add ::/1 dev "${GREINT}"
         ip -6 route add 8000::/1 dev "${GREINT}" 
    fi
+exit 0
