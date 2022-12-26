@@ -44,7 +44,7 @@ if [ -e /etc/yggdrasil.iptunnel ]; then
     while read -r REMOTE_YGG LOCAL_IP_ADDR LOCAL_IP6_ADDR REMOTE_IP6_ADDR; do
     INDEX=$((INDEX+1))
     GREINT="gre${INDEX}"
-    LOCAL_YGG="201:1ae6:9001:b7c6:fc12:d51b:895b:cee5"
+    LOCAL_YGG="200:7d36:cbbb:bb3f:2109:8585:ec05:f918"
 #    while read -r PUBLIC_KEY IP_ADDR IP6_ADDR IP6_SUBNET; do
         ifconfig  ${GREINT} down
         ip -6 link set dev ${GREINT} name deleteme
