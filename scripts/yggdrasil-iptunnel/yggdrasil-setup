@@ -14,6 +14,7 @@ if [[ -z "$IPv6NAT" ]]; then
     IPv6NAT=true
     confset "iptunnel" "IPv6nat" "$IPv6NAT" /etc/yggdrasil.iptunnel.conf
 fi
+EXITNODE=$(confget -f "/etc/yggdrasil.iptunnel.conf" -s "iptunnel" EXIT)
 
 YGGINT="$(confget -f "/etc/yggdrasil.iptunnel.conf" -s "general" yggdrasil-interface)"
 if [[ -z "${YGGINT}" ]]; then
@@ -52,14 +53,18 @@ if [ -e /etc/yggdrasil.iptunnel ]; then
 
     done < /etc/yggdrasil.iptunnel
 
-    # If no NAT (masquerading) being done, start doing it
-    if [ -z "$(iptables -L POSTROUTING -v -n -t nat  | grep MASQUERADE)" ]; then
-        iptables -t nat -A POSTROUTING -o "${EXITINT}" -j MASQUERADE
-    fi
-    # If no NAT (masquerading) being done, start doing it
-    if [ -z "$(ip6tables -L POSTROUTING -v -n -t nat  | grep MASQUERADE)" ]; then
-        if [[ ! "${IPv6NAT}" == false ]]; then
+
+    if [ "$EXITNODE" == "true" ]; then
+
+        # If no NAT (masquerading) being done, start doing it
+        if [ -z "$(iptables -L POSTROUTING -v -n -t nat  | grep MASQUERADE)" ]; then
             iptables -t nat -A POSTROUTING -o "${EXITINT}" -j MASQUERADE
+        fi
+        # If no NAT (masquerading) being done, start doing it
+        if [ -z "$(ip6tables -L POSTROUTING -v -n -t nat  | grep MASQUERADE)" ]; then
+            if [[ ! "${IPv6NAT}" == false ]]; then
+                iptables -t nat -A POSTROUTING -o "${EXITINT}" -j MASQUERADE
+            fi
         fi
     fi
 # Configure as Yggdrasil IPTunnel client if client file is present 
@@ -67,19 +72,22 @@ if [ -e /etc/yggdrasil.iptunnel ]; then
 # along with IPAddresses configured on the exit node for this node
 
     # Remove NAT from eth0 if it exists
-    iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE || true
-    ip6tables -t nat -D POSTROUTING -o eth0 -j MASQUERADE || true
+    iptables -t nat -D POSTROUTING -o ${GREINT} -j MASQUERADE || true
+    ip6tables -t nat -D POSTROUTING -o ${GREINT} -j MASQUERADE || true
 
-    # Route NAT traffic through to yggdrasil ygg0 interface to use iptunnel exit server
-    iptables -t nat -A POSTROUTING -o "${YGGINT}" -j MASQUERADE
-    if [[ ! "${IPv6NAT}" == false ]]; then
-        ip6tables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-    fi
+    if [ "$EXITNODE" != "true" ]; then
 
-    # Special hack to change default route without removing original one
-    ip route add 0.0.0.0/1 dev "${YGGINT}"
-    ip route add 128.0.0.0/1 dev "${YGGINT}"
+        # Route NAT traffic through to yggdrasil ygg0 interface to use iptunnel exit server
+     iptables -t nat -A POSTROUTING -o ${GREINT} -j MASQUERADE
+        if [[ ! "${IPv6NAT}" == false ]]; then
+            ip6tables -t nat -A POSTROUTING -o ${GREINT} -j MASQUERADE
+        fi
 
-    ip -6 route add ::/1 dev "${YGGINT}"
-    ip -6 route add 8000::/1 dev "${YGGINT}" 
+        # Special hack to change default route without removing original one
+        ip route add 0.0.0.0/1 dev "${GREINT}"
+        ip route add 128.0.0.0/1 dev "${GREINT}"
+
+        ip -6 route add ::/1 dev "${GREINT}"
+        ip -6 route add 8000::/1 dev "${GREINT}" 
+   fi
 fi
