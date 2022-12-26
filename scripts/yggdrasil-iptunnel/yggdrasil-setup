@@ -7,7 +7,7 @@ echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
 # Give yggdrasil enough time to create an ygg0 interface before we start adding routes
 sleep 3
 
-LOCAL_IP=$(sudo yggdrasilctl -v getSelf | grep IPv6\ a | awk '{print $3}')
+LOCAL_YGG=$(sudo yggdrasilctl -v getSelf | grep IPv6\ a | awk '{print $3}')
 
 if [ -f /etc/yggdrasil.iptunnel.conf ]; then
     touch /etc/yggdrasil.iptunnel.conf
@@ -17,6 +17,7 @@ if [[ -z "$IPv6NAT" ]]; then
     IPv6NAT=true
     confset "iptunnel" "IPv6nat" "$IPv6NAT" /etc/yggdrasil.iptunnel.conf
 fi
+EXITNODE=$(confget -f "/etc/yggdrasil.iptunnel.conf" -s "iptunnel" EXIT)
 
 YGGINT="$(confget -f "/etc/yggdrasil.iptunnel.conf" -s "general" yggdrasil-interface)"
 if [[ -z "${YGGINT}" ]]; then
@@ -28,8 +29,8 @@ if [[ -z "${IPv6SUBNETINT}" ]]; then
     IPv6SUBNETINT="wlan-ap"
 fi
 
-if [ -e /etc/yggdrasil.iptunnel.server ]; then
-    SUBNET4=$(confget -f "/etc/yggdrasil.iptunnel.conf" -s "iptunnel" subnet)
+if [ -e /etc/yggdrasil.iptunnel ]; then
+   SUBNET4=$(confget -f "/etc/yggdrasil.iptunnel.conf" -s "iptunnel" subnet)
     if [[ -z "${SUBNET4}" ]]; then
         SUBNET4="10.10.0.0/24"
     fi
@@ -42,74 +43,59 @@ if [ -e /etc/yggdrasil.iptunnel.server ]; then
     if [[ -z "${EXITINT}" ]]; then
         EXITINT="eth0"
     fi
-    index=-1
-    while read -r TARGET_IP IP_ADDR IP6_ADDR IP6_SUBNET; do
-            index=$((index+1))
-            ip tunnel delete gre_ygg${index}
-            ip tunnel add gre_ygg${index} mode ip6gre remote $TARGET_IP local $LOCAL_IP ttl 255
-	    ip link set gre_ygg${index} up
-            ip addr add $IP_ADDR/30 dev gre_ygg${index}
-            ip route add $IP_ADDR/30 dev gre_ygg${index}
+
+    INDEX=-1
+    while read -r REMOTE_YGG IP_ADDR IP6_ADDR; do
+            INDEX=$((INDEX+1))
+            GREINT="gre_ygg${INDEX}"
+            ifconfig ${GREINT} down
+            ip tunnel delete ${GREINT}
+            ip tunnel add ${GREINT} mode ip6gre remote ${REMOTE_YGG} local ${LOCAL_YGG} ttl 255
+	          ip link set ${GREINT} up
+            ip addr add $IP_ADDR/30 dev ${GREINT}
+            ip route add $IP_ADDR/30 dev ${GREINT}
 
             if [[ ! -z "${IP6_ADDR}" ]]; then
-                ip addr add $IP6_ADDR/126 dev gre_ygg${index}
-
-                if [[ ! -z "${IP6_SUBNET}" ]]; then
-                    ip -6 route add "${IP6_SUBNET}" dev "gre_ygg${index}" || true
-                fi
-                isIPv6=true
+                ip addr add $IP6_ADDR/126 dev ${GREINT}
+                ip -6 route add "${IP6_ADDR}/126" dev ${GREINT} || true
             fi
-    done < /etc/yggdrasil.iptunnel.server
+            isIPv6=true
+    done < /etc/yggdrasil.iptunnel
 
-    # If no NAT (masquerading) being done, start doing it
-    if [ -z "$(iptables -L POSTROUTING -v -n -t nat  | grep MASQUERADE)" ]; then
-        iptables -t nat -A POSTROUTING -o "${EXITINT}" -j MASQUERADE
-    fi
-    # If no NAT (masquerading) being done, start doing it
-    if [ -z "$(ip6tables -L POSTROUTING -v -n -t nat  | grep MASQUERADE)" ]; then
-        if [[ ! "${IPv6NAT}" == false ]]; then
+    if [ "$EXITNODE" == "true" ]; then
+
+        # If no NAT (masquerading) being done, start doing it
+        if [ -z "$(iptables -L POSTROUTING -v -n -t nat  | grep MASQUERADE)" ]; then
             iptables -t nat -A POSTROUTING -o "${EXITINT}" -j MASQUERADE
+        fi
+        # If no NAT (masquerading) being done, start doing it
+        if [ -z "$(ip6tables -L POSTROUTING -v -n -t nat  | grep MASQUERADE)" ]; then
+            if [[ ! "${IPv6NAT}" == false ]]; then
+                iptables -t nat -A POSTROUTING -o "${EXITINT}" -j MASQUERADE
+            fi
         fi
     fi
 # Configure as Yggdrasil IPTunnel client if client file is present 
 # this is a single line represeting a Yggdrasil public key in /etc/yggdrasil.iptunnel.client
 # along with IPAddresses configured on the exit node for this node
-elif [ -e /etc/yggdrasil.iptunnel.client ]; then
-    # Add each server to Yggdrasil IPTunnel connect-to's
-    index=-1
-    while read -r TARGET_IP IP_ADDR IP6_ADDR IP6_SUBNET; do
-            index=$((index+1))
-            ip tunnel delete gre_ygg${index}
-            ip tunnel add gre_ygg${index} mode ip6gre remote $TARGET_IP local $LOCAL_IP ttl 255
-            ip link set gre_ygg${index} up
-            ip addr add $IP_ADDR/30 dev gre_ygg${index}
-            ip route add $IP_ADDR/30 dev gre_ygg${index}
-
-
-            if [[ ! -z "${IP6_ADDR}" ]]; then
-                ip addr add dev "gre_ygg${index}" "${IP6_ADDR}/126"
-                if [[ ! -z "${IP6_SUBNET}" ]]; then
-                    ip -6 route add ${IP6_SUBNET} dev "${IPv6SUBNETINT}"
-                    ip addr add dev "${IPv6SUBNETINT}" "$(echo  ${IP6_SUBNET} | sed "s/\/64/1/")"
-                fi
-            fi
-            ip addr add dev "${YGGINT}" "${IP_ADDR}/32"
-    done < /etc/yggdrasil.iptunnel.client
-
+fi
     # Remove NAT from eth0 if it exists
-    iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE || true
-    ip6tables -t nat -D POSTROUTING -o eth0 -j MASQUERADE || true
+    iptables -t nat -D POSTROUTING -o ${GREINT} -j MASQUERADE || true
+    ip6tables -t nat -D POSTROUTING -o ${GREINT} -j MASQUERADE || true
 
-    # Route NAT traffic through to yggdrasil ygg0 interface to use iptunnel exit server
-    iptables -t nat -A POSTROUTING -o "${YGGINT}" -j MASQUERADE
-    if [[ ! "${IPv6NAT}" == false ]]; then
-        ip6tables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-    fi
+    if [ "$EXITNODE" != "true" ]; then
 
-    # Special hack to change default route without removing original one
-    ip route add 0.0.0.0/1 dev "gre_ygg${index}"
-    ip route add 128.0.0.0/1 dev "gre_ygg${index}"
+        # Route NAT traffic through to yggdrasil ygg0 interface to use iptunnel exit server
+        iptables -t nat -A POSTROUTING -o ${GREINT} -j MASQUERADE
+        if [[ ! "${IPv6NAT}" == false ]]; then
+            ip6tables -t nat -A POSTROUTING -o ${GREINT} -j MASQUERADE
+        fi
 
-    ip -6 route add ::/1 dev "gre_ygg${index}"
-    ip -6 route add 8000::/1 dev "gre_ygg${index}" 
+        # Special hack to change default route without removing original one
+        ip route add 0.0.0.0/1 dev "${GREINT}"
+        ip route add 128.0.0.0/1 dev "${GREINT}"
+
+        ip -6 route add ::/1 dev "${GREINT}"
+        ip -6 route add 8000::/1 dev "${GREINT}" 
+   fi
 fi
