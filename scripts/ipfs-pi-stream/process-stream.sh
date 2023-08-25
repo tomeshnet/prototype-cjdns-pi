@@ -3,25 +3,31 @@
 HLS_TIME=40
 M3U8_SIZE=3
 IPFS_GATEWAY="https://ipfs.io"
+manifest=~/test.json
+ret=""
+ret2=""
+C2PA=0
 
 # Load settings
+
 
 # Prepare Pi Camera
 sudo modprobe bcm2835-v4l2
 sudo v4l2-ctl --set-ctrl video_bitrate=100000
+#sudo v4l2-ctl --set-ctrl rotate=90
 
 function startFFmpeg() {
   while true; do
     mv ~/ffmpeg.log ~/ffmpeg.1
     echo 1 > ~/stream-reset
-    
+
     # Stream Raspberry Pi Camera
     ffmpeg -f video4linux2 -input_format h264 -video_size 1280x720 -framerate 30 -i /dev/video0 -vcodec copy -hls_time "${HLS_TIME}" "${what}.m3u8" > ~/ffmpeg.log 2>&1
 
     # Stream FM Station from a SDR module (see contrib/pi-stream to install drivers)
     # Frequency ends in M IE 99.9M
     # rtl_fm  -f 99.9M -M fm -s 170k -A std -l0 -E deemp -r 44.1k | ffmpeg  -r 15 -loop 1 -i ../audio.jpg  -f s16le -ac 1 -i pipe:0 -c:v libx264 -tune stillimage -preset ultrafast  -hls_time "${HLS_TIME}" "${what}.m3u8"  > ~/ffmpeg 2>&1
-    
+
     sleep 0.5
   done
 }
@@ -79,21 +85,29 @@ while true; do
     # Current UTC date for the log
     time=$(date "+%F-%H-%M-%S")
 
+    if [ "$C2PA" ]; then
+      # C2PA Sign
+      c2patool ${nextfile} -m ~/test.json -o ${nextfile}.sign.ts
+      c2patool -d ${nextfile}.sign.ts > ${nextfile}.c2pa
+      mv -f ${nextfile}.sign.ts ${nextfile}
+      ret2=$(ipfs add --pin=false "${nextfile}.c2pa" -q)
+    fi
+    
     # Add ts file to IPFS
-    ret=$(ipfs add --pin=false "${nextfile}" 2>/dev/null > ~/tmp.txt; echo $?)
+    ret=$(ipfs add --pin=false "${nextfile}" -q)
     attempts=5
     until [[ ${ret} -eq 0 || ${attempts} -eq 0 ]]; do
       # Wait and retry
       sleep 0.5
-      ret=$(ipfs add --pin=false "${nextfile}" 2>/dev/null > ~/tmp.txt; echo $?)
+      ret=$(ipfs add --pin=false "${nextfile}" -q)
       attempts=$((attempts-1))
     done
     if [[ ${ret} -eq 0 ]]; then
       # Update the log with the future name (hash already there)
-      echo "$(cat ~/tmp.txt) ${time}.ts ${timecode}${reset_stream_marker}" >> ~/process-stream.log
+      echo "added ${ret}?${ret2} ${time}.ts ${timecode}${reset_stream_marker}" >> ~/process-stream.log
 
       # Remove nextfile and tmp.txt
-      rm -f "${nextfile}" ~/tmp.txt
+      rm -f "${nextfile}"  "${nextfile}.c2pa"
 
       # Write the m3u8 file with the new IPFS hashes from the log
       totalLines="$(wc -l ~/process-stream.log | awk '{print $1}')"
@@ -117,6 +131,7 @@ while true; do
       # Copy files to web server
       cp current.m3u8 /var/www/html/live.m3u8
       cp ~/process-stream.log /var/www/html/live.log
+
     fi
   else
     sleep 5
