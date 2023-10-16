@@ -3,7 +3,7 @@
 
 set -e
 
-GO_IPFS_VERSION="v0.17.0"
+GO_IPFS_VERSION="v0.23.0"
 
 ARCH="$(uname -m)" 
 case "$ARCH" in
@@ -58,6 +58,7 @@ fi
 
 # Enable gossipsub routing
 ipfs config Pubsub.Router gossipsub
+ipfs config Routing.AcceleratedDHTClient true --json
 
 # Enable Filestore for --nocopy capability
 ipfs config --bool Experimental.FilestoreEnabled true
