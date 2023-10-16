@@ -73,6 +73,10 @@ ipfs config Swarm.ConnMgr.GracePeriod 60s
 # Enable QUIC for better connections when possible
 ipfs config --bool QUIC true
 
+# Grow udp size for QUIC
+sysctl -w net.core.rmem_max=2500000
+sysctl -w net.core.wmem_max=2500000
+
 # Configure HTTP reverse proxy to IPFS gateway
 sudo cp "$BASE_DIR/ipfs-http-gateway.conf" /etc/nginx/site-path-enabled/ipfs-http-gateway.conf
 sudo systemctl restart nginx.service
