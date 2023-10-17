@@ -3,7 +3,7 @@
 
 set -e
 
-GO_IPFS_VERSION="v0.17.0"
+GO_IPFS_VERSION="v0.23.0"
 
 ARCH="$(uname -m)" 
 case "$ARCH" in
@@ -58,6 +58,7 @@ fi
 
 # Enable gossipsub routing
 ipfs config Pubsub.Router gossipsub
+ipfs config Routing.AcceleratedDHTClient true --json
 
 # Enable Filestore for --nocopy capability
 ipfs config --bool Experimental.FilestoreEnabled true
@@ -71,6 +72,10 @@ ipfs config Swarm.ConnMgr.GracePeriod 60s
 
 # Enable QUIC for better connections when possible
 ipfs config --bool QUIC true
+
+# Grow udp size for QUIC
+sysctl -w net.core.rmem_max=2500000
+sysctl -w net.core.wmem_max=2500000
 
 # Configure HTTP reverse proxy to IPFS gateway
 sudo cp "$BASE_DIR/ipfs-http-gateway.conf" /etc/nginx/site-path-enabled/ipfs-http-gateway.conf
