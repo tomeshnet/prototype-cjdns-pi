@@ -2,8 +2,8 @@
 
 set -e
 
-NODEJS_PREFIX=10
-NODEJS_VERSION="$NODEJS_PREFIX.15.3"
+NODEJS_PREFIX=14
+NODEJS_VERSION="$NODEJS_PREFIX.17.5"
 
 # Check whether it has the newest version - 32-bit OSes need an older one
 if [[ ("$(node --version)" != "v$NODEJS_VERSION") || ("$(uname -m)" =~ ^(i386|i586|i686)$ && "$(node --version)" != "v8.11.0") ]]; then

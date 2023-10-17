@@ -3,7 +3,7 @@
 
 set -e
 
-GO_IPFS_VERSION="v0.17.0"
+GO_IPFS_VERSION="v0.23.0"
 
 ARCH="$(uname -m)" 
 case "$ARCH" in
@@ -58,6 +58,7 @@ fi
 
 # Enable gossipsub routing
 ipfs config Pubsub.Router gossipsub
+ipfs config Routing.AcceleratedDHTClient true --json
 
 # Enable Filestore for --nocopy capability
 ipfs config --bool Experimental.FilestoreEnabled true
@@ -70,7 +71,11 @@ ipfs config --json Swarm.ConnMgr.HighWater 200
 ipfs config Swarm.ConnMgr.GracePeriod 60s
 
 # Enable QUIC for better connections when possible
-ipfs config --bool Experimental.QUIC true
+ipfs config --bool QUIC true
+
+# Grow udp size for QUIC
+sysctl -w net.core.rmem_max=2500000
+sysctl -w net.core.wmem_max=2500000
 
 # Configure HTTP reverse proxy to IPFS gateway
 sudo cp "$BASE_DIR/ipfs-http-gateway.conf" /etc/nginx/site-path-enabled/ipfs-http-gateway.conf
@@ -96,8 +101,10 @@ sudo cp "$BASE_DIR/ipfs-swarm.sh" /usr/local/bin/
 sudo chmod +x /usr/local/bin/ipfs-swarm.sh
 
 # Configure systemd to start ipfs.service on system boot
-sudo cp "$BASE_DIR/ipfs.service" /etc/systemd/system/ipfs.service
-sudo sed -i "s|__USER_HOME__|${HOME}|" /etc/systemd/system/ipfs.service
+sudo cp "$BASE_DIR/ipfs.service" /tmp/ipfs.service
+sudo sed -i "s|__USER_HOME__|${HOME}|" /tmp/ipfs.service
+sudo mv /tmp/ipfs.service /etc/systemd/system/ipfs.service
+
 sudo systemctl daemon-reload
 sudo systemctl enable ipfs.service
 sudo systemctl start ipfs.service

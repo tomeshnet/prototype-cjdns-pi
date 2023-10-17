@@ -29,8 +29,10 @@ ssbPath="$HOME/.ssb"
 currentUser=$USER
 sudo cp "$BASE_DIR/ssb-web-pi-broadcast-service.sh" "/usr/local/bin/ssb-web-pi-broadcast-service.sh"
 sudo chmod a+x "/usr/local/bin/ssb-web-pi-broadcast-service.sh"
-sudo cp "$BASE_DIR/ssb-web-pi-broadcast.service" /etc/systemd/system/ssb-web-pi-broadcast.service
-sudo sed -i "s|__USER__|${currentUser}|g" /etc/systemd/system/ssb-web-pi-broadcast.service
+
+sudo cp "$BASE_DIR/ssb-web-pi-broadcast.service" /tmp/ssb-web-pi-broadcast.service
+sudo sed -i "s|__USER__|${currentUser}|g" /tmp/ssb-web-pi-broadcast.service
+sudo mv /tmp/ssb-web-pi-broadcast.service /etc/systemd/system/ssb-web-pi-broadcast.service
 
 sudo systemctl daemon-reload
 sudo systemctl enable ssb-web-pi-broadcast.service

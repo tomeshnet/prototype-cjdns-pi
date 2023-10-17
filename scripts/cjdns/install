@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC1091
 
-TAG_CJDNS=d2e55d58548d83940482fe1bbbe1fd36f7f1b4ef
+TAG_CJDNS=2daf59e2ca6a41aa36a629f03301c9f6d02f5a4a
 
 # Set BASE_DIR
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
