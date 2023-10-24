@@ -2,6 +2,15 @@
 
 MESH_NAME=$(confget -f /etc/mesh.conf -s general "mesh-name")
 
+# Define hostname based off LibreMesh if installed
+if [ -f '/etc/mesh-libre.conf' ]; then
+    # Define new hostname
+    if [ -z "${NEWHOSTNAME}" ]; then
+        NEWHOSTNAME="$MESH_NAME-$(confget -f /etc/mesh-libre.conf -s libremesh NODEID)"
+    fi
+fi
+
+# Define hostname based on CJDNS if installed
 if [ -f '/etc/cjdroute.conf' ]; then
     # Define new hostname
     if [ -z "${NEWHOSTNAME}" ]; then
@@ -9,7 +18,7 @@ if [ -f '/etc/cjdroute.conf' ]; then
     fi
 fi
 
-# Define hostname based off Yggdrasil if CJDNS isn't installed
+# Define hostname based off Yggdrasil if Installed
 if ! [ -z "$(ifconfig  | grep ygg0:)" ]; then
     # Define new hostname
     if [ -z "${NEWHOSTNAME}" ]; then
